@@ -72,7 +72,7 @@
         max-inline-size: calc(100% - 2rem);
         background-color: var(--color-surface, canvas);
         color: var(--color-fg, canvastext);
-        border-radius: 1rem;
+        border-radius: var(--radius-md);
         margin: auto;
         padding: 1.5rem;
         box-shadow: var(--shadow-lg);

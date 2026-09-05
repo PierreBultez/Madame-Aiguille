@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — <head> commun à toutes les pages
+ *
+ * Préchargement des deux fontes du premier écran (charte graphique §4).
+ * Les @font-face sont dans web/tailwind/src/fonts.css ; les fichiers dans web/fonts/.
+ * La feuille css/styles.css est déclarée par le thème parent.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <link src="fonts/Britney-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin="anonymous"/>
+        <link src="fonts/Sentient-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin="anonymous"/>
+    </head>
+</page>

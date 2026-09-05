@@ -368,6 +368,7 @@ return [
         'Hyva_MollieThemeBundle' => 1,
         'Hyva_OrderCancellationWebapi' => 1,
         'Hyva_BaseLayoutReset' => 1,
+        'MadameAiguille_Theme' => 1,
         'Magewirephp_Magewire' => 1,
         'Mollie_Payment' => 1,
         'Mollie_HyvaCompatibility' => 1,

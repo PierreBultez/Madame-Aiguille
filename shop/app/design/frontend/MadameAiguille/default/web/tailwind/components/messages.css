@@ -1,22 +1,44 @@
+/**
+ * Alertes / messages Magento — Madame Aiguille (Design System §6.6)
+ *
+ * Déclinées dans la famille chaude : succès, erreur, information (notice et
+ * warning sont traités en information). Pictogramme + libellé, jamais la
+ * couleur seule — le pictogramme est ajouté par le template messages.phtml.
+ */
 @layer components {
     .message {
-        @apply flex items-center justify-between w-full p-2 pl-5 bg-gray-100 shadow rounded text-black font-semibold mb-2;
+        --message-color: var(--color-info);
+        --message-dark: var(--color-info-dark);
+        --message-bg: var(--color-info-bg);
+        --message-border: var(--color-info-border);
 
-        &.error {
-            @apply border-2 border-red-500 bg-red-50;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: --spacing(3.5);
+        width: 100%;
+        margin-block-end: --spacing(2);
+        padding: --spacing(4) --spacing(5);
+        border: 1px solid var(--message-border);
+        border-inline-start: 3px solid var(--message-color);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        background-color: var(--message-bg);
+        color: var(--message-dark);
+        font-weight: 500;
+        line-height: 1.5;
+
+        &:is(.error, .message-error) {
+            --message-color: var(--color-error);
+            --message-dark: var(--color-error-dark);
+            --message-bg: var(--color-error-bg);
+            --message-border: var(--color-error-border);
         }
 
-        &.success {
-            @apply border-2 border-green-500 bg-green-50;
-        }
-
-        &.info,
-        &.notice {
-            @apply border-2 border-blue-500 bg-blue-50;
-        }
-
-        &.warning {
-            @apply border-2 border-yellow-500 bg-yellow-50;
+        &:is(.success, .message-success) {
+            --message-color: var(--color-success);
+            --message-dark: var(--color-success-dark);
+            --message-bg: var(--color-success-bg);
+            --message-border: var(--color-success-border);
         }
 
         a {

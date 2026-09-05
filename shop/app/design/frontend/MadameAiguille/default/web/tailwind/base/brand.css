@@ -1,0 +1,48 @@
+/**
+ * Règles de base propres à Madame Aiguille — complètent le preflight Hyvä.
+ */
+@layer base {
+    body {
+        font-family: var(--font-body);
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Britney est déjà italique par dessin : jamais d'italique ajouté */
+    :where(.font-display),
+    :where(.font-display) :is(em, i) {
+        font-style: normal;
+        font-weight: 400;
+    }
+
+    /* Liens sans classe (contenu CMS, descriptions) : brand, soulignement nude */
+    :where(a:not([class])) {
+        color: var(--color-brand);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-decoration-color: var(--color-brand-nude);
+        text-underline-offset: 3px;
+
+        &:hover {
+            color: var(--color-brand-dark);
+            text-decoration-color: var(--color-brand);
+        }
+    }
+
+    /* Anneau de focus sur fond brand : passe en ivoire pour garder 3:1 */
+    :where(.bg-brand, .bg-brand-dark, .bg-brand-active) :where(:focus-visible),
+    :where(.bg-brand, .bg-brand-dark, .bg-brand-active):where(:focus-visible) {
+        outline-color: var(--color-brand-paper);
+    }
+
+    /* Prix : chiffres tabulaires pour aligner les colonnes du panier */
+    :where(.price, [data-price-amount]) {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+/* Texte courant sur fond blush : brand-dark, jamais brand (4,4:1) */
+@utility on-blush {
+    color: var(--color-brand-dark);
+}

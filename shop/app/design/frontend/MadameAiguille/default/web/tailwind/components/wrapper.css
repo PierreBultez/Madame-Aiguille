@@ -1,6 +1,14 @@
+/**
+ * Conteneur — marges de page 20 px mobile / 80 px desktop (Design System §04).
+ * Plafonné à 1440 px (--breakpoint-2xl), soit 1280 px de contenu + 2 × 80 px.
+ */
 @utility container {
     margin-inline: auto;
-    padding-inline: --spacing(6);
+    padding-inline: --spacing(5);
+
+    @variant lg {
+        padding-inline: --spacing(20);
+    }
 }
 
 @layer components {

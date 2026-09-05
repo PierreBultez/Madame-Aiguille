@@ -1,11 +1,40 @@
+/**
+ * Champs de formulaire — Madame Aiguille (Design System §6.2)
+ *
+ * Hauteur 48 px, texte 16 px (en dessous, iOS zoome à la mise au point),
+ * label toujours visible, placeholder en brand-muted (4,99:1 : c'est du contenu).
+ * Erreur : fond error-bg, bordure error, message lié par aria-describedby.
+ * Les tokens --form-* sont définis dans tailwind-source.css (@theme).
+ */
+
 @utility form-input-field {
-    --outline-size: 1px;
-    --outline-offset: 0px;
+    --outline-size: 2px;
+    --outline-offset: 2px;
+    min-block-size: --spacing(12);
+    font-size: var(--text-base);
+    line-height: 1.5;
+
+    &::placeholder {
+        color: var(--color-brand-muted);
+        opacity: 1;
+    }
+
+    &:is([aria-invalid="true"], .mage-error, .invalid) {
+        border-color: var(--color-error);
+        background-color: var(--color-error-bg);
+    }
+
+    &:disabled {
+        border-color: var(--color-disabled-border);
+        background-color: var(--color-disabled-bg);
+        color: var(--color-disabled-muted);
+    }
 }
 
 @utility form-input-control {
-    block-size: --spacing(4.5);
-    inline-size: --spacing(4.5);
+    block-size: --spacing(5);
+    inline-size: --spacing(5);
+    border-color: var(--color-brand);
 }
 
 @layer base {
@@ -64,7 +93,7 @@
             margin-block-end: var(--reserved-space);
 
             ul {
-                @apply text-sm;
+                font-size: var(--text-caption);
 
                 &:last-of-type {
                     margin-block-end: calc(var(--reserved-space) * -1);
@@ -74,6 +103,7 @@
 
         &.choice {
             @apply flex items-center;
+            min-block-size: --spacing(11);
 
             label {
                 @apply mb-0;
@@ -84,13 +114,29 @@
             }
         }
 
-        &.field-error .messages {
-            @apply text-red-600;
+        /* Message d'erreur : pictogramme + libellé, jamais la couleur seule */
+        &.field-error .messages,
+        .mage-error:not(input, select, textarea) {
+            color: var(--color-error);
+            font-size: var(--text-caption);
+            font-weight: 500;
             max-width: fit-content;
         }
 
         &.required > label {
-            @apply after:relative after:-top-1 after:text-red-600 after:icon-asterisk after:text-xs;
+            @apply after:relative after:-top-1 after:icon-asterisk after:text-xs;
+
+            &::after {
+                color: var(--color-error);
+            }
         }
+    }
+
+    /* Aide de saisie sous un champ */
+    .field-note {
+        margin-block-start: --spacing(1.5);
+        font-size: var(--text-caption);
+        line-height: 1.5;
+        color: var(--color-brand-muted);
     }
 }

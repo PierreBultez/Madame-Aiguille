@@ -1,0 +1,20 @@
+{
+    "name": "madameaiguille/module-theme",
+    "description": "Module d'accompagnement du thème Madame Aiguille : ViewModels, attributs catalogue, routes utilitaires",
+    "type": "magento2-module",
+    "version": "0.1.0",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "magento/framework": "*",
+        "hyva-themes/magento2-theme-module": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MadameAiguille\\Theme\\": ""
+        }
+    }
+}

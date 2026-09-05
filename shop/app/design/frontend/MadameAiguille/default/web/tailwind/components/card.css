@@ -1,13 +1,18 @@
+/**
+ * Cartes — Madame Aiguille (Design System §6.3)
+ * Fond papier, filet brand-line, rayon 6 px, ombre « card » teintée.
+ */
 @layer components {
     .card {
         position: relative;
-        border-radius: var(--card-radius, var(--radius-lg));
+        border-radius: var(--card-radius, var(--radius-md));
         border-width: 1px;
         padding-block: var(--card-py, --spacing(6));
         padding-inline: var(--card-px, --spacing(6));
-        border-color: var(--card-stroke, var(--color-gray-300));
+        border-color: var(--card-stroke, var(--color-brand-line));
         background-color: var(--card-bg, var(--color-surface));
         color: var(--card-color, var(--color-fg));
+        box-shadow: var(--shadow-card);
         transition-property: color, background-color, border-color, box-shadow,
             outline-color;
         transition-timing-function: var(--default-transition-timing-function);
@@ -17,14 +22,14 @@
     .card-interactive {
         @media (hover: hover) {
             &:hover {
-                --card-stroke: #0000;
-                box-shadow: var(--shadow-lg);
+                --card-stroke: var(--color-brand-nude);
+                box-shadow: var(--shadow-raised);
             }
         }
 
         &:focus-within {
-            --card-stroke: #0000;
-            box-shadow: var(--shadow-lg);
+            --card-stroke: var(--color-brand-nude);
+            box-shadow: var(--shadow-raised);
         }
     }
 }

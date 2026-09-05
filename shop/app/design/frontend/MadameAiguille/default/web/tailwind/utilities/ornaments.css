@@ -1,0 +1,29 @@
+/**
+ * Ornements — Madame Aiguille (Design System §05)
+ * Un seul ornement par bloc. Les filets ondulés et le cœur sont des SVG inline
+ * dans les templates ; le feston est un radial-gradient répété, sans image.
+ *
+ * Usage : <div class="scallop scallop-from-brand-paper scallop-to-brand-blush"></div>
+ * « from » = section du dessus (les demi-cercles), « to » = section du dessous.
+ */
+@utility scallop {
+    --scallop-from: var(--color-brand-paper);
+    --scallop-to: var(--color-brand-blush);
+    block-size: 12px;
+    background-color: var(--scallop-to);
+    background-image: radial-gradient(
+        circle 8px at 8px 12px,
+        var(--scallop-from) 99%,
+        transparent 100%
+    );
+    background-size: 16px 12px;
+    background-repeat: repeat-x;
+}
+
+@utility scallop-from-* {
+    --scallop-from: --value(--color-*);
+}
+
+@utility scallop-to-* {
+    --scallop-to: --value(--color-*);
+}

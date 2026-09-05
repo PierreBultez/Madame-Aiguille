@@ -1,7 +1,24 @@
 {
   "notice": [
     "Configuration complémentaire Tailwind v4 (pas de tailwind.config.js).",
-    "Doc : https://docs.hyva.io/hyva-themes/working-with-tailwindcss/using-hyva-modules/"
+    "Doc : https://docs.hyva.io/hyva-themes/working-with-tailwindcss/using-hyva-modules/",
+    "",
+    "tokens.values.color → generated/hyva-tokens.css (--color-<nom>) via `npx hyva-tokens`.",
+    "Source de vérité : artboard Design System (docs/maquettes-direction-artistique/Design System.dc.html).",
+    "Équivalents hexadécimaux, pour contrôle :",
+    "  brand #8A615C · brand-dark #6E4D49 · brand-active #5F4139 · brand-rose #C3867A (décoratif, jamais de texte)",
+    "  brand-nude #E9C3AD (décoratif) · brand-blush #F4E7E7 · brand-ivory #FAF0EB · brand-paper #FFFCFA",
+    "  brand-ink #5F4A41 · brand-muted #77635A (4,99:1) · brand-line #F2E0D7",
+    "  field-border #D8C3B8",
+    "  disabled-bg #F6EEEA · disabled-fg #8A7268 · disabled-border #E4D3CB · disabled-muted #A69289",
+    "  success #4F6B4A · success-dark #3D5239 · success-bg #EEF2EA · success-border #C9D6C2",
+    "  error #A03A32 · error-dark #8C332C · error-bg #FBEBE8 · error-border #EFC8C0",
+    "  info #75634A · info-dark #5F5140 · info-bg #F6F1E7 · info-border #E2D5BC",
+    "  soldout-bg #EDE2DC · soldout-fg #6B564D · soldout-border #DCC9C2",
+    "  secondary-active #EEDCDA (bouton secondaire enfoncé)",
+    "Les échelles gray-* / slate-* / white / black / red / green / blue / yellow de Tailwind sont",
+    "remappées sur cette palette dans tailwind-source.css (@theme) pour que les templates hérités",
+    "du parent Hyvä restent dans la gamme chaude sans être réécrits."
   ],
   "tailwind": {
     "include": [
@@ -15,10 +32,45 @@
   "tokens": {
     "values": {
       "color": {
-        "primary": "oklch(46% 0.2 265)",
-        "secondary": "oklch(53% 0.15 150)",
-        "on-primary": "#fff",
-        "on-secondary": "#fff"
+        "brand": "oklch(53.4% 0.054 26.8)",
+        "brand-dark": "oklch(45.5% 0.046 26.8)",
+        "brand-active": "oklch(40.7% 0.044 35.5)",
+        "brand-rose": "oklch(67.8% 0.078 31.5)",
+        "brand-nude": "oklch(84.4% 0.053 51.8)",
+        "brand-blush": "oklch(93.8% 0.014 17.4)",
+        "brand-ivory": "oklch(96.2% 0.013 48.6)",
+        "brand-paper": "oklch(99.3% 0.004 56.4)",
+        "brand-ink": "oklch(42.8% 0.032 44.4)",
+        "brand-muted": "oklch(51.7% 0.029 45.6)",
+        "brand-line": "oklch(91.9% 0.023 48.5)",
+
+        "field-border": "oklch(83.2% 0.028 49.5)",
+
+        "disabled-bg": "oklch(95.4% 0.010 48.6)",
+        "disabled-fg": "oklch(57.2% 0.034 43.9)",
+        "disabled-border": "oklch(87.8% 0.022 47.0)",
+        "disabled-muted": "oklch(67.5% 0.027 45.7)",
+
+        "success": "oklch(49.6% 0.061 140.8)",
+        "success-dark": "oklch(41.3% 0.048 140.6)",
+        "success-bg": "oklch(95.6% 0.011 128.6)",
+        "success-border": "oklch(86.1% 0.031 134.4)",
+
+        "error": "oklch(49.1% 0.137 27.7)",
+        "error-dark": "oklch(44.7% 0.123 27.6)",
+        "error-bg": "oklch(95.2% 0.018 30.3)",
+        "error-border": "oklch(86.4% 0.046 31.6)",
+
+        "info": "oklch(51.0% 0.044 75.6)",
+        "info-dark": "oklch(44.4% 0.032 72.2)",
+        "info-bg": "oklch(95.9% 0.014 84.6)",
+        "info-border": "oklch(87.7% 0.036 83.8)",
+
+        "soldout-bg": "oklch(92.0% 0.015 50.8)",
+        "soldout-fg": "oklch(47.2% 0.031 44.4)",
+        "soldout-border": "oklch(85.0% 0.024 41.4)",
+
+        "secondary-active": "oklch(90.8% 0.020 25.2)"
       }
     }
   }

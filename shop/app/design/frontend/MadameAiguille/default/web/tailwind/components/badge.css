@@ -1,0 +1,47 @@
+/**
+ * Badges — Madame Aiguille (Design System §6.4)
+ *
+ * Quatre badges alimentés par les attributs Magento, jamais saisis à la main.
+ * Rayon 2 px, texte 13 px : des étiquettes cousues, pas des pastilles d'app.
+ * Sur fond blush le texte est brand-dark (5,9:1), jamais brand (4,4:1).
+ */
+@utility badge {
+    display: inline-flex;
+    align-items: center;
+    padding: --spacing(1.25) --spacing(2.5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+    font-family: var(--font-body);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+/* Nouveauté — dates news_from_date/news_to_date. Le seul badge en aplat plein. */
+@utility badge-new {
+    background-color: var(--color-brand);
+    color: var(--color-on-primary);
+}
+
+/* Série limitée — attribut taille_serie */
+@utility badge-limited {
+    background-color: var(--color-brand-blush);
+    border-color: var(--color-brand-nude);
+    color: var(--color-brand-dark);
+}
+
+/* Rareté — « Plus que 2 exemplaires », sous le seuil de 3. Statique. */
+@utility badge-scarce {
+    background-color: var(--color-error-bg);
+    border-color: var(--color-error-border);
+    color: var(--color-error);
+}
+
+/* Épuisé — stock à zéro, remplace tout autre badge */
+@utility badge-soldout {
+    background-color: var(--color-soldout-bg);
+    border-color: var(--color-soldout-border);
+    color: var(--color-soldout-fg);
+}

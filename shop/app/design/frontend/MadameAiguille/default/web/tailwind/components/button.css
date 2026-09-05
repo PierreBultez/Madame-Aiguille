@@ -1,30 +1,51 @@
 /**
- * Button styles for Hyva theme
- * This file contains component class for buttons with different styles and sizes.
+ * Boutons — Madame Aiguille (Design System §6.1)
  *
- * Please avoid using `@apply` for the button styles to ensure compatibly for future versions.
- * Instead, use the component class directly in your HTML.
- * The `@utility` directive is used, for backwards compatibility, to define button styles.
+ * Trois niveaux (principal, secondaire, tertiaire/lien), trois tailles
+ * (S 44 px · M 48 px par défaut · L 56 px) : toutes ≥ 44 px, cible tactile.
+ * Un seul état désactivé pour tout le site : fond disabled-bg, texte
+ * disabled-fg, bordure disabled-border.
+ *
+ * On conserve l'API de variables du parent Hyvä (--btn-*) pour que les
+ * templates hérités (btn, btn-primary, btn-secondary) prennent le style
+ * de la marque sans être réécrits.
  */
 
 @utility btn {
-    --btn-stroke: #0000;
-    --btn-bg: color-mix(in srgb, var(--color-primary) 10%, #0000);
-    --btn-hover-bg: color-mix(in srgb, var(--color-primary) 20%, #0000);
-    --btn-active-bg: color-mix(in srgb, var(--color-primary) 30%, #0000);
-    --btn-color: var(--color-fg);
+    /* Repos = bouton secondaire (contour brand sur papier) */
+    --btn-stroke: var(--color-brand);
+    --btn-bg: var(--color-surface);
+    --btn-color: var(--color-brand);
+
+    --btn-hover-stroke: var(--color-brand-dark);
+    --btn-hover-bg: var(--color-brand-blush);
+    --btn-hover-color: var(--color-brand-dark);
+
+    --btn-active-stroke: var(--color-brand-active);
+    --btn-active-bg: var(--color-secondary-active);
+    --btn-active-color: var(--color-brand-active);
+
+    --btn-disabled-stroke: var(--color-disabled-border);
+    --btn-disabled-bg: var(--color-disabled-bg);
+    --btn-disabled-color: var(--color-disabled-fg);
+
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    gap: --spacing(1.5);
+    gap: --spacing(2.5);
+    min-block-size: --spacing(12);           /* 48 px — taille M */
     padding-block: --spacing(2);
-    padding-inline: --spacing(4);
-    border-radius: var(--radius-lg);
-    border-width: 2px;
+    padding-inline: --spacing(6);
+    border-radius: var(--radius-sm);
+    border-width: 1px;
     border-color: var(--btn-stroke);
     background-color: var(--btn-bg);
     color: var(--btn-color);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
     font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
     user-select: none;
     vertical-align: middle;
     transition-property: color, background-color, border-color, outline-color;
@@ -42,47 +63,73 @@
         border-color: var(--btn-active-stroke, var(--btn-stroke));
         background-color: var(--btn-active-bg, var(--btn-bg));
         color: var(--btn-active-color, var(--btn-color));
+        translate: 0 1px;
     }
 
     &:is(:disabled, [aria-disabled="true"]) {
-        border-color: var(--btn-disabled-stroke, var(--color-gray-200));
-        background-color: var(--btn-disabled-bg, var(--color-gray-50));
-        color: var(--btn-disabled-color, var(--color-gray-500));
+        border-color: var(--btn-disabled-stroke);
+        background-color: var(--btn-disabled-bg);
+        color: var(--btn-disabled-color);
+        translate: none;
     }
 }
 
+/* Principal : une seule occurrence par écran */
 @utility btn-primary {
-    --btn-stroke: #0000;
-    --btn-bg: var(--color-primary);
+    --btn-stroke: var(--color-brand);
+    --btn-bg: var(--color-brand);
     --btn-color: var(--color-on-primary);
 
-    --btn-hover-stroke: #0000;
-    --btn-hover-bg: var(--color-primary-lighter);
+    --btn-hover-stroke: var(--color-brand-dark);
+    --btn-hover-bg: var(--color-brand-dark);
     --btn-hover-color: var(--color-on-primary);
 
-    --btn-active-stroke: #0000;
-    --btn-active-bg: var(--color-primary);
+    --btn-active-stroke: var(--color-brand-active);
+    --btn-active-bg: var(--color-brand-active);
     --btn-active-color: var(--color-on-primary);
 }
 
+/* Secondaire : identique au repos de .btn, déclaré pour les templates hérités */
 @utility btn-secondary {
-    --btn-stroke: var(--color-primary-lighter);
-    --btn-bg: var(--color-on-primary);
-    --btn-color: var(--color-primary-darker);
-
-    --btn-hover-stroke: var(--color-primary-lighter);
-    --btn-hover-bg: var(--color-on-primary);
-    --btn-hover-color: var(--color-primary-lighter);
-
-    --btn-active-stroke: #0000;
-    --btn-active-bg: var(--color-primary);
-    --btn-active-color: var(--color-on-primary);
+    --btn-stroke: var(--color-brand);
+    --btn-bg: var(--color-surface);
+    --btn-color: var(--color-brand);
 }
 
-.btn-size-lg {
-    @apply px-10 py-4 text-lg;
+/* Tertiaire / lien : navigation discrète, cible 44 px conservée */
+@utility btn-link {
+    --btn-stroke: transparent;
+    --btn-bg: transparent;
+    --btn-color: var(--color-brand);
+    --btn-hover-stroke: transparent;
+    --btn-hover-bg: transparent;
+    --btn-hover-color: var(--color-brand-dark);
+    --btn-active-stroke: transparent;
+    --btn-active-bg: transparent;
+    --btn-active-color: var(--color-brand-active);
+    --btn-disabled-stroke: transparent;
+    --btn-disabled-bg: transparent;
+    --btn-disabled-color: var(--color-disabled-muted);
+    min-block-size: --spacing(11);
+    padding-inline: --spacing(1.5);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-brand-nude);
+    text-underline-offset: 3px;
+
+    &:hover {
+        text-decoration: underline;
+        text-decoration-color: var(--color-brand);
+    }
 }
 
 .btn-size-sm {
-    @apply px-2 py-2 text-sm;
+    min-block-size: --spacing(11);           /* 44 px */
+    padding-inline: --spacing(4);
+    font-size: var(--text-label);
+}
+
+.btn-size-lg {
+    min-block-size: --spacing(14);           /* 56 px — CTA hero, « Passer commande » */
+    padding-inline: --spacing(8);
 }

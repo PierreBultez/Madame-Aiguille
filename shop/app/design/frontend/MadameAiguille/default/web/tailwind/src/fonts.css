@@ -1,0 +1,58 @@
+/**
+ * Fontes auto-hébergées — Madame Aiguille
+ *
+ * Britney et Sentient, Indian Type Foundry, ITF Free Font License
+ * (voir ../../fonts/FFL-Britney.txt et ../../fonts/FFL-Sentient.txt).
+ *
+ * Règles (charte graphique §4) :
+ * - les .woff2 fournis sont servis TELS QUELS : la licence interdit le
+ *   sous-ensemblage, la conversion de format et la modification des métadonnées ;
+ * - aucun chargement distant (ni Fontshare, ni Google Fonts) ;
+ * - seules les graisses réellement utilisées sont déclarées :
+ *   Britney Regular ; Sentient Light, Regular, Medium, Italic ;
+ * - Britney Regular et Sentient Regular sont préchargées
+ *   (Magento_Theme/layout/default_head_blocks.xml).
+ *
+ * Les chemins sont relatifs au CSS compilé (web/css/styles.css) : Tailwind
+ * recopie les url() sans les rebaser, d’où ../fonts/ (→ web/fonts/).
+ */
+
+@font-face {
+    font-family: "Britney";
+    src: url("../fonts/Britney-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Sentient";
+    src: url("../fonts/Sentient-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Sentient";
+    src: url("../fonts/Sentient-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Sentient";
+    src: url("../fonts/Sentient-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Sentient";
+    src: url("../fonts/Sentient-Italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
