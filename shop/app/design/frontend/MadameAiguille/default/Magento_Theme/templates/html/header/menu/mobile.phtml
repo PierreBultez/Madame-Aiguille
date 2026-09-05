@@ -1,0 +1,247 @@
+<?php
+/**
+ * Madame Aiguille — menu mobile (< md) : burger, tiroir plein écran
+ *
+ * Contenu : recherche, catégories (2 niveaux, panneaux glissants), « Mon compte ».
+ * Lignes de 52 px, texte 18 px. Surcharge de Magento_Theme::html/header/menu/mobile.phtml
+ * (Hyvä 1.5.2) : la logique Alpine (initMobileMenu / initMobileSubMenu) est reprise telle quelle.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\Navigation;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var Navigation $viewModelNavigation */
+$viewModelNavigation = $viewModels->require(Navigation::class, $block);
+
+// Ordre important : 1. construire le menu, 2. poser les cache tags du view model
+$menuItems = $viewModelNavigation->getNavigation(3);
+$block->setData('cache_tags', $viewModelNavigation->getIdentities());
+
+$itemClasses = (string) $block->getItemClasses()
+    ?: 'flex items-center gap-2 min-h-13 py-2 px-5 border-b border-brand-line font-body text-subtitle text-brand-ink no-underline'
+        . ' hover:text-brand aria-[current=page]:text-brand aria-[current=page]:font-medium outline-offset-0';
+?>
+<div x-data="initMobileMenu" x-bind="eventListeners" class="md:hidden">
+    <button
+        type="button"
+        class="btn btn-link no-underline size-11 p-0 text-brand-ink hover:text-brand"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Open menu')) ?>"
+        @click="open"
+    >
+        <?= $lucideIcons->menuHtml('', 24, 24, ['aria-hidden' => 'true']) ?>
+    </button>
+    <dialog
+        class="size-full max-h-full ms-0 p-0 open:flex flex-col bg-surface text-brand-ink transition ease-out duration-300 motion-reduce:duration-0 rounded-none"
+        x-show="isOpen"
+        x-htmldialog="close"
+        closeby="any"
+        x-transition:enter-start="-translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="-translate-x-full"
+    >
+        <div class="border-b border-brand-line">
+            <div class="flex justify-between items-center gap-2 py-2 px-4">
+                <div><?= $block->getChildHtml('logo') ?></div>
+                <button
+                    type="button"
+                    @click="close"
+                    class="btn btn-link no-underline size-11 p-0 text-brand-ink hover:text-brand"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Close menu')) ?>"
+                >
+                    <?= $lucideIcons->xHtml('', 24, 24, ['aria-hidden' => 'true']) ?>
+                </button>
+            </div>
+        </div>
+        <div class="grow relative overflow-y-auto overflow-x-clip py-0.5" :style="lockWrapperScroll">
+            <search class="block px-4 pt-4 pb-2" role="search">
+                <form action="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/result')) ?>" method="get" class="relative">
+                    <label for="mobile-search" class="sr-only"><?= $escaper->escapeHtml(__('Rechercher une création')) ?></label>
+                    <input
+                        id="mobile-search"
+                        type="search"
+                        name="q"
+                        class="form-input w-full bg-brand-ivory pl-12"
+                        placeholder="<?= $escaper->escapeHtmlAttr(__('Rechercher une création')) ?>"
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="absolute inset-y-0 left-0 inline-flex items-center justify-center size-12 text-brand-muted" aria-label="<?= $escaper->escapeHtmlAttr(__('Search')) ?>">
+                        <?= $lucideIcons->searchHtml('', 20, 20, ['aria-hidden' => 'true']) ?>
+                    </button>
+                </form>
+            </search>
+            <nav aria-label="<?= $escaper->escapeHtmlAttr(__('Mobile Main Menu')) ?>">
+                <ul>
+                    <?php foreach ($menuItems as $menuItem): ?>
+                        <?php if (!empty($menuItem['childData'])): ?>
+                            <li data-level="0" x-data="initMobileSubMenu">
+                                <button
+                                    type="button"
+                                    class="w-full justify-between <?= $escaper->escapeHtmlAttr($itemClasses) ?>"
+                                    aria-controls="<?= $escaper->escapeHtmlAttr($menuItem['id']) ?>-mobile-menu-panel"
+                                    aria-expanded="false"
+                                    x-ref="openSubMenuBtn"
+                                    :aria-expanded="isOpen"
+                                    :disabled="isOpen"
+                                    @click="open"
+                                >
+                                    <span><?= $escaper->escapeHtml($menuItem['name']) ?></span>
+                                    <span class="inline-flex items-center justify-center size-9 rounded-sm border border-brand-nude text-brand">
+                                        <?= $lucideIcons->chevronRightHtml('', 18, 18, ['aria-hidden' => 'true']) ?>
+                                    </span>
+                                </button>
+                                <ul
+                                    id="<?= $escaper->escapeHtmlAttr($menuItem['id']) ?>-mobile-menu-panel"
+                                    class="z-10 absolute inset-0 bg-surface py-0.5 overflow-y-auto overscroll-y-contain transition motion-reduce:duration-0"
+                                    x-show="isOpen"
+                                    x-transition:enter-start="opacity-0 translate-x-8"
+                                    x-transition:enter-end="opacity-100 translate-x-0"
+                                    x-transition:leave-start="opacity-100 translate-x-0"
+                                    x-transition:leave-end="opacity-0 translate-x-8"
+                                    x-cloak
+                                    @keydown.escape.stop.prevent="close"
+                                >
+                                    <li data-level="1">
+                                        <button
+                                            type="button"
+                                            class="w-full bg-brand-ivory font-medium <?= $escaper->escapeHtmlAttr($itemClasses) ?>"
+                                            @click="close"
+                                            x-ref="closeSubMenuBtn"
+                                        >
+                                            <?= $lucideIcons->chevronLeftHtml('', 20, 20, ['aria-hidden' => 'true']) ?>
+                                            <?= $escaper->escapeHtml($menuItem['name']) ?>
+                                        </button>
+                                        <a
+                                            href="<?= $escaper->escapeUrl($menuItem['url']) ?>"
+                                            class="<?= $escaper->escapeHtmlAttr($itemClasses) ?>"
+                                        >
+                                            <span class="ms-7"><?= $escaper->escapeHtml(__('See all %1', $menuItem['name'])) ?></span>
+                                        </a>
+                                    </li>
+                                    <?php foreach ($menuItem['childData'] as $subMenuItem): ?>
+                                        <li data-level="1">
+                                            <a
+                                                href="<?= $escaper->escapeUrl($subMenuItem['url']) ?>"
+                                                class="<?= $escaper->escapeHtmlAttr($itemClasses) ?>"
+                                            >
+                                                <span class="ms-7"><?= $escaper->escapeHtml($subMenuItem['name']) ?></span>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
+                        <?php else: ?>
+                            <li data-level="0">
+                                <a
+                                    href="<?= $escaper->escapeUrl($menuItem['url']) ?>"
+                                    class="<?= $escaper->escapeHtmlAttr($itemClasses) ?>"
+                                >
+                                    <?= $escaper->escapeHtml($menuItem['name']) ?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                    <li data-level="0">
+                        <a
+                            href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+                            class="<?= $escaper->escapeHtmlAttr($itemClasses) ?> border-b-0"
+                        >
+                            <?= $lucideIcons->userHtml('text-brand-muted', 20, 20, ['aria-hidden' => 'true']) ?>
+                            <?= $escaper->escapeHtml(__('Mon compte')) ?>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </dialog>
+</div>
+<script>
+    const initMobileMenu = () => {
+        return {
+            isOpen: false,
+            isSubMenuOpen: false,
+            isOverflowing: false,
+            init() {
+                Array.from(this.$root.querySelectorAll('a')).forEach(link => {
+                    if (link.href === `${window.location.origin}${window.location.pathname}`) {
+                        link.setAttribute('aria-current', 'page');
+                    }
+                });
+            },
+            open() {
+                this.isOpen = true;
+            },
+            close() {
+                this.isOpen = false;
+            },
+            lockWrapperScroll() {
+                return this.isSubMenuOpen ? { overflow: 'hidden' } : {}
+            },
+            hasActiveSubMenu() {
+                this.isSubMenuOpen = !!this.$root.querySelector('[data-open]');
+            },
+            eventListeners: {
+                ['@pageshow.window'](event) {
+                    if (event.persisted) {
+                        this.close();
+                    };
+                },
+                ['@sub-menu-state-change']() {
+                    this.hasActiveSubMenu();
+                }
+            }
+        }
+    };
+
+    const initMobileSubMenu = () => {
+        return {
+            isOpen: false,
+            open() {
+                this.isOpen = true;
+                this.$root.setAttribute('data-open', '');
+                this.$nextTick(() => {
+                    this.$dispatch('sub-menu-state-change');
+                    this.$refs.closeSubMenuBtn.focus();
+                    this.toggleInert();
+                })
+            },
+            close() {
+                this.isOpen = false;
+                this.$root.removeAttribute('data-open');
+                this.toggleInert();
+                this.$nextTick(() => {
+                    this.$dispatch('sub-menu-state-change')
+                    this.$refs.openSubMenuBtn.focus();
+                })
+            },
+            toggleInert() {
+                const items = this.$root.parentElement.children;
+
+                for (item of items) {
+                    if (item.hasAttribute('data-open')) continue;
+                    item.toggleAttribute('inert', this.isOpen);
+                }
+            }
+        }
+    }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('initMobileMenu', initMobileMenu);
+        Alpine.data('initMobileSubMenu', initMobileSubMenu);
+    }, { once: true });
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>

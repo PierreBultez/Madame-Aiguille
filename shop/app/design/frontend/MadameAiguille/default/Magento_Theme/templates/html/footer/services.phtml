@@ -1,0 +1,32 @@
+<?php
+/**
+ * Madame Aiguille — colonne « Paiement & livraison » : moyens écrits en mots,
+ * pas de logos de marques à maintenir (Design System §6.11).
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$groups = [
+    [__('Paiement'), (array) $block->getData('payment_methods')],
+    [__('Livraison'), (array) $block->getData('shipping_methods')],
+];
+?>
+<div class="border-t border-brand-nude md:border-t-0 pt-4 md:pt-0">
+    <?php foreach ($groups as [$title, $methods]): ?>
+        <?php if (!$methods) { continue; } ?>
+        <h2 class="mb-3 font-body font-medium text-caption uppercase tracking-label text-brand-dark"><?= $escaper->escapeHtml($title) ?></h2>
+        <ul class="flex flex-wrap gap-2 mb-6" aria-label="<?= $escaper->escapeHtmlAttr($title) ?>">
+            <?php foreach ($methods as $method): ?>
+                <li class="inline-flex items-center min-h-8 px-2.5 rounded-xs bg-surface border border-brand-nude font-body text-caption text-brand-ink">
+                    <?= $escaper->escapeHtml($method) ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endforeach; ?>
+</div>

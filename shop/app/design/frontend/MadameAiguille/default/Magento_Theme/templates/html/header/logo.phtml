@@ -1,0 +1,59 @@
+<?php
+/**
+ * Madame Aiguille — logo du header
+ *
+ * Lockup horizontal : 240 px sur mobile, 356 px sur desktop (plancher 220 px).
+ * Le nom est toujours une image, jamais du texte stylé (Design System §01).
+ * Surcharge de Magento_Theme::html/header/logo.phtml (Hyvä 1.5.2).
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Logo\LogoPathResolver;
+use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Header\Logo;
+
+/** @var Logo $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(StoreConfig::class);
+$storeName = $block->getThemeName() ?: $storeConfig->getStoreConfig('general/store_information/name') ?: __('Store logo');
+
+/** @var LogoSizeResolver $logoSizeResolver */
+$logoSizeResolver = $viewModels->require(LogoSizeResolver::class);
+$logoWidth = $logoSizeResolver && $logoSizeResolver->getWidth()
+    ? $logoSizeResolver->getWidth()
+    : $block->getLogoWidth();
+$logoHeight = $logoSizeResolver && $logoSizeResolver->getHeight()
+    ? $logoSizeResolver->getHeight()
+    : $block->getLogoHeight();
+
+/** @var LogoPathResolver $logoPathResolver */
+$logoPathResolver = $block->getData('logoPathResolver');
+$logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
+    ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))
+    : $block->getLogoSrc();
+?>
+<a
+    class="inline-flex items-center justify-center min-h-11 rounded-sm"
+    href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Home page')) ?>"
+>
+    <img
+        src="<?= $escaper->escapeUrl($logoSrc) ?>"
+        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ?: $storeName) ?>"
+        class="block h-auto w-60 md:w-72 lg:w-89"
+        <?= $logoWidth ? 'width="' . $escaper->escapeHtmlAttr($logoWidth) . '"' : 'width="356"' ?>
+        <?= $logoHeight ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"' : 'height="56"' ?>
+        loading="eager"
+        fetchpriority="high"
+    >
+    <?php if (!$logoSrc): ?>
+        <?= $escaper->escapeHtml($storeName) ?>
+    <?php endif; ?>
+</a>

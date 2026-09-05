@@ -1,0 +1,52 @@
+<?php
+/**
+ * Madame Aiguille — gabarit de colonne du footer : titre + liste, accordéon sur mobile
+ *
+ * Attend les données du bloc : title (string), items (array de ['label', 'url']).
+ * Utilisé par links.phtml et shop.phtml via $block->fetchView().
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$title = (string) $block->getData('title');
+$items = (array) $block->getData('items');
+$columnId = 'footer-col-' . preg_replace('/[^a-z0-9]+/i', '-', (string) $block->getNameInLayout());
+?>
+<?php if ($items): ?>
+<nav x-data="{ open: false }" aria-label="<?= $escaper->escapeHtmlAttr($title) ?>" class="border-t border-brand-nude md:border-t-0">
+    <h2 class="hidden md:block mb-4 font-body font-medium text-caption uppercase tracking-label text-brand-dark">
+        <?= $escaper->escapeHtml($title) ?>
+    </h2>
+    <button
+        type="button"
+        class="md:hidden flex w-full items-center justify-between min-h-13 font-body font-medium text-base text-brand-ink"
+        @click="open = !open"
+        :aria-expanded="open"
+        aria-controls="<?= /* @noEscape */ $columnId ?>"
+    >
+        <span><?= $escaper->escapeHtml($title) ?></span>
+        <?= $lucideIcons->chevronDownHtml('transition-transform text-brand', 20, 20, ['aria-hidden' => 'true', ':class' => "open ? 'rotate-180' : ''"]) ?>
+    </button>
+    <ul id="<?= /* @noEscape */ $columnId ?>" class="md:block pb-3 md:pb-0" :class="open ? 'block' : 'hidden'">
+        <?php foreach ($items as $item): ?>
+            <li>
+                <a href="<?= $escaper->escapeUrl($item['url']) ?>" class="flex items-center min-h-11 font-body text-label text-brand-ink no-underline hover:text-brand">
+                    <?= $escaper->escapeHtml($item['label']) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</nav>
+<?php endif; ?>

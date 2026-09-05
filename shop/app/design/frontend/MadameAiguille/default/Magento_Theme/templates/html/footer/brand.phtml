@@ -1,0 +1,57 @@
+<?php
+/**
+ * Madame Aiguille — colonne marque du footer : logo, accroche, réseaux sociaux
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use MadameAiguille\Theme\ViewModel\SocialLinks;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var SocialLinks $socialLinks */
+$socialLinks = $block->getData('social_links');
+$links = $socialLinks ? $socialLinks->getLinks() : [];
+$tagline = (string) $block->getData('tagline');
+?>
+<div class="flex flex-col items-center md:items-start text-center md:text-left pb-4 md:pb-0">
+    <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>" class="inline-flex min-h-11 items-center rounded-sm mb-3" aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Home page')) ?>">
+        <img
+            src="<?= $escaper->escapeUrl($block->getViewFileUrl('images/logo-horizontal.png')) ?>"
+            alt="<?= $escaper->escapeHtmlAttr(__('Madame Aiguille')) ?>"
+            class="block h-auto w-60"
+            width="240"
+            height="38"
+            loading="lazy"
+        >
+    </a>
+    <?php if ($tagline): ?>
+        <p class="font-body italic text-base max-w-xs mb-5"><?= $escaper->escapeHtml($tagline) ?></p>
+    <?php endif; ?>
+    <?php if ($links): ?>
+        <ul class="flex gap-2.5" aria-label="<?= $escaper->escapeHtmlAttr(__('Réseaux sociaux')) ?>">
+            <?php foreach ($links as $link): ?>
+                <li>
+                    <a
+                        href="<?= $escaper->escapeUrl($link['url']) ?>"
+                        class="inline-flex items-center justify-center size-11 rounded-sm bg-surface border border-brand-nude text-brand no-underline hover:border-brand hover:text-brand-dark"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('%1 (nouvelle fenêtre)', $link['name'])) ?>"
+                    >
+                        <?= $lucideIcons->renderHtml($link['icon'], '', 20, 20, ['aria-hidden' => 'true']) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+</div>

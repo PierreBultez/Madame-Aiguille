@@ -1,0 +1,27 @@
+<?php
+/**
+ * Madame Aiguille — colonne « Boutique » : catégories de premier niveau
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Navigation;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Navigation $navigation */
+$navigation = $viewModels->require(Navigation::class, $block);
+$categories = $navigation->getNavigation(2);
+$block->setData('cache_tags', $navigation->getIdentities());
+
+$items = [];
+foreach ($categories as $category) {
+    $items[] = ['label' => (string) $category['name'], 'url' => (string) $category['url']];
+}
+
+$block->setData('title', (string) __('Boutique'));
+$block->setData('items', $items);
+echo $block->fetchView($block->getTemplateFile('Magento_Theme::html/footer/column.phtml'));

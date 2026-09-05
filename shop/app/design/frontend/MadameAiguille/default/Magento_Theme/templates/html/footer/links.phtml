@@ -1,0 +1,25 @@
+<?php
+/**
+ * Madame Aiguille — colonne « Informations » : liens déclarés en layout XML
+ * (argument links : label + path relatif, ex. a-propos, contact).
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+
+$items = [];
+foreach ((array) $block->getData('links') as $link) {
+    if (empty($link['label']) || empty($link['path'])) {
+        continue;
+    }
+    $items[] = [
+        'label' => (string) $link['label'],
+        'url' => $block->getUrl('', ['_direct' => (string) $link['path']]),
+    ];
+}
+
+$block->setData('items', $items);
+echo $block->fetchView($block->getTemplateFile('Magento_Theme::html/footer/column.phtml'));

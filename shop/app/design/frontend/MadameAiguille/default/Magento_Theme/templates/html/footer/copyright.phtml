@@ -1,0 +1,23 @@
+<?php
+/**
+ * Madame Aiguille — copyright du footer, texte issu de design/footer/copyright
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Footer;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Footer $footer */
+$footer = $viewModels->require(Footer::class);
+$copyright = $footer->getFooterCopyright();
+?>
+<?php if ($copyright): ?>
+    <small class="font-body text-caption text-brand-muted leading-relaxed"><?= $escaper->escapeHtml($copyright) ?></small>
+<?php endif; ?>

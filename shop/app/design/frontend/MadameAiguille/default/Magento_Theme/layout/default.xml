@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — layout commun : header (logo centré, bandeau) et footer.
+ * Fusionné avec le default.xml du parent Hyvä ; on ne redéclare que ce qui change.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Header -->
+        <referenceBlock name="header-content">
+            <arguments>
+                <argument name="show_compare" xsi:type="boolean">false</argument>
+            </arguments>
+            <block class="Magento\Cms\Block\Block" name="header.announcement" as="announcement" before="-">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">header_announcement</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
+        <!-- Logo : lockup horizontal (PNG 2x en attendant les SVG), 356 × 56 px -->
+        <referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_file" xsi:type="string">images/logo-horizontal.png</argument>
+                <argument name="logo_width" xsi:type="number">356</argument>
+                <argument name="logo_height" xsi:type="number">56</argument>
+            </arguments>
+        </referenceBlock>
+
+        <!-- Footer : quatre colonnes (marque, boutique, informations, paiement & livraison) -->
+        <referenceBlock name="footer-static-links" remove="true"/>
+        <referenceBlock name="footer-cms-content" remove="true"/>
+        <referenceBlock name="footer-content">
+            <block name="footer.brand" as="brand" template="Magento_Theme::html/footer/brand.phtml">
+                <arguments>
+                    <argument name="social_links" xsi:type="object">MadameAiguille\Theme\ViewModel\SocialLinks</argument>
+                    <argument name="tagline" xsi:type="string" translate="true">L’élégance cousue main. Chaque pièce est cousue à la main, en série limitée.</argument>
+                </arguments>
+            </block>
+            <block name="footer.shop" as="shop" template="Magento_Theme::html/footer/shop.phtml"/>
+            <block name="footer.info" as="info" template="Magento_Theme::html/footer/links.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string" translate="true">Informations</argument>
+                    <argument name="links" xsi:type="array">
+                        <item name="about" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">À propos</item>
+                            <item name="path" xsi:type="string">a-propos</item>
+                        </item>
+                        <item name="contact" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Contact</item>
+                            <item name="path" xsi:type="string">contact</item>
+                        </item>
+                        <item name="shipping" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Livraison &amp; retours</item>
+                            <item name="path" xsi:type="string">livraison-retours</item>
+                        </item>
+                        <item name="terms" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Conditions générales de vente</item>
+                            <item name="path" xsi:type="string">cgv</item>
+                        </item>
+                        <item name="legal" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Mentions légales</item>
+                            <item name="path" xsi:type="string">mentions-legales</item>
+                        </item>
+                        <item name="privacy" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Politique de confidentialité</item>
+                            <item name="path" xsi:type="string">confidentialite</item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
+            <block name="footer.services" as="services" template="Magento_Theme::html/footer/services.phtml">
+                <arguments>
+                    <argument name="payment_methods" xsi:type="array">
+                        <item name="card" xsi:type="string" translate="true">Carte bancaire</item>
+                        <item name="transfer" xsi:type="string" translate="true">Virement</item>
+                        <item name="hand" xsi:type="string" translate="true">En main propre</item>
+                    </argument>
+                    <argument name="shipping_methods" xsi:type="array">
+                        <item name="colissimo" xsi:type="string">Colissimo</item>
+                        <item name="mondialrelay" xsi:type="string">Mondial Relay</item>
+                        <item name="chronopost" xsi:type="string">Chronopost</item>
+                    </argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

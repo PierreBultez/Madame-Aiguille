@@ -57,6 +57,9 @@
     --font-sans: var(--font-body);
     --default-font-family: var(--font-body);
 
+    /* Interlettrage des intitulés en capitales (kickers, titres de colonnes) */
+    --tracking-label: 0.14em;
+
     /* Corps : 16 px, interlignage 1,6 */
     --text-base--line-height: 1.6;
 

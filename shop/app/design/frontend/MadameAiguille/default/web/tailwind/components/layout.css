@@ -1,0 +1,23 @@
+/**
+ * Grilles du header et du footer — Madame Aiguille (Design System §6.8 / §6.11)
+ */
+
+/* Header : mobile 44 px · 1fr · 44 px ; desktop 1fr · auto · 1fr (logo centré) */
+@utility header-grid {
+    display: grid;
+    grid-template-columns: --spacing(11) minmax(0, 1fr) --spacing(11);
+
+    @variant md {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+}
+
+/* Footer : une colonne sur mobile (accordéon), quatre sur desktop */
+@utility footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+
+    @variant md {
+        grid-template-columns: 1.4fr 1fr 1.2fr 1.2fr;
+    }
+}

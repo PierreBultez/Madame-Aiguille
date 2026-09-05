@@ -1,0 +1,209 @@
+<?php
+/**
+ * Madame Aiguille — header (Design System §6.8)
+ *
+ * Mobile : burger · logo · panier (44 px chacun). Desktop : recherche · logo ·
+ * compte + panier, puis la navigation catégories centrée sur une seconde ligne.
+ * Écart assumé avec le Design System (une seule ligne 1fr · auto · 1fr) : les noms
+ * de catégories réels n'y tiennent pas de part et d'autre d'un logo de 356 px.
+ * Bandeau d'annonce au-dessus, alimenté par le bloc CMS « header_announcement ».
+ *
+ * Surcharge de Magento_Theme::html/header.phtml (Hyvä 1.5.2) : la logique Alpine
+ * (initHeader) est reprise telle quelle, seul le gabarit change.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Checkout\Block\Cart\Sidebar as SidebarCart;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(StoreConfig::class);
+$showMiniCart = $storeConfig->getStoreConfig(SidebarCart::XML_PATH_CHECKOUT_SIDEBAR_DISPLAY);
+
+$announcement = trim((string) $block->getChildHtml('announcement'));
+$topmenu = $block->getChildBlock('topmenu');
+?>
+<script>
+    function initHeader() {
+        return {
+            searchOpen: false,
+            cart: {},
+            isCartOpen: false,
+            getData(data) {
+                this.cart = data.cart ?? {};
+            },
+            summaryCount() {
+                return this.cart.summary_count || 0;
+            },
+            cartAriaLabel() {
+                return '<?= $escaper->escapeJs($showMiniCart ? __('Toggle minicart') : __('View cart')) ?>, ' +
+                    (this.isCartEmpty() ? '<?= $escaper->escapeJs(__('Cart is empty')) ?>' : (
+                        Math.abs(this.summaryCount()) > 1 ?
+                            hyva.str('<?= $escaper->escapeJs(__('%1 items')) ?>', this.summaryCount()) :
+                            hyva.str('<?= $escaper->escapeJs(__('%1 item')) ?>', this.summaryCount())
+                    ))
+            },
+            isCartEmpty() {
+                return !this.cart.summary_count;
+            },
+            toggleCart() {
+                this.isCartOpen = this.$event.detail?.isOpen ?? true;
+                this.$dispatch('toggle-cart', { isOpen: this.isCartOpen })
+            },
+            toggleSearch() {
+                this.searchOpen = !this.searchOpen;
+                this.$dispatch('search-open');
+            },
+            toggleSearchOpen() {
+                this.searchOpen = true;
+                this.$dispatch('search-open');
+            },
+            searchClose() {
+                this.searchOpen = false;
+                this.$refs.searchButton.focus();
+            },
+            searchEscape() {
+                this.searchClose();
+            },
+            isMac: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
+            textShortcutModifier() {
+                return this.isMac ? '⌘ K' : 'Ctrl+K';
+            },
+            searchShortcut(e) {
+                const modifier = this.isMac ? e.metaKey : e.ctrlKey;
+                if (modifier && e.key === 'k') {
+                    e.preventDefault();
+                    this.toggleSearchOpen();
+                }
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initHeader', initHeader);
+    }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<div id="header"
+     class="relative z-30 w-full bg-surface"
+     x-data="initHeader()"
+     @private-content-loaded.window="getData(event.detail.data)"
+>
+    <?php if ($announcement): ?>
+        <!-- Bandeau d'annonce (bloc CMS header_announcement) -->
+        <div class="bg-brand text-white text-center px-4 py-2 md:py-2.5">
+            <p class="font-body text-caption leading-snug"><?= /* @noEscape */ $announcement ?></p>
+        </div>
+    <?php endif; ?>
+
+    <div class="border-b border-brand-line shadow-soft">
+        <div class="container header-grid items-center gap-2 md:gap-6 py-2 md:py-3">
+            <!-- Gauche : burger (mobile) / recherche (desktop) -->
+            <div class="flex items-center justify-start">
+                <?= $topmenu ? $topmenu->getChildHtml('topmenu.mobile') : '' ?>
+                <button
+                    id="menu-search-icon"
+                    type="button"
+                    class="btn btn-link no-underline hidden md:inline-flex items-center gap-2.5 min-h-11 px-1 md:px-2 text-brand-ink hover:text-brand"
+                    @click.prevent="toggleSearch"
+                    @keydown.window="searchShortcut"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Toggle search form')) ?>"
+                    aria-haspopup="true"
+                    :aria-expanded="searchOpen"
+                    :aria-keyshortcuts="textShortcutModifier"
+                    x-ref="searchButton"
+                >
+                    <?= $lucideIcons->searchHtml('', 22, 22, ['aria-hidden' => 'true']) ?>
+                    <span class="hidden lg:inline font-body text-base font-normal"><?= $escaper->escapeHtml(__('Rechercher')) ?></span>
+                </button>
+            </div>
+
+            <!-- Centre : logo (seul lien vers l'accueil) -->
+            <div class="flex items-center justify-center min-w-0">
+                <?= $block->getChildHtml('logo') ?>
+            </div>
+
+            <!-- Droite : compte (desktop), panier -->
+            <div class="flex items-center justify-end gap-1">
+                <?= $block->getChildHtml('additional') ?>
+
+                <div class="hidden md:block">
+                    <?= $block->getChildHtml('customer') ?>
+                </div>
+
+                <?php if ($showMiniCart): ?>
+                    <button
+                <?php else: ?>
+                    <a
+                <?php endif ?>
+                    id="menu-cart-icon"
+                    type="button"
+                    class="btn btn-link no-underline inline-flex items-center gap-2.5 min-h-11 px-1 md:px-2 text-brand-ink hover:text-brand"
+                    x-ref="cartButton"
+                    :aria-label="cartAriaLabel"
+                    <?php if ($showMiniCart): ?>
+                        @click="toggleCart"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Toggle minicart')) ?>"
+                    <?php else: ?>
+                        href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/index')) ?>"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('View cart')) ?>"
+                    <?php endif ?>
+                >
+                    <span class="hidden lg:inline font-body text-base font-normal"><?= $escaper->escapeHtml(__('Mon panier')) ?></span>
+                    <span class="relative inline-flex">
+                        <?= $lucideIcons->shoppingBagHtml('', 24, 24, ['aria-hidden' => 'true']) ?>
+                        <span
+                            x-text="summaryCount"
+                            x-show="summaryCount"
+                            x-cloak
+                            class="absolute -top-1.5 -right-2 inline-flex items-center justify-center min-w-5 h-5 px-1.5
+                                rounded-full bg-brand text-white font-body text-caption font-medium leading-none tabular-nums"
+                            aria-hidden="true"
+                        ></span>
+                    </span>
+                <?php if ($showMiniCart): ?>
+                    </button>
+                <?php else: ?>
+                    </a>
+                <?php endif ?>
+            </div>
+        </div>
+
+        <!-- Navigation desktop : seconde ligne, centrée sous le logo -->
+        <div class="hidden md:block container">
+            <?= $topmenu ? $topmenu->getChildHtml('topmenu.desktop') : '' ?>
+        </div>
+    </div>
+
+    <div
+        id="search-content"
+        class="absolute z-10 w-full border-b border-brand-line shadow-card bg-surface"
+        x-cloak
+        x-show="searchOpen"
+        @click.outside="searchClose"
+        @keydown.escape="searchEscape"
+    >
+        <?= $block->getChildHtml('header-search'); ?>
+    </div>
+
+    <!--Cart Drawer-->
+    <?= $block->getChildHtml('cart-drawer'); ?>
+
+    <!--Authentication Pop-Up-->
+    <?= $block->getChildHtml('authentication-popup'); ?>
+</div>
