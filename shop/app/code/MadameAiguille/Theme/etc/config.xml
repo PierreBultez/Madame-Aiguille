@@ -7,6 +7,16 @@
                 <facebook_url/>
                 <pinterest_url/>
             </social>
+            <catalog>
+                <scarcity_threshold>3</scarcity_threshold>
+                <price_note/>
+            </catalog>
         </madameaiguille>
+        <!-- Décision du 05/09/2026 : les produits épuisés restent visibles (badge « Épuisé », fin de liste) -->
+        <cataloginventory>
+            <options>
+                <show_out_of_stock>1</show_out_of_stock>
+            </options>
+        </cataloginventory>
     </default>
 </config>

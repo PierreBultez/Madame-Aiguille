@@ -5,6 +5,8 @@
             <module name="Hyva_Theme"/>
             <module name="Magento_Catalog"/>
             <module name="Magento_Cms"/>
+            <module name="Magento_Swatches"/>
+            <module name="Magento_ConfigurableProduct"/>
         </sequence>
     </module>
 </config>

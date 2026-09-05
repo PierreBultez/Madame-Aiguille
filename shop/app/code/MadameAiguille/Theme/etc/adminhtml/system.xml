@@ -21,6 +21,19 @@
                     <validate>validate-url</validate>
                 </field>
             </group>
+            <group id="catalog" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Catalogue</label>
+                <comment>Règles d'affichage des séries limitées, communes aux vignettes et aux fiches produit.</comment>
+                <field id="scarcity_threshold" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Seuil de rareté</label>
+                    <comment>En dessous ou égal à ce nombre d'exemplaires restants, la mention « Plus que N exemplaires » remplace « Série limitée ». 0 pour désactiver.</comment>
+                    <validate>validate-digits validate-zero-or-greater</validate>
+                </field>
+                <field id="price_note" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Mention sous le prix</label>
+                    <comment>Texte court affiché sous le prix en fiche produit (par ex. régime de TVA, frais de port au poids). Vide = rien n'est affiché.</comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>
