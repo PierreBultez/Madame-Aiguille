@@ -197,12 +197,14 @@ Avant d'installer toute extension Magento (paiement, avis clients...), vérifier
 
 ## 12. Journal des composants développés
 
+Voir aussi `../documentation-theme.md` (où modifier quoi) et `../plan-de-developpement.md` (lots).
+
 À tenir à jour au fil du projet, pour garder une vue d'ensemble de ce qui est fait/en cours :
 
 | Composant | ViewModel associé | Statut |
 |---|---|---|
-| Header / navigation | — | À faire |
-| Footer | — | À faire |
+| Header / navigation | — (menu catégories natif `Hyva\Theme\ViewModel\Navigation`) | **Livré — lot 1** |
+| Footer | `SocialLinks` | **Livré — lot 1** |
 | Page d'accueil | — | À faire |
 | Fiche produit — taille (2 formats) | — | À faire |
 | Fiche produit — série limitée (mention + stock restant) | `LimitedSeries` | À faire |
