@@ -1,0 +1,16 @@
+{
+    "name": "madameaiguille/theme-frontend-default",
+    "description": "Thème Hyvä de la boutique Madame Aiguille",
+    "type": "magento2-theme",
+    "version": "0.1.0",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "hyva-themes/magento2-default-theme": "^1.5"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ]
+    }
+}
