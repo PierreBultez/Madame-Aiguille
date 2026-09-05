@@ -1,0 +1,47 @@
+# ─── Magento 2 (shop/) ───────────────────────────────────────────────
+# Dépendances et code généré : reconstruits par composer / setup:di:compile
+/shop/vendor/
+/shop/generated/
+
+# Données d'exécution : cache, logs, sessions, rapports
+/shop/var/
+
+# Assets déployés (bin/magento setup:static-content:deploy)
+/shop/pub/static/*
+!/shop/pub/static/.htaccess
+
+# Médias uploadés (produits, logo, CMS)
+/shop/pub/media/*
+!/shop/pub/media/.htaccess
+
+# Configuration d'environnement : identifiants BDD, clé de chiffrement — JAMAIS commité
+/shop/app/etc/env.php
+# app/etc/config.php (liste des modules) est volontairement suivi
+
+# Squelette fourni par magento/magento2-base (restauré par composer install, magento-force=override) :
+# 120 Mo de copies conformes de vendor/, inutiles dans le dépôt
+/shop/lib/
+/shop/setup/
+/shop/dev/
+
+# Fichiers d'authentification composer / fichiers locaux
+/shop/auth.json
+/shop/.php-cs-fixer.cache
+/shop/phpserver/
+/shop/dev/tests/**/tmp/
+/shop/setup/performance-toolkit/aggregate-report/
+
+# ─── Front (thème enfant) ────────────────────────────────────────────
+node_modules/
+# CSS généré par `npm run build` : régénéré en CI, jamais édité à la main
+/shop/app/design/frontend/MadameAiguille/default/web/css/styles.css
+
+# ─── Docs ────────────────────────────────────────────────────────────
+/docs/**/.thumbnail
+
+# ─── Outils / OS ─────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

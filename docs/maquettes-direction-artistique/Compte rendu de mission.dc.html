@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Britney';src:url('fonts/Britney-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Italic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap}
+:root{
+--font-display:'Britney','Bodoni Moda',Didot,Georgia,serif;
+--font-body:'Sentient','Spectral','Iowan Old Style',Georgia,serif;
+}
+body{margin:0;color:#5F4A41;font-family:var(--font-body);font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:#8A615C;text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:#E9C3AD;text-underline-offset:3px}
+a:hover{color:#6E4D49;text-decoration-color:#8A615C}
+doc-page:not(:defined){visibility:hidden}
+</style>
+<script src="./doc-page.js"></script>
+</helmet>
+
+<doc-page margin="0.85in">
+
+  <div slot="footer" style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:8px;border-top:1px solid #E9C3AD">
+    <span style="font-family:var(--font-body);font-size:13px;color:#77635A">Madame Aiguille — Design system &amp; maquettes</span>
+    <span style="font-family:var(--font-body);font-size:13px;color:#77635A">Compte rendu de mission · septembre 2026</span>
+  </div>
+
+  <!-- ══ COUVERTURE ══ -->
+  <div style="display:flex;align-items:flex-start;gap:32px;margin-bottom:8px">
+    <img src="brand/logo-badge.png" alt="Logo Madame Aiguille" style="width:132px;height:auto;flex:none" />
+    <div style="padding-top:6px">
+      <p style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#6E4D49">Compte rendu de mission</p>
+      <h1 style="margin:0 0 12px;font-family:var(--font-display);font-weight:400;font-size:46px;line-height:1.06;color:#8A615C">Design system &amp; maquettes</h1>
+      <p style="margin:0;font-family:var(--font-body);font-weight:400;font-style:italic;font-size:18px;line-height:1.55;color:#5F4A41">Site e-commerce Madame Aiguille — Magento Open Source, thème Hyvä</p>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:28px 0 36px;break-inside:avoid">
+    <div style="padding:16px 18px;background:#FAF0EB;border:1px solid #F2E0D7;border-radius:4px">
+      <p style="margin:0 0 4px;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49">Livré</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">12 artboards en 7 fichiers, états dessinés côte à côte</p>
+    </div>
+    <div style="padding:16px 18px;background:#FAF0EB;border:1px solid #F2E0D7;border-radius:4px">
+      <p style="margin:0 0 4px;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49">Référence</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">Desktop 1440 px · mobile 390 px, conçu mobile d'abord</p>
+    </div>
+    <div style="padding:16px 18px;background:#FAF0EB;border:1px solid #F2E0D7;border-radius:4px">
+      <p style="margin:0 0 4px;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49">Accessibilité</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">WCAG 2.1 AA vérifié sur chaque paire texte/fond</p>
+    </div>
+  </div>
+
+  <!-- ══ 1. SYNTHÈSE ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">1. Synthèse</h2>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Le design system et les douze artboards demandés sont produits. Trois éléments méritent d'être signalés avant la lecture détaillée, parce qu'ils s'écartent de ce que le brief prévoyait — dans chaque cas parce que le matériel fourni permettait mieux.</p>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><strong style="font-weight:500">Les vraies fontes ont été utilisées.</strong> Le brief prévoyait Bodoni Moda et Spectral en substituts, la licence Britney et Sentient étant réputée bloquante. Les fichiers <code style="font-family:ui-monospace,monospace;font-size:14px;color:#8A615C">.woff2</code> étaient présents dans <code style="font-family:ui-monospace,monospace;font-size:14px;color:#8A615C">docs/fonts/</code>, sous ITF Free Font License, qui autorise l'usage web. Les maquettes sont donc rendues avec la typographie de production — ce que verront réellement les visiteurs, et non une approximation.</p>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><strong style="font-weight:500">Le verrou horizontal du logo n'existait pas&nbsp;: il a été fabriqué.</strong> Dans le fichier source, le nom « Madame Aiguille » est arqué au-dessus du bouton de couture. Le brief demandait une version horizontale pour le header et les emails. Plutôt que d'imiter le script avec une fonte, l'arc a été redressé par transformation polaire&nbsp;: c'est le lettrage réel de la créatrice, remis sur une ligne.</p>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><strong style="font-weight:500">Les photos produit sont réelles.</strong> La maquette d'ambiance fournie contenait des photographies exploitables. Elles ont été recadrées au ratio 4:5 imposé et servent de bibliothèque dans tous les artboards. Aucun placeholder gris&nbsp;: les maquettes démontrent que le gabarit tient avec les photos actuelles de la créatrice, ce qui était un point d'inquiétude explicite du brief.</p>
+
+  <!-- ══ 2. CE QUI A ÉTÉ PRODUIT ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">2. Ce qui a été produit</h2>
+  <p style="margin:0 0 18px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les douze artboards demandés sont regroupés en sept fichiers, par cohérence fonctionnelle. Chaque fichier porte ses variantes et ses états les uns à côté des autres, ainsi qu'un encart « Décisions de cette page » qui justifie les choix non évidents.</p>
+
+  <table style="width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:15px;margin-bottom:16px">
+    <thead>
+      <tr>
+        <th style="text-align:left;padding:0 14px 8px 0;font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49;border-bottom:1px solid #E9C3AD">Fichier</th>
+        <th style="text-align:left;padding:0 0 8px 14px;font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49;border-bottom:1px solid #E9C3AD">Contenu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Design System</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Logo et ses quatre verrous · couleurs et matrice de contraste · typographie à taille réelle · espacement, rayons, ombres, points de rupture · ornements · tous les composants avec leurs sept états · photographie</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Accueil</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Desktop 1440 et mobile 390, les neuf sections dans l'ordre imposé. Le mobile porte un repère de pli à 844 px qui démontre l'atteignabilité des nouveautés</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Page catégorie</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Desktop 4 colonnes, mobile 2 colonnes, séries terminées reléguées sous intertitre, pagination, état vide capteur d'adresse</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Fiche produit</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Desktop avec sélecteur de taille · mobile sans sélecteur (cas majoritaire) · fiche épuisée. Galerie à trois vues, indicateur de rareté, encart de mise en relation</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Panier</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Desktop en tableau, mobile en cartes empilées, estimateur de frais de port, barre de franco, franco atteint, panier vide</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Checkout</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Étape livraison · sélecteur de point relais · étape paiement · écran de virement · confirmation carte · confirmation virement · erreur de paiement · mobile</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Compte client</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Mes commandes avec les six statuts · tableau de bord · détail avec suivi · mes adresses · mes informations · connexion · création · mot de passe oublié · état vide</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;vertical-align:top;font-weight:500;color:#5F4A41">Contact et À propos</td>
+        <td style="padding:12px 0 12px 14px;vertical-align:top;line-height:1.6;color:#5F4A41">Contact desktop avec « produit concerné » pré-rempli · contact mobile · confirmation d'envoi · erreur d'envoi · À propos mobile</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:15px;line-height:1.6;color:#77635A">Deux artboards ont été ajoutés aux dix demandés, sur votre validation&nbsp;: Contact et À propos. Ils étaient cités dans les spécifications sans figurer dans la liste des maquettes.</p>
+
+  <!-- ══ 3. LES ARBITRAGES ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">3. Les arbitrages que vous avez tranchés</h2>
+  <p style="margin:0 0 18px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Huit points étaient marqués « à trancher » dans vos documents. Vos réponses sont reprises telles quelles dans les maquettes&nbsp;; en voici la trace, avec l'endroit où chaque valeur apparaît.</p>
+
+  <table style="width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:15px;margin-bottom:16px">
+    <thead>
+      <tr>
+        <th style="text-align:left;padding:0 14px 8px 0;font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49;border-bottom:1px solid #E9C3AD">Décision</th>
+        <th style="text-align:left;padding:0 14px 8px;font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49;border-bottom:1px solid #E9C3AD">Retenu</th>
+        <th style="text-align:left;padding:0 0 8px 14px;font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#6E4D49;border-bottom:1px solid #E9C3AD">Où c'est visible</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;color:#5F4A41">Livraison offerte</td>
+        <td style="padding:12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">49,00&nbsp;€</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Bandeau de header (toutes les pages), barre de progression du panier, mini-panier, footer</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;color:#5F4A41">Section « Nouveautés »</td>
+        <td style="padding:12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Produits seuls</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Accueil, section 3&nbsp;: mur de 4 créations récentes, sans bandeau d'actualités</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;color:#5F4A41">Réservation sur virement</td>
+        <td style="padding:12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">5 jours</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Écran de virement, confirmation en attente, carte de commande du compte client (avec date butoir calculée)</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;color:#5F4A41">Régime de TVA</td>
+        <td style="padding:12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Franchise en base</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Mention « TVA non applicable, art.&nbsp;293&nbsp;B du CGI » sous chaque prix de fiche, chaque total et en pied de page</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;color:#5F4A41">Remise en main propre</td>
+        <td style="padding:12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Marchés ou atelier sur rendez-vous</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Quatrième mode de livraison du checkout, statut « prête pour retrait », bloc « Où me trouver » de la page Contact</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;border-bottom:1px solid #F2E0D7;vertical-align:top;color:#5F4A41">Écrans ajoutés</td>
+        <td style="padding:12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;font-weight:500;color:#5F4A41">Contact et À propos</td>
+        <td style="padding:12px 0 12px 14px;border-bottom:1px solid #F2E0D7;vertical-align:top;line-height:1.6;color:#5F4A41">Artboards 11 et 12</td>
+      </tr>
+      <tr style="break-inside:avoid">
+        <td style="padding:12px 14px 12px 0;vertical-align:top;color:#5F4A41">Forme des maquettes</td>
+        <td style="padding:12px 14px;vertical-align:top;font-weight:500;color:#5F4A41">Figées</td>
+        <td style="padding:12px 0 12px 14px;vertical-align:top;line-height:1.6;color:#5F4A41">Chaque état est dessiné côte à côte plutôt que déclenché à l'usage&nbsp;: tout est visible d'un coup d'œil, y compris ce qu'on ne penserait pas à tester</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:15px;line-height:1.6;color:#77635A">Le franco de 49,00&nbsp;€ est la valeur la plus répandue dans les fichiers. S'il évolue, il ne bouge qu'à un endroit dans Magento, mais à sept endroits dans les maquettes.</p>
+
+  <!-- ══ 4. LE CONFLIT À ARBITRER ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">4. Le point à porter à la créatrice</h2>
+  <div style="display:flex;gap:16px;padding:20px 22px;background:#FBEBE8;border:1px solid #EFC8C0;border-left:3px solid #A03A32;border-radius:0 4px 4px 0;margin-bottom:18px;break-inside:avoid">
+    <div>
+      <p style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:18px;line-height:1.45;color:#8C332C">Le rose de ses boutons ne peut pas porter de texte blanc</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#A03A32">Dans la maquette d'ambiance, le bouton « Découvrir la collection » est en rose poudré <code style="font-family:ui-monospace,monospace;font-size:14px">#C3867A</code> avec un libellé blanc. Ce couple donne un contraste de 3,0&nbsp;:&nbsp;1, là où WCAG&nbsp;AA en exige 4,5. C'est la seule non-conformité réelle de son univers visuel, et elle porte sur l'élément le plus cliqué du site.</p>
+    </div>
+  </div>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><strong style="font-weight:500">L'arbitrage retenu, et comment le présenter.</strong> Sa teinte est conservée à l'identique — elle n'est ni corrigée ni « assainie » — mais elle devient un aplat décoratif&nbsp;: filets, icônes, cœurs séparateurs, ornements. Les boutons passent au brun rosé <code style="font-family:ui-monospace,monospace;font-size:14px">#8A615C</code>, qui donne 5,3&nbsp;:&nbsp;1 avec du blanc.</p>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">L'argument à lui donner n'est pas réglementaire, il est identitaire&nbsp;: <em>ce brun rosé est la couleur de son propre logo</em> — celle du script « Madame Aiguille » et de l'aiguille. Les boutons deviennent donc <em>plus</em> fidèles à sa marque, pas moins. La démonstration chiffrée est dessinée dans l'artboard Couleurs, matrice de contraste comprise, avec la combinaison fautive montrée en exemple plutôt que passée sous silence.</p>
+
+  <!-- ══ 5. DESIGN SYSTEM ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">5. Décisions de design system</h2>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Couleurs</h3>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les huit valeurs du brief sont reprises sans réinterprétation. Quatre couleurs d'état ont été ajoutées dans la même famille chaude, chacune au-delà de 4,5&nbsp;:&nbsp;1 sur fond clair&nbsp;: succès <code style="font-family:ui-monospace,monospace;font-size:14px">#4F6B4A</code> (5,24), erreur <code style="font-family:ui-monospace,monospace;font-size:14px">#A03A32</code> (5,92), information <code style="font-family:ui-monospace,monospace;font-size:14px">#75634A</code> (5,09), et un gris chaud de texte secondaire <code style="font-family:ui-monospace,monospace;font-size:14px">#77635A</code> (4,99). Aucun rouge ni vert saturé, qui jureraient avec la palette.</p>
+  <div style="display:flex;gap:16px;padding:18px 20px;background:#F6F1E7;border:1px solid #E2D5BC;border-left:3px solid #75634A;border-radius:0 4px 4px 0;margin-bottom:24px;break-inside:avoid">
+    <div>
+      <p style="margin:0 0 6px;font-family:var(--font-body);font-weight:500;font-size:17px;line-height:1.45;color:#5F5140">Un piège découvert en cours de route, et documenté</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#75634A">La couleur de marque sur le fond blush — le cas du badge « Série limitée » — donne 4,42&nbsp;:&nbsp;1. Elle échoue de très peu, ce qui la rend invisible à l'œil et récurrente à l'usage&nbsp;: le blush est le fond des cartes produit, des lignes sélectionnées, des encarts et du pied de page. La règle est désormais écrite dans l'artboard Couleurs&nbsp;: <strong style="font-weight:500">sur fond blush, tout texte courant passe en <code style="font-family:ui-monospace,monospace;font-size:14px">brand-dark</code></strong>, seuls les titres en fonte display (≥&nbsp;30&nbsp;px) restent en <code style="font-family:ui-monospace,monospace;font-size:14px">brand</code> au titre du seuil « texte large ». Côté intégration, une classe Tailwind dédiée vaut mieux qu'un choix de teinte au cas par cas.</p>
+    </div>
+  </div>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Typographie</h3>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Britney et Sentient sont auto-hébergées, les tokens nommés <code style="font-family:ui-monospace,monospace;font-size:14px">--font-display</code> et <code style="font-family:ui-monospace,monospace;font-size:14px">--font-body</code> comme demandé, avec les substituts conservés en repli dans la pile. L'échelle est rendue à taille réelle dans le design system plutôt que décrite&nbsp;: on juge une échelle typographique en la lisant, pas en lisant ses valeurs.</p>
+  <p style="margin:0 0 24px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les trois interdits du brief sont tenus partout&nbsp;: la display ne descend jamais sous 30&nbsp;px, n'apparaît dans aucun élément d'interface (ni bouton, ni label, ni prix, ni ligne de tableau, ni checkout), et ne reçoit aucun italique ajouté puisqu'elle l'est par dessin. Les planchers de 16&nbsp;px pour le corps et 13&nbsp;px pour les mentions sont respectés sans exception — y compris sur le compteur de panier, qui tient à 13&nbsp;px dans sa pastille de 20&nbsp;px.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Logo — quatre verrous</h3>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Le <strong style="font-weight:500">lockup horizontal</strong> est le verrou principal&nbsp;: header desktop à 356&nbsp;px, header mobile à 240&nbsp;px, emails et factures à 440&nbsp;px, avec un plancher de 220&nbsp;px en dessous duquel il faut basculer sur l'icône. Le <strong style="font-weight:500">badge complet</strong> et le <strong style="font-weight:500">carré sans baseline</strong> gardent le nom arqué et ne descendent pas sous 120&nbsp;px&nbsp;; ils servent aux emballages, tampons et avatars, pas au header. L'<strong style="font-weight:500">icône seule</strong> — le bouton de couture — descend jusqu'à 24&nbsp;px pour le favicon.</p>
+  <p style="margin:0 0 24px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Le nom reste toujours une image, jamais du texte stylé&nbsp;: le crénage du script n'est pas reproductible en CSS. La zone de respiration est fixée au diamètre du bouton sur les quatre côtés, et les quatre interdits sont dessinés.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Ornements</h3>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Cinq motifs sont documentés — filets ondulés de titre, cœur séparateur, bordure festonnée, fond floral à 7&nbsp;%, branchages — tous en SVG inline, jamais en bitmap. La règle de dosage est d'<strong style="font-weight:500">un seul ornement par bloc</strong>, et aucun derrière une grille produit. Le checkout n'en porte aucun&nbsp;: c'est l'écran le plus sobre du site, et c'est intentionnel.</p>
+
+  <!-- ══ 6. DÉCISIONS PAR PAGE ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">6. Décisions notables, page par page</h2>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Accueil — le pli mobile</h3>
+  <p style="margin:0 0 20px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">L'exigence explicite de la créatrice — voir les nouveautés sans défiler longuement — a été traitée comme une contrainte mesurable, pas comme une intention. Le visuel du hero mobile est plafonné à 240&nbsp;px et le texte passe dessous&nbsp;; le titre « Nouveautés » apparaît ainsi <em>avant</em> le pli de 844&nbsp;px, matérialisé par un repère dans la maquette. Un hero mobile transposé du desktop aurait repoussé la section à environ 1&nbsp;400&nbsp;px, soit deux défilements.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Catégorie — les séries terminées</h3>
+  <p style="margin:0 0 20px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les produits épuisés restent visibles et indexables, atténués, mais regroupés sous un intertitre « Séries terminées » plutôt que mêlés à la grille. On comprend d'un coup d'œil que la disponibilité change, sans que la première rangée soit polluée. Un encart transforme l'impasse en contact&nbsp;: il arrive qu'un coupon se retrouve. Aucun filtre à facettes, conformément au brief&nbsp;: neuf références par catégorie, un tri à trois options suffit.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Fiche produit — la rareté sans agressivité</h3>
+  <p style="margin:0 0 20px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">« Plus que 2 exemplaires » est un encart statique, accompagné de sa raison — « le coupon est terminé, ce modèle ne sera pas recousu ». Pas de compte à rebours, pas de clignotement, pas de faux compteur de visiteurs&nbsp;: la marque est délicate, et l'information suffit à créer l'urgence puisqu'elle est vraie. L'encart de mise en relation est traité comme un bloc majeur, pas comme une ligne de lien&nbsp;: c'est le seul mécanisme de personnalisation du site, celui qui remplace le sélecteur de tissu qu'on ne fera pas.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Panier — les frais de port avant tout</h3>
+  <p style="margin:0 0 20px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les trois tarifs sont chiffrés dès cette page, avec un estimateur par code postal. Sur un panier moyen de 10 à 20&nbsp;€ face à 6&nbsp;€ de port, différer le montant jusqu'au checkout est la première cause d'abandon. La barre de franco affiche le <em>montant restant</em> et non un pourcentage&nbsp;: « 7,00&nbsp;€ » est actionnable, « 85&nbsp;% » ne l'est pas. Le code promo est replié par défaut — un champ ouvert donne à celles qui n'ont pas de code le sentiment de payer trop cher.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Checkout — le virement comme écran de plein droit</h3>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">La structure native Magento est respectée&nbsp;: deux étapes, récapitulatif persistant à droite sur desktop et replié en haut sur mobile. Aucun champ ni ordre d'étape n'a été déplacé — on retemplate, on ne reconstruit pas. Le header perd sa navigation, sa recherche et son panier&nbsp;: il ne reste que le logo, la mention de sécurité et le retour au panier.</p>
+  <p style="margin:0 0 20px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">L'écran de virement reçoit le traitement le plus appuyé du tunnel. Sur une série de huit pièces, « vos articles sont réservés 5 jours » est l'information qui décide de la commande&nbsp;: elle passe en premier, en vert, avec la date butoir en clair et l'explication que les pièces sont sorties du stock. La référence de commande est en 24&nbsp;px monospace avec bouton de copie — son oubli est ce qui retarde le plus les expéditions. Le point relais a ses deux états dessinés&nbsp;: sélecteur ouvert (carte et liste) et adresse retenue, ce second étant celui qu'on voit dans la grande majorité des cas.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Compte client — les statuts du virement</h3>
+  <p style="margin:0 0 20px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les six statuts ont chacun un traitement visuel distinct, et deux n'existent que par le virement&nbsp;: <em>en attente de paiement</em> rappelle la date butoir et la référence dans la carte elle-même, <em>paiement reçu</em> confirme le crédit. La cliente qui vient vérifier si son virement est arrivé a sa réponse sans ouvrir le détail. « Prête pour retrait » porte le lieu et l'horaire du marché, seul statut exigeant une action à date fixe. Chaque badge associe un pictogramme à son libellé&nbsp;: les six restent lisibles en niveaux de gris.</p>
+
+  <h3 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:19px;line-height:1.35;color:#5F4A41;break-after:avoid">Contact — le relais de vente</h3>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Le champ « produit concerné » est pré-rempli depuis l'encart de la fiche produit, vignette et prix compris&nbsp;: la créatrice sait de quel modèle on parle sans le demander. Un bloc « Ce que je peux faire » cadre les attentes avant l'envoi — quatre oui explicites, deux non assumés (pas de sur-mesure intégral, pas de grande série) — ce qui lui évite les demandes qu'elle devra refuser. Aucune adresse d'atelier n'est publiée, elle travaille chez elle&nbsp;; les dates de marché sont un bloc éditable.</p>
+
+  <!-- ══ 7. ACCESSIBILITÉ ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">7. Accessibilité — ce qui a été vérifié</h2>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">WCAG 2.1 AA étant une exigence explicite du commanditaire, chaque paire texte/fond produite a été mesurée sur les styles calculés, et non estimée à l'œil. Le bilan&nbsp;:</p>
+  <ul style="margin:0 0 14px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#4F6B4A;font-weight:500">✓</span><span>Aucune combinaison sous 4,5&nbsp;:&nbsp;1 pour le texte courant, ni sous 3&nbsp;:&nbsp;1 pour les titres et les anneaux de focus.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#4F6B4A;font-weight:500">✓</span><span>Aucun texte sous les planchers de 16&nbsp;px (corps) et 13&nbsp;px (mentions), et aucune fonte display sous 30&nbsp;px.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#4F6B4A;font-weight:500">✓</span><span>Cibles tactiles à 44&nbsp;×&nbsp;44&nbsp;px minimum, y compris les numéros de pagination, les boutons de quantité, les liens de pied de page et les fils d'Ariane mobiles.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#4F6B4A;font-weight:500">✓</span><span>Anneau de focus visible au clavier sur chaque composant interactif, avec sa variante ivoire sur fond de marque pour tenir 3&nbsp;:&nbsp;1 dans les deux sens.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#4F6B4A;font-weight:500">✓</span><span>Jamais la couleur seule pour porter un sens&nbsp;: erreurs, statuts et badges associent toujours un pictogramme à un libellé explicite (WCAG&nbsp;1.4.1).</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#4F6B4A;font-weight:500">✓</span><span>Ornements purement décoratifs marqués <code style="font-family:ui-monospace,monospace;font-size:14px">aria-hidden</code>, page courante signalée par <code style="font-family:ui-monospace,monospace;font-size:14px">aria-current</code>, erreurs liées à leur champ par <code style="font-family:ui-monospace,monospace;font-size:14px">aria-describedby</code>.</span></li>
+  </ul>
+  <p style="margin:0 0 30px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Deux catégories restent volontairement sous le seuil, et c'est conforme&nbsp;: les <strong style="font-weight:500">contrôles désactivés</strong>, que WCAG&nbsp;1.4.3 exempte, et les <strong style="font-weight:500">démonstrations d'échec</strong> de la matrice de contraste, qui n'auraient aucun sens si elles étaient corrigées.</p>
+
+  <!-- ══ 8. IMPLÉMENTATION ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">8. Notes d'implémentation Magento / Hyvä</h2>
+  <p style="margin:0 0 14px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Les maquettes ont été dessinées pour être réalisables sous Tailwind sans acrobaties&nbsp;: échelle d'espacement de base 4&nbsp;px alignée sur l'échelle Tailwind par défaut, grilles simples, rayons plafonnés à 6&nbsp;px, ombres toujours teintées de brun plutôt que de noir. Aucune valeur arbitraire n'est à déclarer dans le thème enfant.</p>
+  <ul style="margin:0 0 30px;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#8A615C;font-weight:500">·</span><span><strong style="font-weight:500">Logo centré.</strong> Hyvä place le logo à gauche&nbsp;: prévoir une surcharge de <code style="font-family:ui-monospace,monospace;font-size:14px">Magento_Theme::html/header/logo.phtml</code> et une grille <code style="font-family:ui-monospace,monospace;font-size:14px">1fr auto 1fr</code> pour que le centrage optique tienne quelle que soit la longueur de la navigation.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#8A615C;font-weight:500">·</span><span><strong style="font-weight:500">Vectoriser le logo avant mise en ligne.</strong> Les verrous sont ici des PNG détourés&nbsp;; le fichier pèse lourd pour un élément présent sur toutes les pages. C'est aussi le moment où le nom sera retracé proprement sur une ligne, plutôt que redressé depuis un bitmap.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#8A615C;font-weight:500">·</span><span><strong style="font-weight:500">Mini-panier en tiroir.</strong> Comportement natif Hyvä sous Alpine.js&nbsp;: aucun développement spécifique, seul le gabarit change. Piège de focus et fermeture à la touche Échap sont attendus.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#8A615C;font-weight:500">·</span><span><strong style="font-weight:500">Badges alimentés par attributs</strong>, jamais saisis à la main&nbsp;: <code style="font-family:ui-monospace,monospace;font-size:14px">taille_serie</code> pour la série limitée, <code style="font-family:ui-monospace,monospace;font-size:14px">news_from_date</code> pour la nouveauté, seuil de stock pour la rareté.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#8A615C;font-weight:500">·</span><span><strong style="font-weight:500">Carte du sélecteur de point relais.</strong> Le fond cartographique des maquettes est un aplat schématique&nbsp;; en production, tuiles OpenStreetMap via le widget Mondial Relay.</span></li>
+    <li style="display:flex;gap:12px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41"><span aria-hidden="true" style="flex:none;color:#8A615C;font-weight:500">·</span><span><strong style="font-weight:500">Blocs CMS éditables par la créatrice</strong>&nbsp;: bandeau supérieur du header, dates de marché de la page Contact, texte d'introduction des catégories.</span></li>
+  </ul>
+
+  <!-- ══ 9. CE QUI RESTE ══ -->
+  <h2 style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41;break-after:avoid">9. Ce qui reste à obtenir</h2>
+  <p style="margin:0 0 16px;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Trois points, par ordre d'urgence.</p>
+  <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px">
+    <div style="padding:18px 20px;background:#FAF0EB;border:1px solid #F2E0D7;border-radius:4px;break-inside:avoid">
+      <p style="margin:0 0 6px;font-family:var(--font-body);font-weight:500;font-size:17px;line-height:1.45;color:#5F4A41">1. Communiquer le ratio 4:5 maintenant</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">C'est le point le plus urgent, et le moins coûteux&nbsp;: à dire avant qu'elle ne prépare ses prochains visuels. Toutes les photos en 4:5, fond neutre et constant — lin, bois clair ou textile ivoire, le même d'une série à l'autre — lumière naturelle latérale, 2&nbsp;000&nbsp;px minimum sur le côté long pour permettre le zoom, trois vues par création. C'est l'homogénéité du fond qui fait la cohérence d'une grille de catalogue, bien plus que la qualité de chaque photo isolée.</p>
+    </div>
+    <div style="padding:18px 20px;background:#FAF0EB;border:1px solid #F2E0D7;border-radius:4px;break-inside:avoid">
+      <p style="margin:0 0 6px;font-family:var(--font-body);font-weight:500;font-size:17px;line-height:1.45;color:#5F4A41">2. Faire valider l'arbitrage sur le rose</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Section 4 de ce document. À présenter comme un gain de fidélité identitaire, pas comme une contrainte réglementaire.</p>
+    </div>
+    <div style="padding:18px 20px;background:#FAF0EB;border:1px solid #F2E0D7;border-radius:4px;break-inside:avoid">
+      <p style="margin:0 0 6px;font-family:var(--font-body);font-weight:500;font-size:17px;line-height:1.45;color:#5F4A41">3. Confirmer les données réelles</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.65;color:#5F4A41">Coordonnées bancaires et format de référence de commande pour l'écran de virement, adresse e-mail de contact, dates de marché de la rentrée, et grille tarifaire poids/transporteur définitive. Les maquettes portent des valeurs plausibles et cohérentes, à remplacer avant recette.</p>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:20px;padding-top:20px;border-top:1px solid #E9C3AD;break-inside:avoid">
+    <img src="brand/logo-icon.png" alt="" style="width:44px;height:auto;flex:none" />
+    <p style="margin:0;font-family:var(--font-body);font-weight:400;font-style:italic;font-size:16px;line-height:1.6;color:#77635A">Les sept fichiers de maquettes accompagnent ce document et se lisent à l'écran&nbsp;: chaque page y porte ses propres notes de décision, au plus près du dessin qu'elles justifient.</p>
+  </div>
+
+</doc-page>
+
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Britney';src:url('fonts/Britney-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Sentient';src:url('fonts/Sentient-Italic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap}
+:root{
+--font-display:'Britney','Bodoni Moda',Didot,Georgia,serif;
+--font-body:'Sentient','Spectral','Iowan Old Style',Georgia,serif;
+}
+body{margin:0;background:#EDE4DE;color:#5F4A41;font-family:var(--font-body);font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:#8A615C;text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:#E9C3AD;text-underline-offset:3px}
+a:hover{color:#6E4D49;text-decoration-color:#8A615C}
+</style>
+</helmet>
+
+<div style="display:flex;gap:72px;align-items:flex-start;padding:56px;width:max-content;background:#EDE4DE">
+
+  <!-- ══════════ ARTBOARD 05 — FICHE PRODUIT DESKTOP 1440 ══════════ -->
+  <div>
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:16px">
+      <p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#6E4D49">Artboard 05</p>
+      <p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:20px;color:#5F4A41">Fiche produit — desktop</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:14px;color:#77635A">1440 px · avec sélecteur de taille</p>
+    </div>
+
+    <div data-screen-label="Fiche produit desktop" style="width:1440px;background:#FAF0EB;box-shadow:0 6px 20px rgba(95,74,65,.12)">
+
+      <header style="background:#FFFCFA">
+        <div style="background:#8A615C;padding:10px 24px;text-align:center">
+          <p style="margin:0;font-family:var(--font-body);font-size:13px;line-height:1.4;color:#fff">Livraison offerte dès 49,00&nbsp;€ — séries limitées de 5 à 10 pièces</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:14px 80px;border-bottom:1px solid #F2E0D7">
+          <nav aria-label="Navigation principale" style="display:flex;align-items:center;gap:28px">
+            <a href="#accueil" style="font-family:var(--font-body);font-size:16px;color:#5F4A41;text-decoration:none">Accueil</a>
+            <a href="#boutique" aria-current="page" style="font-family:var(--font-body);font-size:16px;color:#8A615C;text-decoration:none;border-bottom:1px solid #E9C3AD;padding-bottom:2px">Boutique</a>
+            <a href="#apropos" style="font-family:var(--font-body);font-size:16px;color:#5F4A41;text-decoration:none">À propos</a>
+            <a href="#contact" style="font-family:var(--font-body);font-size:16px;color:#5F4A41;text-decoration:none">Contact</a>
+          </nav>
+          <img src="brand/logo-horizontal.png" alt="Madame Aiguille — accueil" style="display:block;width:356px;height:auto" />
+          <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><circle cx="9.5" cy="9.5" r="6.5" stroke="#8A615C" stroke-width="1.4"/><path d="M14.5 14.5 19 19" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="#8A615C" stroke-width="1.4"/><path d="M4.5 20.5c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+            <span style="display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 8px">
+              <span style="font-family:var(--font-body);font-size:16px;color:#5F4A41">Mon panier</span>
+              <span style="position:relative;display:inline-flex">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h16l-1.3 12.8H5.3L4 7.5Z" stroke="#8A615C" stroke-width="1.4"/><path d="M9 7.5V6a3 3 0 0 1 6 0v1.5" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <span style="position:absolute;top:-5px;right:-7px;display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;background:#8A615C;color:#fff;border-radius:9999px;font-family:var(--font-body);font-weight:500;font-size:13px;line-height:1;box-sizing:border-box">2</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <div style="padding:20px 80px 0;background:#FAF0EB">
+        <nav aria-label="Fil d'Ariane" style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-family:var(--font-body);font-size:14px">
+          <a href="#accueil" style="display:inline-flex;align-items:center;min-height:44px">Accueil</a>
+          <span aria-hidden="true" style="color:#E9C3AD">/</span>
+          <a href="#boutique" style="display:inline-flex;align-items:center;min-height:44px">Boutique</a>
+          <span aria-hidden="true" style="color:#E9C3AD">/</span>
+          <a href="#trousses" style="display:inline-flex;align-items:center;min-height:44px">Trousses &amp; pochettes</a>
+          <span aria-hidden="true" style="color:#E9C3AD">/</span>
+          <span aria-current="page" style="display:inline-flex;align-items:center;min-height:44px;color:#77635A">Trousse Romantique</span>
+        </nav>
+      </div>
+
+      <!-- galerie + achat -->
+      <section style="display:grid;grid-template-columns:1fr 1fr;gap:56px;padding:32px 80px 64px;background:#FAF0EB">
+
+        <!-- galerie -->
+        <div>
+          <div style="position:relative;aspect-ratio:4/5;background:#F4E7E7;border-radius:6px;overflow:hidden;margin-bottom:16px">
+            <img src="brand/p-trousse-romantique.png" alt="Trousse Romantique en coton fleuri rose, vue d'ensemble" style="display:block;width:100%;height:100%;object-fit:cover" />
+            <span style="position:absolute;top:16px;left:16px;display:inline-flex;align-items:center;padding:6px 12px;background:#F4E7E7;color:#6E4D49;border:1px solid #E9C3AD;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.03em">Série limitée — 8 pièces</span>
+            <span style="position:absolute;bottom:16px;right:16px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;background:#FFFCFA;border:1px solid #E9C3AD;border-radius:4px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#8A615C">
+              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" aria-hidden="true"><circle cx="9.5" cy="9.5" r="6.5" stroke="#8A615C" stroke-width="1.4"/><path d="M14.5 14.5 19 19M9.5 6.5v6M6.5 9.5h6" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg>
+              Agrandir
+            </span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div style="aspect-ratio:4/5;background:#F4E7E7;border:2px solid #8A615C;border-radius:4px;overflow:hidden"><img src="brand/p-trousse-romantique.png" alt="Vue d'ensemble" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+            <div style="aspect-ratio:4/5;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:4px;overflow:hidden"><img src="brand/p-trousse-romantique-detail.png" alt="Détail de la couture et du motif" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+            <div style="aspect-ratio:4/5;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:4px;overflow:hidden"><img src="brand/p-trousse-romantique-situation.png" alt="Mise en situation" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+            <div style="aspect-ratio:4/5;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:4px;overflow:hidden"><img src="brand/p-pochettes-nomades.png" alt="Intérieur doublé" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+          </div>
+        </div>
+
+        <!-- colonne achat -->
+        <div>
+          <h1 style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:32px;line-height:1.25;color:#5F4A41">Trousse Romantique</h1>
+          <p style="margin:0 0 20px;font-family:var(--font-body);font-weight:400;font-style:italic;font-size:18px;line-height:1.55;color:#5F4A41">Coton fleuri rose poudré, doublé et matelassé à la main.</p>
+          <p style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:32px;line-height:1.2;color:#8A615C;font-variant-numeric:tabular-nums">29,00&nbsp;€</p>
+          <p style="margin:0 0 24px;font-family:var(--font-body);font-size:13px;line-height:1.55;color:#77635A">TVA non applicable, art.&nbsp;293&nbsp;B du CGI. Frais de port calculés selon le poids.</p>
+
+          <!-- rareté -->
+          <div style="display:flex;gap:12px;padding:14px 18px;background:#FBEBE8;border:1px solid #EFC8C0;border-left:3px solid #A03A32;border-radius:0 4px 4px 0;margin-bottom:28px">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="flex:none;margin-top:2px"><circle cx="10" cy="10" r="9" stroke="#A03A32" stroke-width="1.5"/><path d="M10 5.5v6" stroke="#A03A32" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14.4" r="1.1" fill="#A03A32"/></svg>
+            <div>
+              <p style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1.5;color:#8C332C">Plus que 2 exemplaires</p>
+              <p style="margin:0;font-family:var(--font-body);font-size:14px;line-height:1.6;color:#A03A32">Sur les 8 de la série. Le coupon est terminé&nbsp;: ce modèle ne sera pas recousu.</p>
+            </div>
+          </div>
+
+          <!-- taille -->
+          <fieldset style="border:0;padding:0;margin:0 0 24px">
+            <legend style="padding:0;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41;margin-bottom:10px">Taille</legend>
+            <div style="display:flex;gap:12px">
+              <span style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:132px;min-height:60px;padding:0 20px;background:#8A615C;color:#fff;border:1px solid #8A615C;border-radius:4px"><span style="font-family:var(--font-body);font-weight:500;font-size:16px">Petit</span><span style="font-family:var(--font-body);font-size:13px;opacity:.88">18 × 12&nbsp;cm</span></span>
+              <span style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:132px;min-height:60px;padding:0 20px;background:#FFFCFA;color:#8A615C;border:1px solid #8A615C;border-radius:4px"><span style="font-family:var(--font-body);font-weight:500;font-size:16px">Grand</span><span style="font-family:var(--font-body);font-size:13px;color:#77635A">24 × 16&nbsp;cm</span></span>
+            </div>
+          </fieldset>
+
+          <!-- quantité + ajout -->
+          <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:14px">
+            <div>
+              <label style="display:block;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41;margin-bottom:6px">Quantité</label>
+              <div style="display:inline-flex;align-items:center;border:1px solid #D8C3B8;border-radius:4px;overflow:hidden;background:#FFFCFA">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:56px;color:#C4B0A8;font-family:var(--font-body);font-size:20px;border-right:1px solid #F2E0D7">−</span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;font-family:var(--font-body);font-weight:500;font-size:16px;color:#5F4A41;font-variant-numeric:tabular-nums">1</span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:56px;color:#8A615C;font-family:var(--font-body);font-size:20px;border-left:1px solid #F2E0D7">+</span>
+              </div>
+            </div>
+            <span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:56px;background:#8A615C;color:#fff;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border-radius:4px">Ajouter au panier</span>
+          </div>
+          <p style="margin:0 0 32px;font-family:var(--font-body);font-size:13px;line-height:1.55;color:#77635A">Quantité plafonnée à 2 — le stock restant de la série.</p>
+
+          <!-- encart mise en relation -->
+          <div style="position:relative;overflow:hidden;padding:26px;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:6px;margin-bottom:28px">
+            <svg width="132" height="42" viewBox="0 0 132 42" fill="none" aria-hidden="true" style="position:absolute;right:-10px;bottom:-6px;opacity:.5"><path d="M4 36C32 36 66 27 128 8" stroke="#E9C3AD" stroke-width="1.4" stroke-linecap="round"/><g fill="#E9C3AD"><ellipse cx="26" cy="30" rx="7.5" ry="3.2" transform="rotate(-18 26 30)"/><ellipse cx="48" cy="26" rx="7.5" ry="3.2" transform="rotate(-22 48 26)"/><ellipse cx="70" cy="21" rx="7.5" ry="3.2" transform="rotate(-26 70 21)"/><ellipse cx="92" cy="16" rx="7.5" ry="3.2" transform="rotate(-30 92 16)"/></g></svg>
+            <div style="position:relative">
+              <p style="margin:0 0 10px;font-family:var(--font-display);font-weight:400;font-size:30px;line-height:1.14;color:#8A615C">Une question sur le tissu ou le motif&nbsp;?</p>
+              <p style="margin:0 0 20px;max-width:480px;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41;text-wrap:pretty">Je réponds moi-même, en général sous 24&nbsp;heures. Si vous cherchez un coloris plus sobre ou un motif précis, dites-le-moi&nbsp;: il me reste parfois des coupons de la série.</p>
+              <span style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border:1px solid #8A615C;border-radius:4px">Poser une question sur ce modèle</span>
+            </div>
+          </div>
+
+          <!-- rassurance -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;padding-top:24px;border-top:1px solid #E9C3AD">
+            <div style="display:flex;gap:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M2.5 8.5h13v9h-13v-9Z" stroke="#C3867A" stroke-width="1.3"/><path d="M15.5 11.5h4l2 3v3h-6v-6Z" stroke="#C3867A" stroke-width="1.3"/><circle cx="6.5" cy="18.5" r="1.8" stroke="#C3867A" stroke-width="1.3"/><circle cx="17.5" cy="18.5" r="1.8" stroke="#C3867A" stroke-width="1.3"/></svg>
+              <div><p style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41">Expédition sous 2 à 3 jours</p><p style="margin:0;font-family:var(--font-body);font-size:14px;line-height:1.55;color:#77635A">Du lundi au vendredi, depuis l'atelier.</p></div>
+            </div>
+            <div style="display:flex;gap:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M12 2.5 20 6v6.5c0 5-3.4 7.8-8 9-4.6-1.2-8-4-8-9V6l8-3.5Z" stroke="#C3867A" stroke-width="1.3"/><path d="M8.5 12l2.6 2.6L16 9.5" stroke="#C3867A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div><p style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41">Paiement sécurisé</p><p style="margin:0;font-family:var(--font-body);font-size:14px;line-height:1.55;color:#77635A">Carte bancaire, virement ou en main propre.</p></div>
+            </div>
+            <div style="display:flex;gap:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M4 8h16l-1 12H5L4 8Z" stroke="#C3867A" stroke-width="1.3"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="#C3867A" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <div><p style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41">Colissimo, Mondial Relay, Chronopost</p><p style="margin:0;font-family:var(--font-body);font-size:14px;line-height:1.55;color:#77635A">Ou remise en main propre, sans frais.</p></div>
+            </div>
+            <div style="display:flex;gap:12px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M12 21S3.5 15.8 3.5 9.9A4.9 4.9 0 0 1 12 7.4 4.9 4.9 0 0 1 20.5 9.9C20.5 15.8 12 21 12 21Z" stroke="#C3867A" stroke-width="1.3"/></svg>
+              <div><p style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41">Emballage soigné</p><p style="margin:0;font-family:var(--font-body);font-size:14px;line-height:1.55;color:#77635A">Papier de soie et mot manuscrit sur demande.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- description -->
+      <section style="padding:56px 80px;background:#FFFCFA;border-top:1px solid #F2E0D7">
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:64px">
+          <div>
+            <h2 style="margin:0 0 20px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41">Description</h2>
+            <p style="margin:0 0 16px;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41;text-wrap:pretty">Une trousse de toilette au format généreux, taillée dans un coton fleuri rose poudré que j'ai chiné chez un grossiste de Roubaix — il n'en restait que trois mètres, d'où la série de huit.</p>
+            <p style="margin:0 0 16px;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41;text-wrap:pretty">L'extérieur est matelassé à la main, ligne par ligne, ce qui lui donne son épaisseur et sa tenue. La doublure est un coton ivoire enduit, qui se nettoie d'un coup d'éponge. La fermeture éclair est en laiton vieilli, cousue avec une petite languette de cuir pour l'attraper facilement.</p>
+            <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41;text-wrap:pretty">Elle tient debout toute seule quand elle est remplie, et passe dans un bagage cabine sans faire de volume.</p>
+          </div>
+          <div>
+            <h2 style="margin:0 0 20px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.3;color:#5F4A41">Caractéristiques</h2>
+            <dl style="margin:0;display:grid;grid-template-columns:auto 1fr;gap:0">
+              <dt style="padding:12px 20px 12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-weight:500;font-size:15px;color:#77635A">Composition</dt>
+              <dd style="margin:0;padding:12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">Extérieur 100&nbsp;% coton, doublure coton enduit, ouatine polyester</dd>
+              <dt style="padding:12px 20px 12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-weight:500;font-size:15px;color:#77635A">Dimensions</dt>
+              <dd style="margin:0;padding:12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">Petit&nbsp;: 18 × 12 × 8&nbsp;cm · Grand&nbsp;: 24 × 16 × 10&nbsp;cm</dd>
+              <dt style="padding:12px 20px 12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-weight:500;font-size:15px;color:#77635A">Poids</dt>
+              <dd style="margin:0;padding:12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">140&nbsp;g (petit) · 190&nbsp;g (grand)</dd>
+              <dt style="padding:12px 20px 12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-weight:500;font-size:15px;color:#77635A">Série</dt>
+              <dd style="margin:0;padding:12px 0;border-bottom:1px solid #F2E0D7;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">8 exemplaires, cousus en juillet 2026</dd>
+              <dt style="padding:12px 20px 12px 0;font-family:var(--font-body);font-weight:500;font-size:15px;color:#77635A">Entretien</dt>
+              <dd style="margin:0;padding:12px 0;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41">Lavage à la main à 30&nbsp;°C ou éponge humide. Pas de sèche-linge&nbsp;: la ouatine se tasse. Repassage à fer doux sur l'envers, sans vapeur sur la doublure enduite.</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- suggestions -->
+      <section aria-labelledby="suggestions-d" style="padding:64px 80px;background:#FAF0EB;border-top:1px solid #F2E0D7">
+        <div style="text-align:center;margin-bottom:36px">
+          <div style="display:flex;align-items:center;justify-content:center;gap:20px">
+            <svg width="96" height="12" viewBox="0 0 96 12" fill="none" aria-hidden="true"><path d="M0 6h52" stroke="#E9C3AD" stroke-width="1"/><path d="M58 6c5-6 11-6 16 0-5 6-11 6-16 0Z" fill="#FFFCFA" stroke="#E9C3AD" stroke-width="1"/><path d="M78 6c4-4 9-4 13 0-4 4-9 4-13 0Z" fill="#E9C3AD"/></svg>
+            <h2 id="suggestions-d" style="margin:0;font-family:var(--font-display);font-weight:400;font-size:40px;line-height:1.15;color:#8A615C">Vous aimerez aussi</h2>
+            <svg width="96" height="12" viewBox="0 0 96 12" fill="none" aria-hidden="true" style="transform:scaleX(-1)"><path d="M0 6h52" stroke="#E9C3AD" stroke-width="1"/><path d="M58 6c5-6 11-6 16 0-5 6-11 6-16 0Z" fill="#FFFCFA" stroke="#E9C3AD" stroke-width="1"/><path d="M78 6c4-4 9-4 13 0-4 4-9 4-13 0Z" fill="#E9C3AD"/></svg>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+          <article style="background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(95,74,65,.06);display:flex;flex-direction:column">
+            <div style="position:relative;aspect-ratio:4/5;background:#F4E7E7"><img src="brand/p-cotons-demaquillants.png" alt="Cotons démaquillants lavables, lot de cinq" style="display:block;width:100%;height:100%;object-fit:cover" /><span style="position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;padding:5px 10px;background:#FBEBE8;color:#A03A32;border:1px solid #EFC8C0;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px">Plus que 2 exemplaires</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:6px;flex:1"><h3 style="margin:0;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.35;color:#5F4A41">Cotons Démaquillants</h3><p style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.3;color:#8A615C;font-variant-numeric:tabular-nums">12,00&nbsp;€</p><span style="margin-top:auto;display:flex;align-items:center;justify-content:center;min-height:44px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:15px;line-height:1;border:1px solid #8A615C;border-radius:4px">Voir le produit</span></div>
+          </article>
+          <article style="background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(95,74,65,.06);display:flex;flex-direction:column">
+            <div style="position:relative;aspect-ratio:4/5;background:#F4E7E7"><img src="brand/p-pochette-isabelle.png" alt="Pochette à livre Isabelle" style="display:block;width:100%;height:100%;object-fit:cover" /><span style="position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;padding:5px 10px;background:#F4E7E7;color:#6E4D49;border:1px solid #E9C3AD;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px">Série limitée — 6 pièces</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:6px;flex:1"><h3 style="margin:0;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.35;color:#5F4A41">Pochette à Livre Isabelle</h3><p style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.3;color:#8A615C;font-variant-numeric:tabular-nums">24,00&nbsp;€</p><span style="margin-top:auto;display:flex;align-items:center;justify-content:center;min-height:44px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:15px;line-height:1;border:1px solid #8A615C;border-radius:4px">Voir le produit</span></div>
+          </article>
+          <article style="background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(95,74,65,.06);display:flex;flex-direction:column">
+            <div style="position:relative;aspect-ratio:4/5;background:#F4E7E7"><img src="brand/p-pochettes-nomades.png" alt="Pochettes nomades" style="display:block;width:100%;height:100%;object-fit:cover" /><span style="position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;padding:5px 10px;background:#F4E7E7;color:#6E4D49;border:1px solid #E9C3AD;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px">Série limitée — 10 pièces</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:6px;flex:1"><h3 style="margin:0;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.35;color:#5F4A41">Pochettes Nomades</h3><p style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.3;color:#8A615C;font-variant-numeric:tabular-nums">18,00&nbsp;€</p><span style="margin-top:auto;display:flex;align-items:center;justify-content:center;min-height:44px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:15px;line-height:1;border:1px solid #8A615C;border-radius:4px">Voir le produit</span></div>
+          </article>
+          <article style="background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(95,74,65,.06);display:flex;flex-direction:column">
+            <div style="position:relative;aspect-ratio:4/5;background:#F4E7E7"><img src="brand/p-sac-aurora-mini.png" alt="Sac Aurora Mini" style="display:block;width:100%;height:100%;object-fit:cover" /><span style="position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;padding:5px 10px;background:#F4E7E7;color:#6E4D49;border:1px solid #E9C3AD;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px">Série limitée — 5 pièces</span></div>
+            <div style="padding:16px;display:flex;flex-direction:column;gap:6px;flex:1"><h3 style="margin:0;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.35;color:#5F4A41">Sac Aurora Mini</h3><p style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:20px;line-height:1.3;color:#8A615C;font-variant-numeric:tabular-nums">32,00&nbsp;€</p><span style="margin-top:auto;display:flex;align-items:center;justify-content:center;min-height:44px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:15px;line-height:1;border:1px solid #8A615C;border-radius:4px">Voir le produit</span></div>
+          </article>
+        </div>
+      </section>
+
+      <footer style="background:#FAF0EB;border-top:1px solid #F2E0D7;padding:32px 80px">
+        <p style="margin:0;text-align:center;font-family:var(--font-body);font-size:13px;line-height:1.6;color:#77635A">© 2026 Madame Aiguille — Cousu main en France. TVA non applicable, art.&nbsp;293&nbsp;B du CGI. <span aria-hidden="true" style="color:#C4B0A8">·</span> Pied de page complet en artboard 02.</p>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- ══════════ ARTBOARD 06 — FICHE PRODUIT MOBILE + VARIANTES ══════════ -->
+  <div>
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:16px">
+      <p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#6E4D49">Artboard 06</p>
+      <p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:20px;color:#5F4A41">Fiche produit — mobile &amp; variantes</p>
+      <p style="margin:0;font-family:var(--font-body);font-size:14px;color:#77635A">390 px</p>
+    </div>
+
+    <div style="display:flex;gap:40px;align-items:flex-start">
+
+      <!-- 06a — mobile, cas majoritaire (sans taille) -->
+      <div>
+        <p style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41">06a · Cas majoritaire — sans sélecteur de taille</p>
+        <div data-screen-label="Fiche produit mobile" style="width:390px;background:#FAF0EB;box-shadow:0 6px 20px rgba(95,74,65,.12)">
+          <header style="background:#FFFCFA">
+            <div style="background:#8A615C;padding:8px 16px;text-align:center"><p style="margin:0;font-family:var(--font-body);font-size:13px;line-height:1.4;color:#fff">Livraison offerte dès 49,00&nbsp;€</p></div>
+            <div style="display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:6px;padding:8px 16px;border-bottom:1px solid #F2E0D7">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px"><svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true"><path d="M1 1.5h20M1 8h20M1 14.5h20" stroke="#8A615C" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              <img src="brand/logo-horizontal.png" alt="Madame Aiguille — accueil" style="display:block;width:240px;height:auto;margin:0 auto" />
+              <span style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h16l-1.3 12.8H5.3L4 7.5Z" stroke="#8A615C" stroke-width="1.4"/><path d="M9 7.5V6a3 3 0 0 1 6 0v1.5" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <span style="position:absolute;top:2px;right:1px;display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;background:#8A615C;color:#fff;border-radius:9999px;font-family:var(--font-body);font-weight:500;font-size:13px;line-height:1;box-sizing:border-box">2</span>
+              </span>
+            </div>
+          </header>
+
+          <div style="padding:12px 20px 0">
+            <nav aria-label="Fil d'Ariane" style="display:flex;align-items:center;gap:8px;font-family:var(--font-body);font-size:13px">
+              <a href="#boutique" style="display:inline-flex;align-items:center;min-height:44px">Boutique</a><span aria-hidden="true" style="color:#E9C3AD">/</span><a href="#pochettes" style="display:inline-flex;align-items:center;min-height:44px">Pochettes</a><span aria-hidden="true" style="color:#E9C3AD">/</span><span aria-current="page" style="display:inline-flex;align-items:center;min-height:44px;color:#77635A">Isabelle</span>
+            </nav>
+          </div>
+
+          <!-- galerie mobile : vue courante pleine largeur + 3 vues en miniatures -->
+          <div style="padding:12px 20px 0">
+            <div style="position:relative;aspect-ratio:4/5;background:#F4E7E7;border-radius:4px;overflow:hidden">
+              <img src="brand/p-pochette-isabelle.png" alt="Pochette à livre Isabelle, vue d'ensemble" style="display:block;width:100%;height:100%;object-fit:cover" />
+              <span style="position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;padding:5px 10px;background:#F4E7E7;color:#6E4D49;border:1px solid #E9C3AD;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px">Série limitée — 6 pièces</span>
+              <span style="position:absolute;bottom:12px;right:12px;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;background:#FFFCFA;border:1px solid #E9C3AD;border-radius:4px">
+                <svg width="18" height="18" viewBox="0 0 22 22" fill="none" aria-hidden="true"><circle cx="9.5" cy="9.5" r="6.5" stroke="#8A615C" stroke-width="1.4"/><path d="M14.5 14.5 19 19M9.5 6.5v6M6.5 9.5h6" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:center;gap:7px;padding:12px 0">
+              <span style="width:8px;height:8px;background:#8A615C;border-radius:9999px"></span>
+              <span style="width:8px;height:8px;background:#E9C3AD;border-radius:9999px"></span>
+              <span style="width:8px;height:8px;background:#E9C3AD;border-radius:9999px"></span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              <div style="aspect-ratio:4/5;background:#F4E7E7;border:2px solid #8A615C;border-radius:4px;overflow:hidden"><img src="brand/p-pochette-isabelle.png" alt="Vue d'ensemble" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+              <div style="aspect-ratio:4/5;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:4px;overflow:hidden"><img src="brand/p-trousse-romantique-detail.png" alt="Détail du motif et de la couture" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+              <div style="aspect-ratio:4/5;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:4px;overflow:hidden"><img src="brand/p-trousse-romantique-situation.png" alt="Mise en situation" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+            </div>
+          </div>
+
+          <section style="padding:20px 20px 28px">
+            <h1 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.25;color:#5F4A41">Pochette à Livre Isabelle</h1>
+            <p style="margin:0 0 16px;font-family:var(--font-body);font-weight:400;font-style:italic;font-size:16px;line-height:1.55;color:#5F4A41">Coton fleuri terracotta, fermeture aimantée.</p>
+            <p style="margin:0 0 4px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.2;color:#8A615C;font-variant-numeric:tabular-nums">24,00&nbsp;€</p>
+            <p style="margin:0 0 20px;font-family:var(--font-body);font-size:13px;line-height:1.5;color:#77635A">TVA non applicable, art.&nbsp;293&nbsp;B du CGI.</p>
+
+            <div style="display:flex;gap:12px;padding:12px 16px;background:#F6F1E7;border:1px solid #E2D5BC;border-left:3px solid #75634A;border-radius:0 4px 4px 0;margin-bottom:20px">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="flex:none;margin-top:2px"><circle cx="10" cy="10" r="9" stroke="#75634A" stroke-width="1.5"/><path d="M10 9v5.5" stroke="#75634A" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="5.9" r="1.1" fill="#75634A"/></svg>
+              <p style="margin:0;font-family:var(--font-body);font-size:14px;line-height:1.55;color:#5F5140">4 exemplaires disponibles sur les 6 de la série.</p>
+            </div>
+
+            <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:10px">
+              <div>
+                <label style="display:block;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41;margin-bottom:6px">Quantité</label>
+                <div style="display:inline-flex;align-items:center;border:1px solid #D8C3B8;border-radius:4px;overflow:hidden;background:#FFFCFA">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:56px;color:#C4B0A8;font-family:var(--font-body);font-size:20px;border-right:1px solid #F2E0D7">−</span>
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:56px;font-family:var(--font-body);font-weight:500;font-size:16px;color:#5F4A41;font-variant-numeric:tabular-nums">1</span>
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:56px;color:#8A615C;font-family:var(--font-body);font-size:20px;border-left:1px solid #F2E0D7">+</span>
+                </div>
+              </div>
+            </div>
+            <span style="display:flex;align-items:center;justify-content:center;min-height:56px;background:#8A615C;color:#fff;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border-radius:4px;margin-bottom:24px">Ajouter au panier</span>
+
+            <!-- encart tissu -->
+            <div style="padding:20px;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:6px;margin-bottom:24px">
+              <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:400;font-size:30px;line-height:1.12;color:#8A615C">Une question sur le tissu&nbsp;?</p>
+              <p style="margin:0 0 16px;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41">Je réponds moi-même, en général sous 24&nbsp;heures.</p>
+              <span style="display:flex;align-items:center;justify-content:center;min-height:48px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border:1px solid #8A615C;border-radius:4px">Poser une question</span>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px;padding-top:20px;border-top:1px solid #E9C3AD">
+              <div style="display:flex;gap:12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M2.5 8.5h13v9h-13v-9Z" stroke="#C3867A" stroke-width="1.3"/><path d="M15.5 11.5h4l2 3v3h-6v-6Z" stroke="#C3867A" stroke-width="1.3"/><circle cx="6.5" cy="18.5" r="1.8" stroke="#C3867A" stroke-width="1.3"/><circle cx="17.5" cy="18.5" r="1.8" stroke="#C3867A" stroke-width="1.3"/></svg><p style="margin:0;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41"><strong style="font-weight:500">Expédition sous 2 à 3 jours</strong> — depuis l'atelier.</p></div>
+              <div style="display:flex;gap:12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M12 2.5 20 6v6.5c0 5-3.4 7.8-8 9-4.6-1.2-8-4-8-9V6l8-3.5Z" stroke="#C3867A" stroke-width="1.3"/><path d="M8.5 12l2.6 2.6L16 9.5" stroke="#C3867A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><p style="margin:0;font-family:var(--font-body);font-size:15px;line-height:1.55;color:#5F4A41"><strong style="font-weight:500">Paiement sécurisé</strong> — carte, virement ou main propre.</p></div>
+            </div>
+          </section>
+
+          <!-- accordéons -->
+          <section style="background:#FFFCFA;border-top:1px solid #F2E0D7">
+            <span style="display:flex;align-items:center;justify-content:space-between;min-height:56px;padding:0 20px;font-family:var(--font-body);font-weight:500;font-size:16px;color:#5F4A41;border-bottom:1px solid #F2E0D7">Description<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" style="transform:rotate(180deg)"><path d="M1 1.5 6 6.5l5-5" stroke="#8A615C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div style="padding:16px 20px;border-bottom:1px solid #F2E0D7">
+              <p style="margin:0;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41;text-wrap:pretty">Une pochette pour protéger votre livre dans un sac, doublée d'un coton ivoire et fermée par deux aimants plats. Le rabat est piqué d'un surfil ton sur ton.</p>
+            </div>
+            <span style="display:flex;align-items:center;justify-content:space-between;min-height:56px;padding:0 20px;font-family:var(--font-body);font-weight:500;font-size:16px;color:#5F4A41;border-bottom:1px solid #F2E0D7">Composition &amp; dimensions<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5" stroke="#8A615C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span style="display:flex;align-items:center;justify-content:space-between;min-height:56px;padding:0 20px;font-family:var(--font-body);font-weight:500;font-size:16px;color:#5F4A41;border-bottom:1px solid #F2E0D7">Conseils d'entretien<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5" stroke="#8A615C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </section>
+
+          <!-- barre d'achat collante -->
+          <div style="position:relative;margin-top:20px">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;background:#FFFCFA;border-top:1px solid #E9C3AD;box-shadow:0 -4px 16px rgba(95,74,65,.08)">
+              <div style="flex:none">
+                <p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:18px;line-height:1.2;color:#8A615C;font-variant-numeric:tabular-nums">24,00&nbsp;€</p>
+                <p style="margin:0;font-family:var(--font-body);font-size:13px;line-height:1.4;color:#77635A">4 disponibles</p>
+              </div>
+              <span style="flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;background:#8A615C;color:#fff;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border-radius:4px">Ajouter au panier</span>
+            </div>
+            <p style="margin:8px 20px 20px;font-family:var(--font-body);font-size:13px;line-height:1.5;color:#77635A">Barre collante en bas d'écran, apparaît au défilement au-delà de la galerie.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 06b — épuisée + notes -->
+      <div style="display:flex;flex-direction:column;gap:32px">
+        <div>
+          <p style="margin:0 0 12px;font-family:var(--font-body);font-weight:500;font-size:15px;color:#5F4A41">06b · Fiche épuisée — série terminée</p>
+          <div data-screen-label="Fiche produit épuisée" style="width:390px;background:#FAF0EB;box-shadow:0 6px 20px rgba(95,74,65,.12)">
+            <header style="background:#FFFCFA">
+              <div style="background:#8A615C;padding:8px 16px;text-align:center"><p style="margin:0;font-family:var(--font-body);font-size:13px;line-height:1.4;color:#fff">Livraison offerte dès 49,00&nbsp;€</p></div>
+              <div style="display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:6px;padding:8px 16px;border-bottom:1px solid #F2E0D7">
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px"><svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true"><path d="M1 1.5h20M1 8h20M1 14.5h20" stroke="#8A615C" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                <img src="brand/logo-horizontal.png" alt="Madame Aiguille — accueil" style="display:block;width:240px;height:auto;margin:0 auto" />
+                <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h16l-1.3 12.8H5.3L4 7.5Z" stroke="#8A615C" stroke-width="1.4"/><path d="M9 7.5V6a3 3 0 0 1 6 0v1.5" stroke="#8A615C" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+              </div>
+            </header>
+            <div style="padding:12px 20px 0">
+              <nav aria-label="Fil d'Ariane" style="display:flex;align-items:center;gap:8px;font-family:var(--font-body);font-size:13px">
+                <a href="#boutique" style="display:inline-flex;align-items:center;min-height:44px">Boutique</a><span aria-hidden="true" style="color:#E9C3AD">/</span><span aria-current="page" style="display:inline-flex;align-items:center;min-height:44px;color:#77635A">Trousse Lin Perle</span>
+              </nav>
+            </div>
+            <div style="padding:12px 20px 0">
+              <div style="position:relative;aspect-ratio:4/5;background:#EDE2DC;border-radius:4px;overflow:hidden">
+                <img src="brand/p-trousse-lin-perle.png" alt="Trousse Lin Perle, série terminée" style="display:block;width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(.6)" />
+                <span style="position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;padding:5px 10px;background:#EDE2DC;color:#6B564D;border:1px solid #DCC9C2;border-radius:2px;font-family:var(--font-body);font-weight:500;font-size:13px">Épuisé</span>
+              </div>
+            </div>
+            <section style="padding:20px 20px 28px">
+              <h1 style="margin:0 0 8px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.25;color:#5F4A41">Trousse Lin Perle</h1>
+              <p style="margin:0 0 4px;font-family:var(--font-body);font-weight:500;font-size:26px;line-height:1.2;color:#77635A;font-variant-numeric:tabular-nums">22,00&nbsp;€</p>
+              <p style="margin:0 0 20px;font-family:var(--font-body);font-size:13px;line-height:1.5;color:#77635A">Série de 6, écoulée en mai 2026.</p>
+
+              <span style="display:flex;align-items:center;justify-content:center;min-height:56px;background:#F6EEEA;color:#8A7268;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border:1px solid #E4D3CB;border-radius:4px;margin-bottom:24px;cursor:not-allowed">Série terminée</span>
+
+              <div style="padding:20px;background:#F4E7E7;border:1px solid #E9C3AD;border-radius:6px;margin-bottom:20px">
+                <p style="margin:0 0 8px;font-family:var(--font-display);font-weight:400;font-size:30px;line-height:1.12;color:#8A615C">Ce modèle vous plaît&nbsp;?</p>
+                <p style="margin:0 0 16px;font-family:var(--font-body);font-size:16px;line-height:1.6;color:#5F4A41">Il m'arrive de retrouver un coupon similaire. Dites-moi ce que vous cherchiez&nbsp;: je vous répondrai franchement si c'est possible ou non.</p>
+                <span style="display:flex;align-items:center;justify-content:center;min-height:48px;background:#8A615C;color:#fff;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border-radius:4px">M'écrire à ce sujet</span>
+              </div>
+
+              <div style="padding:16px 18px;background:#F6F1E7;border:1px solid #E2D5BC;border-left:3px solid #75634A;border-radius:0 4px 4px 0">
+                <p style="margin:0 0 10px;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1.5;color:#5F5140">Être prévenue des prochaines séries</p>
+                <div style="display:flex;align-items:center;min-height:48px;padding:0 14px;background:#FFFCFA;border:1px solid #D8C3B8;border-radius:4px;margin-bottom:8px"><span style="font-family:var(--font-body);font-size:16px;color:#77635A">Votre adresse e-mail</span></div>
+                <span style="display:flex;align-items:center;justify-content:center;min-height:48px;background:#FFFCFA;color:#8A615C;font-family:var(--font-body);font-weight:500;font-size:16px;line-height:1;border:1px solid #8A615C;border-radius:4px">Me prévenir</span>
+              </div>
+            </section>
+            <section style="padding:24px 20px 32px;background:#FFFCFA;border-top:1px solid #F2E0D7">
+              <h2 style="margin:0 0 16px;text-align:center;font-family:var(--font-display);font-weight:400;font-size:30px;line-height:1.12;color:#8A615C">Disponible en ce moment</h2>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                <article style="background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;overflow:hidden">
+                  <div style="aspect-ratio:4/5;background:#F4E7E7"><img src="brand/p-trousse-romantique.png" alt="Trousse Romantique" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+                  <div style="padding:10px"><h3 style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:18px;line-height:1.3;color:#5F4A41">Trousse Romantique</h3><p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:18px;color:#8A615C;font-variant-numeric:tabular-nums">29,00&nbsp;€</p></div>
+                </article>
+                <article style="background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;overflow:hidden">
+                  <div style="aspect-ratio:4/5;background:#F4E7E7"><img src="brand/p-trousse-romantique-situation.png" alt="Trousse Lin &amp; Aiguille" style="display:block;width:100%;height:100%;object-fit:cover" /></div>
+                  <div style="padding:10px"><h3 style="margin:0 0 2px;font-family:var(--font-body);font-weight:500;font-size:18px;line-height:1.3;color:#5F4A41">Trousse Lin &amp; Aiguille</h3><p style="margin:0;font-family:var(--font-body);font-weight:500;font-size:18px;color:#8A615C;font-variant-numeric:tabular-nums">26,00&nbsp;€</p></div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div style="width:390px;background:#FFFCFA;border:1px solid #F2E0D7;border-radius:6px;padding:24px">
+          <p style="margin:0 0 14px;font-family:var(--font-body);font-weight:500;font-size:16px;color:#5F4A41">Décisions de cette page</p>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+            <li style="font-family:var(--font-body);font-size:14px;line-height:1.6;color:#5F4A41"><strong style="font-weight:500">La rareté est statique.</strong> «&nbsp;Plus que 2 exemplaires&nbsp;» dans un encart calme, avec la raison («&nbsp;le coupon est terminé&nbsp;»). Pas de compte à rebours, pas de clignotement, pas de «&nbsp;14 personnes regardent&nbsp;»&nbsp;: la marque est délicate. L'information suffit à créer l'urgence — elle est vraie.</li>
+            <li style="font-family:var(--font-body);font-size:14px;line-height:1.6;color:#5F4A41"><strong style="font-weight:500">L'encart tissu est traité comme un bloc majeur</strong>, pas une ligne de lien&nbsp;: c'est le seul mécanisme de personnalisation du site. Il remplace le sélecteur de tissu qu'on ne fera pas.</li>
+            <li style="font-family:var(--font-body);font-size:14px;line-height:1.6;color:#5F4A41"><strong style="font-weight:500">Le sélecteur de taille n'apparaît que sur les modèles concernés</strong> — 06a montre le cas majoritaire, sans lui. Sur les fiches à taille, le bouton d'ajout reste inactif jusqu'au choix.</li>
+            <li style="font-family:var(--font-body);font-size:14px;line-height:1.6;color:#5F4A41"><strong style="font-weight:500">La fiche épuisée ne s'excuse pas&nbsp;: elle propose.</strong> Contact, alerte e-mail, et deux créations disponibles. C'est une page qui reçoit du trafic de recherche longtemps après la fin de la série.</li>
+            <li style="font-family:var(--font-body);font-size:14px;line-height:1.6;color:#5F4A41">Galerie mobile&nbsp;: la vue courante occupe toute la largeur utile, avec <code style="font-family:ui-monospace,monospace;font-size:13px">scroll-snap-type: x mandatory</code> au glissement et <code style="font-family:ui-monospace,monospace;font-size:13px">scroll-snap-align: center</code> par vue. Les <strong style="font-weight:500">trois miniatures restent visibles sous les indicateurs</strong>&nbsp;: les 3 vues imposées par le brief sont atteignables sans deviner qu'on peut faire glisser. Aucune vue partielle ne dépasse du cadre.</li>
+            <li style="font-family:var(--font-body);font-size:14px;line-height:1.6;color:#5F4A41">Description et entretien en accordéons sur mobile&nbsp;: le bouton d'ajout reste à moins d'un défilement du prix.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>
