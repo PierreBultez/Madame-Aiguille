@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.0 (05/09/2026), livré en fin de lot 1
+Document interne — v1.1 (05/09/2026), livré en fin de lot 1
+
+> **v1.1** — Décision checkout : **Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`, gratuit, OSL-3.0). Hyvä Checkout (1 000 € de licence) est écarté. Lots 5 et 6 mis à jour en conséquence.
 
 Découpage en lots du développement restant, après les fondations (lot 1). Pour chaque lot : périmètre, dépendances, points d'incertitude et effort relatif (S · M · L · XL — à l'échelle d'un développeur seul, le lot 1 valant **M**).
 
@@ -25,12 +27,12 @@ Reste ouvert, transverse à tous les lots : les **SVG du logo** (brief `prompt-l
 | 2 | Catalogue : modèle de données, catégorie, fiche produit | 1 | **L** | faible |
 | 3 | Accueil, pages CMS, formulaire de contact | 2 | **L** | moyen (contenu) |
 | 4 | Panier et mini-panier | 2, config livraison du lot 5 | **M** | faible |
-| 5 | Livraison et paiements (table rates, Mondial Relay, Stripe, virement, main propre) | 2 | **XL** | **élevé** |
-| 6 | Checkout | 5 + décision Hyvä Checkout | **L → XL** | **élevé** |
+| 5 | Livraison et paiements (table rates, Mondial Relay, Stripe ou Mollie, virement, main propre) | 2, 6a | **XL** | **élevé** |
+| 6 | Checkout Luma fallback : installation (6a) puis habillage (6b) | 5 | **L** | moyen |
 | 7 | Compte client, emails transactionnels, statuts de commande | 6 | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
 
-Ordre recommandé : **2 → 3 → 5 (spike Mondial Relay + décision checkout en premier) → 4 → 6 → 7 → 8**. Le lot 3 peut démarrer en parallèle du spike du lot 5 : c'est celui qui dépend le plus du contenu de Céline, autant le lancer tôt.
+Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 (spike Mondial Relay en premier) → 4 → 6b → 7 → 8**. Installer le checkout tôt permet de tester les modules de livraison/paiement du lot 5 dans le vrai tunnel. Le lot 3 peut démarrer en parallèle du spike du lot 5 : c'est celui qui dépend le plus du contenu de Céline, autant le lancer tôt.
 
 ---
 
@@ -117,12 +119,12 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 - **TVA** : paramétrage selon le statut fiscal (franchise en base probable → prix TTC = HT, mention « TVA non applicable, art. 293 B du CGI » sur factures et footer).
 - **Expiration des commandes en attente de virement** : cron d'annulation + relibération du stock après N jours (à trancher), email de relance à J-2.
 
-**Dépendances** : lot 2 (poids sur les produits). Décision **checkout** (voir lot 6) **avant** de choisir les modules Stripe et Mondial Relay : leur compatibilité n'est pas la même selon que l'on garde le checkout Luma (Knockout) ou que l'on installe Hyvä Checkout.
+**Dépendances** : lot 2 (poids sur les produits) ; lot 6a (checkout Luma fallback installé) pour tester les modules dans le vrai tunnel. Critère de compatibilité des modules Stripe/Mollie et Mondial Relay : le **checkout natif Magento (Knockout)** — le cas standard de l'écosystème, donc large choix. La compatibilité Hyvä ne compte que pour ce qui s'affiche hors tunnel (panier, mini-panier, fiche produit, compte).
 
 **Incertitudes (fortes)**
 
 - Aucun module Mondial Relay compatible Hyvä n'est encore identifié. C'est le point à lever en premier.
-- **Constat du lot 1** : Mollie (`mollie/magento2` + `mollie/magento2-hyva-compatibility`) est déjà installé dans `vendor/`. Mollie couvre carte bancaire **et** virement SEPA, avec compatibilité Hyvä officielle. À mettre en balance avec Stripe avant de créer le compte marchand — l'un des deux est à retirer du projet.
+- **Constat du lot 1** : Mollie (`mollie/magento2` + `mollie/magento2-hyva-compatibility`) est déjà installé dans `vendor/`. Mollie couvre carte bancaire **et** virement SEPA. Stripe ou Mollie : les deux fonctionnent avec le checkout Luma ; **Pierre se renseigne et tranche** avant la création du compte marchand — l'un des deux est à retirer du projet. Points de comparaison : frais par transaction sur des paniers de 10-20 €, gestion du virement (SEPA par le prestataire vs virement natif rapproché à la main).
 - Paliers de poids, franco, périmètre de la remise en main propre, délai d'expiration du virement : quatre décisions de Céline.
 - Statut fiscal de Céline : à connaître avant la première vente.
 
@@ -130,26 +132,32 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 
 ---
 
-## Lot 6 — Checkout
+## Lot 6 — Checkout (Luma fallback)
 
-**Périmètre**
+**Décision prise (05/09/2026)** : Hyvä Checkout est un produit payant (1 000 € une fois, puis 250 €/an), sans édition gratuite — écarté. **Constat** : l'installation n'a aujourd'hui **aucun checkout** (`/checkout` affiche « No Checkout module installed »). On installe le **Luma Fallback Checkout** officiel de Hyvä : `hyva-themes/magento2-luma-checkout` (OSL-3.0, disponible sur le Packagist Hyvä de Pierre, v1.1.7 au 05/09/2026). Il rend le checkout natif Magento (Knockout / RequireJS) à l'intérieur du thème Hyvä — header et footer Hyvä, corps du tunnel Luma.
 
-- Tunnel en trois temps (spécification §4) : livraison (adresse, mode, point relais), paiement, récapitulatif + CGV, avec guest checkout (recommandé).
-- Gabarits Design System : champs 48 px, erreurs liées par `aria-describedby`, récapitulatif en colonne fixe à partir de lg, boutons pleine largeur sur mobile.
-- Pages de confirmation : succès (avec RIB pour le virement, instructions pour le retrait), échec de paiement (alerte erreur, panier conservé).
+**6a — Installation (½ journée, à faire juste après le lot 2)**
+
+- `composer require hyva-themes/magento2-luma-checkout`, `setup:upgrade`, vérification de `/checkout` avec un produit de test, guest checkout activé.
+- Vérifier que les scripts RequireJS ne se chargent **que** sur les pages du tunnel (performance).
+- Documenter dans `documentation-theme.md` où vivent les surcharges Luma (`Magento_Checkout/web/template/*.html`, `web/css/source/*.less` dans un thème Luma enfant ou via le mécanisme du fallback — à lire dans le README du module).
+
+**6b — Habillage (après le lot 5)**
+
+- Tunnel en trois temps (spécification §4) : livraison (adresse, mode, point relais), paiement, récapitulatif + CGV.
+- Branding **aux couleurs** plutôt qu'au pixel du Design System : palette, fontes (les mêmes `.woff2`), boutons 48 px, champs, messages d'erreur — par LESS/CSS et quelques templates Knockout ciblés. On retemplate le natif, on ne réécrit pas.
+- Pages de confirmation (Hyvä, déjà retemplatables en `.phtml`) : succès (RIB pour le virement, instructions de retrait), échec de paiement (alerte erreur, panier conservé).
 - reCAPTCHA sur la création de compte au checkout.
 
-**Dépendances** : lot 5 (modes de livraison et paiements configurés), lot 4 (panier).
+**Dépendances** : lot 5 (modes de livraison et paiements), lot 4 (panier).
 
-**Incertitudes — décision structurante à prendre avant le lot 5**
+**Incertitudes**
 
-- **Constat du lot 1** : `vendor/hyva-themes/` ne contient **pas** Hyvä Checkout. Le checkout actuel est celui de Luma (Knockout / RequireJS, rendu par le module de compatibilité Hyvä). Deux voies :
-  1. **Installer Hyvä Checkout** (Magewire est déjà présent dans `vendor/`, ce qui suggère qu'il était prévu) : cohérent avec le reste du thème, Alpine + Tailwind, retemplating naturel, écosystème de compatibilités propre (Stripe, Mollie). Vérifier la disponibilité sur le Packagist privé Hyvä et les conditions de licence.
-  2. **Garder le checkout Luma** : zéro dépendance nouvelle, mais retemplating en Knockout/LESS à contre-courant du thème, et compatibilité des modules paiement/relais à vérifier séparément.
-  Recommandation : voie 1, à confirmer dès le début du lot 5.
+- Degré de fidélité au Design System accepté pour le tunnel Luma (recommandation : couleurs, fontes, tailles de cibles ; pas de refonte de la structure).
+- Le module Mondial Relay retenu au lot 5 doit injecter son sélecteur dans le checkout Knockout : à valider pendant le spike.
 - Fusion de panier à la connexion, session expirée en tunnel : comportements natifs à recetter, pas à développer.
 
-**Effort : L avec Hyvä Checkout, XL avec le checkout Luma.**
+**Effort : L** (6a S, 6b M-L).
 
 ---
 
@@ -211,8 +219,8 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 
 ## Décisions techniques à prendre (Pierre)
 
-1. **Hyvä Checkout ou checkout Luma** — avant le lot 5.
-2. **Stripe ou Mollie** — Mollie est déjà installé avec sa compatibilité Hyvä ; à trancher avant la création du compte marchand.
+1. ~~Hyvä Checkout ou checkout Luma~~ — **tranché : Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`), lot 6a.
+2. **Stripe ou Mollie** — Pierre se renseigne et tranche avant la création du compte marchand ; les deux sont compatibles avec le checkout Luma.
 3. Module Mondial Relay — spike en début de lot 5.
 4. Formulaire de contact : module dédié `MadameAiguille_Contact` ou dans `MadameAiguille_Theme` (recommandé : dédié, pour isoler l'upload).
 5. Catégories de test « Sneakers » et « T-Shirts » à supprimer avec le jeu de données de démonstration.

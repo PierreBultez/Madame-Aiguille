@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.0 (05/09/2026), état en fin de lot 1. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.1 (05/09/2026), état en fin de lot 1. **À compléter à chaque lot** (une section par écran livré).
 
 Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
 
@@ -203,6 +203,10 @@ Classes Tailwind utilisables dans le CMS : celles listées dans `@source inline(
 ## 8. Page de contrôle `/styleguide`
 
 Route `styleguide` (module, `etc/frontend/routes.xml`), contrôleur `Controller/Index/Index.php` — **404 en mode production**. Layout `MadameAiguille_Theme/layout/madameaiguille_styleguide_index_index.xml`, template `MadameAiguille_Theme/templates/styleguide.phtml`. Tenir la page à jour à chaque nouveau composant : c'est la référence visuelle de recette.
+
+## 8 bis. Checkout — état et décision
+
+Aucun module de checkout n'est installé en fin de lot 1 : `/checkout` affiche le message Hyvä « No Checkout module installed » (layout `Magento_Checkout/layout/checkout_index_index.xml` du thème parent). **Décision (05/09/2026)** : Hyvä Checkout (licence payante, 1 000 €) est écarté ; on installera le **Luma Fallback Checkout** `hyva-themes/magento2-luma-checkout` (OSL-3.0, Packagist Hyvä) au lot 6a. Voir `plan-de-developpement.md`.
 
 ## 9. Commandes utiles
 
