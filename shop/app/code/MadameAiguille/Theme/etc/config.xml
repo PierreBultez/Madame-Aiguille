@@ -13,6 +13,12 @@
             </catalog>
         </madameaiguille>
         <!-- Décision du 05/09/2026 : les produits épuisés restent visibles (badge « Épuisé », fin de liste) -->
+        <!-- Poids saisis en kilogrammes (grilles transporteurs françaises) -->
+        <general>
+            <locale>
+                <weight_unit>kgs</weight_unit>
+            </locale>
+        </general>
         <cataloginventory>
             <options>
                 <show_out_of_stock>1</show_out_of_stock>
