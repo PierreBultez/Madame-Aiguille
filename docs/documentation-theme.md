@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.6 (10/09/2026), lot 6a validé par Pierre ; lot 3, accueil et pages CMS livrés pour recette. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.7 (10/09/2026), lot 6a validé par Pierre ; lot 3, accueil, pages CMS et contact livrés pour recette. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -490,3 +490,19 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 2 — Catalogue | attributs et set « Création », jeu de données, ViewModel LimitedSeries, view.xml 4:5, page catégorie, fraîcheur des badges, fiche produit, états vides, styleguide et documentation | `92500b5` → `ccabeab` + documentation |
 | 6a — Checkout | installation Luma fallback 1.1.7 + Theme Fallback 1.0.4, contrôle invité et isolation des scripts, documentation des surcharges 6b ; validé par Pierre après une commande | `7f46bb1` |
 | 3 — Étape 2 | gabarit partagé des titres de section, intégration catégorie / slider, trois rendus du styleguide, documentation ; recette Pierre en attente | branche `lot-3-accueil-cms-contact` |
+| 3 — Étape 5 | module Contact, objet, consentement, message limité, produit prérempli, pièce jointe privée, emails et blocs CMS | branche `lot-3-accueil-cms-contact` |
+
+## 18. Formulaire de contact
+
+La page `/contact` est fournie par le module `MadameAiguille_Contact`. Les encarts de la colonne de droite sont des blocs CMS modifiables depuis **Contenu > Éléments > Blocs** :
+
+- `contact_help` pour les informations pratiques ;
+- `contact_locations` pour les marchés, congés et annonces.
+
+Le formulaire accepte une photo JPG ou PNG de 5 Mo maximum. Le type MIME est contrôlé sur le serveur et le fichier reçoit un nom aléatoire dans `var/madameaiguille/contact`, hors du répertoire public. Une tâche cron purge chaque jour les fichiers arrivés à échéance. La durée, fixée à 30 jours par défaut, se règle dans **Boutiques > Configuration > Général > Madame Aiguille > Formulaire de contact**.
+
+Le lien depuis une fiche produit utilise `/contact?product=SKU`. Lorsque le produit est actif et visible, son nom, son image et sa référence sont présentés au-dessus du message.
+
+Les emails reprennent l’expéditeur et le destinataire du module Contact natif de Magento. Un premier email avec la pièce jointe est adressé à la boutique, puis un accusé de réception est envoyé au visiteur. La protection reCAPTCHA se configure avec le mécanisme Magento/Hyvä habituel.
+
+Les textes génériques des blocs CMS doivent être remplacés par les contenus validés par Céline avant la mise en production.

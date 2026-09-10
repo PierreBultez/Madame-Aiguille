@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <madameaiguille>
+            <contact>
+                <attachment_retention_days>30</attachment_retention_days>
+            </contact>
+        </madameaiguille>
+    </default>
+</config>

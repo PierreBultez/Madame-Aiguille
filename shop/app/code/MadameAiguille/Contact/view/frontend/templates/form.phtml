@@ -1,0 +1,163 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\ReCaptcha;
+use MadameAiguille\Contact\ViewModel\ContactForm as ContactFormViewModel;
+use Magento\Contact\Block\ContactForm;
+use Magento\Framework\Escaper;
+
+/** @var ContactForm $block */
+/** @var Escaper $escaper */
+/** @var ContactFormViewModel $contactForm */
+/** @var ReCaptcha|null $recaptcha */
+
+$formId = 'contact';
+$contactForm = $block->getData('contact_form_view_model');
+$recaptcha = $block->getData('viewModelRecaptcha');
+$subject = $contactForm->getValue('subject');
+$comment = $contactForm->getValue('comment');
+$product = $contactForm->getProduct();
+$productSku = $contactForm->getProductSku();
+?>
+<div class="contact-page">
+    <?= $block->getChildHtml('contact.heading') ?>
+
+    <div class="contact-layout">
+        <form class="contact-form"
+              action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
+              id="<?= $escaper->escapeHtmlAttr($formId) ?>"
+              method="post"
+              enctype="multipart/form-data"
+              x-data="initMadameAiguilleContactForm(<?= (int) mb_strlen($comment) ?>)"
+              @submit.prevent="submitForm()">
+            <fieldset>
+                <legend><?= $escaper->escapeHtml(__('Votre message')) ?></legend>
+
+                <div class="contact-fields">
+                    <div class="field required">
+                        <label for="name"><?= $escaper->escapeHtml(__('Nom')) ?></label>
+                        <input class="form-input" type="text" id="name" name="name"
+                               value="<?= $escaper->escapeHtmlAttr($contactForm->getName()) ?>"
+                               maxlength="100" autocomplete="name" required>
+                    </div>
+
+                    <div class="field required">
+                        <label for="email"><?= $escaper->escapeHtml(__('Adresse email')) ?></label>
+                        <input class="form-input" type="email" id="email" name="email"
+                               value="<?= $escaper->escapeHtmlAttr($contactForm->getEmail()) ?>"
+                               maxlength="254" autocomplete="email" required>
+                    </div>
+
+                    <div class="field required contact-field-wide">
+                        <label for="subject"><?= $escaper->escapeHtml(__('Objet')) ?></label>
+                        <select class="form-select" id="subject" name="subject" required>
+                            <option value=""><?= $escaper->escapeHtml(__('Choisir un objet')) ?></option>
+                            <?php foreach ($contactForm->getSubjects() as $value => $label): ?>
+                                <option value="<?= $escaper->escapeHtmlAttr($value) ?>"
+                                    <?= $subject === $value ? 'selected' : '' ?>>
+                                    <?= $escaper->escapeHtml(__($label)) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="field contact-field-wide">
+                        <label for="product"><?= $escaper->escapeHtml(__('Produit concerné')) ?></label>
+                        <?php if ($product): ?>
+                            <div class="contact-product" x-show="hasProduct">
+                                <img src="<?= $escaper->escapeUrl($contactForm->getProductImageUrl($product)) ?>"
+                                     alt="" width="80" height="80" loading="lazy">
+                                <div>
+                                    <strong><?= $escaper->escapeHtml($product->getName()) ?></strong>
+                                    <span><?= $escaper->escapeHtml(__('Réf. %1', $productSku)) ?></span>
+                                </div>
+                                <button type="button" @click="hasProduct = false; $refs.product.value = ''">
+                                    <?= $escaper->escapeHtml(__('Retirer')) ?>
+                                </button>
+                            </div>
+                            <input type="hidden" id="product" name="product" x-ref="product"
+                                   value="<?= $escaper->escapeHtmlAttr($productSku) ?>">
+                        <?php else: ?>
+                            <input class="form-input" type="text" id="product" name="product"
+                                   value="<?= $escaper->escapeHtmlAttr($productSku) ?>"
+                                   maxlength="64" autocomplete="off"
+                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Référence ou nom du produit (facultatif)')) ?>">
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="field required contact-field-wide">
+                        <div class="contact-label-row">
+                            <label for="comment"><?= $escaper->escapeHtml(__('Message')) ?></label>
+                            <span aria-live="polite"><span x-text="chars"><?= (int) mb_strlen($comment) ?></span>/1000</span>
+                        </div>
+                        <textarea class="form-input" name="comment" id="comment" rows="7"
+                                  maxlength="1000" autocomplete="off" required
+                                  @input="chars = $event.target.value.length"><?= $escaper->escapeHtml($comment) ?></textarea>
+                    </div>
+
+                    <div class="field contact-field-wide">
+                        <label for="attachment"><?= $escaper->escapeHtml(__('Photo jointe (facultatif)')) ?></label>
+                        <input class="contact-file" type="file" id="attachment" name="attachment"
+                               accept="image/jpeg,image/png,.jpg,.jpeg,.png">
+                        <p class="contact-hint"><?= $escaper->escapeHtml(__('JPG ou PNG, 5 Mo maximum.')) ?></p>
+                    </div>
+
+                    <div class="field contact-field-wide contact-consent">
+                        <input type="checkbox" id="consent" name="consent" value="1" required
+                            <?= $contactForm->getValue('consent') === '1' ? 'checked' : '' ?>>
+                        <label for="consent">
+                            <?= $escaper->escapeHtml(__('J’accepte que mes informations soient utilisées pour répondre à ma demande.')) ?>
+                            <a href="<?= $escaper->escapeUrl($block->getUrl('confidentialite')) ?>">
+                                <?= $escaper->escapeHtml(__('Politique de confidentialité')) ?>
+                            </a>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="sr-only" aria-hidden="true">
+                    <label for="hideit"><?= $escaper->escapeHtml(__('Ne pas remplir ce champ')) ?></label>
+                    <input type="text" name="hideit" id="hideit" value="" tabindex="-1" autocomplete="off">
+                </div>
+
+                <?= $block->getChildHtml('form.additional.info') ?>
+                <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
+            </fieldset>
+
+            <?= $block->getBlockHtml('formkey') ?>
+            <button type="submit" class="btn btn-primary contact-submit">
+                <?= $escaper->escapeHtml(__('Envoyer mon message')) ?>
+            </button>
+
+            <div>
+                <?= $block->getChildHtml('form.additional.after') ?>
+                <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
+            </div>
+        </form>
+
+        <aside class="contact-aside" aria-label="<?= $escaper->escapeHtmlAttr(__('Informations pratiques')) ?>">
+            <div class="contact-note"><?= $block->getChildHtml('contact.help') ?></div>
+            <div class="contact-note contact-note-accent"><?= $block->getChildHtml('contact.locations') ?></div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    function initMadameAiguilleContactForm(initialLength) {
+        return {
+            chars: initialLength,
+            hasProduct: true,
+            errors: 0,
+            hasCaptchaToken: 0,
+            submitForm() {
+                // La variable $form est utilisée par le script reCAPTCHA Hyvä.
+                const $form = document.querySelector('#<?= $escaper->escapeJs($formId) ?>');
+                this.errors = 0;
+                <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
+
+                if (this.errors === 0 && $form.reportValidity()) {
+                    $form.submit();
+                }
+            }
+        }
+    }
+</script>

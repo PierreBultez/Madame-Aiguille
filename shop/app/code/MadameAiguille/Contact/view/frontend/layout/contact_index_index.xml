@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <title>Contact</title>
+    </head>
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="contactForm" template="MadameAiguille_Contact::form.phtml">
+            <arguments>
+                <argument name="contact_form_view_model" xsi:type="object">MadameAiguille\Contact\ViewModel\ContactForm</argument>
+            </arguments>
+            <block name="contact.heading" template="MadameAiguille_Theme::section/heading.phtml" before="-">
+                <arguments>
+                    <argument name="section_heading" xsi:type="array">
+                        <item name="title" xsi:type="string" translate="true">Écrivez-nous</item>
+                        <item name="tag" xsi:type="string">h1</item>
+                        <item name="heading_class" xsi:type="string">font-display text-display-xl md:text-display-2xl text-brand</item>
+                        <item name="subtitle" xsi:type="string" translate="true">Une question, un projet ou un motif en tête ? Racontez-nous.</item>
+                    </argument>
+                </arguments>
+            </block>
+            <block class="Magento\Cms\Block\Block" name="contact.help">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">contact_help</argument>
+                </arguments>
+            </block>
+            <block class="Magento\Cms\Block\Block" name="contact.locations">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">contact_locations</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

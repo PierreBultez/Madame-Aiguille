@@ -1,0 +1,21 @@
+<!--@subject [Madame Aiguille] Nouveau message depuis le formulaire de contact @-->
+<!--@vars {
+"var data.name":"Nom",
+"var data.email":"Adresse email",
+"var data.subject_label":"Objet",
+"var data.product":"Produit concerné",
+"var data.comment":"Message",
+"var attachment_name":"Nom de la pièce jointe"
+} @-->
+{{template config_path="design/email/header_template"}}
+<p>Un nouveau message a été envoyé depuis le formulaire de contact.</p>
+<table class="message-details">
+    <tr><th>Nom</th><td>{{var data.name|escape}}</td></tr>
+    <tr><th>Email</th><td>{{var data.email|escape}}</td></tr>
+    <tr><th>Objet</th><td>{{var data.subject_label|escape}}</td></tr>
+    <tr><th>Produit concerné</th><td>{{var data.product|escape}}</td></tr>
+    <tr><th>Pièce jointe</th><td>{{var attachment_name|escape}}</td></tr>
+</table>
+<h2>Message</h2>
+<p>{{var data.comment|escape|nl2br}}</p>
+{{template config_path="design/email/footer_template"}}

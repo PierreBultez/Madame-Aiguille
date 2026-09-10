@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="madameaiguille">
+            <group id="contact" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Formulaire de contact</label>
+                <comment>Les pièces jointes sont conservées dans le répertoire privé var/ avant leur purge automatique.</comment>
+                <field id="attachment_retention_days" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Durée de conservation des pièces jointes (jours)</label>
+                    <comment>30 jours par défaut. Saisir 0 pour supprimer les fichiers dès le prochain passage de la purge.</comment>
+                    <validate>validate-digits validate-zero-or-greater</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,39 @@
+/* Contact : formulaire fonctionnel du module MadameAiguille_Contact. */
+.contact-index-index .page-main { @apply py-10 md:py-16; }
+.contact-page { @apply mx-auto max-w-6xl; }
+.contact-layout { @apply grid gap-8 mt-10 md:grid-cols-3 md:gap-12; }
+.contact-form { @apply rounded-sm border border-brand-line bg-brand-paper p-5 md:col-span-2 md:p-8; box-shadow: var(--shadow-card); }
+.contact-form legend { @apply mb-6 text-title text-brand-dark; }
+.contact-fields { @apply grid gap-x-5 gap-y-5 sm:grid-cols-2; }
+.contact-field-wide { @apply sm:col-span-2; }
+.contact-form :is(.form-input, .form-select) { @apply w-full; }
+.contact-form textarea { resize: vertical; min-height: 11rem; }
+.contact-label-row { @apply flex items-start justify-between gap-4; }
+.contact-label-row > span { @apply text-caption text-brand-muted; }
+.contact-file { @apply block w-full rounded-xs border border-dashed border-field-border bg-brand-ivory p-4 text-base text-brand-dark; }
+.contact-file::file-selector-button { @apply btn btn-secondary mr-4; }
+.contact-hint { @apply mt-2 text-caption text-brand-muted; }
+.contact-consent { @apply grid items-start gap-3; grid-template-columns: 1.25rem 1fr; }
+.contact-consent input { @apply mt-1 size-5 accent-brand; }
+.contact-consent label { @apply mb-0 text-base font-normal; }
+.contact-consent a { @apply ml-1 underline underline-offset-4; }
+.contact-submit { @apply mt-7 w-full justify-center sm:w-auto; }
+.contact-product { @apply flex items-center gap-4 rounded-sm border border-brand-line bg-brand-ivory p-3; }
+.contact-product img { @apply size-20 shrink-0 rounded-xs object-cover; }
+.contact-product div { @apply min-w-0 flex-1; }
+.contact-product strong { @apply block text-base font-medium text-brand-ink; }
+.contact-product span { @apply block mt-1 text-caption text-brand-muted; }
+.contact-product button { @apply min-h-11 px-2 text-base text-brand-dark underline underline-offset-4; }
+.contact-aside { @apply flex flex-col gap-5; }
+.contact-note { @apply rounded-sm border border-brand-line bg-brand-ivory p-6 text-brand-dark; }
+.contact-note-accent { @apply bg-brand-blush; }
+.contact-note h2 { @apply mb-4 font-display text-display text-brand; }
+.contact-note p { @apply mb-3; }
+.contact-note ul { @apply mt-4 space-y-3; }
+.contact-note li { @apply relative pl-5; }
+.contact-note li::before { content: "✦"; @apply absolute left-0 text-brand-rose; }
+
+@media (width < 40rem) {
+    .contact-page > .section-heading svg { display: none; }
+    .contact-product { @apply flex-wrap; }
+}
