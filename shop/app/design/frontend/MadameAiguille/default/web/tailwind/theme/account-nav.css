@@ -1,19 +1,94 @@
 @layer components {
-    .account-nav li {
-        & a,
-        & strong {
-            @apply flex justify-between py-1;
-            color: var(--color-fg-secondary);
+    .madameaiguille-account {
+        --account-sidebar-width: 280px;
+
+        @variant md {
+            --sidebar-width: var(--account-sidebar-width);
         }
 
-        & a:hover {
-            @apply underline;
-            color: var(--color-fg);
+        .columns {
+            gap: --spacing(6) --spacing(10);
         }
 
-        & strong {
-            @apply underline font-normal;
-            color: var(--color-fg);
+        .sidebar-main > .account-nav {
+            --card-px: 0;
+            --card-py: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-main > .account-nav > button {
+            min-block-size: --spacing(12);
+            padding-inline: --spacing(5);
+            font-weight: 500;
+
+            @variant md {
+                display: none;
+            }
+        }
+
+        .sidebar-main > .account-nav > nav {
+            margin: 0;
+            border: 0;
+            padding: 0;
+        }
+    }
+
+    .account-nav-customer {
+        display: flex;
+        flex-direction: column;
+        gap: --spacing(0.5);
+        border-block-end: 1px solid var(--color-brand-line);
+        background: var(--color-brand-blush);
+        padding: --spacing(5);
+
+        strong {
+            font-size: var(--text-subtitle);
+            font-weight: 500;
+        }
+
+        span {
+            overflow-wrap: anywhere;
+            color: var(--color-brand-dark);
+            font-size: var(--text-caption);
+        }
+    }
+
+    .account-nav-panel > .nav {
+        padding-block: --spacing(2);
+
+        li {
+            margin: 0;
+
+            & a,
+            & strong {
+                display: flex;
+                align-items: center;
+                min-block-size: --spacing(12);
+                border-inline-start: 3px solid transparent;
+                padding-inline: --spacing(5);
+                color: var(--color-brand-ink);
+                font-size: var(--text-base);
+                font-weight: 400;
+                text-decoration: none;
+            }
+
+            & a:hover {
+                background: var(--color-brand-ivory);
+                color: var(--color-brand-dark);
+                text-decoration: none;
+            }
+
+            & strong {
+                border-inline-start-color: var(--color-brand);
+                background: var(--color-brand-blush);
+                color: var(--color-brand-ink);
+                font-weight: 500;
+            }
+        }
+
+        .delimiter {
+            margin-block: --spacing(2);
+            border-block-start: 1px solid var(--color-brand-line);
         }
     }
 }

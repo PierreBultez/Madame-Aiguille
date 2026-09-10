@@ -1,0 +1,53 @@
+<?php
+/**
+ * Dernière commande du tableau de bord.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Order\Progress;
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\Recent;
+use Magento\Sales\Model\Order;
+
+/** @var Recent $block */
+/** @var Escaper $escaper */
+/** @var Progress $progress */
+/** @var Order[] $orders */
+$progress = $block->getData('view_model');
+$orders = $block->getOrders();
+?>
+<section class="dashboard-recent-order" aria-labelledby="recent-orders-title">
+    <div class="account-block-heading">
+        <h2 id="recent-orders-title"><?= $escaper->escapeHtml(__('Recent Orders')) ?></h2>
+        <?php if (count($orders) > 0): ?>
+            <a href="<?= $escaper->escapeUrl($block->getUrl('sales/order/history')) ?>">
+                <?= $escaper->escapeHtml(__('View All')) ?>
+            </a>
+        <?php endif; ?>
+    </div>
+    <?= $block->getChildHtml() ?>
+    <?php if (count($orders) > 0): ?>
+        <?php foreach ($orders as $order): ?>
+            <article class="dashboard-order-card">
+                <div>
+                    <p class="account-kicker"><?= $escaper->escapeHtml(__('Latest order')) ?></p>
+                    <h3><?= $escaper->escapeHtml(__('Order #%1', $order->getRealOrderId())) ?></h3>
+                    <p class="order-progress-copy"><?= $escaper->escapeHtml($progress->getPhrase($order)) ?></p>
+                </div>
+                <div class="dashboard-order-summary">
+                    <span class="order-status order-status-<?= $escaper->escapeHtmlAttr($progress->getBadgeVariant($order)) ?>">
+                        <?= $escaper->escapeHtml($order->getStatusLabel()) ?>
+                    </span>
+                    <strong class="price"><?= /* @noEscape */ $order->formatPrice($order->getGrandTotal()) ?></strong>
+                    <a class="btn btn-link btn-size-sm" href="<?= $escaper->escapeUrl($block->getViewUrl($order)) ?>">
+                        <?= $escaper->escapeHtml(__('Order Details')) ?>
+                    </a>
+                </div>
+            </article>
+            <?php break; ?>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p class="account-muted-copy"><?= $escaper->escapeHtml(__('You have placed no orders.')) ?></p>
+    <?php endif; ?>
+</section>

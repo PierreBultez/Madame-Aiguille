@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- L’assistance distante n’est pas proposée dans le parcours client Madame Aiguille. -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="form_additional_info_customer" remove="true"/>
+    </body>
+</page>

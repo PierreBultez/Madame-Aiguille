@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_account_dashboard_top">
+            <arguments>
+                <argument name="view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Order\Progress</argument>
+            </arguments>
+        </referenceBlock>
+        <move element="customer_account_dashboard_top" destination="content" before="customer_account_dashboard_info"/>
+    </body>
+</page>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <attribute name="class" value="madameaiguille-account"/>
+        <referenceBlock name="customer_account_navigation"
+                        template="Magento_Customer::account/navigation.phtml">
+            <arguments>
+                <argument name="view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Customer\AccountSummary</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="customer-account-navigation-wish-list-link" remove="true"/>
+        <referenceBlock name="customer-account-navigation-product-reviews-link" remove="true"/>
+        <referenceBlock name="customer-account-navigation-downloadable-products-link" remove="true"/>
+        <referenceBlock name="customer-account-navigation-my-credit-cards-link" remove="true"/>
+        <move element="authorization-link-login"
+              destination="customer_account_navigation"
+              after="-"/>
+    </body>
+</page>

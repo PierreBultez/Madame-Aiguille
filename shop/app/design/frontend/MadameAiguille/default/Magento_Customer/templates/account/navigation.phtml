@@ -1,0 +1,25 @@
+<?php
+/**
+ * Navigation du compte cliente.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Customer\AccountSummary;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Html\Links;
+
+/** @var Links $block */
+/** @var Escaper $escaper */
+/** @var AccountSummary $summary */
+$summary = $block->getData('view_model');
+?>
+<div class="account-nav-panel">
+    <div class="account-nav-customer">
+        <strong><?= $escaper->escapeHtml($summary->getName()) ?></strong>
+        <span><?= $escaper->escapeHtml($summary->getEmail()) ?></span>
+    </div>
+    <ul class="nav items">
+        <?= $block->getChildHtml() ?>
+    </ul>
+</div>

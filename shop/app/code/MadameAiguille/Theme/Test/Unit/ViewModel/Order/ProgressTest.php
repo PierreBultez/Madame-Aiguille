@@ -99,4 +99,15 @@ class ProgressTest extends TestCase
         self::assertSame('1 pièce', (string) $this->viewModel()->getQuantityLabel($this->order('unknown', [], 1)));
         self::assertSame('3 pièces', (string) $this->viewModel()->getQuantityLabel($this->order('unknown', [], 3)));
     }
+
+    public function testNativeMagentoStatusesAreMappedToCustomerProgress(): void
+    {
+        $processing = $this->order('processing');
+        $complete = $this->order('complete');
+
+        self::assertSame('preparing', $this->viewModel()->getBadgeVariant($processing));
+        self::assertSame(2, $this->viewModel()->getCurrentStep($processing));
+        self::assertSame('shipped', $this->viewModel()->getBadgeVariant($complete));
+        self::assertSame(3, $this->viewModel()->getCurrentStep($complete));
+    }
 }

@@ -40,7 +40,7 @@ class Progress implements ArgumentInterface
 
     public function getPhrase(OrderInterface $order): Phrase
     {
-        return match ($order->getStatus()) {
+        return match ($this->normalizeStatus((string) $order->getStatus())) {
             StatusConfig::PENDING_PAYMENT => __(
                 'Nous attendons votre règlement. Vos créations restent réservées.'
             ),
@@ -59,13 +59,13 @@ class Progress implements ArgumentInterface
             StatusConfig::DELIVERED => __(
                 'Votre commande a été livrée. Merci pour votre confiance.'
             ),
-            default => __('Votre commande est actuellement au statut « %1 ».', $order->getStatus()),
+            default => __('Le suivi de votre commande est disponible dans son détail.'),
         };
     }
 
     public function getBadgeVariant(OrderInterface $order): string
     {
-        return match ($order->getStatus()) {
+        return match ($this->normalizeStatus((string) $order->getStatus())) {
             StatusConfig::PENDING_PAYMENT => 'pending',
             StatusConfig::PAYMENT_RECEIVED => 'paid',
             StatusConfig::PREPARING => 'preparing',
@@ -79,7 +79,7 @@ class Progress implements ArgumentInterface
     public function getCurrentStep(OrderInterface $order): int
     {
         $steps = $this->getStepCodes($order);
-        $step = array_search($order->getStatus(), $steps, true);
+        $step = array_search($this->normalizeStatus((string) $order->getStatus()), $steps, true);
 
         return $step === false ? 0 : $step;
     }
@@ -122,11 +122,13 @@ class Progress implements ArgumentInterface
     private function getStepCodes(OrderInterface $order): array
     {
         $statuses = array_map(
-            static fn(OrderStatusHistoryInterface $history): ?string => $history->getStatus(),
+            fn(OrderStatusHistoryInterface $history): string => $this->normalizeStatus(
+                (string) $history->getStatus()
+            ),
             $order->getStatusHistories() ?? []
         );
 
-        return $order->getStatus() === StatusConfig::READY_FOR_PICKUP
+        return $this->normalizeStatus((string) $order->getStatus()) === StatusConfig::READY_FOR_PICKUP
             || in_array(StatusConfig::READY_FOR_PICKUP, $statuses, true)
             ? self::PICKUP_STEPS
             : self::DELIVERY_STEPS;
@@ -140,9 +142,9 @@ class Progress implements ArgumentInterface
         $dates = [];
 
         foreach (array_reverse($order->getStatusHistories() ?? []) as $history) {
-            $status = $history->getStatus();
+            $status = $this->normalizeStatus((string) $history->getStatus());
             $createdAt = $history->getCreatedAt();
-            if ($status === null || $createdAt === null || isset($dates[$status])) {
+            if ($status === '' || $createdAt === null || isset($dates[$status])) {
                 continue;
             }
 
@@ -153,8 +155,9 @@ class Progress implements ArgumentInterface
             );
         }
 
-        if (!isset($dates[(string) $order->getStatus()]) && $order->getUpdatedAt()) {
-            $dates[(string) $order->getStatus()] = $this->timezone->formatDateTime(
+        $currentStatus = $this->normalizeStatus((string) $order->getStatus());
+        if (!isset($dates[$currentStatus]) && $order->getUpdatedAt()) {
+            $dates[$currentStatus] = $this->timezone->formatDateTime(
                 $order->getUpdatedAt(),
                 \IntlDateFormatter::MEDIUM,
                 \IntlDateFormatter::NONE
@@ -162,5 +165,15 @@ class Progress implements ArgumentInterface
         }
 
         return $dates;
+    }
+
+    private function normalizeStatus(string $status): string
+    {
+        return match ($status) {
+            'new', 'pending', 'pending_payment', 'payment_review' => StatusConfig::PENDING_PAYMENT,
+            'processing' => StatusConfig::PREPARING,
+            'complete' => StatusConfig::SHIPPED,
+            default => $status,
+        };
     }
 }

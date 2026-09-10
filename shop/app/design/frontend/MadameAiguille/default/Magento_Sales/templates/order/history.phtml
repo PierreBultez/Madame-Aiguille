@@ -1,0 +1,68 @@
+<?php
+/**
+ * Historique des commandes sous forme de cartes.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Order\Progress;
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\History;
+use Magento\Sales\Model\Order;
+
+/** @var History $block */
+/** @var Escaper $escaper */
+/** @var Progress $progress */
+/** @var Order[] $orders */
+$progress = $block->getData('view_model');
+$orders = $block->getOrders();
+?>
+<div class="account-section-heading">
+    <p id="my-orders-title"><?= $escaper->escapeHtml(__('Follow every creation from payment to delivery.')) ?></p>
+</div>
+<?= $block->getChildHtml('info') ?>
+
+<?php if ($orders && count($orders)): ?>
+    <div class="order-card-list" aria-labelledby="my-orders-title">
+        <?php foreach ($orders as $order): ?>
+            <article class="order-card">
+                <header class="order-card-header">
+                    <div class="order-card-meta">
+                        <strong><?= $escaper->escapeHtml(__('Order #%1', $order->getRealOrderId())) ?></strong>
+                        <time datetime="<?= $escaper->escapeHtmlAttr($order->getCreatedAt()) ?>">
+                            <?= $escaper->escapeHtml($block->formatDate($order->getCreatedAt(), \IntlDateFormatter::LONG)) ?>
+                        </time>
+                        <span class="price"><?= /* @noEscape */ $order->formatPrice($order->getGrandTotal()) ?></span>
+                    </div>
+                    <span class="order-status order-status-<?= $escaper->escapeHtmlAttr($progress->getBadgeVariant($order)) ?>">
+                        <?= $escaper->escapeHtml($order->getStatusLabel()) ?>
+                    </span>
+                </header>
+                <div class="order-card-body">
+                    <p class="order-progress-copy"><?= $escaper->escapeHtml($progress->getPhrase($order)) ?></p>
+                    <p class="order-card-quantity"><?= $escaper->escapeHtml($progress->getQuantityLabel($order)) ?></p>
+                    <a class="btn btn-link btn-size-sm" href="<?= $escaper->escapeUrl($block->getViewUrl($order)) ?>">
+                        <?= $escaper->escapeHtml(__('Order Details')) ?>
+                    </a>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="order-products-toolbar toolbar bottom">
+            <?= $block->getPagerHtml() ?>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+    <div class="account-empty-state" role="status">
+        <svg width="48" height="48" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3.5 6h13l-.8 11H4.3L3.5 6Z" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M7.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <h2><?= $escaper->escapeHtml(__("You haven't placed an order yet")) ?></h2>
+        <p><?= $escaper->escapeHtml(__('Our limited series change often: discover the current creations.')) ?></p>
+        <a class="btn btn-primary btn-size-lg" href="<?= $escaper->escapeUrl($block->getUrl('')) ?>">
+            <?= $escaper->escapeHtml(__('Discover the shop')) ?>
+        </a>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,34 @@
+<?php
+/**
+ * Invitation à créer un compte, sans masquer le checkout invité.
+ */
+
+declare(strict_types=1);
+
+use Magento\Customer\Block\Form\Login\Info;
+use Magento\Framework\Escaper;
+
+/** @var Info $block */
+/** @var Escaper $escaper */
+?>
+<?php if ($block->getRegistration()->isAllowed()): ?>
+    <section class="block-new-customer card" aria-labelledby="block-new-customer-heading">
+        <h2 id="block-new-customer-heading" class="text-xl font-medium title-font mb-3">
+            <?= $escaper->escapeHtml(__('New Customers')) ?>
+        </h2>
+        <p><?= $escaper->escapeHtml(
+            __('Creating an account has many benefits: check out faster, keep more than one address, track orders and more.')
+        ) ?></p>
+        <div class="actions-toolbar pt-6 pb-2">
+            <a href="<?= $escaper->escapeUrl($block->getCreateAccountUrl()) ?>" class="btn btn-primary">
+                <?= $escaper->escapeHtml(__('Create an Account')) ?>
+            </a>
+        </div>
+        <p class="account-guest-note">
+            <?= $escaper->escapeHtml(__('You can also')) ?>
+            <a href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>">
+                <?= $escaper->escapeHtml(__('checkout without creating an account')) ?>
+            </a>.
+        </p>
+    </section>
+<?php endif; ?>

@@ -1,0 +1,91 @@
+<?php
+/**
+ * Détail d'une commande et frise d'avancement.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Order\Progress;
+use Magento\Framework\Escaper;
+use Magento\GiftMessage\Helper\Message;
+use Magento\Sales\Block\Order\View;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var Progress $progress */
+$giftMessageHelper = $this->helper(Message::class);
+$progress = $block->getData('view_model');
+$order = $block->getOrder();
+?>
+<article class="order-detail">
+    <header class="order-detail-header">
+        <div>
+            <h1><?= $escaper->escapeHtml(__('Order #%1', $order->getRealOrderId())) ?></h1>
+            <?= $block->getChildHtml('order.date') ?>
+        </div>
+        <span class="order-status order-status-<?= $escaper->escapeHtmlAttr($progress->getBadgeVariant($order)) ?>">
+            <?= $escaper->escapeHtml($order->getStatusLabel()) ?>
+        </span>
+        <?php if (!$block->getData('is_context_shipment')): ?>
+            <?= $block->getChildHtml('sales.order.buttons') ?>
+        <?php else: ?>
+            <?= $block->getChildHtml('sales.shipment.buttons') ?>
+        <?php endif; ?>
+    </header>
+
+    <section class="order-timeline-panel" aria-labelledby="order-tracking-title">
+        <h2 id="order-tracking-title"><?= $escaper->escapeHtml(__('Tracking')) ?></h2>
+        <p class="order-progress-copy"><?= $escaper->escapeHtml($progress->getPhrase($order)) ?></p>
+        <ol class="order-timeline">
+            <?php foreach ($progress->getTimeline($order) as $step): ?>
+                <li class="order-timeline-step is-<?= $escaper->escapeHtmlAttr($step['state']) ?>"
+                    <?php if ($step['state'] === 'current'): ?>aria-current="step"<?php endif; ?>>
+                    <span class="order-timeline-marker" aria-hidden="true"></span>
+                    <strong><?= $escaper->escapeHtml($step['label']) ?></strong>
+                    <span><?= $escaper->escapeHtml($step['date'] ?: __('Coming up')) ?></span>
+                </li>
+            <?php endforeach; ?>
+        </ol>
+    </section>
+
+    <div class="order-detail-content">
+        <?= $block->getChildHtml('order_top_items') ?>
+        <div class="order-detail-information">
+            <?= $block->getChildHtml('sales.order.info') ?>
+        </div>
+        <?= $block->getChildHtml('order.comments') ?>
+
+        <?php if (!$block->getData('is_context_shipment')): ?>
+            <div class="order-title">
+                <h2><?= $escaper->escapeHtml(__('Items Ordered')) ?></h2>
+                <?php if (!empty($order->getTracksCollection()->getItems())): ?>
+                    <?= $block->getChildHtml('tracking-info-link') ?>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?= $block->getChildHtml('order_items') ?>
+
+        <?php if ($giftMessageHelper->isMessagesAllowed('order', $order) && $order->getGiftMessageId()): ?>
+            <?php $giftMessage = $giftMessageHelper->getGiftMessageForEntity($order); ?>
+            <section class="order-gift-message">
+                <h2><?= $escaper->escapeHtml(__('Gift Message for This Order')) ?></h2>
+                <dl>
+                    <dt><?= $escaper->escapeHtml(__('From')) ?></dt>
+                    <dd><?= $escaper->escapeHtml($giftMessage->getSender()) ?></dd>
+                    <dt><?= $escaper->escapeHtml(__('To')) ?></dt>
+                    <dd><?= $escaper->escapeHtml($giftMessage->getRecipient()) ?></dd>
+                    <dt><?= $escaper->escapeHtml(__('Message')) ?></dt>
+                    <dd><?= /* @noEscape */ $giftMessageHelper->getEscapedGiftMessage($order) ?></dd>
+                </dl>
+            </section>
+        <?php endif; ?>
+
+        <a class="btn btn-link btn-size-sm" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+            <?= $escaper->escapeHtml($block->getBackTitle()) ?>
+        </a>
+    </div>
+</article>
