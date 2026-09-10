@@ -211,7 +211,7 @@ Voir aussi `../documentation-theme.md` (où modifier quoi) et `../plan-de-develo
 | Bloc Nouveautés / Actualités (page d'accueil) | — | À faire |
 | Formulaire de contact (pièce jointe + produit concerné) | `ContactForm` (à créer) | À faire |
 | Bloc Instagram + newsletter (page d'accueil) | — | À faire |
-| Panier / mini-panier | — | À faire |
+| Panier / mini-panier | `Cart\FreeShipping`, `Cart\Stock`, `Cart\Summary`, `Cart\Options` | **Livré — lot 4** |
 | Checkout (livraison/paiement) | — | À faire |
 | Compte client | — | À faire |
 

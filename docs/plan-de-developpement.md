@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.9 (10/09/2026), lots 6a et 3 validés ; prochain lot : lot 4
+Document interne — v2.0 (10/09/2026), lots 6a et 3 validés, lot 4 livré ; prochain lot : lot 5
+
+> **v2.0** — Lot 4 livré sur `codex/lot-4-panier`. Décisions de Pierre : franco affiché dès la v1 au seuil de 49 € des maquettes, montant configurable dans l'admin ; code promo masqué, activable sans toucher au layout. L'estimateur n'affiche que les méthodes réellement retournées par Magento — à ce jour Flat Rate seul. Trois points restent suspendus au lot 5 : la règle de livraison gratuite qui doit correspondre au seuil affiché, le pays par défaut encore réglé sur les États-Unis, et les tarifs réels des transporteurs.
 
 > **v1.9** — Ordre de reprise corrigé à la demande de Pierre : le lot 4 Panier et mini-panier suit le lot 3. Son estimateur utilisera les méthodes actuellement configurées et sera recetté de nouveau avec les vrais tarifs après le lot 5.
 
@@ -57,6 +59,21 @@ Livré et validé (commits `92500b5` → `ccabeab`, détail dans `documentation-
 - **Catégories réelles** : celles en base sont celles des maquettes (`docs/jeux-de-donnees/categories.php`) ; à définir avec Céline.
 - ~~**Contact** : lecture de `?product=<sku>`~~ — livré dans le module dédié, avec produit actif prérempli.
 - **Suivi de la fraîcheur des caches** en conditions réelles : à recetter au lot 4 (première commande de test) ; le cron Magento doit tourner (lot 8).
+
+## État après le lot 4 (10/09/2026)
+
+Livré (commits `3316965` → `eb54441`, détail dans `documentation-theme.md` §20) :
+
+- ViewModels `Cart\FreeShipping`, `Cart\Stock`, `Cart\Summary` et `Cart\Options`, plugin sur la section privée `cart` ; 24 tests unitaires sur le module ;
+- page panier : gabarit deux colonnes, tableau à quatre intitulés au-delà de 768 px et cartes empilées en dessous, quantité plafonnée au **stock vendable** (enfant simple pris en compte sur un configurable), rareté remontée dans la ligne, actions à 44 px ;
+- barre de franco à 49 €, calculée côté serveur, qui passe en succès et se tait une fois le seuil franchi ;
+- récapitulatif : totaux natifs restylés, bouton « Passer commande » conservant la fenêtre d'authentification, bloc CMS `cart_reassurance` éditable ;
+- estimation de livraison retemplatée, calcul strictement natif, groupée par transporteur ;
+- mini-panier en tiroir : 380 px desktop / plein écran mobile, liste défilante au-delà de quatre articles, pied fixe, quantité plafonnée, fermeture souris/clavier/clic extérieur ;
+- traductions des messages de panier et de stock : les paquets de langue Magento 2.4.9 sont vides, sans elles la boutique affichait « Shopping Cart » et « SousTotal » ;
+- styleguide : barre de franco dans ses trois états, ligne de panier normale / rare / incommandable, récapitulatif et pied de tiroir.
+
+**Points ouverts, tous rattachés au lot 5** : le franco de 49 € est un affichage tant qu'aucune règle de livraison gratuite ne lui correspond ; le pays par défaut de l'estimateur reste « États-Unis » ; seul Flat Rate est actif, à 5 € par article. Un comportement natif est par ailleurs à trancher : un produit désactivé pendant qu'il est au panier voit sa ligne retirée **sans message**.
 
 ### Décisions de Pierre pour le lot 3 — 10/09/2026
 
@@ -137,9 +154,9 @@ Ordre retenu : **2 → 6a → 3 → 4 → 5 → 6b → 7 → 8**. Le lot 4 const
 
 ---
 
-## Lot 4 — Panier et mini-panier
+## Lot 4 — Panier et mini-panier — **livré le 10/09/2026**
 
-**Périmètre**
+**Périmètre** (réalisé intégralement, voir « État après le lot 4 »)
 
 - Tiroir mini-panier (Design System §6.9) : 380 px desktop / plein écran mobile, barre de progression vers le franco (si retenu), liste défilante au-delà de 4 articles, pied fixe. Comportement natif Hyvä conservé (Alpine, `private-content`).
 - Page panier : lignes (image 4:5, quantité plafonnée au stock, suppression), récapitulatif, **estimation des frais de port** dès le panier (bloc natif « Estimate Shipping », code postal → tarifs par transporteur), message « plus que X € pour la livraison offerte ».
@@ -148,10 +165,10 @@ Ordre retenu : **2 → 6a → 3 → 4 → 5 → 6b → 7 → 8**. Le lot 4 const
 
 **Dépendances** : lot 2 (produits, stock) ; lot 5 pour que l'estimation affiche de vrais montants (les gabarits peuvent être faits avant avec un tarif provisoire).
 
-**Incertitudes**
+**Incertitudes — tranchées le 10/09/2026 par Pierre**
 
-- Franco de port : montant (49 € dans les maquettes) à confirmer par Céline — conditionne la barre de progression et le bandeau.
-- Code promo : champ masqué en v1 ou visible mais inactif ?
+- ~~Franco de port : montant à confirmer~~ → **49 €, affiché dès la v1**, montant configurable dans l'admin (0 masque la barre). À faire correspondre à une vraie règle de livraison gratuite au lot 5.
+- ~~Code promo : masqué ou visible ?~~ → **masqué**, activable par un réglage admin sans toucher au layout ; un coupon déjà appliqué reste toujours visible et retirable.
 
 **Effort : M.**
 

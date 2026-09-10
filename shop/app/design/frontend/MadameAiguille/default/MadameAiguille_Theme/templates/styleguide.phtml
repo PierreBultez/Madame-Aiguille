@@ -12,8 +12,13 @@ declare(strict_types=1);
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
+use MadameAiguille\Theme\ViewModel\Cart\FreeShipping;
+
 /** @var Template $block */
 /** @var Escaper $escaper */
+
+/** @var FreeShipping|null $freeShipping */
+$freeShipping = $block->getData('free_shipping');
 
 $colors = [
     ['brand', '#8A615C', 'Boutons principaux, titres, liens, prix', 'bg-brand'],
@@ -84,7 +89,7 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
 ?>
 <div class="pb-24">
     <header class="pt-8 pb-10 border-b border-brand-line">
-        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 3')) ?></p>
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 4')) ?></p>
         <h1 class="font-display text-display-xl md:text-display-2xl text-brand mb-4"><?= $escaper->escapeHtml(__('Madame Aiguille')) ?></h1>
         <p class="font-body italic text-lead text-brand-ink max-w-2xl"><?= $escaper->escapeHtml(__('Délicate, élégante, attentionnée. Un écrin neutre ; la couleur vient des tissus.')) ?></p>
         <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Cette page n’est servie qu’en mode developer / default. Utilisez Tab pour parcourir les états de focus.')) ?></p>
@@ -570,6 +575,128 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                 <?php $block->setData('preview', true); ?>
                 <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Cms::default/no-route.phtml')) ?>
                 <?php $block->unsetData('preview'); ?>
+            </div>
+        </div>
+    </section>
+    <!-- 10 · Panier et mini-panier (lot 4) -->
+    <section aria-labelledby="sg-cart">
+        <h2 id="sg-cart" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?>"><?= $escaper->escapeHtml(__('Panier et mini-panier')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?>"><?= $escaper->escapeHtml(__('Gabarits Magento_Checkout::php-cart/* et Magento_Theme::html/cart/cart-drawer.phtml. Les états ci-dessous sont des rendus figés : le stock, les prix et les totaux réels viennent toujours du serveur.')) ?></p>
+
+        <?php if ($freeShipping !== null && $freeShipping->isEnabled()): ?>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?> mt-6">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml(__('Barre de livraison offerte')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Seuil et libellés calculés par le ViewModel Cart\FreeShipping, à partir de sous-totaux d’exemple. La barre indique le montant restant, jamais un pourcentage ; une fois le seuil franchi elle passe en succès et se tait.')) ?></p>
+                <div class="grid gap-4 md:grid-cols-3">
+                    <?php foreach ([0.0, 42.0, $freeShipping->getThreshold() + 22.0] as $exemple): ?>
+                        <?php $etat = $freeShipping->getState($exemple); ?>
+                        <div>
+                            <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-2"><?= $escaper->escapeHtml(__('Sous-total %1', $freeShipping->formatPrice($exemple))) ?></p>
+                            <section class="franco-bar<?= $etat['reached'] ? ' franco-bar-reached' : '' ?>">
+                                <p class="franco-bar-message"><?= $escaper->escapeHtml($etat['message']) ?></p>
+                                <div class="franco-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                     aria-valuenow="<?= (int) $etat['progress'] ?>" aria-valuetext="<?= $escaper->escapeHtmlAttr($etat['message']) ?>">
+                                    <span class="franco-bar-fill" style="width: <?= (int) $etat['progress'] ?>%"></span>
+                                </div>
+                                <?php if (!$etat['reached']): ?>
+                                    <p class="franco-bar-amounts"><?= $escaper->escapeHtml($etat['progress_label']) ?></p>
+                                <?php endif ?>
+                            </section>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?> mt-5">
+            <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml(__('Ligne de panier — trois états')) ?></p>
+            <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Tableau à quatre intitulés au-delà de 768 px, cartes empilées en dessous. Le plafond de quantité est celui du stock vendable : au maximum, le bouton « + » est inactif et la raison est affichée.')) ?></p>
+            <div class="cart-lines">
+                <div class="cart-lines-head" aria-hidden="true">
+                    <span><?= $escaper->escapeHtml(__('Article')) ?></span>
+                    <span class="text-right"><?= $escaper->escapeHtml(__('Prix unitaire')) ?></span>
+                    <span class="text-center"><?= $escaper->escapeHtml(__('Quantité')) ?></span>
+                    <span class="text-right"><?= $escaper->escapeHtml(__('Sous-total')) ?></span>
+                    <span></span>
+                </div>
+                <ul class="cart-lines-list">
+                    <?php
+                    $exemples = [
+                        ['Pochettes Nomades', 'PN-10', 'Série limitée — 10 pièces', null, '18,00 €', 1, '18,00 €', false, false],
+                        ['Cotons Démaquillants', 'CD-05', null, 'Plus que 2 exemplaires — quantité plafonnée', '12,00 €', 2, '24,00 €', true, false],
+                        ['Pochette à Livre Isabelle', 'PI-06', null, null, '24,00 €', 3, '72,00 €', true, true],
+                    ];
+                    ?>
+                    <?php foreach ($exemples as [$nom, $ref, $serie, $rarete, $prix, $qte, $total, $auMax, $indispo]): ?>
+                        <li class="cart-line-wrapper">
+                            <article class="cart-line<?= $indispo ? ' cart-line-unavailable' : '' ?>">
+                                <div class="cart-line-product">
+                                    <div class="cart-line-photo" style="aspect-ratio: 4 / 5"></div>
+                                    <div class="cart-line-details">
+                                        <h3 class="cart-line-name"><?= $escaper->escapeHtml($nom) ?></h3>
+                                        <?php if ($rarete): ?><p class="cart-line-scarcity"><?= $escaper->escapeHtml($rarete) ?></p><?php endif ?>
+                                        <?php if ($serie): ?><p class="cart-line-series"><?= $escaper->escapeHtml($serie) ?></p><?php endif ?>
+                                        <p class="cart-line-sku"><?= $escaper->escapeHtml(__('réf. %1', $ref)) ?></p>
+                                        <?php if ($indispo): ?>
+                                            <div class="message error cart-line-message"><div><?= $escaper->escapeHtml(__('Il ne reste plus assez d’exemplaires de cette création.')) ?></div></div>
+                                        <?php endif ?>
+                                    </div>
+                                </div>
+                                <p class="cart-line-price">
+                                    <span class="cart-line-label"><?= $escaper->escapeHtml(__('Prix unitaire')) ?></span>
+                                    <span class="cart-line-value"><?= $escaper->escapeHtml($prix) ?></span>
+                                </p>
+                                <div class="cart-line-qty">
+                                    <span class="cart-line-label"><?= $escaper->escapeHtml(__('Quantité')) ?></span>
+                                    <div class="qty-stepper">
+                                        <button type="button" class="qty-step" disabled aria-hidden="true" tabindex="-1">−</button>
+                                        <input type="number" value="<?= (int) $qte ?>" readonly tabindex="-1" aria-hidden="true">
+                                        <button type="button" class="qty-step" <?= $auMax ? 'disabled' : '' ?> aria-hidden="true" tabindex="-1">+</button>
+                                    </div>
+                                    <p class="cart-line-qty-hint <?= $auMax ? 'font-medium text-error' : 'text-brand-muted' ?>">
+                                        <?= $escaper->escapeHtml($auMax ? __('Stock maximum atteint') : __('Plafonné à 10')) ?>
+                                    </p>
+                                </div>
+                                <p class="cart-line-subtotal">
+                                    <span class="cart-line-label"><?= $escaper->escapeHtml(__('Sous-total')) ?></span>
+                                    <span class="cart-line-value"><?= $escaper->escapeHtml($total) ?></span>
+                                </p>
+                                <div class="cart-line-actions">
+                                    <span class="cart-line-edit"><?= $escaper->escapeHtml(__('Modifier')) ?></span>
+                                    <span class="cart-line-remove"><?= $escaper->escapeHtml(__('Retirer')) ?></span>
+                                </div>
+                            </article>
+                        </li>
+                    <?php endforeach ?>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grid gap-5 mt-5 md:grid-cols-2">
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml(__('Récapitulatif')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Les frais de port n’apparaissent qu’une fois une méthode réellement retournée par Magento sélectionnée dans l’estimateur.')) ?></p>
+                <div class="cart-summary-panel">
+                    <h3 class="font-display text-display text-brand mb-4"><?= $escaper->escapeHtml(__('Récapitulatif')) ?></h3>
+                    <div class="cart-total-row"><div><?= $escaper->escapeHtml(__('Sous-total')) ?></div><div>114,00 €</div></div>
+                    <div class="cart-total-row"><div><?= $escaper->escapeHtml(__('Frais de port estimés')) ?></div><div>5,95 €</div></div>
+                    <div class="cart-total-row cart-total-grand"><div><?= $escaper->escapeHtml(__('Total')) ?></div><div>119,95 €</div></div>
+                    <div class="cart-checkout-actions"><ul><li><span class="btn btn-primary btn-size-lg w-full"><?= $escaper->escapeHtml(__('Passer commande')) ?></span></li></ul></div>
+                </div>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml(__('Pied du mini-panier')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Tiroir de 380 px sur desktop, plein écran sous 768 px : la liste défile, ce pied reste visible. Le tiroir lui-même s’ouvre depuis le bouton panier du header.')) ?></p>
+                <div class="rounded-sm border border-brand-line bg-brand-paper">
+                    <div class="cart-drawer-footer">
+                        <dl class="cart-drawer-subtotal"><dt><?= $escaper->escapeHtml(__('Sous-total')) ?></dt><dd>114,00 €</dd></dl>
+                        <p class="cart-drawer-note"><?= $escaper->escapeHtml(__('Frais de port calculés à l’étape de livraison.')) ?></p>
+                        <div class="cart-drawer-buttons">
+                            <span class="btn btn-primary btn-size-lg"><?= $escaper->escapeHtml(__('Passer commande')) ?></span>
+                            <span class="btn btn-size-lg"><?= $escaper->escapeHtml(__('Voir le panier')) ?></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

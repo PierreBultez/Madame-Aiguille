@@ -14,7 +14,12 @@
         <referenceBlock name="page.main.title" remove="true"/>
         <referenceBlock name="breadcrumbs" remove="true"/>
         <referenceContainer name="content">
-            <block name="madameaiguille.styleguide" template="MadameAiguille_Theme::styleguide.phtml"/>
+            <block name="madameaiguille.styleguide" template="MadameAiguille_Theme::styleguide.phtml">
+                <arguments>
+                    <!-- La barre de franco du styleguide est calculée par le vrai ViewModel : aucune règle n'est réécrite ici. -->
+                    <argument name="free_shipping" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\FreeShipping</argument>
+                </arguments>
+            </block>
         </referenceContainer>
     </body>
 </page>

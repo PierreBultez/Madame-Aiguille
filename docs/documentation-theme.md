@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.9 (10/09/2026), lots 6a et 3 validés par Pierre ; identité visuelle officielle intégrée. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.0 (10/09/2026), lots 6a, 3 et 4 livrés ; identité visuelle officielle intégrée. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -415,7 +415,7 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 
 ## 13. Page de contrôle `/styleguide`
 
-Route `styleguide` (module, `etc/frontend/routes.xml`), contrôleur `Controller/Index/Index.php` — **404 en mode production**. Layout `MadameAiguille_Theme/layout/madameaiguille_styleguide_index_index.xml`, template `MadameAiguille_Theme/templates/styleguide.phtml`. Tenir la page à jour à chaque nouveau composant : c'est la référence visuelle de recette. Sections lot 2 : carte produit (cinq états), fil d'Ariane, pagination, sélecteur de quantité, sélecteur de taille, états vides. Les photos des cartes viennent de `pub/media/madameaiguille/photos-test/` (jeu de données, dev uniquement).
+Route `styleguide` (module, `etc/frontend/routes.xml`), contrôleur `Controller/Index/Index.php` — **404 en mode production**. Layout `MadameAiguille_Theme/layout/madameaiguille_styleguide_index_index.xml`, template `MadameAiguille_Theme/templates/styleguide.phtml`. Tenir la page à jour à chaque nouveau composant : c'est la référence visuelle de recette. Sections lot 2 : carte produit (cinq états), fil d'Ariane, pagination, sélecteur de quantité, sélecteur de taille, états vides. Section lot 4 : barre de franco dans ses trois états (calculée par le vrai ViewModel), ligne de panier normale / rare / devenue incommandable, récapitulatif et pied de mini-panier. Les photos des cartes viennent de `pub/media/madameaiguille/photos-test/` (jeu de données, dev uniquement).
 
 ## 14. Checkout — Luma fallback (lot 6a)
 
@@ -501,6 +501,7 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 3 — Accueil et CMS | titres partagés, accueil éditable, newsletter, pages CMS et Nos tissus | `bdc1169` → `0522185` |
 | 3 — Contact et états vides | module Contact, pièce jointe privée, 404 interactive, panier vide, styleguide et recette transversale | `dfb6b45` → `6cbe5cc` |
 | 3 — Identité visuelle | logos officiels header/footer, favicon carré multi-tailles, rendu Contact replacé dans le thème enfant | `9c48987` |
+| 4 — Panier et mini-panier | ViewModels Cart (franco, stock, récapitulatif, options), plugin customer-data, page panier, récapitulatif et estimateur, mini-panier en tiroir, traductions des messages de stock, styleguide et documentation | `3316965` → `eb54441` |
 
 ## 18. Formulaire de contact
 
@@ -529,9 +530,67 @@ La 404 n’utilise pas le contenu de la page CMS `no-route` installée par Magen
 
 Les recommandations du panier sont automatiques. Pour modifier les produits proposés, renseigner les dates **Définir le produit comme nouveau à partir de / jusqu’au** dans la fiche produit ; les règles et la purge de cache sont identiques au bloc Nouveautés de l’accueil.
 
-## 20. Après le lot 3 : ce qui reste à faire
+## 20. Panier et mini-panier
 
-Le lot 3 est fonctionnellement terminé et validé. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
+Le panier vide relève du lot 3 (§19). Cette section traite le panier contenant des articles, le mini-panier et l'estimation des frais de port.
+
+### Où modifier quoi
+
+| Quoi | Où | Comment |
+|---|---|---|
+| **Seuil de livraison offerte** | Admin › *Stores › Configuration › Général › Madame Aiguille › Panier › Seuil de livraison offerte* | Défaut **49 €** (décision de Pierre du 10/09/2026, montant des maquettes). **0 masque complètement la barre.** Ce seuil est un affichage : il devra correspondre à la règle de livraison gratuite réellement configurée au lot 5 |
+| **Champ code promo** | même écran, *Afficher le champ code promo* | Masqué par défaut : un champ ouvert donne à celles qui n'ont pas de code le sentiment de payer trop cher. À activer le jour où une règle de panier existe. Un coupon déjà appliqué reste toujours affiché et retirable, même réglage désactivé |
+| **Rassurance sous le bouton de commande** | Admin › *Contenu › Blocs › `cart_reassurance`* | Deux lignes : paiement et délai d'expédition. Textes éditables, à aligner sur les prestataires réellement activés (lot 5) |
+| **Mention sous le total** | Admin › *Configuration › Madame Aiguille › Catalogue › Mention sous le prix* | Même réglage que la fiche produit. Vide = rien n'est affiché ; aucune mention fiscale n'est écrite dans le code |
+| Nombre d'articles affichés dans le tiroir | Admin › *Stores › Configuration › Sales › Checkout › Shopping Cart Sidebar* | Valeurs natives Magento conservées |
+| Textes des messages de stock et des totaux | `i18n/fr_FR.csv` du thème | Les paquets de langue Magento 2.4.9 ne contiennent plus de traductions : sans ces entrées, la boutique affiche « Shopping Cart », « SousTotal » et « The requested qty is not available » |
+
+### Templates et ViewModels
+
+| Fichier | Rôle |
+|---|---|
+| `Magento_Checkout/layout/checkout_cart_index.xml` | Injection des ViewModels, bloc de rassurance, état vide du lot 3 |
+| `Magento_Checkout/templates/php-cart/wrapper.phtml` | Deux colonnes ≥ 1024 px, titre « Mon panier — N articles », barre de franco |
+| `…/php-cart/form.phtml` | Intitulés de colonnes, liste des lignes, actions, composant Alpine du sélecteur de quantité |
+| `…/php-cart/item/default.phtml` | Ligne produit : image 4:5, variante, rareté, quantité plafonnée, sous-total |
+| `…/php-cart/item/renderer/actions/{edit,remove}.phtml` | Modifier / Retirer, cibles de 44 px |
+| `…/php-cart/totals.phtml` | Classes des totaux ; segments et ordre restent natifs |
+| `…/php-cart/{methods,onepage-link}.phtml` | Bouton « Passer commande » et rassurance |
+| `…/php-cart/shipping.phtml` | Estimation de livraison — script du parent conservé tel quel |
+| `MadameAiguille_Theme/templates/cart/coupon.phtml` | Code promo, masqué selon la configuration |
+| `Magento_Theme/templates/html/cart/cart-drawer.phtml` | Mini-panier en tiroir |
+| `ViewModel/Cart/FreeShipping.php` | Seuil, montant restant, progression, libellés |
+| `ViewModel/Cart/Stock.php` | Plafond de quantité d'une ligne, disponibilité, mentions de rareté |
+| `ViewModel/Cart/Summary.php` | Nombre d'articles et sous-total pour l'en-tête |
+| `ViewModel/Cart/Options.php` | Visibilité du code promo |
+| `Plugin/Checkout/CustomerData/AddCartData.php` | Ajoute à la section privée `cart` le plafond de stock de chaque ligne et l'état du franco |
+| `web/tailwind/theme/page-cart.css` | Tous les styles du panier et du tiroir |
+
+**Quantité plafonnée au stock.** Le renderer natif borne la quantité sur `max_sale_qty` (10 000 par défaut) : une cliente pouvait saisir six exemplaires d'une série où il en restait trois et ne l'apprendre qu'en validant. `Cart\Stock` ramène le plafond au stock vendable, via `LimitedSeries` — seule autorité du projet sur le stock. Sur un configurable, c'est le stock de l'enfant réellement commandé, pas la somme des tailles. Alpine ne fait que borner l'interface : toute quantité reste validée par Magento.
+
+**Franco de port.** Le montant restant est calculé côté serveur, à partir du quote sur la page panier et de la section privée dans le tiroir — jamais depuis un prix lu dans le DOM. La barre annonce un montant, jamais un pourcentage : « 12,00 € » est actionnable, « 75 % » ne l'est pas. Une fois le seuil franchi, elle passe en succès et se tait.
+
+**Mini-panier.** Tiroir de 380 px sur desktop, plein écran sous 768 px. Au-delà de quatre articles la liste défile, le pied reste visible. Le compteur affiche le nombre d'exemplaires, comme le badge du header et le titre de la page panier. Deux écarts nécessaires avec le gabarit du parent, commentés dans le template : le glissement est animé en CSS et non par les attributs `x-transition` (sur un `<dialog>` piloté par `x-htmldialog`, ils retardent l'ouverture de plusieurs secondes et empêchent la fermeture) ; et l'état ouvert force l'affichage en colonne, `x-show` écrivant un `display` inline qui casserait la liste défilante et le pied fixe.
+
+### Estimation des frais de port
+
+Le calcul est **entièrement natif** : appels REST `estimate-shipping-methods` et `totals-information`, mémorisation de l'adresse dans customer-data. Seul le gabarit change.
+
+**Seules les méthodes réellement retournées par Magento sont affichées**, groupées par transporteur. À ce jour une seule méthode est active (Flat Rate, 5 € par article) : c'est elle qui apparaît. Aucun nom de transporteur ni aucun tarif n'est écrit en dur — la boucle par transporteur accueillera Colissimo, Mondial Relay et Chronopost au lot 5 sans refonte. Quand aucune méthode n'est retournée, un message le dit au lieu de laisser la zone vide.
+
+### Recette du 10/09/2026
+
+- Panier vide, une création simple, un configurable (variante et stock de l'enfant), plusieurs lignes, quantité maximale, suppression du dernier article, rafraîchissement de page.
+- Mini-panier à 1440 et 390 px : ouverture, fermeture au bouton, à la touche Échap et au clic extérieur, retour du focus au bouton panier, liste défilante à six lignes, quantité jusqu'au plafond, suppression, compteur synchronisé avec la page panier.
+- Estimateur avec et sans code postal : France 75011 renvoie la méthode active et met à jour le total ; destination non desservie affiche le message dédié.
+- **Concurrence** : stock ramené à 1 sur une ligne qui en contenait 3 → bandeau « Une création de votre panier vient d'être épuisée », message sur la ligne, photo grisée, plafond atteint, et **retour au panier au lieu du tunnel de commande**. Stock restauré ensuite.
+- **Produit désactivé pendant que le panier est ouvert** : Magento retire la ligne **sans aucun message**. Comportement natif, conservé faute de pouvoir l'améliorer sans ajouter de logique métier — à trancher avec Pierre (voir §21).
+- Accès au checkout, et absence de RequireJS/Knockout sur le panier comme sur le tiroir.
+- Tests unitaires du module : **24 tests, 64 assertions**.
+
+## 21. Après le lot 4 : ce qui reste à faire
+
+Les lots 3 et 4 sont fonctionnellement terminés. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
@@ -543,8 +602,13 @@ Le lot 3 est fonctionnellement terminé et validé. Les éléments suivants dema
 | Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
 | Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter l'accusé de réception et la pièce jointe sur le domaine final | Lot 7–8 |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
+| **Franco de port** | Le seuil de 49 € est **affiché** mais aucune règle Magento n'offre encore la livraison : au lot 5, activer la livraison gratuite au même montant, ou ajuster le seuil dans *Madame Aiguille › Panier* | Pierre, lot 5 — **avant ouverture des ventes** |
+| **Pays par défaut de l'estimateur** | `general/country/default` et `shipping/origin/country_id` valent encore « États-Unis » : l'estimateur propose ce pays à l'ouverture. À passer sur la France | Pierre, lot 5 |
+| **Tarif d'expédition provisoire** | Seul Flat Rate est actif (5 € par article) ; c'est ce que l'estimateur affiche. À remplacer par les table rates au poids des trois transporteurs | Pierre, lot 5 |
+| **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié, hors périmètre du lot 4 | Décision Pierre |
+| **Rassurance et code promo du panier** | Renseigner `cart_reassurance` avec les moyens de paiement et le délai réellement tenus ; activer le champ code promo le jour où une règle de panier existe | Céline, avant publication |
 | Livraison et paiement | Choisir les prestataires et tarifs, puis aligner `product_reassurance`, le footer, la page Livraison et la mention sous le prix sur les modes réellement activés | Lot 5 |
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
 | Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
 
-Le prompt autonome pour reprendre par le lot 4 est `docs/prompts/prompt-codex-lot4.md`.
+Le lot suivant est le **lot 5 — Livraison et paiements**, qui conditionne la véracité du franco affiché, du pays par défaut et des tarifs de l'estimateur.
