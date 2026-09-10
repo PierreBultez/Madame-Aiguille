@@ -29,7 +29,7 @@ class StatusEmailSenderTest extends TestCase
         )->willReturn(true);
         $scopeConfig->method('getValue')->willReturnCallback(
             static fn(string $path): string => str_ends_with($path, '/template')
-                ? 'madameaiguille_payment_received'
+                ? 'sales_email_madameaiguille_payment_received_template'
                 : 'sales'
         );
 
@@ -37,7 +37,7 @@ class StatusEmailSenderTest extends TestCase
         $transport->expects(self::once())->method('sendMessage');
         $builder = $this->createMock(TransportBuilder::class);
         $builder->expects(self::once())->method('setTemplateIdentifier')
-            ->with('madameaiguille_payment_received')->willReturnSelf();
+            ->with('sales_email_madameaiguille_payment_received_template')->willReturnSelf();
         $builder->method('setTemplateOptions')->willReturnSelf();
         $builder->method('setTemplateVars')->willReturnSelf();
         $builder->method('setFromByScope')->with('sales', 1)->willReturnSelf();

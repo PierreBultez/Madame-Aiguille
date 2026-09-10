@@ -672,7 +672,9 @@ Les styles email sont en **LESS** (Magento ne compile pas Tailwind pour l'email)
 
 Elles n'existent pas dans Magento : « paiement reçu » et « prête pour retrait » sont propres au parcours de l'atelier.
 
-- Gabarits : `MadameAiguille_Theme/email/payment_received.html` et `ready_for_pickup.html`, déclarés dans `etc/email_templates.xml`.
+- Gabarits : `MadameAiguille_Theme/email/payment_received.html` et `ready_for_pickup.html`, déclarés dans `etc/email_templates.xml` sous les identifiants `sales_email_madameaiguille_payment_received_template` et `sales_email_madameaiguille_ready_for_pickup_template`.
+
+  > **L'identifiant d'un gabarit n'est pas libre.** Dès qu'un champ de configuration utilise le modèle source `Config\Source\Email\Template`, Magento reconstruit l'identifiant à partir du **chemin du champ**, slashs remplacés par des underscores : `sales_email/madameaiguille_payment_received/template` → `sales_email_madameaiguille_payment_received_template`. Si `email_templates.xml` déclare un autre nom, la page *Emails de vente* ne s'ouvre plus du tout — `UnexpectedTemplateIdValueException: Email template is not defined`, et pas seulement sur notre groupe : la section entière tombe. Même convention que `sales_email_order_template` chez Magento.
 - Déclenchement : `Observer/SendOrderStatusEmail` sur `sales_order_save_after`, **uniquement si le statut a réellement changé**, puis `Model/Order/Email/StatusEmailSender`. Aucune règle d'envoi dans un gabarit.
 - Réglages : *Boutiques › Configuration › Ventes › Emails de vente*, groupes « Paiement reçu » et « Prête pour retrait » (activation, expéditeur, gabarit). Les deux sont activés par défaut sur le gabarit du module.
 - L'email de retrait reprend le **commentaire de statut visible par la cliente** saisi dans la commande : c'est là que Céline écrira l'adresse, la date et l'heure de la remise en main propre.

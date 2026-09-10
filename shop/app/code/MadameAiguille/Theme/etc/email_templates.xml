@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
-    <template id="madameaiguille_payment_received"
+    <template id="sales_email_madameaiguille_payment_received_template"
               label="Madame Aiguille - paiement reçu"
               file="payment_received.html"
               type="html"
               module="MadameAiguille_Theme"
               area="frontend"/>
-    <template id="madameaiguille_ready_for_pickup"
+    <template id="sales_email_madameaiguille_ready_for_pickup_template"
               label="Madame Aiguille - prête pour retrait"
               file="ready_for_pickup.html"
               type="html"

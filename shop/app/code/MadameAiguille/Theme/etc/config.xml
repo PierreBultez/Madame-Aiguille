@@ -46,12 +46,12 @@
             <madameaiguille_payment_received>
                 <enabled>1</enabled>
                 <identity>sales</identity>
-                <template>madameaiguille_payment_received</template>
+                <template>sales_email_madameaiguille_payment_received_template</template>
             </madameaiguille_payment_received>
             <madameaiguille_ready_for_pickup>
                 <enabled>1</enabled>
                 <identity>sales</identity>
-                <template>madameaiguille_ready_for_pickup</template>
+                <template>sales_email_madameaiguille_ready_for_pickup_template</template>
             </madameaiguille_ready_for_pickup>
         </sales_email>
     </default>
