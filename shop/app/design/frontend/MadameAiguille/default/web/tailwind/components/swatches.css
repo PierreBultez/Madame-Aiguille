@@ -75,6 +75,7 @@
         --swatch-radius: var(--radius-sm);
         --swatch-px: --spacing(5);
         --swatch-py: --spacing(2);
+        position: relative; /* le radio absolu (inset: 0) ne doit couvrir que son propre bouton */
         display: inline-flex;
         flex-direction: column;
         align-items: center;
