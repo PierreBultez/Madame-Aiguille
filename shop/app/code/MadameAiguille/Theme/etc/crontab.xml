@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — purge nocturne des caches des produits dont la période
+ * de nouveauté commence ou finit (badge « Nouveauté »).
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="madameaiguille_refresh_novelty_badges" instance="MadameAiguille\Theme\Cron\RefreshNoveltyBadges" method="execute">
+            <schedule>5 0 * * *</schedule>
+        </job>
+    </group>
+</config>
