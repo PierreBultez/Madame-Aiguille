@@ -13,12 +13,16 @@ use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 use MadameAiguille\Theme\ViewModel\Cart\FreeShipping;
+use MadameAiguille\Theme\ViewModel\Styleguide\OrderStates;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
 
 /** @var FreeShipping|null $freeShipping */
 $freeShipping = $block->getData('free_shipping');
+
+/** @var OrderStates|null $orderStates */
+$orderStates = $block->getData('order_states');
 
 $colors = [
     ['brand', '#8A615C', 'Boutons principaux, titres, liens, prix', 'bg-brand'],
@@ -89,7 +93,7 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
 ?>
 <div class="pb-24">
     <header class="pt-8 pb-10 border-b border-brand-line">
-        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 4')) ?></p>
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 4 et 7')) ?></p>
         <h1 class="font-display text-display-xl md:text-display-2xl text-brand mb-4"><?= $escaper->escapeHtml(__('Madame Aiguille')) ?></h1>
         <p class="font-body italic text-lead text-brand-ink max-w-2xl"><?= $escaper->escapeHtml(__('Délicate, élégante, attentionnée. Un écrin neutre ; la couleur vient des tissus.')) ?></p>
         <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Cette page n’est servie qu’en mode developer / default. Utilisez Tab pour parcourir les états de focus.')) ?></p>
@@ -696,6 +700,127 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                             <span class="btn btn-size-lg"><?= $escaper->escapeHtml(__('Voir le panier')) ?></span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 11 · Compte client et commandes (lot 7) -->
+    <section aria-labelledby="sg-account">
+        <h2 id="sg-account" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?>"><?= $escaper->escapeHtml(__('Compte client et commandes')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?>"><?= $escaper->escapeHtml(__('Gabarits Magento_Customer::account/navigation.phtml et Magento_Sales::order/*.phtml. Les phrases d’avancement, les variantes de badge et les frises ci-dessous ne sont pas écrites ici : elles sortent du vrai ViewModel Order\\Progress, appelé sur des commandes d’exemple non enregistrées.')) ?></p>
+
+        <?php if ($orderStates !== null): ?>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?> mt-6 overflow-x-auto">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-1"><?= $escaper->escapeHtml(__('Les six statuts du parcours')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Créés par le data patch CreateOrderStatuses. Le libellé est le même côté cliente et côté back-office ; l’état Magento commande ce que l’administration autorise (facture, expédition, annulation).')) ?></p>
+                <table class="w-full text-left font-body text-label">
+                    <thead>
+                        <tr class="border-b border-brand-nude">
+                            <th class="py-2 pr-4 font-medium"><?= $escaper->escapeHtml(__('Libellé')) ?></th>
+                            <th class="py-2 pr-4 font-medium"><?= $escaper->escapeHtml(__('Code')) ?></th>
+                            <th class="py-2 pr-4 font-medium"><?= $escaper->escapeHtml(__('État Magento')) ?></th>
+                            <th class="py-2 font-medium"><?= $escaper->escapeHtml(__('Badge')) ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($orderStates->getStatuses() as $status): ?>
+                            <tr class="border-b border-brand-line/70">
+                                <td class="py-3 pr-4"><?= $escaper->escapeHtml($status['label']) ?></td>
+                                <td class="py-3 pr-4 font-mono text-caption text-brand-muted"><?= $escaper->escapeHtml($status['code']) ?></td>
+                                <td class="py-3 pr-4 font-mono text-caption text-brand-muted"><?= $escaper->escapeHtml($status['state']) ?></td>
+                                <td class="py-3">
+                                    <span class="order-status order-status-<?= $escaper->escapeHtmlAttr($status['badge']) ?>"><?= $escaper->escapeHtml($status['label']) ?></span>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?> mt-5">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-1"><?= $escaper->escapeHtml(__('Carte de commande — un état par statut')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('« Mes commandes » n’affiche jamais un statut sec : la carte porte une phrase qui dit où en est la commande. Le numéro, la date, le montant et le nombre de pièces viennent de la commande réelle.')) ?></p>
+                <div class="order-card-list">
+                    <?php foreach ($orderStates->getCards() as $card): ?>
+                        <article class="order-card">
+                            <header class="order-card-header">
+                                <div class="order-card-meta">
+                                    <strong><?= $escaper->escapeHtml(__('Commande n° %1', $card['increment_id'])) ?></strong>
+                                    <time datetime="2026-09-02"><?= $escaper->escapeHtml($card['date']) ?></time>
+                                    <span class="price"><?= $escaper->escapeHtml($card['total']) ?></span>
+                                </div>
+                                <span class="order-status order-status-<?= $escaper->escapeHtmlAttr($card['badge']) ?>"><?= $escaper->escapeHtml($card['status_label']) ?></span>
+                            </header>
+                            <div class="order-card-body">
+                                <p class="order-progress-copy"><?= $escaper->escapeHtml($card['phrase']) ?></p>
+                                <p class="order-card-quantity"><?= $escaper->escapeHtml($card['quantity']) ?></p>
+                                <span class="btn btn-link btn-size-sm"><?= $escaper->escapeHtml(__('Détail de la commande')) ?></span>
+                            </div>
+                        </article>
+                    <?php endforeach ?>
+                </div>
+            </div>
+
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?> mt-5">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-1"><?= $escaper->escapeHtml(__('Étapes de suivi')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Cinq étapes en ligne au-delà de 768 px, empilées en dessous. Une étape franchie est cochée et datée, l’étape courante porte aria-current="step", les suivantes annoncent « À venir ».')) ?></p>
+                <div class="grid gap-5">
+                    <?php foreach ($orderStates->getTimelines() as $frise): ?>
+                        <div>
+                            <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml($frise['title']) ?></p>
+                            <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-4"><?= $escaper->escapeHtml($frise['note']) ?></p>
+                            <section class="order-timeline-panel !mx-0">
+                                <h3 class="font-body font-medium text-subtitle mb-2"><?= $escaper->escapeHtml(__('Suivi')) ?></h3>
+                                <p class="order-progress-copy"><?= $escaper->escapeHtml($frise['phrase']) ?></p>
+                                <ol class="order-timeline">
+                                    <?php foreach ($frise['timeline'] as $step): ?>
+                                        <li class="order-timeline-step is-<?= $escaper->escapeHtmlAttr($step['state']) ?>"
+                                            <?php if ($step['state'] === 'current'): ?>aria-current="step"<?php endif ?>>
+                                            <span class="order-timeline-marker" aria-hidden="true"></span>
+                                            <strong><?= $escaper->escapeHtml($step['label']) ?></strong>
+                                            <span><?= $escaper->escapeHtml($step['date'] ?: __('À venir')) ?></span>
+                                        </li>
+                                    <?php endforeach ?>
+                                </ol>
+                            </section>
+                        </div>
+                    <?php endforeach ?>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <div class="grid gap-5 mt-5 md:grid-cols-[280px_minmax(0,1fr)] md:items-start">
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml(__('Navigation du compte')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Colonne de 280 px sur desktop, accordéon replié sous 768 px. La page courante est un <strong>, jamais un lien : c’est Magento qui le décide.')) ?></p>
+                <div class="overflow-hidden rounded-sm border border-brand-line bg-brand-paper">
+                    <div class="account-nav-panel">
+                        <div class="account-nav-customer">
+                            <strong><?= $escaper->escapeHtml(__('Marie Dupont')) ?></strong>
+                            <span>marie.dupont@example.test</span>
+                        </div>
+                        <ul class="nav items">
+                            <li><strong><?= $escaper->escapeHtml(__('Mon compte')) ?></strong></li>
+                            <li><a href="#sg-account"><?= $escaper->escapeHtml(__('Mes commandes')) ?></a></li>
+                            <li><a href="#sg-account"><?= $escaper->escapeHtml(__('Mon carnet d’adresses')) ?></a></li>
+                            <li><a href="#sg-account"><?= $escaper->escapeHtml(__('Informations personnelles')) ?></a></li>
+                            <li class="delimiter"></li>
+                            <li><a href="#sg-account"><?= $escaper->escapeHtml(__('Newsletter')) ?></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-1"><?= $escaper->escapeHtml(__('Compte sans commande')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Même règle que les autres états vides : nommer ce qui manque, expliquer pourquoi, offrir une sortie.')) ?></p>
+                <div class="account-empty-state" role="status">
+                    <svg width="48" height="48" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M3.5 6h13l-.8 11H4.3L3.5 6Z" stroke="currentColor" stroke-width="1.2"/>
+                        <path d="M7.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                    <h3 class="max-w-lg font-display text-display text-brand"><?= $escaper->escapeHtml(__('Vous n’avez pas encore passé commande')) ?></h3>
+                    <p><?= $escaper->escapeHtml(__('Nos séries limitées changent souvent : découvrez les créations du moment.')) ?></p>
+                    <span class="btn btn-primary btn-size-lg"><?= $escaper->escapeHtml(__('Découvrir la boutique')) ?></span>
                 </div>
             </div>
         </div>

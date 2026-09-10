@@ -18,6 +18,8 @@
                 <arguments>
                     <!-- La barre de franco du styleguide est calculée par le vrai ViewModel : aucune règle n'est réécrite ici. -->
                     <argument name="free_shipping" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\FreeShipping</argument>
+                    <!-- Les états de commande sont produits par le vrai ViewModel Order\Progress sur des commandes d'exemple non enregistrées. -->
+                    <argument name="order_states" xsi:type="object">MadameAiguille\Theme\ViewModel\Styleguide\OrderStates</argument>
                 </arguments>
             </block>
         </referenceContainer>
