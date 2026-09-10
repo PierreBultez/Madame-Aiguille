@@ -1,0 +1,39 @@
+/* États vides : 404 et panier sans article. */
+.cms-noroute-index .page-main { @apply py-10 md:py-16; }
+.error-page { @apply mx-auto max-w-3xl rounded-md border border-brand-line bg-brand-paper px-5 py-10 text-center md:px-12 md:py-16; }
+.error-code { @apply mb-1 text-caption font-medium tracking-label text-brand-muted; }
+.error-title { @apply font-display text-display-xl text-brand md:text-display-2xl; }
+.error-copy { @apply mx-auto mt-3 max-w-xl text-base text-brand-ink md:text-lead; }
+.error-thread-button { @apply mx-auto mt-6 flex min-h-11 w-full max-w-xl flex-col items-center justify-center rounded-sm px-3 text-base text-brand-dark underline decoration-brand-nude underline-offset-4; }
+.error-thread-scene { @apply mb-2 w-full text-brand-nude; max-height: 11.25rem; }
+.error-thread-scene :is(path, ellipse) { stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.error-thread { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.error-needle { transform-origin: 395px 90px; transition: transform 700ms ease; }
+.error-heart { fill: var(--color-brand-rose); stroke: none !important; opacity: 0; transform-origin: center; transform: scale(.4); transition: opacity 350ms ease 350ms, transform 350ms ease 350ms; }
+.error-page.is-found .error-needle { transform: translate(-172px, 38px) rotate(-18deg); }
+.error-page.is-found .error-thread { animation: stitch-thread 750ms ease both; }
+.error-page.is-found .error-heart { opacity: 1; transform: scale(1); }
+.error-surprise { @apply mx-auto mt-3 max-w-lg rounded-sm bg-brand-blush px-4 py-3 text-base text-brand-dark; }
+.error-actions { @apply mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row; }
+
+.checkout-cart-index .page-main { @apply py-8 md:py-12; }
+.cart-empty-page { @apply mx-auto max-w-6xl; }
+.cart-empty-state { @apply mx-auto max-w-2xl rounded-md border border-brand-line bg-brand-paper px-5 py-10 text-center md:px-10 md:py-12; }
+.cart-empty-state > svg { @apply mx-auto mb-5 text-brand-nude; }
+.cart-empty-state :is(h1, h3) { @apply mb-3 font-display text-display text-brand md:text-display-lg; }
+.cart-empty-state p { @apply mx-auto mb-6 max-w-md text-base text-brand-ink; }
+.cart-empty-recommendations { @apply mt-12 md:mt-16; }
+.cart-empty-recommendations .section-heading { @apply mb-8; }
+.cart-empty-recommendations .home-products { @apply mx-auto max-w-2xl; }
+
+@keyframes stitch-thread {
+    0% { stroke-dashoffset: 0; }
+    48% { stroke-dashoffset: 1; }
+    49% { stroke-dashoffset: -1; }
+    100% { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .error-page :is(.error-needle, .error-heart) { transition: none; }
+    .error-page.is-found .error-thread { animation: none; }
+}

@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.6 (10/09/2026), lot 6a validé ; lot 3, pages CMS livrées pour recette
+Document interne — v1.7 (10/09/2026), lot 6a validé ; lot 3 intégralement livré pour recette finale
+
+> **v1.7** — Étapes 4 et 5 validées par Pierre. Module Contact livré avec stockage privé et purge à 30 jours configurable. Étape 6 : 404 interactive accessible, panier vide avec deux nouveautés disponibles, vrais rendus ajoutés au styleguide et recette transversale à 390 / 1440 px. Lot 3 en attente de validation finale.
 
 > **v1.6** — Étape 3 validée par Pierre. Étape 4 : gabarit commun des pages CMS, contenu générique À propos sans écrasement des modifications, page Nos tissus avec quatre références éditables et lien dans le footer. Les pages juridiques restent « À rédiger ». Recette des six URL et contrôles à 390 / 1440 px effectués ; validation Pierre en attente avant le formulaire de contact.
 
@@ -60,11 +62,11 @@ Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et da
 - **Newsletter** : activée au lancement, module natif avec double opt-in. Le comportement « Me prévenir » d'une série précise reste à cadrer : une inscription à la newsletter n'est pas une alerte de réassort ciblée.
 - **Nos tissus** : page CMS incluse dans le lot 3.
 - **Navigation** : CTA contextuels vers la catégorie concernée ; « Voir toute la boutique » vers l'accueil. Pas de nouvelle catégorie globale Boutique. Le CTA du hero devra exposer une destination catégorie éditable ; la destination de « Voir toutes les nouveautés » reste à préciser.
-- **Contact** : module dédié `MadameAiguille_Contact`, nom, email, produit prérempli via `?product=<sku>`, objet, message limité à 1 000 caractères, case de consentement. Photo optionnelle disponible sur desktop et mobile : JPG/PNG, 5 Mo, validation MIME serveur et stockage **hors `pub/`**. Durée de conservation et purge à définir avant l'étape contact.
+- **Contact** : module dédié `MadameAiguille_Contact`, nom, email, produit prérempli via `?product=<sku>`, objet, message limité à 1 000 caractères, case de consentement. Photo optionnelle disponible sur desktop et mobile : JPG/PNG, 5 Mo, validation MIME serveur et stockage **hors `pub/`**. Conservation fixée à 30 jours par défaut, configurable dans l’admin, avec purge quotidienne.
 - **Contenus** : textes génériques éditables dans le back-office et emplacements documentés ; aucune biographie, date de marché ou promesse de délai fictive présentée comme validée. Les pages légales restent « À rédiger » sans texte fourni.
 - **404** : même direction artistique que les états vides avec un petit easter egg ludique. Proposition : bobine déroulée, « On a perdu le fil… », aiguille animée au clic, accessible au clavier et respectant la préférence de réduction des animations.
 
-Ordre des étapes à valider séparément : **1)** lot 6a (validé) ; **2)** composant partagé de titre de section (validé) ; **3)** accueil (validé) ; **4)** pages CMS dont Nos tissus (livrées pour recette) ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
+Ordre des étapes à valider séparément : **1)** lot 6a (validé) ; **2)** composant partagé de titre de section (validé) ; **3)** accueil (validé) ; **4)** pages CMS dont Nos tissus (validées) ; **5)** contact (validé) ; **6)** 404, panier vide et recette transversale (livrée pour recette). Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
 
 ## Vue d'ensemble
 

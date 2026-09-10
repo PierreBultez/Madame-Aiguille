@@ -504,7 +504,32 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
         </div>
     </section>
 
-    <!-- 09 · États vides (lot 2) -->
+    <!-- Lot 3 · Formulaire de contact -->
+    <section aria-labelledby="sg-contact">
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mt-16"><?= $escaper->escapeHtml(__('Lot 3 · contact')) ?></p>
+        <h2 id="sg-contact" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?> mt-1"><?= $escaper->escapeHtml(__('Formulaire de contact')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> max-w-3xl"><?= $escaper->escapeHtml(__('Aperçu statique des champs spécifiques. Le rendu fonctionnel, avec validation serveur, reCAPTCHA et préremplissage, se trouve sur /contact.')) ?></p>
+        <form class="contact-form mt-6 max-w-3xl" action="#sg-contact" method="get" onsubmit="return false">
+            <fieldset>
+                <legend><?= $escaper->escapeHtml(__('Votre message')) ?></legend>
+                <div class="contact-fields">
+                    <div class="field required"><label for="sg-contact-name"><?= $escaper->escapeHtml(__('Nom')) ?></label><input class="form-input" id="sg-contact-name" type="text" value="<?= $escaper->escapeHtmlAttr(__('Céline')) ?>"></div>
+                    <div class="field required"><label for="sg-contact-email"><?= $escaper->escapeHtml(__('Adresse email')) ?></label><input class="form-input" id="sg-contact-email" type="email" value="<?= $escaper->escapeHtmlAttr(__('celine@example.test')) ?>"></div>
+                    <div class="field required contact-field-wide"><label for="sg-contact-subject"><?= $escaper->escapeHtml(__('Objet')) ?></label><select class="form-select" id="sg-contact-subject"><option><?= $escaper->escapeHtml(__('Une création ou un tissu')) ?></option></select></div>
+                    <div class="field contact-field-wide">
+                        <span class="<?= $escaper->escapeHtmlAttr($labelClass) ?> block mb-1.5"><?= $escaper->escapeHtml(__('Produit concerné')) ?></span>
+                        <div class="contact-product"><div><strong><?= $escaper->escapeHtml(__('Trousse Romantique')) ?></strong><span><?= $escaper->escapeHtml(__('Réf. MA-TRO-ROM')) ?></span></div><button type="button"><?= $escaper->escapeHtml(__('Retirer')) ?></button></div>
+                    </div>
+                    <div class="field required contact-field-wide"><div class="contact-label-row"><label for="sg-contact-message"><?= $escaper->escapeHtml(__('Message')) ?></label><span>72/1000</span></div><textarea class="form-input" id="sg-contact-message" rows="4"><?= $escaper->escapeHtml(__('Bonjour, cette trousse peut-elle être réalisée avec le motif T03 ?')) ?></textarea></div>
+                    <div class="field contact-field-wide"><label for="sg-contact-file"><?= $escaper->escapeHtml(__('Photo jointe (facultatif)')) ?></label><input class="contact-file" id="sg-contact-file" type="file"><p class="contact-hint"><?= $escaper->escapeHtml(__('JPG ou PNG, 5 Mo maximum.')) ?></p></div>
+                    <div class="field contact-field-wide contact-consent"><input id="sg-contact-consent" type="checkbox" checked><label for="sg-contact-consent"><?= $escaper->escapeHtml(__('J’accepte que mes informations soient utilisées pour répondre à ma demande.')) ?></label></div>
+                </div>
+            </fieldset>
+            <button type="button" class="btn btn-primary contact-submit"><?= $escaper->escapeHtml(__('Envoyer mon message')) ?></button>
+        </form>
+    </section>
+
+    <!-- 09 · États vides (lots 2 et 3) -->
     <section aria-labelledby="sg-empty">
         <h2 id="sg-empty" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?>"><?= $escaper->escapeHtml(__('États vides')) ?></h2>
         <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?>"><?= $escaper->escapeHtml(__('Trois règles : nommer ce qui manque, expliquer pourquoi, offrir une sortie. Magento_Catalog::product/list/empty.phtml, modes « category » et « search ».')) ?></p>
@@ -531,6 +556,20 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                     </div>
                     <span class="btn btn-primary"><?= $escaper->escapeHtml(__('Voir toute la boutique')) ?></span>
                 </div>
+            </div>
+        </div>
+        <div class="grid gap-5 mt-5">
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-5"><?= $escaper->escapeHtml(__('Panier vide — rendu du template')) ?></p>
+                <?php $block->setData('preview', true); ?>
+                <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Checkout::php-cart/noItems.phtml')) ?>
+                <?php $block->unsetData('preview'); ?>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-5"><?= $escaper->escapeHtml(__('404 — rendu interactif du template')) ?></p>
+                <?php $block->setData('preview', true); ?>
+                <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Cms::default/no-route.phtml')) ?>
+                <?php $block->unsetData('preview'); ?>
             </div>
         </div>
     </section>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="catalog_list_item"/>
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="checkout.cart.empty" template="Magento_Checkout::php-cart/noItems.phtml">
+            <block class="MadameAiguille\Theme\Block\Home\NewProducts" name="checkout.cart.empty.recommendations" as="recommendations" template="MadameAiguille_Theme::home/products.phtml">
+                <arguments>
+                    <argument name="products_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Products</argument>
+                    <argument name="item_renderer" xsi:type="object">Hyva\Theme\ViewModel\ProductListItem</argument>
+                    <argument name="display_type" xsi:type="string">new_products</argument>
+                    <argument name="products_count" xsi:type="number">2</argument>
+                    <argument name="conditions" xsi:type="array"/>
+                    <argument name="show_pager" xsi:type="boolean">false</argument>
+                </arguments>
+                <block name="checkout.cart.empty.recommendations.heading" as="heading" template="MadameAiguille_Theme::section/heading.phtml">
+                    <arguments>
+                        <argument name="section_heading" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Les dernières nouveautés</item>
+                            <item name="tag" xsi:type="string">h2</item>
+                            <item name="heading_class" xsi:type="string">font-display text-display md:text-display-xl text-brand</item>
+                        </argument>
+                    </arguments>
+                </block>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

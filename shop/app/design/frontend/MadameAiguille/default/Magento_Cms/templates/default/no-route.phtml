@@ -1,0 +1,55 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$preview = (bool) $block->getData('preview');
+$headingTag = $preview ? 'h3' : 'h1';
+$stateId = $preview ? 'error-thread-message-preview' : 'error-thread-message';
+?>
+<section class="error-page" x-data="{ found: false }" :class="found && 'is-found'">
+    <p class="error-code" aria-hidden="true">404</p>
+    <<?= /* @noEscape */ $headingTag ?> class="error-title">
+        <?= $escaper->escapeHtml(__('On a perdu le fil…')) ?>
+    </<?= /* @noEscape */ $headingTag ?>>
+    <p class="error-copy">
+        <?= $escaper->escapeHtml(__('Cette page s’est peut-être glissée sous la machine à coudre.')) ?>
+    </p>
+
+    <button type="button" class="error-thread-button" @click="found = !found"
+            :aria-expanded="found.toString()" aria-controls="<?= $escaper->escapeHtmlAttr($stateId) ?>">
+        <svg class="error-thread-scene" viewBox="0 0 440 180" fill="none" aria-hidden="true">
+            <g class="error-spool">
+                <path d="M62 50h76M62 130h76"/>
+                <path d="M76 50v80M124 50v80"/>
+                <path d="M76 66c16-8 32-8 48 0M76 82c16-8 32-8 48 0M76 98c16-8 32-8 48 0M76 114c16-8 32-8 48 0"/>
+            </g>
+            <path class="error-thread" pathLength="1" d="M124 114C192 155 223 55 292 104c37 27 55 18 88-5"/>
+            <g class="error-needle">
+                <path d="M368 100 422 72"/>
+                <ellipse cx="417" cy="75" rx="5" ry="2.5" transform="rotate(-27 417 75)"/>
+            </g>
+            <path class="error-heart" d="M252 62c-12-13-31 4 0 25 31-21 12-38 0-25Z"/>
+        </svg>
+        <span x-text="found ? '<?= $escaper->escapeJs(__('Rembobiner le fil')) ?>' : '<?= $escaper->escapeJs(__('Tirer doucement sur le fil')) ?>'">
+            <?= $escaper->escapeHtml(__('Tirer doucement sur le fil')) ?>
+        </span>
+    </button>
+
+    <p id="<?= $escaper->escapeHtmlAttr($stateId) ?>" class="error-surprise" x-cloak x-show="found" role="status">
+        <?= $escaper->escapeHtml(__('Trouvée ! L’aiguille faisait une pause dans la bobine. La page, elle, a vraiment filé.')) ?>
+    </p>
+
+    <div class="error-actions">
+        <a class="btn btn-primary" href="<?= $escaper->escapeUrl($preview ? '#' : $block->getUrl('')) ?>">
+            <?= $escaper->escapeHtml(__('Retour à l’accueil')) ?>
+        </a>
+        <a class="btn btn-link" href="<?= $escaper->escapeUrl($preview ? '#' : $block->getUrl('contact')) ?>">
+            <?= $escaper->escapeHtml(__('Signaler un lien cassé')) ?>
+        </a>
+    </div>
+</section>

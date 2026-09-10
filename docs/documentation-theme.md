@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.7 (10/09/2026), lot 6a validé par Pierre ; lot 3, accueil, pages CMS et contact livrés pour recette. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.8 (10/09/2026), lot 6a validé par Pierre ; lot 3 intégralement livré pour recette finale. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -491,6 +491,7 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 6a — Checkout | installation Luma fallback 1.1.7 + Theme Fallback 1.0.4, contrôle invité et isolation des scripts, documentation des surcharges 6b ; validé par Pierre après une commande | `7f46bb1` |
 | 3 — Étape 2 | gabarit partagé des titres de section, intégration catégorie / slider, trois rendus du styleguide, documentation ; recette Pierre en attente | branche `lot-3-accueil-cms-contact` |
 | 3 — Étape 5 | module Contact, objet, consentement, message limité, produit prérempli, pièce jointe privée, emails et blocs CMS | branche `lot-3-accueil-cms-contact` |
+| 3 — Étape 6 | 404 interactive, panier vide avec deux nouveautés, styleguide et recette transversale | branche `lot-3-accueil-cms-contact` |
 
 ## 18. Formulaire de contact
 
@@ -506,3 +507,15 @@ Le lien depuis une fiche produit utilise `/contact?product=SKU`. Lorsque le prod
 Les emails reprennent l’expéditeur et le destinataire du module Contact natif de Magento. Un premier email avec la pièce jointe est adressé à la boutique, puis un accusé de réception est envoyé au visiteur. La protection reCAPTCHA se configure avec le mécanisme Magento/Hyvä habituel.
 
 Les textes génériques des blocs CMS doivent être remplacés par les contenus validés par Céline avant la mise en production.
+
+## 19. États vides : 404 et panier
+
+| Écran | Où modifier le rendu | Comportement |
+|---|---|---|
+| 404 | `Magento_Cms/templates/default/no-route.phtml` et `theme/page-empty.css` | Conserve le statut HTTP 404, passe en une colonne et propose l’accueil ou le contact. L’interaction « Tirer doucement sur le fil » fonctionne au clic et au clavier ; les animations sont coupées avec `prefers-reduced-motion`. |
+| Panier vide | `Magento_Checkout/templates/php-cart/noItems.phtml` et `Magento_Checkout/layout/checkout_cart_index.xml` | Retour vers l’accueil et deux nouveautés disponibles au maximum, obtenues avec la même collection et la même carte produit que l’accueil. Aucun produit épuisé n’est proposé. |
+| Démonstrations | `/styleguide`, section « États vides » | Les aperçus appellent les vrais templates 404 et panier. Le formulaire Contact dispose aussi de son aperçu complet dans la section dédiée. |
+
+La 404 n’utilise pas le contenu de la page CMS `no-route` installée par Magento : le handle `cms_noroute_index` retire explicitement son gabarit afin qu’un ancien texte anglais ou une mise en page à deux colonnes ne réapparaisse pas. Le titre et les textes de cet état relèvent donc du code du thème.
+
+Les recommandations du panier sont automatiques. Pour modifier les produits proposés, renseigner les dates **Définir le produit comme nouveau à partir de / jusqu’au** dans la fiche produit ; les règles et la purge de cache sont identiques au bloc Nouveautés de l’accueil.

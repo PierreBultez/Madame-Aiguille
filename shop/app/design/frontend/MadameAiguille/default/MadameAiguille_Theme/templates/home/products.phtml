@@ -11,15 +11,17 @@ use Magento\Framework\View\Element\Template;
 /** @var ProductListItem $renderer */
 $products = $block->getData('products_view_model');
 $renderer = $block->getData('item_renderer');
+$limit = max(1, (int) ($block->getData('products_count') ?: 4));
 $items = $products->getItems(
     $block->getProductCollection(),
-    4,
+    $limit,
     $block->getData('required_attribute') ?: null
 );
 if (!$items) {
     return;
 }
 ?>
+<?= $block->getChildHtml('heading') ?>
 <div class="home-products">
     <?php foreach ($items as $product): ?>
         <?= $renderer->getItemHtmlWithRenderer(
