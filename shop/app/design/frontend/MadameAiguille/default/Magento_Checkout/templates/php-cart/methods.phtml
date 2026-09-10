@@ -1,0 +1,31 @@
+<?php
+/**
+ * Madame Aiguille — pied du récapitulatif : accès au tunnel et rassurance
+ *
+ * Le bloc CMS `cart_reassurance` porte les deux lignes de réassurance de la
+ * maquette. Elles ne sont pas écrites en dur : aucun délai d'expédition ni
+ * moyen de paiement ne doit être promis avant d'avoir été confirmé (lot 5).
+ */
+
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Cart;
+use Magento\Framework\Escaper;
+
+/** @var Cart $block */
+/** @var Escaper $escaper */
+?>
+<?php if (!$block->hasError()): ?>
+    <?php $methods = $block->getMethods('methods') ?: $block->getMethods('top_methods') ?>
+    <nav class="cart-checkout-actions" aria-label="<?= $escaper->escapeHtmlAttr(__('Passer commande')) ?>">
+        <ul>
+            <?php foreach ($methods as $method): ?>
+                <?php $methodHtml = $block->getMethodHtml($method) ?>
+                <?php if (trim($methodHtml) !== ''): ?>
+                    <li><?= /* @noEscape */ $methodHtml ?></li>
+                <?php endif ?>
+            <?php endforeach ?>
+        </ul>
+    </nav>
+    <?= $block->getChildHtml('cart.reassurance') ?>
+<?php endif ?>

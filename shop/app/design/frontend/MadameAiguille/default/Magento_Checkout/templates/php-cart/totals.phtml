@@ -1,0 +1,92 @@
+<?php
+/**
+ * Madame Aiguille — totaux du panier (maquette Panier, artboard 07)
+ *
+ * Mécanique native conservée : les segments viennent de `window.checkoutConfig`
+ * et sont retriés selon *Ventes › Checkout Totals Sort Order*. Seules les
+ * classes de rendu changent, via `wrapperClass` / `wrapperClassTotals` que les
+ * templates de segment du parent consomment — inutile de les surcharger un à un.
+ *
+ * La mention sous le total réutilise le réglage « Mention sous le prix » de la
+ * fiche produit : vide par défaut, elle sera renseignée quand le statut fiscal
+ * sera arrêté (lot 5). Aucune mention fiscale n'est écrite en dur.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\StoreConfig;
+use MadameAiguille\Theme\ViewModel\Product\LimitedSeries;
+use Magento\Checkout\Block\Cart\Totals;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Totals $block */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var StoreConfig $storeConfigViewModel */
+$storeConfigViewModel = $viewModels->require(StoreConfig::class);
+/** @var LimitedSeries $limitedSeries */
+$limitedSeries = $viewModels->require(LimitedSeries::class);
+
+$totalsSort = $storeConfigViewModel->getStoreConfig('sales/totals_sort');
+$priceNote = $limitedSeries->getPriceNote();
+?>
+<script>
+    function initCartTotals() {
+        return {
+            totalsData: window.checkoutConfig.totalsData,
+            quoteData: window.checkoutConfig.quoteData,
+            shippingMethod: window.checkoutConfig.selectedShippingMethod,
+            totalsSort: <?= /** @noEscape */ json_encode($totalsSort) ?>,
+            isLoading: false,
+            wrapperClass: 'cart-total-row',
+            wrapperClassTotals: 'cart-total-row cart-total-grand',
+            getSortedSegments() {
+                return Array.from(this.totalsData.total_segments).sort((a, b) => {
+                    return (this.totalsSort[a.code] || 0) - (this.totalsSort[b.code] || 0);
+                });
+            },
+            getTotals() {
+                return this.totalsData;
+            },
+            updateTotals(totalsData) {
+                this.totalsData = totalsData;
+            },
+            updateShippingMethod(shippingMethod) {
+                this.shippingMethod = shippingMethod;
+            },
+            excludingTaxMessage: '<?= $escaper->escapeJs(__('Hors taxes')) ?>',
+            includingTaxMessage: '<?= $escaper->escapeJs(__('Taxes comprises')) ?>',
+            eventListeners: {
+                ['@update-totals.window']($event) {
+                    this.updateTotals($event.detail.data);
+                },
+                ['@update-shipping-method.window']($event) {
+                    this.updateShippingMethod($event.detail.method);
+                },
+                ['@update-totals-start.window']() {
+                    this.isLoading = true;
+                },
+                ['@update-totals-end.window']() {
+                    this.isLoading = false;
+                }
+            }
+        };
+    }
+    window.addEventListener('alpine:init', () => Alpine.data('initCartTotals', initCartTotals), { once: true });
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+<div id="cart-totals" class="cart-totals relative" x-data="initCartTotals" x-bind="eventListeners">
+    <?= $block->getBlockHtml('block-loader') ?>
+    <template x-for="(segment, index) in getSortedSegments()" :key="index">
+        <div>
+            <?= $block->getChildHtml() ?>
+        </div>
+    </template>
+</div>
+<?php if ($priceNote !== ''): ?>
+    <p class="cart-total-note"><?= $escaper->escapeHtml($priceNote) ?></p>
+<?php endif ?>

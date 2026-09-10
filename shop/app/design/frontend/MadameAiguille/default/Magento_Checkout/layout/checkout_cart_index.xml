@@ -24,6 +24,14 @@
             </arguments>
         </referenceBlock>
 
+        <referenceBlock name="checkout.cart.methods.bottom">
+            <block class="Magento\Cms\Block\Block" name="checkout.cart.reassurance" as="cart.reassurance">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">cart_reassurance</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
         <referenceBlock name="checkout.cart.coupon" template="MadameAiguille_Theme::cart/coupon.phtml">
             <arguments>
                 <argument name="cart_options" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\Options</argument>

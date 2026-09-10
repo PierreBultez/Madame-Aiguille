@@ -1,7 +1,7 @@
 /* Panier avec articles et mini-panier (maquette Panier, Design System §6.9). */
 
 /* ── Page panier ──────────────────────────────────────────────────────── */
-.cart-page { @apply mx-auto max-w-6xl; }
+.cart-page { @apply mx-auto max-w-7xl; }
 .cart-page-header { @apply mb-8 md:mb-10; }
 .cart-page-layout { @apply flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12; }
 .cart-page-items { @apply lg:flex-1 lg:min-w-0; }
@@ -20,7 +20,7 @@
 .cart-lines { @apply w-full; }
 .cart-lines-head {
     @apply hidden items-end gap-4 border-b border-brand-nude pb-3 text-caption font-medium tracking-label uppercase text-brand-muted md:grid;
-    grid-template-columns: minmax(0, 1fr) 7rem 9rem 7rem 3rem;
+    grid-template-columns: minmax(0, 1fr) 6.5rem 8.5rem 6.5rem 2.5rem;
 }
 .cart-lines-list { @apply divide-y divide-brand-line; }
 .cart-line-wrapper { @apply py-5 md:py-6; }
@@ -34,7 +34,7 @@
 .cart-line-qty { order: 4; }
 .cart-line-actions { order: 5; }
 @media (min-width: 768px) {
-    .cart-line { grid-template-columns: minmax(0, 1fr) 7rem 9rem 7rem 3rem; }
+    .cart-line { grid-template-columns: minmax(0, 1fr) 6.5rem 8.5rem 6.5rem 2.5rem; }
     .cart-line > * { order: initial; }
 }
 .cart-line-product { @apply col-span-2 flex gap-4 md:col-span-1; }
@@ -89,3 +89,44 @@
 
 .cart-actions { @apply mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap; }
 .cart-actions > * { @apply sm:w-auto; }
+
+/* ── Récapitulatif ────────────────────────────────────────────────────── */
+.cart-summary-panel {
+    @apply rounded-md border border-brand-line bg-brand-paper px-5 py-6
+    lg:sticky lg:top-6 lg:w-88 lg:shrink-0 xl:w-96;
+}
+.cart-summary-panel > h2 { @apply mb-4; }
+
+.cart-total-row { @apply flex items-baseline justify-between gap-3 border-b border-brand-line py-3 text-base text-brand-ink; }
+.cart-total-row > :last-child { @apply font-medium tabular-nums; }
+.cart-total-grand { @apply border-b-0 pt-4 text-subtitle-lg font-medium text-brand; }
+.cart-total-note { @apply mt-1 text-caption text-brand-muted; }
+
+.cart-checkout-actions { @apply mt-4; }
+.cart-checkout-actions li + li { @apply mt-2; }
+
+/* Blocs repliables du récapitulatif : code promo, estimation de livraison. */
+.cart-summary-block { @apply border-t border-brand-line py-1; }
+.cart-summary-toggle {
+    @apply flex min-h-11 cursor-pointer list-none items-center justify-between gap-2
+    text-label font-medium text-brand-dark;
+}
+.cart-summary-toggle::-webkit-details-marker { @apply hidden; }
+.cart-summary-chevron { @apply text-brand-rose transition-transform group-open:-rotate-180; }
+.cart-summary-block-body { @apply space-y-2 pb-3; }
+
+/* Estimation de livraison : un groupe par transporteur réellement retourné. */
+.estimate-note { @apply text-caption text-brand-muted; }
+.estimate-label { @apply mb-1 block text-caption font-medium text-brand-ink; }
+.estimate-shipping-form .field + .field { @apply mt-3; }
+.estimate-postcode-row { @apply flex gap-2; }
+.estimate-postcode-row .form-input { @apply min-w-0 flex-1; }
+.estimate-rates { @apply mt-4 space-y-3; }
+.estimate-carrier-title { @apply text-caption font-medium tracking-label uppercase text-brand-muted; }
+.estimate-rate {
+    @apply mt-1.5 flex min-h-11 cursor-pointer items-center gap-2.5 rounded-sm px-1 py-1
+    text-base text-brand-ink hover:bg-brand-blush;
+}
+.estimate-rate-title { @apply min-w-0 flex-1 hyphens-auto; }
+.estimate-rate-price { @apply shrink-0 text-right font-medium tabular-nums; }
+.estimate-empty { @apply mt-3 text-caption text-brand-muted; }
