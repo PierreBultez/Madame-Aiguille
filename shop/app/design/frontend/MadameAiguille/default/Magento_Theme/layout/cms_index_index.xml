@@ -6,6 +6,8 @@
         <referenceBlock name="slider-1" remove="true"/>
         <referenceBlock name="slider-2" remove="true"/>
         <referenceBlock name="cms_page" remove="true"/>
+        <!-- Le handle cms_page_view est également fusionné sur la page d'accueil. -->
+        <referenceBlock name="cms.page.frame" remove="true"/>
         <referenceBlock name="page.main.title" remove="true"/>
         <referenceContainer name="content">
             <container name="home.sections" htmlTag="div" htmlClass="home-sections">
