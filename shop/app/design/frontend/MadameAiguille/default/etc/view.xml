@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — tailles d'images du catalogue
+ *
+ * Un seul ratio pour toutes les photos produit : 4:5 portrait (charte §6,
+ * Design System §7). Fusionné avec le view.xml du parent Hyvä : on ne redéclare
+ * que les identifiants qui changent. Sans bordure blanche (product_image_white_borders
+ * à 0) : une photo hors ratio est rognée par object-fit dans les templates, pas
+ * complétée de blanc sur fond ivoire.
+ *
+ * WebP : non généré nativement par Magento 2.4.9 — décision reportée (lot 8).
+ */
+-->
+<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/view.xsd">
+    <media>
+        <images module="Magento_Catalog">
+            <!-- Vignettes de listing (catégorie, recherche, slider « Vous aimerez aussi », widgets) -->
+            <image id="category_page_grid" type="small_image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+            <image id="category_page_list" type="small_image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+            <image id="related_products_list" type="small_image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+            <image id="upsell_products_list" type="small_image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+            <image id="new_products_content_widget_grid" type="small_image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+            <image id="cart_cross_sell_products" type="small_image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+            <image id="product_base_image" type="image">
+                <width>480</width>
+                <height>600</height>
+            </image>
+
+            <!-- Fiche produit : vue principale, miniatures ; product_page_image_large reste en pleine résolution (lightbox) -->
+            <image id="product_page_main_image" type="image">
+                <width>880</width>
+                <height>1100</height>
+            </image>
+            <image id="product_page_main_image_default" type="image">
+                <width>880</width>
+                <height>1100</height>
+            </image>
+            <image id="product_page_image_medium" type="image">
+                <width>880</width>
+                <height>1100</height>
+            </image>
+            <image id="product_page_image_small" type="thumbnail">
+                <width>96</width>
+                <height>120</height>
+            </image>
+            <image id="product_page_more_views" type="thumbnail">
+                <width>96</width>
+                <height>120</height>
+            </image>
+
+            <!-- Panier et mini-panier (lot 4) -->
+            <image id="cart_page_product_thumbnail" type="small_image">
+                <width>96</width>
+                <height>120</height>
+            </image>
+            <image id="mini_cart_product_thumbnail" type="thumbnail">
+                <width>96</width>
+                <height>120</height>
+            </image>
+            <image id="product_thumbnail_image" type="thumbnail">
+                <width>96</width>
+                <height>120</height>
+            </image>
+            <image id="product_small_image" type="small_image">
+                <width>96</width>
+                <height>120</height>
+            </image>
+        </images>
+    </media>
+    <vars module="Magento_Catalog">
+        <var name="product_image_white_borders">0</var>
+        <var name="gallery">
+            <var name="loop">1</var>
+            <var name="caption">0</var>
+            <var name="pager">thumbs</var>
+            <var name="pagerdir">horizontal</var> <!-- miniatures sous la vue principale (maquette) -->
+            <var name="nav">end</var>
+            <var name="maxthumbs">0</var>
+        </var>
+    </vars>
+</view>

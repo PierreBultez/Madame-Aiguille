@@ -7,7 +7,12 @@
     "require": {
         "php": ">=8.2",
         "magento/framework": "*",
-        "hyva-themes/magento2-theme-module": "*"
+        "hyva-themes/magento2-theme-module": "*",
+        "magento/module-catalog": "*",
+        "magento/module-configurable-product": "*",
+        "magento/module-swatches": "*",
+        "magento/module-inventory-sales-api": "*",
+        "magento/module-inventory-configuration-api": "*"
     },
     "autoload": {
         "files": [
