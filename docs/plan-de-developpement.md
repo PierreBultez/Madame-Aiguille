@@ -20,7 +20,7 @@ Livré et validé :
 - module `MadameAiguille_Theme` : route `/styleguide`, ViewModel `SocialLinks`, configuration admin *Réseaux sociaux*, data patches (pages CMS légales vides, bloc bandeau) ;
 - header (logo centré, bandeau CMS, menu catégories 2 niveaux, tiroir mobile) et footer (4 colonnes / accordéon).
 
-Reste ouvert, transverse à tous les lots : les **SVG du logo** (brief `prompt-logos-svg.md`) — le header utilise un PNG 2× provisoire ; les **photos produit** au ratio 4:5 ; les **textes** (pages légales, À propos, descriptions).
+Reste ouvert, transverse à tous les lots : les **SVG du logo** (brief `prompts/prompt-logos-svg.md`) — le header utilise un PNG 2× provisoire ; les **photos produit** au ratio 4:5 ; les **textes** (pages légales, À propos, descriptions).
 
 ## État après le lot 2 (10/09/2026)
 
@@ -215,7 +215,7 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 - CI/CD GitHub Actions : `composer install`, `npm ci && npm run build` dans `web/tailwind`, `setup:upgrade`, `setup:static-content:deploy fr_FR`, `cache:flush` ; environnement de staging (`staging.madame-aiguille.fr`, auth HTTP).
 - Production : mode `production`, Varnish/Valkey, HTTPS, sitemap, robots, redirection `madameaiguille.fr` → `madame-aiguille.fr`, sauvegardes BDD + médias.
 - Recette complète (plan de tests §3 à §10), audit Lighthouse (accueil, catégorie, fiche), contrôle poids sur tout le catalogue, paiement réel de test.
-- Logo SVG (brief `prompt-logos-svg.md`) intégré à la place du PNG provisoire, favicon.
+- Logo SVG (brief `prompts/prompt-logos-svg.md`) intégré à la place du PNG provisoire, favicon.
 
 **Dépendances** : tous les lots ; nom de domaine réservé ; contenus complets.
 

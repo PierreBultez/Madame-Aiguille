@@ -37,7 +37,7 @@ Composition circulaire : « Madame Aiguille » en script, arqué au-dessus d'un 
 
 ### Fichiers cibles
 
-Brief de production : **`../prompt-logos-svg.md`**.
+Brief de production : **`../prompts/prompt-logos-svg.md`**.
 
 | Fichier | Usage | Bascule |
 |---|---|---|
