@@ -88,6 +88,21 @@ class StockTest extends TestCase
         self::assertFalse((new Stock($limited))->isAvailable($this->item($product, 1.0)));
     }
 
+    public function testScarcityIsSilentOnceTheLineCanNoLongerBeOrdered(): void
+    {
+        $product = $this->createStub(Product::class);
+        $product->method('isSalable')->willReturn(true);
+
+        $limited = $this->createStub(LimitedSeries::class);
+        $limited->method('isScarce')->willReturn(true);
+        $limited->method('getScarcityLabel')->willReturn(__('Plus que 0 exemplaires'));
+        $limited->method('getMaxQty')->willReturn(0);
+
+        // La dernière pièce est partie entre l'ajout et le passage en caisse :
+        // « Plus que 0 exemplaires » n'a pas de sens, le message de stock natif suffit.
+        self::assertNull((new Stock($limited))->getScarcityLabel($this->item($product, 1.0)));
+    }
+
     public function testTheHintAnnouncesTheCapBeforeItIsReachedAndTheCeilingOnceItIs(): void
     {
         $product = $this->createStub(Product::class);

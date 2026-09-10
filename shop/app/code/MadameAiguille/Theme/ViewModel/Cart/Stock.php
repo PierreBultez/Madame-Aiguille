@@ -120,6 +120,12 @@ class Stock implements ArgumentInterface
             return null;
         }
 
+        // Ligne devenue incommandable : « Plus que 0 exemplaires » n'a pas de
+        // sens. Le message de stock de Magento dit déjà ce qu'il faut faire.
+        if (!$this->isAvailable($item) || (int) $this->getMaxQty($item) < 1) {
+            return null;
+        }
+
         return $this->limitedSeries->getScarcityLabel($product);
     }
 
