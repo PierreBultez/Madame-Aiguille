@@ -547,4 +547,4 @@ Le lot 3 est fonctionnellement terminé et validé. Les éléments suivants dema
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
 | Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
 
-Le prompt autonome pour reprendre par le lot 5 est `docs/prompts/prompt-codex-lot5.md`.
+Le prompt autonome pour reprendre par le lot 4 est `docs/prompts/prompt-codex-lot4.md`.

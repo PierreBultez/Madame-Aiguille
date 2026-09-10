@@ -1,8 +1,10 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.8 (10/09/2026), lots 6a et 3 validés ; prochain lot recommandé : lot 5
+Document interne — v1.9 (10/09/2026), lots 6a et 3 validés ; prochain lot : lot 4
 
-> **v1.8** — Lot 3 validé par Pierre. Logos officiels intégrés au header/footer et au favicon ; toutes les surcharges visuelles, y compris le formulaire Contact, résident dans le thème enfant. Les contenus et configurations restant avant production sont recensés dans `documentation-theme.md` §20. Prompt de reprise du lot 5 ajouté.
+> **v1.9** — Ordre de reprise corrigé à la demande de Pierre : le lot 4 Panier et mini-panier suit le lot 3. Son estimateur utilisera les méthodes actuellement configurées et sera recetté de nouveau avec les vrais tarifs après le lot 5.
+
+> **v1.8** — Lot 3 validé par Pierre. Logos officiels intégrés au header/footer et au favicon ; toutes les surcharges visuelles, y compris le formulaire Contact, résident dans le thème enfant. Les contenus et configurations restant avant production sont recensés dans `documentation-theme.md` §20.
 
 > **v1.7** — Étapes 4 et 5 validées par Pierre. Module Contact livré avec stockage privé et purge à 30 jours configurable. Étape 6 : 404 interactive accessible, panier vide avec deux nouveautés disponibles, vrais rendus ajoutés au styleguide et recette transversale à 390 / 1440 px. Lot 3 en attente de validation finale.
 
@@ -82,7 +84,7 @@ Ordre terminé : **1)** lot 6a ; **2)** composant partagé ; **3)** accueil ; **
 | 7 | Compte client, emails transactionnels, statuts de commande | 6 | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
 
-Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 (spike Mondial Relay en premier) → 4 → 6b → 7 → 8**. Installer le checkout tôt permet de tester les modules de livraison/paiement du lot 5 dans le vrai tunnel. Le lot 3 peut démarrer en parallèle du spike du lot 5 : c'est celui qui dépend le plus du contenu de Céline, autant le lancer tôt.
+Ordre retenu : **2 → 6a → 3 → 4 → 5 → 6b → 7 → 8**. Le lot 4 construit d'abord le panier et l'estimateur avec les méthodes actuellement disponibles. Les tarifs et la barre de franco seront recettés de nouveau après la configuration réelle des transporteurs au lot 5.
 
 ---
 
