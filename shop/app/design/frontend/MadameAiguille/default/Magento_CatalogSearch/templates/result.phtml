@@ -1,0 +1,64 @@
+<?php
+/**
+ * Madame Aiguille — page de résultats de recherche
+ * En-tête orné « Résultats pour « terme » », puis la liste produits du
+ * gabarit catégorie, ou l'état vide (Design System §6.10). Les notes natives
+ * (longueur minimale de la requête…) restent affichées.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Search;
+use Magento\CatalogSearch\Block\Result;
+use Magento\Framework\Escaper;
+
+/** @var Result $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$query = $viewModels->require(Search::class)->getEscapedQueryText();
+$hasResults = (bool) $block->getResultCount();
+$productList = $hasResults ? $block->getProductListHtml() : '';
+$notes = $block->getNoteMessages();
+$noResultText = $hasResults ? null : $block->getNoResultText();
+
+$ornament = '<svg width="96" height="12" viewBox="0 0 96 12" fill="none" aria-hidden="true" class="hidden shrink-0 text-brand-nude sm:block %s">'
+    . '<path d="M0 6h52" stroke="currentColor" stroke-width="1"/>'
+    . '<path d="M58 6c5-6 11-6 16 0-5 6-11 6-16 0Z" fill="var(--color-brand-paper)" stroke="currentColor" stroke-width="1"/>'
+    . '<path d="M78 6c4-4 9-4 13 0-4 4-9 4-13 0Z" fill="currentColor"/></svg>';
+?>
+<header class="search-header pt-5 pb-6 text-center md:pt-9 md:pb-10">
+    <div class="flex items-center justify-center gap-5">
+        <?= /* @noEscape */ sprintf($ornament, '') ?>
+        <h1 class="font-body font-medium text-title text-brand-ink md:text-title-lg">
+            <?= $query !== ''
+                ? $escaper->escapeHtml(__('Résultats pour « %1 »', $query))
+                : $escaper->escapeHtml(__('Recherche')) ?>
+        </h1>
+        <?= /* @noEscape */ sprintf($ornament, '-scale-x-100') ?>
+    </div>
+</header>
+
+<?php if ($notes || ($noResultText && !$hasResults && is_object($noResultText))): ?>
+    <div class="message notice mx-auto mb-6 max-w-2xl">
+        <div>
+            <?php if ($noResultText && is_object($noResultText)): ?>
+                <?= $escaper->escapeHtml($noResultText) ?><br>
+            <?php endif; ?>
+            <?php foreach ($notes as $message): ?>
+                <?= /* @noEscape */ $message ?><br>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if ($hasResults): ?>
+    <?= /* @noEscape */ $block->getChildHtml('tagged_product_list_rss_link') ?>
+    <div class="search results">
+        <?= /* @noEscape */ $productList ?>
+    </div>
+<?php else: ?>
+    <?= $block->getChildHtml('empty') ?>
+    <?= /* @noEscape */ $block->getAdditionalHtml() ?>
+<?php endif; ?>

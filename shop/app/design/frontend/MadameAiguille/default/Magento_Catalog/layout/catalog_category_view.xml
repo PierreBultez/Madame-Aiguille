@@ -33,6 +33,12 @@
                 <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
                 <argument name="eager_load_images_count" xsi:type="number">4</argument>
             </arguments>
+            <!-- Catégorie sans produit : « La série est en cours de couture » -->
+            <block name="category.products.list.empty" as="empty" template="Magento_Catalog::product/list/empty.phtml">
+                <arguments>
+                    <argument name="mode" xsi:type="string">category</argument>
+                </arguments>
+            </block>
         </referenceBlock>
 
         <referenceBlock name="product_list_toolbar">

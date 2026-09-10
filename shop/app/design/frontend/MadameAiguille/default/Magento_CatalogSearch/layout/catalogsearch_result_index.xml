@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — page de résultats de recherche : même gabarit que la
+ * catégorie (une colonne, sans facettes), en-tête « Résultats pour « … » »,
+ * état vide dédié. Fusionné avec le fichier du parent Hyvä.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="catalogsearch.leftnav" remove="true"/>
+        <referenceBlock name="search.result.list.js.compare" remove="true"/>
+        <referenceBlock name="search.result.list.js.wishlist" remove="true"/>
+
+        <referenceBlock name="search.result">
+            <block name="search.result.empty" as="empty" template="Magento_Catalog::product/list/empty.phtml">
+                <arguments>
+                    <argument name="mode" xsi:type="string">search</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
+        <referenceBlock name="search_result_list">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+                <argument name="eager_load_images_count" xsi:type="number">4</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="product_list_toolbar">
+            <arguments>
+                <argument name="sorting" xsi:type="object">MadameAiguille\Theme\ViewModel\Catalog\Sorting</argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

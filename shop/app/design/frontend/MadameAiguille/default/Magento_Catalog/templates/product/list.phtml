@@ -59,7 +59,7 @@ $toolbar = $block->getToolbarBlock();
 $toolbar->setData('soldout_count', count($soldOut));
 ?>
 <?php if (!$productCollection->count()): ?>
-    <?= $block->getChildHtml('empty') ?: '<div class="message notice"><div>' . $escaper->escapeHtml(__('Aucune création dans cette catégorie pour le moment.')) . '</div></div>' ?>
+    <?= $block->getChildHtml('empty') ?>
 <?php else: ?>
     <section class="product-list" id="product-list" aria-label="<?= $escaper->escapeHtmlAttr(__('Liste des créations')) ?>" tabindex="-1">
         <?= $block->getToolbarHtml() ?>
