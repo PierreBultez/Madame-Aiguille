@@ -1,0 +1,111 @@
+<?php
+/**
+ * Madame Aiguille — fil d'Ariane de la fiche produit
+ * Rendu côté client par Hyvä (la catégorie d'origine dépend de la page
+ * précédente) ; seul l'habillage change par rapport au parent : séparateur
+ * nude, cibles de 44 px, page courante non cliquable. JSON-LD conservé.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\Navigation;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Catalog\ViewModel\Product\Breadcrumbs;
+use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Breadcrumbs as BreadcrumbsBlock;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+/** @var BreadcrumbsBlock $block */
+/** @var HyvaCsp $hyvaCsp */
+
+$storeConfigViewModel = $viewModels->require(StoreConfig::class);
+$breadcrumbsViewModel = $viewModels->require(Breadcrumbs::class);
+$navigationViewModel = $viewModels->require(Navigation::class);
+$currentProductViewModel = $viewModels->require(CurrentProduct::class);
+
+$productUrlSuffix = $storeConfigViewModel->getStoreConfig(ProductUrlPathGenerator::XML_PATH_PRODUCT_URL_SUFFIX);
+$categoryUrlSuffix = $breadcrumbsViewModel->getCategoryUrlSuffix();
+$skipLinkedDataJsonSchema = $block->getData('skip_ld_json_schema');
+$product = $currentProductViewModel->exists() ? $currentProductViewModel->get() : null;
+?>
+<nav class="breadcrumbs" aria-label="<?= $escaper->escapeHtmlAttr(__('Fil d’Ariane')) ?>">
+    <div class="container">
+        <ol x-data="initBreadcrumbsProduct()" class="items flex flex-nowrap items-center gap-x-2.5 overflow-x-auto pt-1 text-label whitespace-nowrap scrollbar-none">
+            <template x-for="(item, index) in breadcrumbs" :key="index">
+                <li class="item flex items-center gap-x-2.5">
+                    <template x-if="index > 0">
+                        <span aria-hidden="true" class="separator text-brand-nude">/</span>
+                    </template>
+                    <template x-if="item.name === 'product'">
+                        <span class="inline-flex min-h-11 items-center text-brand-muted" aria-current="page" x-text="item.label"></span>
+                    </template>
+                    <template x-if="item.name !== 'product'">
+                        <a :href="item.link" :aria-label="item.title" x-text="item.label"
+                           class="inline-flex min-h-11 items-center text-brand no-underline hover:text-brand-dark hover:underline hover:decoration-brand-nude hover:underline-offset-3"></a>
+                    </template>
+                </li>
+            </template>
+        </ol>
+    </div>
+</nav>
+<script>
+    function initBreadcrumbsProduct() {
+        const categories = <?= /* @noEscape */ json_encode($navigationViewModel->getCategories()) ?>;
+        const breadcrumbs = [{
+            name: 'home',
+            label: '<?= $escaper->escapeJs(__('Accueil')) ?>',
+            title: '<?= $escaper->escapeJs(__('Aller à la page d’accueil')) ?>',
+            link: BASE_URL || ''
+        }];
+
+        function getProductCategoryUrl() {
+            <?php if ($breadcrumbsViewModel->isCategoryUsedInProductUrl()): ?>
+            const productUrl = window.location.href.split('?')[0];
+            return productUrl.substring(0, productUrl.lastIndexOf('/')) + '<?= $escaper->escapeJs($categoryUrlSuffix) ?>';
+            <?php else: ?>
+            return document.referrer.split('?')[0];
+            <?php endif; ?>
+        }
+
+        const category = Object.values(categories).find(cat => cat.url === getProductCategoryUrl());
+
+        if (category) {
+            const parts = category.path.split('/');
+            parts.splice(0, 2);
+            for (const part of parts) {
+                const crumb = categories['c' + part];
+                if (crumb) {
+                    breadcrumbs.push({ name: 'category', label: crumb.name, title: null, link: crumb.url });
+                }
+            }
+        }
+
+        <?php if ($product): ?>
+        breadcrumbs.push({
+            name: 'product',
+            label: '<?= $escaper->escapeJs($product->getName()) ?>',
+            title: null,
+            link: BASE_URL + '<?= $escaper->escapeJs($product->getUrlKey()) ?>' + '<?= $escaper->escapeJs($productUrlSuffix) ?>'
+        });
+        <?php endif; ?>
+
+        <?php if (!$skipLinkedDataJsonSchema): ?>
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.appendChild(document.createTextNode(JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: breadcrumbs.map((crumb, i) => ({ '@type': 'ListItem', position: i + 1, name: crumb.label, item: crumb.link }))
+        })));
+        document.head.appendChild(script);
+        <?php endif; ?>
+
+        return { breadcrumbs };
+    }
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>

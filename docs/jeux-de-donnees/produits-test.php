@@ -143,12 +143,15 @@ $entretienDefaut = 'Lavage à la main à 30 °C ou éponge humide. Pas de sèche
  * categories (noms), images (fichiers p-*.png, la première est l'image principale),
  * short_description, description, news_from (facultatif), news_to (facultatif),
  * taille (option, pour les enfants du configurable), visibility (facultatif),
- * url_key (facultatif, sinon dérivée du nom), related (SKU).
+ * url_key (facultatif, sinon dérivée du nom), related (SKU),
+ * composition, dimensions, entretien (caractéristiques ; entretien par défaut).
  */
 $products = [
     // Configurable à deux tailles : Petit disponible, Grand épuisé
     [
         'sku' => 'MA-TRO-ROM',
+        'composition' => 'Extérieur 100 % coton, doublure coton enduit, ouatine polyester',
+        'dimensions' => 'Petit : 18 × 12 × 8 cm · Grand : 24 × 16 × 10 cm',
         'type' => Configurable::TYPE_CODE,
         'name' => 'Trousse Romantique',
         'price' => 29.00,
@@ -169,6 +172,8 @@ $products = [
     ],
     [
         'sku' => 'MA-TRO-LIN',
+        'composition' => 'Lin lavé, doublure coton ivoire, fermeture éclair laiton',
+        'dimensions' => '20 × 13 × 7 cm',
         'name' => 'Trousse Lin & Aiguille',
         'price' => 26.00,
         'weight' => 0.16,
@@ -184,6 +189,8 @@ $products = [
     // Épuisé
     [
         'sku' => 'MA-TRO-PER',
+        'composition' => 'Lin perle, doublure coton ivoire',
+        'dimensions' => '18 × 12 × 7 cm',
         'name' => 'Trousse Lin Perle',
         'price' => 22.00,
         'weight' => 0.12,
@@ -199,6 +206,8 @@ $products = [
     // Nouveauté
     [
         'sku' => 'MA-POC-CEL',
+        'composition' => 'Coton imprimé, doublure coton ivoire, aimants plats',
+        'dimensions' => '23 × 16 cm, pour un livre de poche',
         'name' => 'Pochette à Livre Céleste',
         'price' => 24.00,
         'weight' => 0.11,
@@ -214,6 +223,8 @@ $products = [
     ],
     [
         'sku' => 'MA-POC-ISA',
+        'composition' => 'Coton imprimé, doublure coton ivoire, aimants plats',
+        'dimensions' => '23 × 16 cm, pour un livre de poche',
         'name' => 'Pochette à Livre Isabelle',
         'price' => 24.00,
         'weight' => 0.11,
@@ -229,6 +240,8 @@ $products = [
     // Épuisé
     [
         'sku' => 'MA-POC-ROS',
+        'composition' => 'Coton imprimé, doublure coton ivoire',
+        'dimensions' => '23 × 16 cm',
         'name' => 'Pochette Bouton de Rose',
         'price' => 19.00,
         'weight' => 0.09,
@@ -244,6 +257,8 @@ $products = [
     // Nouveauté
     [
         'sku' => 'MA-POC-NOM',
+        'composition' => 'Coton matelassé, doublure coton, fermeture éclair',
+        'dimensions' => '12 × 9 cm · 16 × 11 cm · 20 × 14 cm',
         'name' => 'Pochettes Nomades',
         'price' => 18.00,
         'weight' => 0.10,
@@ -260,6 +275,8 @@ $products = [
     // Rareté : plus que 2
     [
         'sku' => 'MA-COT-CIN',
+        'composition' => 'Éponge de bambou et coton imprimé',
+        'dimensions' => 'Ø 10 cm, lot de 5',
         'name' => 'Cotons Démaquillants',
         'url_key' => 'cotons-demaquillants-lot-de-cinq', // la clé dérivée du nom serait celle de la catégorie
         'price' => 12.00,
@@ -276,6 +293,8 @@ $products = [
     // Hors série limitée, stock confortable : aucun badge
     [
         'sku' => 'MA-COT-DIX',
+        'composition' => 'Éponge de bambou et coton imprimé',
+        'dimensions' => 'Ø 10 cm, lot de 10',
         'name' => 'Cotons Démaquillants — lot de dix',
         'price' => 20.00,
         'weight' => 0.11,
@@ -290,6 +309,8 @@ $products = [
     ],
     [
         'sku' => 'MA-SAC-AUR',
+        'composition' => 'Coton fleuri, doublure coton, ouatine, bandoulière coton',
+        'dimensions' => '22 × 16 × 8 cm, bandoulière 120 cm',
         'name' => 'Sac Aurora Mini',
         'price' => 32.00,
         'weight' => 0.24,
@@ -306,6 +327,8 @@ $products = [
     ],
     [
         'sku' => 'MA-SAC-VER',
+        'composition' => 'Coton enduit, doublure coton ivoire, ouatine',
+        'dimensions' => '22 × 16 × 8 cm, bandoulière 120 cm',
         'name' => 'Sac Aurora Verveine',
         'price' => 34.00,
         'weight' => 0.26,
@@ -362,7 +385,10 @@ $applyCommonData = function (Product $product, array $data) use ($categoryIds, $
         ->setData('news_from_date', $data['news_from'] ?? null)
         ->setData('news_to_date', $data['news_to'] ?? null)
         ->setShortDescription($data['short_description'] ?? null)
-        ->setDescription($data['description'] ?? null);
+        ->setDescription($data['description'] ?? null)
+        ->setData('composition', $data['composition'] ?? null)
+        ->setData('dimensions', $data['dimensions'] ?? null)
+        ->setData('entretien', $data['entretien'] ?? $entretienDefaut);
 
     if (isset($data['taille'])) {
         $product->setData('taille', $data['taille']);

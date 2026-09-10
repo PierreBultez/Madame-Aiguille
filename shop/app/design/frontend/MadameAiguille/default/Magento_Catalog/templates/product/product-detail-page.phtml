@@ -1,0 +1,37 @@
+<?php
+/**
+ * Madame Aiguille — squelette de la fiche produit
+ * Galerie + colonne d'achat, puis Description / Caractéristiques (pleine
+ * largeur, fond papier), puis « Vous aimerez aussi ».
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use MadameAiguille\Theme\ViewModel\Product\LimitedSeries;
+use Magento\Catalog\Block\Product\View;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+// Fiche épuisée : les suggestions deviennent « Disponible en ce moment » (maquette 06b)
+$limitedSeries = $viewModels->require(LimitedSeries::class);
+if ($limitedSeries->isSoldOut($block->getProduct()) && ($related = $block->getChildBlock('related'))) {
+    $related->setTitle(__('Disponible en ce moment'));
+}
+?>
+<section
+    class="product-main grid grid-cols-1 gap-8 pt-2 pb-10 md:grid-cols-2 md:gap-10 md:pt-6 md:pb-16 lg:gap-14"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Présentation du produit')) ?>"
+>
+    <?= $block->getChildHtml('product.media') ?>
+    <?= $block->getChildHtml('product.info') ?>
+</section>
+
+<?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+
+<?= $block->getChildHtml('product.info.details') ?>
+
+<?= $block->getChildHtml('related') ?>

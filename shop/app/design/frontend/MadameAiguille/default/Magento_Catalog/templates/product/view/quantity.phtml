@@ -1,0 +1,130 @@
+<?php
+/**
+ * Madame Aiguille — sélecteur de quantité plafonné au stock (Design System §6.5)
+ *
+ * Boutons − / + de 44 × 48 px (56 px en fiche), champ numérique, aide sous le
+ * champ. Le plafond vient du ViewModel : stock restant du simple, ou stock de
+ * la taille choisie pour un configurable (événement natif
+ * configurable-selection-changed → productIndex = identifiant de l'enfant).
+ * Alpine n'ajuste que l'interface ; les quantités viennent du serveur.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\ProductStockItem;
+use MadameAiguille\Theme\ViewModel\Product\LimitedSeries;
+use Magento\Catalog\Block\Product\View;
+use Magento\Catalog\Model\Product;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Product $product */
+$product = $block->getProduct();
+
+if (!$block->shouldRenderQuantity() || !$product->isSaleable()) {
+    return;
+}
+
+/** @var LimitedSeries $limitedSeries */
+$limitedSeries = $block->getData('limited_series') ?? $viewModels->require(LimitedSeries::class);
+/** @var ProductStockItem $stockItemViewModel */
+$stockItemViewModel = $viewModels->require(ProductStockItem::class);
+
+$productId = (int) $product->getId();
+$isConfigurable = $product->getTypeId() === Configurable::TYPE_CODE;
+$minQty = max(1, (int) $stockItemViewModel->getMinSaleQty($product));
+$maxQty = $isConfigurable ? null : $limitedSeries->getMaxQty($product);
+$childrenMax = $isConfigurable ? $limitedSeries->getChildrenRemainingQty($product) : [];
+$defaultQty = max($minQty, (int) $block->getProductDefaultQty());
+$isLimited = $limitedSeries->isLimitedSeries($product);
+?>
+<script>
+    function initQtyStepper() {
+        const root = this.$root.dataset;
+        return {
+            qty: parseInt(root.defaultQty, 10),
+            min: parseInt(root.min, 10),
+            baseMax: root.max === '' ? null : parseInt(root.max, 10),
+            max: root.max === '' ? null : parseInt(root.max, 10),
+            childrenMax: JSON.parse(root.childrenMax || '{}'),
+            productId: root.productId,
+            labels: JSON.parse(root.labels),
+            init() {
+                this.$dispatch('update-qty-' + this.productId, this.qty);
+            },
+            onSelectionChanged(detail) {
+                const childMax = detail.productIndex ? this.childrenMax[detail.productIndex] : undefined;
+                this.max = childMax === undefined ? this.baseMax : childMax;
+                if (this.max !== null && this.qty > this.max) {
+                    this.setQty(Math.max(this.min, this.max));
+                }
+            },
+            setQty(value) {
+                let qty = Number.isFinite(value) ? Math.round(value) : this.min;
+                qty = Math.max(this.min, qty);
+                if (this.max !== null) qty = Math.min(this.max, qty);
+                this.qty = qty;
+                this.$dispatch('update-qty-' + this.productId, this.qty);
+            },
+            decrement() { this.setQty(this.qty - 1); },
+            increment() { this.setQty(this.qty + 1); },
+            onInput(event) { this.setQty(hyva.safeParseNumber(event.target.value)); },
+            get atMin() { return this.qty <= this.min; },
+            get atMax() { return this.max !== null && this.qty >= this.max; },
+            get hint() {
+                if (this.atMax) return this.labels.max;
+                if (this.max !== null) return this.labels.remaining.replace('%1', this.max);
+                return '';
+            }
+        };
+    }
+    window.addEventListener('alpine:init', () => Alpine.data('initQtyStepper', initQtyStepper), { once: true });
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<div
+    class="product-qty"
+    x-data="initQtyStepper"
+    @configurable-selection-changed.window="onSelectionChanged($event.detail)"
+    data-product-id="<?= $productId ?>"
+    data-default-qty="<?= $defaultQty ?>"
+    data-min="<?= $minQty ?>"
+    data-max="<?= $maxQty === null ? '' : (int) $maxQty ?>"
+    data-children-max="<?= $escaper->escapeHtmlAttr(json_encode($childrenMax)) ?>"
+    data-labels="<?= $escaper->escapeHtmlAttr(json_encode([
+        'max' => (string) __('Stock maximum atteint'),
+        'remaining' => (string) ($isLimited ? __('Quantité plafonnée à %1 — le stock restant de la série.') : __('Quantité plafonnée à %1 — le stock disponible.')),
+    ])) ?>"
+>
+    <label for="qty[<?= $productId ?>]" class="mb-1.5 block font-medium text-label text-brand-ink"><?= $escaper->escapeHtml(__('Quantité')) ?></label>
+    <div class="inline-flex items-stretch overflow-hidden rounded-sm border border-field-border bg-surface">
+        <button type="button" @click="decrement" :disabled="atMin"
+                class="qty-step inline-flex w-11 items-center justify-center border-r border-brand-line text-brand text-subtitle-lg transition-colors hover:bg-brand-blush disabled:cursor-not-allowed disabled:bg-transparent disabled:text-disabled-muted md:w-12"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Retirer un exemplaire')) ?>">−</button>
+        <input
+            id="qty[<?= $productId ?>]"
+            name="qty"
+            form="product_addtocart_form"
+            type="number"
+            inputmode="numeric"
+            :value="qty"
+            value="<?= $defaultQty ?>"
+            min="<?= $minQty ?>"
+            :max="max ?? ''"
+            @input="onInput($event)"
+            class="h-12 w-13 border-0 bg-transparent p-0 text-center font-medium text-base text-brand-ink tabular-nums focus:ring-0 md:h-14 md:w-14 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            aria-describedby="qty-hint-<?= $productId ?>"
+        >
+        <button type="button" @click="increment" :disabled="atMax"
+                class="qty-step inline-flex w-11 items-center justify-center border-l border-brand-line text-brand text-subtitle-lg transition-colors hover:bg-brand-blush disabled:cursor-not-allowed disabled:bg-transparent disabled:text-disabled-muted md:w-12"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Ajouter un exemplaire')) ?>">+</button>
+    </div>
+    <p id="qty-hint-<?= $productId ?>" class="mt-1.5 min-h-5 text-caption" :class="atMax ? 'font-medium text-error' : 'text-brand-muted'" x-text="hint" aria-live="polite"></p>
+</div>

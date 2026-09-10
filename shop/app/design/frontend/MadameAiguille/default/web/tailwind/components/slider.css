@@ -57,3 +57,35 @@
         }
     }
 }
+
+/* Galerie de la fiche produit : les marqueurs du pager sont des miniatures
+   4:5 (96 × 120 px), pas des points ; la vue courante est cernée de brand. */
+@layer components {
+    .product-gallery {
+        .gallery-thumbs {
+            justify-content: flex-start;
+            min-block-size: 0;
+            padding-block: 0;
+        }
+
+        .gallery-thumb {
+            block-size: auto;
+            inline-size: --spacing(20);
+            border-radius: var(--radius-sm);
+            transition-property: border-color, box-shadow;
+
+            @variant md {
+                inline-size: --spacing(24);
+            }
+
+            &[aria-current="true"] {
+                inline-size: --spacing(20);
+                background-color: transparent;
+
+                @variant md {
+                    inline-size: --spacing(24);
+                }
+            }
+        }
+    }
+}

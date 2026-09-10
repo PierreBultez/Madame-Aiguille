@@ -1,0 +1,42 @@
+<?php
+/**
+ * Madame Aiguille — bouton « Ajouter au panier » (56 px, principal)
+ * Sur un configurable, inactif tant qu'aucune taille n'est choisie
+ * (événement natif configurable-selection-changed).
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$product = $viewModels->require(CurrentProduct::class)->get();
+$isConfigurable = $product->getTypeId() === Configurable::TYPE_CODE;
+$buttonLabel = $block->getData('is_cart_configure') ? __('Mettre à jour') : __('Ajouter au panier');
+?>
+<div
+    x-data="{ ready: <?= $isConfigurable ? 'false' : 'true' ?> }"
+    @configurable-selection-changed.window="ready = !!$event.detail.productIndex"
+>
+    <?php if ($isConfigurable): ?>
+        <p class="mb-1.5 min-h-5 text-caption text-brand-muted" x-show="!ready" aria-live="polite"><?= $escaper->escapeHtml(__('Choisissez une taille pour ajouter au panier.')) ?></p>
+        <p class="mb-1.5 min-h-5" x-show="ready" x-cloak aria-hidden="true"></p>
+    <?php endif; ?>
+    <button
+        type="submit"
+        form="product_addtocart_form"
+        class="btn btn-primary btn-size-lg w-full"
+        id="product-addtocart-button"
+        data-addto="cart"
+        :disabled="!ready"
+    ><?= $escaper->escapeHtml($buttonLabel) ?></button>
+</div>
+
+<?= $block->getChildHtml('', true) ?>

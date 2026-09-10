@@ -1,0 +1,81 @@
+<?php
+/**
+ * Madame Aiguille — Description et Caractéristiques
+ * Deux colonnes sur desktop (1,3fr / 1fr), accordéons natifs <details> sur
+ * mobile pour garder le bouton d'achat près du prix. Les lignes du tableau
+ * viennent du ViewModel Characteristics.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use MadameAiguille\Theme\ViewModel\Product\Characteristics;
+use Magento\Catalog\Block\Product\View\Details;
+use Magento\Catalog\Helper\Output as CatalogOutputHelper;
+use Magento\Framework\Escaper;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Details $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$product = $viewModels->require(ProductPage::class)->getProduct();
+/** @var Characteristics $characteristics */
+$characteristics = $block->getData('characteristics') ?? $viewModels->require(Characteristics::class);
+/** @var CatalogOutputHelper $catalogOutputHelper */
+$catalogOutputHelper = $this->helper(CatalogOutputHelper::class);
+
+$description = trim((string) $product->getDescription());
+$descriptionHtml = $description !== '' ? $catalogOutputHelper->productAttribute($product, $description, 'description') : '';
+$rows = $characteristics->getRows($product);
+
+if ($descriptionHtml === '' && $rows === []) {
+    return;
+}
+
+$renderRows = static function (array $rows, Escaper $escaper): string {
+    $html = '<dl class="grid grid-cols-[auto_1fr]">';
+    foreach ($rows as $row) {
+        $html .= '<dt class="border-b border-brand-line py-3 pr-5 font-medium text-label text-brand-muted last-of-type:border-b-0">' . $escaper->escapeHtml($row['label']) . '</dt>'
+            . '<dd class="border-b border-brand-line py-3 text-label leading-relaxed text-brand-ink last-of-type:border-b-0' . ($row['multiline'] ? ' whitespace-pre-line' : '') . '">' . $escaper->escapeHtml($row['value']) . '</dd>';
+    }
+    return $html . '</dl>';
+};
+$summaryClass = 'flex min-h-14 cursor-pointer list-none items-center justify-between font-medium text-base text-brand-ink marker:content-none [&::-webkit-details-marker]:hidden';
+$chevron = '<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" class="text-brand transition-transform group-open:rotate-180"><path d="M1 1.5 6 6.5l5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+?>
+<section class="product-details full-bleed border-t border-brand-line bg-surface py-4 md:py-14" aria-label="<?= $escaper->escapeHtmlAttr(__('Description et caractéristiques')) ?>">
+    <?php /* Desktop */ ?>
+    <div class="hidden gap-12 md:grid md:grid-cols-[1.3fr_1fr] lg:gap-16">
+        <?php if ($descriptionHtml !== ''): ?>
+            <div>
+                <h2 class="mb-5 font-body font-medium text-title text-brand-ink"><?= $escaper->escapeHtml(__('Description')) ?></h2>
+                <div class="product-description prose max-w-none text-base text-brand-ink text-pretty"><?= /* @noEscape */ $descriptionHtml ?></div>
+            </div>
+        <?php endif; ?>
+        <?php if ($rows): ?>
+            <div>
+                <h2 class="mb-5 font-body font-medium text-title text-brand-ink"><?= $escaper->escapeHtml(__('Caractéristiques')) ?></h2>
+                <?= /* @noEscape */ $renderRows($rows, $escaper) ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <?php /* Mobile : accordéons */ ?>
+    <div class="divide-y divide-brand-line md:hidden">
+        <?php if ($descriptionHtml !== ''): ?>
+            <details class="group" open>
+                <summary class="<?= $escaper->escapeHtmlAttr($summaryClass) ?>"><?= $escaper->escapeHtml(__('Description')) ?><?= /* @noEscape */ $chevron ?></summary>
+                <div class="product-description prose max-w-none pb-5 text-base text-brand-ink text-pretty"><?= /* @noEscape */ $descriptionHtml ?></div>
+            </details>
+        <?php endif; ?>
+        <?php if ($rows): ?>
+            <details class="group">
+                <summary class="<?= $escaper->escapeHtmlAttr($summaryClass) ?>"><?= $escaper->escapeHtml(__('Caractéristiques')) ?><?= /* @noEscape */ $chevron ?></summary>
+                <div class="pb-5"><?= /* @noEscape */ $renderRows($rows, $escaper) ?></div>
+            </details>
+        <?php endif; ?>
+    </div>
+</section>

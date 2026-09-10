@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — fiche produit (maquette « Fiche produit », Design System §6.5)
+ *
+ * Fusionné avec le catalog_product_view.xml du parent Hyvä. Retirés : avis,
+ * liste d'envies, comparateur, prix dégressifs, statut de stock natif,
+ * boutons de paiement express, « récemment vus », montée en gamme. Le titre
+ * natif est remplacé par le H1 de la colonne d'achat. Les sections
+ * Description / Caractéristiques sont rendues par un template dédié.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="product.info.title" remove="true"/>
+        <referenceBlock name="product.info.review" remove="true"/>
+        <referenceBlock name="product.info.addtowishlist" remove="true"/>
+        <referenceBlock name="product.info.addtocompare" remove="true"/>
+        <referenceBlock name="product.price.tier" remove="true"/>
+        <referenceBlock name="product.info.stockstatus" remove="true"/>
+        <referenceBlock name="addtocart.shortcut.buttons" remove="true"/>
+        <referenceBlock name="upsell" remove="true"/>
+        <referenceBlock name="review_list" remove="true"/>
+        <referenceBlock name="product.review.form" remove="true"/>
+        <referenceBlock name="recently_viewed_products.default_widget_pdp" remove="true"/>
+        <referenceBlock name="description" remove="true"/>
+        <referenceBlock name="product.attributes" remove="true"/>
+
+        <referenceBlock name="product.info">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+                <!-- Aucun attribut natif dans la colonne d'achat : les caractéristiques ont leur section -->
+                <argument name="attributes" xsi:type="array"/>
+            </arguments>
+            <!-- Rassurance : bloc CMS éditable (Contenu › Blocs › product_reassurance) -->
+            <block class="Magento\Cms\Block\Block" name="product.info.reassurance" as="reassurance">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">product_reassurance</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
+        <referenceBlock name="product.info.quantity">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="product.media">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="product.info.details" template="Magento_Catalog::product/view/details.phtml">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+                <argument name="characteristics" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\Characteristics</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="related">
+            <arguments>
+                <argument name="title" xsi:type="string" translate="true">Vous aimerez aussi</argument>
+                <argument name="heading_tag" xsi:type="string">h2</argument>
+                <argument name="page_size" xsi:type="number">4</argument>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

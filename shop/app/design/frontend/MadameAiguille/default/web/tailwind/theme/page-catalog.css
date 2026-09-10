@@ -43,3 +43,39 @@
         @apply sr-only;
     }
 }
+
+/* Fiche produit : prix en Sentient Medium 26 / 32 px, couleur brand ;
+   « À partir de » en mention ; version compacte dans la barre collante mobile */
+.pdp-price {
+    --price-font-size: var(--text-title);
+    --price-font-weight: 500;
+    color: var(--color-brand);
+    line-height: 1.2;
+
+    @variant md {
+        --price-font-size: var(--text-title-lg);
+    }
+
+    & .price-box .price-label {
+        display: block;
+        font-size: var(--text-caption);
+        font-weight: 400;
+        color: var(--color-brand-muted);
+    }
+
+    &.is-soldout {
+        color: var(--color-brand-muted);
+    }
+
+    &.pdp-price-compact {
+        --price-font-size: var(--text-subtitle);
+
+        @variant md {
+            --price-font-size: var(--text-subtitle);
+        }
+
+        & .price-box .price-label {
+            display: none;
+        }
+    }
+}

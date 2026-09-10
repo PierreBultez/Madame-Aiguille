@@ -66,3 +66,66 @@
         gap: --spacing(2);
     }
 }
+
+/* Sélecteur de taille — Madame Aiguille (Design System §6.5)
+   Swatch texte en bouton de 120 × 56 px : repos contour brand, choisi aplat
+   brand, épuisé grisé et barré (états natifs :has(:checked) / :has(:disabled)). */
+@layer components {
+    .swatch-option[data-swatch-type="text"] {
+        --swatch-radius: var(--radius-sm);
+        --swatch-px: --spacing(5);
+        --swatch-py: --spacing(2);
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: --spacing(0.5);
+        min-inline-size: --spacing(30);
+        min-block-size: --spacing(14);
+        border-color: var(--color-brand);
+        background: var(--color-surface);
+        color: var(--color-brand);
+        line-height: 1.25;
+        transition-property: color, background-color, border-color;
+        transition-duration: var(--default-transition-duration);
+
+        > * {
+            grid-area: auto;
+            border-radius: 0;
+        }
+
+        &:hover {
+            border-color: var(--color-brand-dark);
+            background: var(--color-brand-blush);
+            color: var(--color-brand-dark);
+        }
+
+        &:is(:has(:checked), [aria-checked="true"]) {
+            border-color: var(--color-brand);
+            background: var(--color-brand);
+            color: var(--color-on-primary);
+            box-shadow: none;
+        }
+
+        &:is(:has(:disabled), [aria-disabled="true"]) {
+            border-style: solid;
+            border-color: var(--color-disabled-border);
+            background: var(--color-disabled-bg);
+            color: var(--color-disabled-muted);
+
+            .swatch-label {
+                text-decoration: line-through;
+            }
+
+            > :is(span, img) {
+                opacity: 1;
+            }
+        }
+
+        input[type="radio"] {
+            position: absolute;
+            inset: 0;
+            cursor: inherit;
+        }
+    }
+}
