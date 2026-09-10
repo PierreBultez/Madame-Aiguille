@@ -1,0 +1,17 @@
+<?php
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\SocialLinks;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var SocialLinks $socialLinks */
+$socialLinks = $block->getData('social_links');
+?>
+<?php foreach ($socialLinks->getLinks() as $link): ?>
+    <?php if ($link['icon'] === 'instagram'): ?>
+        <p class="text-center mt-6"><a class="btn btn-secondary" href="<?= $escaper->escapeUrl($link['url']) ?>"><?= $escaper->escapeHtml(__('Suivez-nous sur Instagram')) ?></a></p>
+    <?php endif; ?>
+<?php endforeach; ?>

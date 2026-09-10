@@ -1,0 +1,35 @@
+<?php
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Home\Products;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Products $products */
+/** @var ProductListItem $renderer */
+$products = $block->getData('products_view_model');
+$renderer = $block->getData('item_renderer');
+$items = $products->getItems(
+    $block->getProductCollection(),
+    4,
+    $block->getData('required_attribute') ?: null
+);
+if (!$items) {
+    return;
+}
+?>
+<div class="home-products">
+    <?php foreach ($items as $product): ?>
+        <?= $renderer->getItemHtmlWithRenderer(
+            $block->getLayout()->getBlock('product_list_item'),
+            $product,
+            $block,
+            'grid',
+            ReviewRendererInterface::SHORT_VIEW,
+            'category_page_grid',
+            false
+        ) ?>
+    <?php endforeach; ?>
+</div>

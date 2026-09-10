@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
+        <newsletter>
+            <general><active>1</active></general>
+            <subscription><confirm>1</confirm><allow_guest_subscribe>1</allow_guest_subscribe></subscription>
+        </newsletter>
         <madameaiguille>
             <social>
                 <instagram_url/>

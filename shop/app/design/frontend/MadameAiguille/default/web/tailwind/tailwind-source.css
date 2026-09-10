@@ -189,3 +189,6 @@
     --form-color: var(--color-brand-ink);
     --form-active-color: var(--color-brand);
 }
+
+/* Blocs CMS accueil : les classes home-* ont leurs règles dans page-home.css. */
+@source inline("home-hero home-hero-image home-hero-copy home-kicker home-intro home-story home-news home-reasons home-gallery");

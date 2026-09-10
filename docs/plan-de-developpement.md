@@ -1,8 +1,10 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.4 (10/09/2026), lot 6a validé ; lot 3, gabarit de section livré pour recette
+Document interne — v1.5 (10/09/2026), lot 6a validé ; lot 3, accueil livré pour recette
 
-> **v1.4** — Pierre valide le lot 6a après une commande. Branche `lot-3-accueil-cms-contact` créée depuis `7f46bb1`. Étape 2 : titre de section factorisé, réutilisé par les catégories, le slider produit et le styleguide ; recette à 390 / 1440 px effectuée, validation Pierre en attente avant l'accueil.
+> **v1.5** — Étape 2 validée par Pierre. Étape 3 : accueil complet en blocs CMS, Nouveautés automatiques sans produits épuisés, Incontournables par attribut produit, actualités éditoriales, galerie et newsletter native avec double opt-in. Purge de cache étendue aux sélections de l'accueil ; recette à 390 / 1440 px effectuée. Validation Pierre en attente avant les pages CMS.
+
+> **v1.4** — Pierre valide le lot 6a après une commande. Branche `lot-3-accueil-cms-contact` créée depuis `7f46bb1`. Étape 2 : titre de section factorisé, réutilisé par les catégories, le slider produit et le styleguide ; recette à 390 / 1440 px effectuée.
 
 > **v1.3** — Luma Checkout 1.1.7 et Theme Fallback 1.0.4 installés sur `lot-6a-checkout`. Formulaire invité et isolation des scripts contrôlés ; aucun habillage ni changement de paiement. Le fallback change la page entière vers Luma (correction de la description initiale). Décisions du lot 3 consignées ci-dessous ; développement du lot 3 non commencé.
 
@@ -42,7 +44,7 @@ Livré et validé (commits `92500b5` → `ccabeab`, détail dans `documentation-
 **Points ouverts issus du lot 2**
 
 - **WebP** : Magento 2.4.9 ne génère pas de WebP nativement ; les tailles 4:5 sont en place. Reporté au lot 8 (perf) ou module tiers gratuit à valider (compatibilité Hyvä) — Pierre.
-- **Page « Boutique » globale** : « Voir toute la boutique » (états vides) et « Boutique » du fil d'Ariane des maquettes pointent aujourd'hui vers l'accueil, faute de page regroupant tout le catalogue. Une catégorie « Boutique » ancrée, ou l'accueil comme vitrine, à décider avec Céline (lot 3).
+- ~~**Page « Boutique » globale**~~ : l'accueil reste la vitrine ; « Voir toute la boutique » pointe vers l'accueil (décision Pierre, lot 3).
 - **Champ « Me prévenir »** (catégorie vide, fiche épuisée) : posé seulement si la newsletter est retenue (lot 3).
 - **Catégories réelles** : celles en base sont celles des maquettes (`docs/jeux-de-donnees/categories.php`) ; à définir avec Céline.
 - **Contact** : la page du lot 3 doit lire `?product=<sku>` (lien « Une question sur le tissu ou le motif ? » et encarts de mise en relation).
@@ -60,7 +62,7 @@ Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et da
 - **Contenus** : textes génériques éditables dans le back-office et emplacements documentés ; aucune biographie, date de marché ou promesse de délai fictive présentée comme validée. Les pages légales restent « À rédiger » sans texte fourni.
 - **404** : même direction artistique que les états vides avec un petit easter egg ludique. Proposition : bobine déroulée, « On a perdu le fil… », aiguille animée au clic, accessible au clavier et respectant la préférence de réduction des animations.
 
-Ordre des étapes à valider séparément : **1)** lot 6a (validé après une commande de Pierre) ; **2)** composant partagé de titre de section (livré pour recette) ; **3)** accueil ; **4)** pages CMS dont Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
+Ordre des étapes à valider séparément : **1)** lot 6a (validé) ; **2)** composant partagé de titre de section (validé) ; **3)** accueil (livré pour recette) ; **4)** pages CMS dont Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
 
 ## Vue d'ensemble
 

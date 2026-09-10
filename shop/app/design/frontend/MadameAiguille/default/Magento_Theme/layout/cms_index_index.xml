@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="catalog_list_item"/>
+    <body>
+        <referenceBlock name="hero" remove="true"/>
+        <referenceBlock name="slider-1" remove="true"/>
+        <referenceBlock name="slider-2" remove="true"/>
+        <referenceBlock name="cms_page" remove="true"/>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceContainer name="content">
+            <container name="home.sections" htmlTag="div" htmlClass="home-sections">
+                <block class="Magento\Cms\Block\Block" name="home.hero" after="-"><arguments><argument name="block_id" xsi:type="string">home_hero</argument></arguments></block>
+                <block name="home.new" after="home.hero" template="MadameAiguille_Theme::home/section.phtml">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">home_new</argument>
+                        <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
+                    </arguments>
+                    <block class="Magento\Cms\Block\Block" name="home.new.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_new</argument></arguments></block>
+                    <block class="MadameAiguille\Theme\Block\Home\NewProducts" name="home.new.products" as="products" template="MadameAiguille_Theme::home/products.phtml">
+                        <arguments>
+                            <argument name="products_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Products</argument>
+                            <argument name="item_renderer" xsi:type="object">Hyva\Theme\ViewModel\ProductListItem</argument>
+                            <argument name="display_type" xsi:type="string">new_products</argument>
+                            <argument name="products_count" xsi:type="number">4</argument>
+                            <argument name="conditions" xsi:type="array"/>
+                            <argument name="show_pager" xsi:type="boolean">false</argument>
+                        </arguments>
+                    </block>
+                </block>
+                <block name="home.featured" after="home.new" template="MadameAiguille_Theme::home/section.phtml">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">home_featured</argument>
+                        <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
+                    </arguments>
+                    <block class="Magento\Cms\Block\Block" name="home.featured.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_featured</argument></arguments></block>
+                    <block class="MadameAiguille\Theme\Block\Home\FeaturedProducts" name="home.featured.products" as="products" template="MadameAiguille_Theme::home/products.phtml">
+                        <arguments>
+                            <argument name="products_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Products</argument>
+                            <argument name="item_renderer" xsi:type="object">Hyva\Theme\ViewModel\ProductListItem</argument>
+                            <argument name="display_type" xsi:type="string">new_products</argument>
+                            <argument name="products_count" xsi:type="number">4</argument>
+                            <argument name="conditions" xsi:type="array"/>
+                            <argument name="show_pager" xsi:type="boolean">false</argument>
+                            <argument name="required_attribute" xsi:type="string">home_featured</argument>
+                        </arguments>
+                    </block>
+                </block>
+                <block name="home.actualities" after="home.featured" template="MadameAiguille_Theme::home/section.phtml">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">home_actualities</argument>
+                        <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
+                    </arguments>
+                    <block class="Magento\Cms\Block\Block" name="home.actualities.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_actualities</argument></arguments></block>
+
+                </block>
+                <block class="Magento\Cms\Block\Block" name="home.story" after="home.actualities"><arguments><argument name="block_id" xsi:type="string">home_story</argument></arguments></block>
+                <block name="home.why" after="home.story" template="MadameAiguille_Theme::home/section.phtml">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">home_why</argument>
+                        <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
+                    </arguments>
+                    <block class="Magento\Cms\Block\Block" name="home.why.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_why</argument></arguments></block>
+
+                </block>
+                <block name="home.instagram" after="home.why" template="MadameAiguille_Theme::home/section.phtml">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">home_instagram</argument>
+                        <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
+                    </arguments>
+                    <block class="Magento\Cms\Block\Block" name="home.instagram.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_instagram</argument></arguments></block>
+                    <block name="home.instagram.link" as="extra" template="MadameAiguille_Theme::home/social.phtml"><arguments><argument name="social_links" xsi:type="object">MadameAiguille\Theme\ViewModel\SocialLinks</argument></arguments></block>
+                </block>
+                <block name="home.newsletter" after="home.instagram" template="MadameAiguille_Theme::home/section.phtml" ifconfig="newsletter/general/active">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">home_newsletter</argument>
+                        <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
+                    </arguments>
+                    <block class="Magento\Cms\Block\Block" name="home.newsletter.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_newsletter</argument></arguments></block>
+
+                </block>
+            </container>
+        </referenceContainer>
+        <move element="form.subscribe" destination="home.newsletter" as="extra"/>
+    </body>
+</page>

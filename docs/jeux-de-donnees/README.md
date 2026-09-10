@@ -6,12 +6,14 @@ Scripts **hors code applicatif** : ils ne sont ni des data patches ni déployés
 |---|---|---|
 | `categories.php` | Arborescence des catégories issue des maquettes (Trousses de toilette > Grandes / Petites trousses, Pochettes à livre, Cotons démaquillants, Petits sacs), actives, dans le menu, ancrées | oui (repérage par clé d'URL et parent ; ne supprime jamais rien, vérifie le chemin enregistré) |
 | `produits-test.php` | Douze produits du catalogue Madame Aiguille (photos `maquettes-direction-artistique/brand/p-*.png`) couvrant tous les états du Design System, produits liés, suppression des données d'essai Sneakers / T-Shirts / Jordan | oui (upsert par SKU ; les images ne sont ajoutées qu'à la création) |
+| `accueil.php` | Coche quatre produits existants comme Incontournables pour la recette de l'accueil | oui (mise à jour par SKU, aucune création ni suppression) |
 
 Prérequis : `bin/magento setup:upgrade` passé (attribute set « Création »). Ordre : catégories, puis produits.
 
 ```bash
 php docs/jeux-de-donnees/categories.php
 php docs/jeux-de-donnees/produits-test.php
+php docs/jeux-de-donnees/accueil.php
 cd shop && bin/magento indexer:reindex && bin/magento cache:flush
 ```
 

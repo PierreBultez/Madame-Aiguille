@@ -1,0 +1,106 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Magento\Framework\Escaper;
+use Magento\Newsletter\Block\Subscribe;
+
+/** @var Subscribe $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+/** @var ReCaptcha $recaptcha */
+/** @var HeroiconsOutline $heroicons */
+
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+// Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
+// on the Magento_ReCaptchaNewsletter module
+$recaptcha = $block->getData('viewModelRecaptcha');
+?>
+<div class="home-newsletter-form">
+    <form
+        class="form subscribe"
+        action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
+        method="post"
+        x-data="initNewsletterForm"
+        @submit.prevent="submitForm"
+        id="newsletter-validate-detail"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Inscription à la newsletter')) ?>"
+    >
+        <div class="home-newsletter-fields">
+            <label for="newsletter-subscribe" class="sr-only">
+                <?= $escaper->escapeHtml(__('Adresse email')) ?>
+            </label>
+            <input
+                name="email"
+                type="email"
+                required
+                id="newsletter-subscribe"
+                class="form-input inline-flex w-full"
+                placeholder="<?= $escaper->escapeHtmlAttr(__('Votre adresse email')) ?>"
+                autocomplete="email"
+                aria-describedby="newsletter-privacy"
+            >
+            <?= $block->getBlockHtml('formkey') ?>
+            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+            <button class="btn btn-primary" type="submit">
+                <?= $escaper->escapeHtml(__('Je m’inscris')) ?>
+            </button>
+        </div>
+        <div>
+            <template x-if="displayErrorMessage">
+                <p class="flex items-center text-error-dark">
+                    <span class="inline-block w-8 h-8 mr-3">
+                        <?= $heroicons->exclamationCircleHtml('', 24, 24, ['aria-hidden' => true]); ?>
+                    </span>
+                    <template x-for="errorMessage in errorMessages">
+                        <span x-text="errorMessage"></span>
+                    </template>
+                </p>
+            </template>
+        </div>
+        <p id="newsletter-privacy" class="mt-4 text-caption text-center">
+            <?= $escaper->escapeHtml(__('Vous recevrez un email pour confirmer votre inscription. Désinscription à tout moment.')) ?>
+            <a class="inline-flex items-center min-h-11 underline" href="<?= $escaper->escapeUrl($block->getUrl('confidentialite')) ?>"><?= $escaper->escapeHtml(__('Confidentialité')) ?></a>
+        </p>
+    </form>
+    <div class="w-full">
+        <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+    </div>
+    <script>
+        function initNewsletterForm() {
+            return {
+                errors: 0,
+                hasCaptchaToken: 0,
+                displayErrorMessage: false,
+                errorMessages: [],
+                setErrorMessages(messages) {
+                    this.errorMessages = [messages]
+                    this.displayErrorMessage = this.errorMessages.length
+                },
+                submitForm() {
+                    // Do not rename $form, the variable is expected to be declared in the recaptcha output
+                    const $form = document.querySelector('#newsletter-validate-detail');
+                    <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+
+                    if (this.errors === 0) {
+                        $form.submit();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('alpine:init', () => Alpine.data('initNewsletterForm', initNewsletterForm), {once: true})
+    </script>
+    <?php $hyvaCsp->registerInlineScript() ?>
+</div>

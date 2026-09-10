@@ -19,6 +19,7 @@ use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable as
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Indexer\CacheContextFactory;
+use MadameAiguille\Theme\ViewModel\Home\Products as HomeProducts;
 
 class FlushProductCacheBySkus
 {
@@ -68,6 +69,7 @@ class FlushProductCacheBySkus
 
         $cacheContext = $this->cacheContextFactory->create();
         $cacheContext->registerEntities(Product::CACHE_TAG, $productIds);
+        $cacheContext->registerTags([HomeProducts::CACHE_TAG]);
         $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $cacheContext]);
 
         $tags = $cacheContext->getIdentities();

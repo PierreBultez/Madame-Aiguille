@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.4 (10/09/2026), lot 6a validé par Pierre ; lot 3, gabarit de section livré pour recette. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.5 (10/09/2026), lot 6a validé par Pierre ; lot 3, accueil et gabarit de section livrés pour recette. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -262,6 +262,27 @@ Créés par data patch (`Setup/Patch/Data/`), **une seule fois** ; ensuite ils v
 | `confidentialite` | page | Politique de confidentialité |
 | `header_announcement` | bloc | bandeau du header |
 | `product_reassurance` | bloc | quatre arguments sous le bouton d'achat de la fiche produit (expédition, paiement, transporteurs, emballage). À aligner sur les modes réels au lot 5 |
+
+### Accueil — lot 3, étape 3
+
+L'accueil suit cet ordre : hero, Nouveautés, Incontournables, nouvelles de l'atelier, histoire, arguments, galerie Instagram, newsletter. Les blocs créés par `CreateHomeBlocks` ne sont jamais réécrits après leur première installation : Céline conserve donc toutes ses modifications.
+
+| Zone | Modification dans l'admin | Structure dans le code |
+|---|---|---|
+| Hero | *Contenu › Blocs* › `home_hero` : titre, texte, image et lien de catégorie | `Magento_Theme/layout/cms_index_index.xml`, styles `.home-hero` ; image plafonnée à 240 px sur mobile |
+| Nouveautés | Dates *Définir le produit comme nouveau à partir de / jusqu'au* sur la fiche ; titre et accroche dans `home_new` | widget Magento `NewWidget`, règles de dates natives ; produits épuisés exclus par `ViewModel/Home/Products.php` |
+| Incontournables | Fiche produit, groupe *Accueil* › *Incontournable sur l'accueil* ; titre et accroche dans `home_featured` | attribut EAV `home_featured`, quatre produits disponibles au maximum, ordre de création décroissant |
+| Marchés, congés, annonces | bloc `home_actualities` | bloc CMS indépendant ; le texte initial est volontairement générique et ne contient ni date ni promesse non validée |
+| Histoire | bloc `home_story` | visuel initial `web/images/home/atelier.png` et lien vers `a-propos` |
+| Arguments | titre du bloc `home_why`, puis ses quatre éléments | grille 2 colonnes mobile / 4 desktop |
+| Instagram | bloc `home_instagram` pour les quatre visuels ; URL dans *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | images initiales `web/images/home/ig-1.png` à `ig-4.png` ; bouton absent si l'URL Instagram est vide |
+| Newsletter | bloc `home_newsletter` pour l'accroche | formulaire natif Magento retemplété dans `Magento_Newsletter/templates/subscribe.phtml`, reCAPTCHA natif conservé, confirmation par email activée dans `etc/config.xml` |
+
+Le titre affiché des sections structurées est le **titre du bloc CMS**. Désactiver un bloc le masque. Une sélection Nouveautés ou Incontournables sans produit disponible est masquée avec son titre. Les images sont éditables dans le contenu CMS avec le sélecteur de médias ; les fichiers du thème servent de valeurs initiales.
+
+Les cartes utilisent le renderer partagé `product_list_item`. Le tag `madameaiguille_home_products` invalide l'accueil après une sauvegarde produit, une variation de stock MSI ou le cron des dates de nouveauté, y compris lorsque la sélection était auparavant vide.
+
+Pour les données de recette uniquement, `php docs/jeux-de-donnees/accueil.php` coche quatre SKU existants comme Incontournables. Ce script ne crée et ne supprime aucun produit.
 
 Classes Tailwind utilisables dans le CMS : celles listées dans `@source inline(...)` de `tailwind-source.css` (couleurs `bg-/text-/border-brand*`, échelle `text-*`, espacements courants, grilles, `btn`, `badge`, `scallop`, `card`, `prose`, et celles du bloc de rassurance). Pour en ajouter une : la déclarer là, puis `npm run build`.
 

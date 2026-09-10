@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Home\Content;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var Content $content */
+$content = $block->getData('content_view_model');
+$identifier = (string) $block->getData('block_id');
+$cmsBlock = $content->getActiveBlock($identifier);
+if (!$cmsBlock) {
+    return;
+}
+// Le rendu précède le titre : une sélection sans produit disponible reste discrète.
+$products = $block->getChildHtml('products');
+if ($block->getChildBlock('products') && trim($products) === '') {
+    return;
+}
+$block->setData('section_heading', ['title' => $cmsBlock->getTitle(), 'id' => $identifier . '-title']);
+?>
+<section class="home-section <?= $escaper->escapeHtmlAttr($identifier) ?>" aria-labelledby="<?= $escaper->escapeHtmlAttr($identifier) ?>-title">
+    <div class="container">
+        <?= $block->fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml')) ?>
+        <?= $block->getChildHtml('content') ?>
+        <?= /** @noEscape */ $products ?>
+        <?= $block->getChildHtml('extra') ?>
+    </div>
+</section>
