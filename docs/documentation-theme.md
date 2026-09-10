@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.2 (10/09/2026), état en fin de lot 2. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.3 (10/09/2026), lot 6a installé, recette Pierre en attente. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -351,9 +351,56 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 
 Route `styleguide` (module, `etc/frontend/routes.xml`), contrôleur `Controller/Index/Index.php` — **404 en mode production**. Layout `MadameAiguille_Theme/layout/madameaiguille_styleguide_index_index.xml`, template `MadameAiguille_Theme/templates/styleguide.phtml`. Tenir la page à jour à chaque nouveau composant : c'est la référence visuelle de recette. Sections lot 2 : carte produit (cinq états), fil d'Ariane, pagination, sélecteur de quantité, sélecteur de taille, états vides. Les photos des cartes viennent de `pub/media/madameaiguille/photos-test/` (jeu de données, dev uniquement).
 
-## 14. Checkout — état et décision
+## 14. Checkout — Luma fallback (lot 6a)
 
-Aucun module de checkout n'est installé en fin de lot 1 : `/checkout` affiche le message Hyvä « No Checkout module installed » (layout `Magento_Checkout/layout/checkout_index_index.xml` du thème parent). **Décision (05/09/2026)** : Hyvä Checkout (licence payante, 1 000 €) est écarté ; on installera le **Luma Fallback Checkout** `hyva-themes/magento2-luma-checkout` (OSL-3.0, Packagist Hyvä) au lot 6a. Voir `plan-de-developpement.md`.
+Installé le 10/09/2026 sur `lot-6a-checkout`, depuis `lot-2-catalogue` (`6877562`) : **`hyva-themes/magento2-luma-checkout` 1.1.7**, dépendance **`hyva-themes/magento2-theme-fallback` 1.0.4**, licences OSL-3.0. Deux installations, aucune mise à jour ni suppression d'autre paquet. La contrainte Composer est `^1.1`, les versions exactes sont verrouillées dans `shop/composer.lock`. Modules activés dans `shop/app/etc/config.php` : `Hyva_LumaCheckout` et `Hyva_ThemeFallback`.
+
+Commandes exécutées depuis `shop/` :
+
+```bash
+composer require hyva-themes/magento2-luma-checkout
+bin/magento setup:upgrade --keep-generated
+bin/magento cache:flush
+```
+
+L'accès au Packagist Hyvä utilise la configuration Composer globale non versionnée. Aucun identifiant n'est recopié dans le projet. Aucun moyen de paiement n'a été installé ou configuré.
+
+### Fonctionnement et configuration
+
+**Correction du plan initial : le fallback change le thème de la page entière**, via `Hyva\ThemeFallback\Model\ThemeSwitch::switchToFallback()`. Le checkout utilise donc le layout Luma simplifié (logo Luma, lien de connexion, copyright), **pas le header/footer du thème enfant Hyvä**. Le module Luma Checkout fournit les réglages ; le module Theme Fallback réalise la bascule. Aucun habillage n'est livré au lot 6a.
+
+| Quoi | Où | Valeur / fonctionnement |
+|---|---|---|
+| Activer le fallback | Admin › *Stores › Configuration › Hyva Themes › Theme Fallback › General Settings › Enable* | `hyva_theme_fallback/general/enable = 1` |
+| Thème du checkout | même écran, *Theme full path* | `hyva_theme_fallback/general/theme_full_path = frontend/Magento/luma` |
+| Routes concernées | même écran, *Apply fallback to requests containing* | `hyva_theme_fallback/general/list_part_of_url` : conserver les valeurs système décrites ci-dessous |
+| Commande invité | Admin › *Stores › Configuration › Sales › Checkout › Checkout Options › Allow Guest Checkout* | `checkout/options/guest_checkout = 1`, valeur effective vérifiée pour la vue `default` |
+| Valeurs structurelles | `vendor/hyva-themes/magento2-luma-checkout/src/etc/config.xml` (lecture seule) | Les valeurs natives suffisent ; aucune surcharge en base ajoutée. Une future valeur propre au projet ira dans `MadameAiguille_Theme/etc/config.xml` |
+
+Les routes système de la version 1.1.7 sont `/checkout/index`, `paypal/express/review`, `paypal/express/saveShippingMethod`, `paypal/transparent/redirect`, `paypal/transparent/response` et `customer/ajax/login`. Les routes PayPal sont fournies par le paquet : leur présence **n'active pas un paiement**. Le matching porte notamment sur la route Magento résolue : `/checkout/` correspond à `checkout/index/index`. Ne pas élargir la règle à tout `checkout`, sinon le panier et les pages de résultat basculeraient aussi vers Luma. Après modification : `cache:flush`.
+
+### Où préparer les surcharges du lot 6b
+
+Créer au lot 6b un **second thème enfant de `Magento/luma`**, par exemple `shop/app/design/frontend/MadameAiguille/checkout/`, puis configurer `frontend/MadameAiguille/checkout` comme thème fallback. Ce répertoire n'est pas encore créé. Les fichiers du thème Hyvä `MadameAiguille/default` ne sont pas hérités par Luma.
+
+| Besoin | Emplacement futur dans le thème Luma enfant |
+|---|---|
+| Déclaration | `theme.xml` avec parent `Magento/luma`, `registration.php` |
+| Structure, arguments `jsLayout`, logo du tunnel | `Magento_Checkout/layout/checkout_index_index.xml` ; fusion ciblée avec le layout natif |
+| Templates Knockout | `Magento_Checkout/web/template/` en conservant le chemin relatif du template natif : `shipping.html`, `payment.html`, `summary/...` |
+| Champs UI partagés, uniquement si nécessaire | `Magento_Ui/web/templates/...` (attention au pluriel `templates`) |
+| Variables et styles LESS | `web/css/source/_theme.less`, `web/css/source/_extend.less` ; extension ciblée possible dans `Magento_Checkout/web/css/source/_extend.less` |
+| Fontes et traductions | `web/fonts/` avec les WOFF2 fournis tels quels et licences ; `i18n/fr_FR.csv` propre au thème Luma |
+
+Références en lecture seule : `vendor/magento/module-checkout/view/frontend/web/template/`, `vendor/magento/theme-frontend-luma/Magento_Checkout/web/css/source/`, et les README de `vendor/hyva-themes/magento2-{luma-checkout,theme-fallback}/`. Les templates UI génériques viennent de `vendor/magento/module-ui/view/base/web/templates/`. Luma compile du **LESS**, pas le Tailwind du thème Hyvä. Les styles générés vivent dans `pub/static/frontend/<Vendor>/<theme>/<locale>/css/` et ne se modifient pas directement. En production, leur génération passe par `setup:static-content:deploy`.
+
+### Recette technique du 10/09/2026
+
+- Ajout depuis `/sac-aurora-verveine.html` : une unité de `MA-SAC-VER`, puis accès invité à `/checkout/#shipping` ; formulaire d'adresse et tarif natif Flat Rate existant affichés. Aucune commande créée.
+- Contrôle visuel du checkout à **1440 et 390 px**, via le navigateur Chromium intégré à Codex (utilisé à la place de la commande Chrome headless du brief). Le branding Luma et les libellés partiellement anglais sont attendus avant le lot 6b. Le pays par défaut États-Unis et le tarif existant sont à reprendre au lot 5.
+- Comparaison des scripts du DOM : accueil `/`, catégorie `/petits-sacs.html` et panier `/checkout/cart/` chargent Alpine du thème Madame Aiguille, **aucun script RequireJS/Knockout** ; le checkout charge `requirejs/require.js` et `knockoutjs/knockout.js` sous `frontend/Magento/luma/fr_FR/`. Aucune erreur JavaScript relevée au chargement du checkout.
+- Régression du module : **10 tests, 28 assertions**. La commande habituelle signale l'absence de `allure/allure.config.php` ; relance avec `--no-extensions` réussie, sans changement du code de test.
+- Recette Pierre en attente. Le paiement, la commande complète, la connexion pendant le tunnel et les transporteurs seront recettés avec les lots correspondants.
 
 ## 15. Commandes utiles
 
@@ -383,3 +430,4 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 |---|---|---|
 | 1 — Fondations | dépôt, thème enfant, chaîne Tailwind, fontes, tokens, composants, styleguide, module, header, footer | `62dca83` → `7af01df` |
 | 2 — Catalogue | attributs et set « Création », jeu de données, ViewModel LimitedSeries, view.xml 4:5, page catégorie, fraîcheur des badges, fiche produit, états vides, styleguide et documentation | `92500b5` → `ccabeab` + documentation |
+| 6a — Checkout | installation Luma fallback 1.1.7 + Theme Fallback 1.0.4, contrôle invité et isolation des scripts, documentation des surcharges 6b ; recette Pierre en attente | branche `lot-6a-checkout` |

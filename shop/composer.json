@@ -19,6 +19,7 @@
     "version": "2.4.9",
     "require": {
         "hyva-themes/magento2-default-theme": "^1.5",
+        "hyva-themes/magento2-luma-checkout": "^1.1",
         "magento/composer": "^1.10.1-beta1",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",

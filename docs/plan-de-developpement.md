@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.2 (10/09/2026), mis à jour en fin de lot 2
+Document interne — v1.3 (10/09/2026), lot 6a installé, recette Pierre en attente
+
+> **v1.3** — Luma Checkout 1.1.7 et Theme Fallback 1.0.4 installés sur `lot-6a-checkout`. Formulaire invité et isolation des scripts contrôlés ; aucun habillage ni changement de paiement. Le fallback change la page entière vers Luma (correction de la description initiale). Décisions du lot 3 consignées ci-dessous ; développement du lot 3 non commencé.
 
 > **v1.2** — Lot 2 livré (catalogue). Décisions consignées ci-dessous ; nouvelles questions pour Céline (page « Boutique » globale, newsletter) et pour Pierre (WebP).
 >
@@ -43,6 +45,20 @@ Livré et validé (commits `92500b5` → `ccabeab`, détail dans `documentation-
 - **Catégories réelles** : celles en base sont celles des maquettes (`docs/jeux-de-donnees/categories.php`) ; à définir avec Céline.
 - **Contact** : la page du lot 3 doit lire `?product=<sku>` (lien « Une question sur le tissu ou le motif ? » et encarts de mise en relation).
 - **Suivi de la fraîcheur des caches** en conditions réelles : à recetter au lot 4 (première commande de test) ; le cron Magento doit tourner (lot 8).
+
+### Décisions de Pierre pour le lot 3 — 10/09/2026
+
+Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et dans le périmètre historique du lot 3 :
+
+- **Actualités** : bloc CMS pour marchés, congés et annonces, en complément des Nouveautés produit automatiques.
+- **Newsletter** : activée au lancement, module natif avec double opt-in. Le comportement « Me prévenir » d'une série précise reste à cadrer : une inscription à la newsletter n'est pas une alerte de réassort ciblée.
+- **Nos tissus** : page CMS incluse dans le lot 3.
+- **Navigation** : CTA contextuels vers la catégorie concernée ; « Voir toute la boutique » vers l'accueil. Pas de nouvelle catégorie globale Boutique. Le CTA du hero devra exposer une destination catégorie éditable ; la destination de « Voir toutes les nouveautés » reste à préciser.
+- **Contact** : module dédié `MadameAiguille_Contact`, nom, email, produit prérempli via `?product=<sku>`, objet, message limité à 1 000 caractères, case de consentement. Photo optionnelle disponible sur desktop et mobile : JPG/PNG, 5 Mo, validation MIME serveur et stockage **hors `pub/`**. Durée de conservation et purge à définir avant l'étape contact.
+- **Contenus** : textes génériques éditables dans le back-office et emplacements documentés ; aucune biographie, date de marché ou promesse de délai fictive présentée comme validée. Les pages légales restent « À rédiger » sans texte fourni.
+- **404** : même direction artistique que les états vides avec un petit easter egg ludique. Proposition : bobine déroulée, « On a perdu le fil… », aiguille animée au clic, accessible au clavier et respectant la préférence de réduction des animations.
+
+Ordre des étapes à valider séparément : **1)** lot 6a (en attente de recette) ; **2)** composant partagé de titre de section ; **3)** accueil ; **4)** pages CMS dont Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. Créer `lot-3-accueil-cms-contact` depuis `lot-6a-checkout` seulement après validation du 6a.
 
 ## Vue d'ensemble
 
@@ -158,9 +174,11 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 
 ## Lot 6 — Checkout (Luma fallback)
 
-**Décision prise (05/09/2026)** : Hyvä Checkout est un produit payant (1 000 € une fois, puis 250 €/an), sans édition gratuite — écarté. **Constat** : l'installation n'a aujourd'hui **aucun checkout** (`/checkout` affiche « No Checkout module installed »). On installe le **Luma Fallback Checkout** officiel de Hyvä : `hyva-themes/magento2-luma-checkout` (OSL-3.0, disponible sur le Packagist Hyvä de Pierre, v1.1.7 au 05/09/2026). Il rend le checkout natif Magento (Knockout / RequireJS) à l'intérieur du thème Hyvä — header et footer Hyvä, corps du tunnel Luma.
+**Décision prise (05/09/2026)** : Hyvä Checkout payant écarté ; **Luma Fallback Checkout** officiel retenu. **Installé le 10/09/2026** : `hyva-themes/magento2-luma-checkout` 1.1.7 et `hyva-themes/magento2-theme-fallback` 1.0.4, OSL-3.0. Le message « No Checkout module installed » est remplacé par le checkout natif Magento (Knockout / RequireJS). **Correction après lecture des README et du code installé : toute la page bascule vers Luma**, avec le layout checkout simplifié de Luma ; le header/footer Hyvä ne sont pas conservés automatiquement. L'habillage du lot 6b utilisera un thème enfant Luma distinct.
 
 **6a — Installation (½ journée, à faire juste après le lot 2)**
+
+Installation et vérifications techniques terminées, **feu vert de Pierre en attente**. `setup:upgrade --keep-generated` et `cache:flush` réussis ; invité activé, formulaire testé à 1440 et 390 px après ajout d'un produit depuis sa fiche. RequireJS/Knockout absents des pages accueil, catégorie et panier contrôlées, présents uniquement sur le checkout parmi ces pages. Dix tests du module existant passent. Détails, limites de recette et chemins de surcharge : `documentation-theme.md` §14.
 
 - `composer require hyva-themes/magento2-luma-checkout`, `setup:upgrade`, vérification de `/checkout` avec un produit de test, guest checkout activé.
 - Vérifier que les scripts RequireJS ne se chargent **que** sur les pages du tunnel (performance).
