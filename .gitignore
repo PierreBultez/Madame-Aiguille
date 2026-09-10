@@ -45,3 +45,15 @@ node_modules/
 *.swp
 .DS_Store
 Thumbs.db
+
+# ─── Fontes sous licence ITF (Britney, Sentient) ─────────────────────
+# La ITF Free Font License interdit la redistribution des fichiers de fonte,
+# y compris « through … repository … or publicly accessible servers ».
+# Ce dépôt étant public, les .woff/.woff2/.otf/.ttf en sont exclus.
+# Les textes de licence (FFL*.txt) restent suivis, et le README explique
+# comment récupérer les fontes depuis fontshare.com.
+*.woff
+*.woff2
+*.otf
+*.ttf
+
