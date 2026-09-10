@@ -39,6 +39,8 @@ Composition circulaire : « Madame Aiguille » en script, arqué au-dessus d'un 
 
 Brief de production : **`../prompts/prompt-logos-svg.md`**.
 
+**État d'intégration au 10/09/2026** : les deux fichiers validés dans `docs/logos/` sont utilisés par le thème enfant. `logo-rectangulaire.jpg` est le logo du header et du footer ; `logo-carre.jpg` fournit le favicon ICO multi-tailles. La vectorisation ci-dessous reste une amélioration de netteté et de poids pour une phase ultérieure, sans bloquer les lots fonctionnels.
+
 | Fichier | Usage | Bascule |
 |---|---|---|
 | `logo-mark.svg` | Avatar réseaux sociaux, tampon, icône d'app | ≥ 96 px |
@@ -234,7 +236,7 @@ Ne pas conditionner la mise en ligne au shooting professionnel : lancer avec les
 
 ## 8. Points ouverts
 
-1. Faire vectoriser le logo (SVG) et produire les déclinaisons carrée, horizontale et monochrome — **prérequis à l'intégration**
+1. Faire vectoriser le logo (SVG) et produire les déclinaisons carrée, horizontale et monochrome — amélioration facultative après l'intégration des JPEG officiels
 2. ~~Passage des boutons au brun rosé `#8A615C`~~ — **validé par Pierre** : les bonnes pratiques d'accessibilité priment. Reste à l'expliquer à Céline, la maquette d'ambiance montrant un rose plus clair
 3. ~~Arbitrer les polices~~ — **arrêté** : Britney (titres) + Sentient (texte), ITF, auto-hébergées
 4. Fixer le ratio d'image produit et le communiquer à Céline **avant** qu'elle ne prépare ses visuels

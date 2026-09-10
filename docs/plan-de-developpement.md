@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.7 (10/09/2026), lot 6a validé ; lot 3 intégralement livré pour recette finale
+Document interne — v1.8 (10/09/2026), lots 6a et 3 validés ; prochain lot recommandé : lot 5
+
+> **v1.8** — Lot 3 validé par Pierre. Logos officiels intégrés au header/footer et au favicon ; toutes les surcharges visuelles, y compris le formulaire Contact, résident dans le thème enfant. Les contenus et configurations restant avant production sont recensés dans `documentation-theme.md` §20. Prompt de reprise du lot 5 ajouté.
 
 > **v1.7** — Étapes 4 et 5 validées par Pierre. Module Contact livré avec stockage privé et purge à 30 jours configurable. Étape 6 : 404 interactive accessible, panier vide avec deux nouveautés disponibles, vrais rendus ajoutés au styleguide et recette transversale à 390 / 1440 px. Lot 3 en attente de validation finale.
 
@@ -30,7 +32,7 @@ Livré et validé :
 - module `MadameAiguille_Theme` : route `/styleguide`, ViewModel `SocialLinks`, configuration admin *Réseaux sociaux*, data patches (pages CMS légales vides, bloc bandeau) ;
 - header (logo centré, bandeau CMS, menu catégories 2 niveaux, tiroir mobile) et footer (4 colonnes / accordéon).
 
-Reste ouvert, transverse à tous les lots : les **SVG du logo** (brief `prompts/prompt-logos-svg.md`) — le header utilise un PNG 2× provisoire ; les **photos produit** au ratio 4:5 ; les **textes** (pages légales, À propos, descriptions).
+Reste ouvert, transverse à tous les lots : les **photos produit finales** au ratio 4:5 et les **textes validés** (pages légales, À propos, descriptions). Les logos JPEG fournis dans `docs/logos/` sont intégrés ; une déclinaison vectorielle reste une amélioration facultative, pas un prérequis.
 
 ## État après le lot 2 (10/09/2026)
 
@@ -49,9 +51,9 @@ Livré et validé (commits `92500b5` → `ccabeab`, détail dans `documentation-
 
 - **WebP** : Magento 2.4.9 ne génère pas de WebP nativement ; les tailles 4:5 sont en place. Reporté au lot 8 (perf) ou module tiers gratuit à valider (compatibilité Hyvä) — Pierre.
 - ~~**Page « Boutique » globale**~~ : l'accueil reste la vitrine ; « Voir toute la boutique » pointe vers l'accueil (décision Pierre, lot 3).
-- **Champ « Me prévenir »** (catégorie vide, fiche épuisée) : posé seulement si la newsletter est retenue (lot 3).
+- **Champ « Me prévenir »** (catégorie vide, fiche épuisée) : non livré. La newsletter est active, mais une alerte ciblée par produit demanderait un comportement distinct à décider.
 - **Catégories réelles** : celles en base sont celles des maquettes (`docs/jeux-de-donnees/categories.php`) ; à définir avec Céline.
-- **Contact** : la page du lot 3 doit lire `?product=<sku>` (lien « Une question sur le tissu ou le motif ? » et encarts de mise en relation).
+- ~~**Contact** : lecture de `?product=<sku>`~~ — livré dans le module dédié, avec produit actif prérempli.
 - **Suivi de la fraîcheur des caches** en conditions réelles : à recetter au lot 4 (première commande de test) ; le cron Magento doit tourner (lot 8).
 
 ### Décisions de Pierre pour le lot 3 — 10/09/2026
@@ -66,7 +68,7 @@ Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et da
 - **Contenus** : textes génériques éditables dans le back-office et emplacements documentés ; aucune biographie, date de marché ou promesse de délai fictive présentée comme validée. Les pages légales restent « À rédiger » sans texte fourni.
 - **404** : même direction artistique que les états vides avec un petit easter egg ludique. Proposition : bobine déroulée, « On a perdu le fil… », aiguille animée au clic, accessible au clavier et respectant la préférence de réduction des animations.
 
-Ordre des étapes à valider séparément : **1)** lot 6a (validé) ; **2)** composant partagé de titre de section (validé) ; **3)** accueil (validé) ; **4)** pages CMS dont Nos tissus (validées) ; **5)** contact (validé) ; **6)** 404, panier vide et recette transversale (livrée pour recette). Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
+Ordre terminé : **1)** lot 6a ; **2)** composant partagé ; **3)** accueil ; **4)** pages CMS et Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Pierre a validé le lot 3. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`) ; son dernier commit d'implémentation est `9c48987`.
 
 ## Vue d'ensemble
 
@@ -110,7 +112,7 @@ Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 
 
 ---
 
-## Lot 3 — Accueil, pages CMS, formulaire de contact
+## Lot 3 — Accueil, pages CMS, formulaire de contact — **livré et validé le 10/09/2026**
 
 **Périmètre**
 
@@ -122,12 +124,12 @@ Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 
 
 **Dépendances** : lot 2 pour les widgets produit (Nouveautés, Incontournables) et le lien depuis la fiche. Contenus (textes, photos) fournis par Céline — **principal facteur de délai**.
 
-**Incertitudes**
+**Décisions appliquées**
 
-- « Actualités » = uniquement des produits, ou aussi de l'information (marché, congés) ? → un bloc CMS éditorial en plus du widget suffirait.
-- Newsletter au lancement ou non (RGPD, double opt-in, charge éditoriale).
-- Page « Nos tissus » (spécification §2.2, recommandée) : dans ce lot ou plus tard ?
-- Pièce jointe : envoyée par email (simple, pas de stockage) ou conservée sur le serveur (traçabilité, mais surface d'attaque et RGPD) ?
+- Actualités produit automatiques complétées par des blocs CMS éditoriaux pour les marchés, congés et annonces.
+- Newsletter native activée avec double opt-in.
+- Page « Nos tissus » livrée avec contenu générique modifiable dans l'admin.
+- Pièce jointe JPG/PNG de 5 Mo maximum, validée côté serveur, conservée hors `pub/` et purgée selon une durée configurable de 30 jours par défaut.
 
 **Effort : L.** L'accueil est du gabarit ; le formulaire de contact est le seul développement PHP significatif du projet côté front.
 
@@ -254,12 +256,12 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 
 ---
 
-## Décisions à prendre avec Céline avant les lots 3 et 5
+## Décisions à prendre avec Céline avant publication et pendant le lot 5
 
 1. ~~Produits épuisés : visibles ou masqués (lot 2)~~ — **visibles** (Pierre, 05/09/2026), à confirmer par Céline.
-1 bis. Page « Boutique » globale (catégorie ancrée regroupant tout) ou accueil comme vitrine ? Conditionne « Voir toute la boutique » et le fil d'Ariane (lot 3).
-2. « Actualités » : produits seulement, ou aussi de l'information (lot 3).
-3. Newsletter au lancement ? Page « Nos tissus » ? (lot 3)
+1 bis. ~~Page « Boutique » globale~~ — accueil retenu comme vitrine ; les CTA contextuels mènent aux catégories.
+2. ~~« Actualités »~~ — nouveautés produit et blocs CMS pour marchés, congés et annonces.
+3. ~~Newsletter et page « Nos tissus »~~ — toutes deux livrées au lot 3.
 4. Franco de port : montant (lots 4-5).
 5. Paliers de poids et grilles transporteurs ; poids d'emballage (lot 5).
 6. Remise en main propre : lieu, créneaux, restriction géographique (lot 5).
@@ -273,7 +275,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 1. ~~Hyvä Checkout ou checkout Luma~~ — **tranché : Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`), lot 6a.
 2. **Stripe ou Mollie** — Pierre se renseigne et tranche avant la création du compte marchand ; les deux sont compatibles avec le checkout Luma.
 3. Module Mondial Relay — spike en début de lot 5.
-4. Formulaire de contact : module dédié `MadameAiguille_Contact` ou dans `MadameAiguille_Theme` (recommandé : dédié, pour isoler l'upload).
+4. ~~Formulaire de contact~~ — module dédié `MadameAiguille_Contact`; logique dans le module, surcharge visuelle dans le thème enfant.
 5. ~~Catégories de test « Sneakers » et « T-Shirts » à supprimer~~ — fait au lot 2.
 6. **WebP** : reporté au lot 8 ou module tiers gratuit (compatibilité Hyvä à vérifier avant installation).
 7. Fraîcheur des caches : valider en conditions réelles au lot 4 ; s'assurer que le cron Magento tourne (lot 8).

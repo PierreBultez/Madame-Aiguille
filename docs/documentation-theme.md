@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.8 (10/09/2026), lot 6a validé par Pierre ; lot 3 intégralement livré pour recette finale. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.9 (10/09/2026), lots 6a et 3 validés par Pierre ; identité visuelle officielle intégrée. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -16,6 +16,8 @@ Ce document décrit ce qui a été construit, où se trouve chaque chose, et **o
 
 Parent : `Hyva/default` 1.5.2 (`vendor/hyva-themes/magento2-default-theme`). **On ne modifie jamais `vendor/`.** Un template du parent se surcharge en le copiant au même chemin relatif dans le thème enfant (`Magento_Theme/templates/html/header.phtml`, par exemple).
 
+**Règle d'architecture visuelle** : toute surcharge de rendu frontend vit dans le thème enfant, même lorsqu'un module dédié porte la logique métier. Le module expose ses blocs, ViewModels, contrôleurs, validations et configurations ; le thème enfant surcharge ses layouts, `.phtml`, CSS, assets et templates JavaScript. Exemple : le traitement sécurisé de Contact reste dans `app/code/MadameAiguille/Contact`, mais son formulaire est rendu par `app/design/frontend/MadameAiguille/default/MadameAiguille_Contact/templates/form.phtml`. Le checkout Luma du fallback suivra la même règle dans son propre thème enfant Luma au lot 6b.
+
 Le thème est activé pour la vue *Default Store View* (`design/theme/theme_id = 5`, admin *Contenu › Design › Configuration*).
 
 ### Arborescence du thème
@@ -29,6 +31,9 @@ MadameAiguille/default/
 ├── MadameAiguille_Theme/
 │   ├── layout/madameaiguille_styleguide_index_index.xml
 │   └── templates/styleguide.phtml       page de contrôle /styleguide
+├── MadameAiguille_Contact/
+│   ├── layout/contact_index_index.xml   composition visuelle de la page Contact
+│   └── templates/form.phtml             surcharge du formulaire du module Contact
 ├── Magento_Catalog/
 │   ├── layout/catalog_category_view.xml page catégorie (1 colonne, en-tête, tri, état vide)
 │   ├── layout/catalog_list_item.xml     carte produit : ViewModel, sans liste d'envies
@@ -51,6 +56,8 @@ MadameAiguille/default/
 ├── Magento_Theme/
 │   ├── layout/default.xml               header, logo, footer (fusionné avec le parent)
 │   ├── layout/default_head_blocks.xml   preload des fontes
+│   ├── web/favicon.ico                  favicon multi-tailles issu du logo carré officiel
+│   ├── web/images/logo-carre.jpg        source carrée officielle conservée dans le thème
 │   └── templates/html/
 │       ├── header.phtml                 header (bandeau, grille, panier)
 │       ├── header/logo.phtml            logo responsive
@@ -63,7 +70,7 @@ MadameAiguille/default/
 └── web/
     ├── css/styles.css                   GÉNÉRÉ — jamais édité, jamais commité
     ├── fonts/                           .woff2 + licences FFL
-    ├── images/logo-horizontal.png       logo 2× provisoire (PNG) — à remplacer par le SVG
+    ├── images/logo-rectangulaire.jpg    logo officiel du header et du footer
     └── tailwind/
         ├── tailwind-source.css          point d'entrée : @source, @theme (tokens)
         ├── hyva.config.json             tokens de couleur (oklch) + inclusion du parent
@@ -226,7 +233,8 @@ Template : `Magento_Theme/templates/html/header.phtml`. Layout : `Magento_Theme/
 | Quoi | Où | Comment |
 |---|---|---|
 | **Bandeau d'annonce** | Admin › *Contenu › Blocs › `header_announcement`* | Modifier le texte ; vider ou désactiver le bloc pour masquer le bandeau. Vider le cache `full_page` ensuite (`bin/magento cache:clean full_page`) |
-| **Logo** | `web/images/logo-horizontal.png` (provisoire) ; ou admin › *Contenu › Design › Configuration › Header › Logo* (prioritaire s'il est renseigné) | Tailles : 240 px mobile · 288 px md · 356 px lg (classes `w-60 md:w-72 lg:w-89` dans `header/logo.phtml`). Texte alternatif : config `design/header/logo_alt` |
+| **Logo** | `web/images/logo-rectangulaire.jpg`, copie fidèle de `docs/logos/logo-rectangulaire.jpg` ; ou admin › *Contenu › Design › Configuration › Header › Logo* (prioritaire s'il est renseigné) | Tailles : 240 px mobile · 288 px md · 356 px lg (classes `w-60 md:w-72 lg:w-89` dans `header/logo.phtml`). Ratio intrinsèque 1864 × 345 et dimensions HTML 356 × 66. Texte alternatif : config `design/header/logo_alt` |
+| **Favicon** | `Magento_Theme/web/favicon.ico`, généré depuis `docs/logos/logo-carre.jpg` ; source conservée sous `Magento_Theme/web/images/logo-carre.jpg` | contient les tailles 16, 32, 48, 64, 128 et 256 px. Un favicon chargé dans *Contenu › Design › Configuration › HTML Head › Favicon Icon* est prioritaire sur celui du thème |
 | **Navigation** | Admin › *Catalogue › Catégories* | Catégories actives et « Inclure dans le menu » sous *Default Category*, 2 niveaux affichés (`getNavigation(3)` — niveau absolu). Aucun lien en dur : le logo est le lien vers l'accueil, À propos / Contact sont dans le footer |
 | Compare | `default.xml` → `show_compare` | désactivé |
 | Recherche | `header/search-form.phtml` du parent (desktop) ; formulaire simple dans `header/menu/mobile.phtml` (mobile) | raccourci ⌘/Ctrl+K |
@@ -303,7 +311,7 @@ Toutes les pages CMS hors accueil utilisent le gabarit `Magento_Cms/layout/cms_p
 
 Le patch `CreateFabricPageAndPrepareAbout` crée `nos-tissus` une seule fois. Il remplace le placeholder d'À propos uniquement si son contenu correspond encore exactement au texte initial « À rédiger » ; toute modification faite par Céline est préservée. Le texte livré reste générique et signale que l'histoire définitive attend validation. Les contenus Livraison, CGV, Mentions légales et Confidentialité restent « À rédiger » jusqu'à réception des informations réelles.
 
-Pour actualiser la galerie : *Contenu › Pages › Nos tissus*, remplacer chaque image, son texte alternatif, la référence `T01`… et la disponibilité. Le lien *Nos tissus* est ajouté à la colonne Informations du footer. Les liens vers `/contact` deviendront actifs à l'étape 5 du lot 3.
+Pour actualiser la galerie : *Contenu › Pages › Nos tissus*, remplacer chaque image, son texte alternatif, la référence `T01`… et la disponibilité. Le lien *Nos tissus* est ajouté à la colonne Informations du footer. Les liens vers `/contact` sont actifs et peuvent transmettre le SKU d'un produit avec `?product=<sku>`.
 
 ## 8. Catalogue — modèle de données
 
@@ -384,7 +392,7 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 | Encart de rareté / de série (« Plus que 2 exemplaires · Sur les 10 de la série », « 4 exemplaires disponibles sur les 8 ») | automatique (`LimitedSeries`) | textes dans `product/view/product-info.phtml` |
 | **Sélecteur de taille** | automatique sur un configurable | swatch texte natif Hyvä restylé (`Magento_Swatches/templates/product/…`, `components/swatches.css`) : option épuisée grisée, barrée, annotée « Épuisé » ; le bouton d'achat reste inactif tant qu'aucune taille n'est choisie |
 | **Quantité plafonnée au stock** | automatique | `product/view/quantity.phtml` : − / +, plafond = stock restant (celui de la taille choisie sur un configurable), « Stock maximum atteint » |
-| Encart « Une question sur le tissu ou le motif ? » | textes dans `product-info.phtml` | lien vers `/contact?product=<sku>` : la page contact (lot 3) doit lire ce paramètre pour pré-remplir le produit concerné |
+| Encart « Une question sur le tissu ou le motif ? » | textes dans `product-info.phtml` | lien vers `/contact?product=<sku>` : le module Contact valide le SKU et préremplit le produit concerné s'il est actif et visible |
 | Fiche **épuisée** | automatique | photo grisée, badge, bouton inactif « Série terminée », encart « Ce modèle vous plaît ? » vers le contact, suggestions retitrées « Disponible en ce moment » |
 | Galerie | `product/view/gallery.phtml` (copie du parent, JS intact) + `etc/view.xml` | 4:5, badge sur l'image, bouton « Agrandir » (lightbox natif), miniatures sous l'image à toutes les largeurs, pas de flèches sur la vue principale |
 | Description / Caractéristiques | `product/view/details.phtml` + `ViewModel/Product/Characteristics.php` | deux colonnes ≥ md, accordéons `<details>` en dessous ; lignes Composition, Dimensions, Poids, Série, Entretien |
@@ -392,7 +400,7 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 | Barre d'achat collante (mobile) | `product-info.phtml` | apparaît quand la galerie sort de l'écran ; même formulaire |
 | Fil d'Ariane | `product/view/breadcrumbs.phtml` | rendu côté client par Hyvä : la catégorie affichée dépend de la page d'où l'on vient |
 
-Écarts assumés par rapport à la maquette : pas de sous-libellé « 18 × 12 cm » dans les boutons de taille (dimensions dans Caractéristiques) ; pas de champ « Être prévenue » sur la fiche épuisée tant que la newsletter n'est pas tranchée ; WebP non généré (reporté, voir plan).
+Écarts assumés par rapport à la maquette : pas de sous-libellé « 18 × 12 cm » dans les boutons de taille (dimensions dans Caractéristiques) ; pas de champ « Être prévenue » ciblé sur la fiche épuisée (la newsletter activée au lot 3 est généraliste) ; WebP non généré (reporté, voir plan).
 
 ## 11. Recette du catalogue
 
@@ -478,6 +486,7 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 - Aucune valeur hexadécimale ni classe arbitraire de couleur dans un template : uniquement des tokens.
 - Alpine pour l'interface, jamais pour recalculer une donnée serveur.
 - Un fichier de layout par handle. Surcharger un template entier seulement si le layout ne suffit pas.
+- Toute surcharge visuelle frontend appartient au thème enfant : layouts, `.phtml`, Tailwind/CSS, assets et templates JavaScript. `app/code` porte la logique et les valeurs par défaut, jamais le rendu personnalisé livré à la boutique.
 - Commits atomiques en français, un par étape cohérente.
 - Toute règle liée au stock ou aux séries limitées passe par `ViewModel\Product\LimitedSeries` — jamais de `getQty()` ni de comparaison de seuil dans un template.
 - Pour tester un état vide ou une suppression : l'admin, pas un script.
@@ -489,13 +498,13 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 1 — Fondations | dépôt, thème enfant, chaîne Tailwind, fontes, tokens, composants, styleguide, module, header, footer | `62dca83` → `7af01df` |
 | 2 — Catalogue | attributs et set « Création », jeu de données, ViewModel LimitedSeries, view.xml 4:5, page catégorie, fraîcheur des badges, fiche produit, états vides, styleguide et documentation | `92500b5` → `ccabeab` + documentation |
 | 6a — Checkout | installation Luma fallback 1.1.7 + Theme Fallback 1.0.4, contrôle invité et isolation des scripts, documentation des surcharges 6b ; validé par Pierre après une commande | `7f46bb1` |
-| 3 — Étape 2 | gabarit partagé des titres de section, intégration catégorie / slider, trois rendus du styleguide, documentation ; recette Pierre en attente | branche `lot-3-accueil-cms-contact` |
-| 3 — Étape 5 | module Contact, objet, consentement, message limité, produit prérempli, pièce jointe privée, emails et blocs CMS | branche `lot-3-accueil-cms-contact` |
-| 3 — Étape 6 | 404 interactive, panier vide avec deux nouveautés, styleguide et recette transversale | branche `lot-3-accueil-cms-contact` |
+| 3 — Accueil et CMS | titres partagés, accueil éditable, newsletter, pages CMS et Nos tissus | `bdc1169` → `0522185` |
+| 3 — Contact et états vides | module Contact, pièce jointe privée, 404 interactive, panier vide, styleguide et recette transversale | `dfb6b45` → `6cbe5cc` |
+| 3 — Identité visuelle | logos officiels header/footer, favicon carré multi-tailles, rendu Contact replacé dans le thème enfant | `9c48987` |
 
 ## 18. Formulaire de contact
 
-La page `/contact` est fournie par le module `MadameAiguille_Contact`. Les encarts de la colonne de droite sont des blocs CMS modifiables depuis **Contenu > Éléments > Blocs** :
+La page `/contact` est fournie par le module `MadameAiguille_Contact`. Sa logique reste dans `app/code/MadameAiguille/Contact` et sa surcharge visuelle dans `app/design/frontend/MadameAiguille/default/MadameAiguille_Contact`. Les encarts de la colonne de droite sont des blocs CMS modifiables depuis **Contenu > Éléments > Blocs** :
 
 - `contact_help` pour les informations pratiques ;
 - `contact_locations` pour les marchés, congés et annonces.
@@ -519,3 +528,23 @@ Les textes génériques des blocs CMS doivent être remplacés par les contenus 
 La 404 n’utilise pas le contenu de la page CMS `no-route` installée par Magento : le handle `cms_noroute_index` retire explicitement son gabarit afin qu’un ancien texte anglais ou une mise en page à deux colonnes ne réapparaisse pas. Le titre et les textes de cet état relèvent donc du code du thème.
 
 Les recommandations du panier sont automatiques. Pour modifier les produits proposés, renseigner les dates **Définir le produit comme nouveau à partir de / jusqu’au** dans la fiche produit ; les règles et la purge de cache sont identiques au bloc Nouveautés de l’accueil.
+
+## 20. Après le lot 3 : ce qui reste à faire
+
+Le lot 3 est fonctionnellement terminé et validé. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
+
+| Sujet | Action attendue | Responsable / échéance |
+|---|---|---|
+| Histoire et présentation | Remplacer les textes génériques de `a-propos`, `home_story` et `contact_help` depuis *Contenu › Pages / Blocs* | Céline, avant publication |
+| Marchés, congés et annonces | Renseigner `home_actualities` et `contact_locations` ; ne publier que des dates confirmées | Céline, au fil de l'activité |
+| Pages juridiques | Rédiger `livraison-retours`, `cgv`, `mentions-legales` et `confidentialite` avec les coordonnées, délais et règles réels | Céline avec conseil adapté, avant ouverture des ventes |
+| Tissus et photos | Remplacer les références et visuels génériques de `nos-tissus`, puis fournir les photos catalogue finales au ratio 4:5 | Céline, avant mise en production |
+| CTA « Voir toutes les nouveautés » | Choisir sa destination définitive ; l'accueil ne possède pas de catégorie globale « Boutique » | Pierre / Céline, avant publication |
+| Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
+| Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter l'accusé de réception et la pièce jointe sur le domaine final | Lot 7–8 |
+| Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
+| Livraison et paiement | Choisir les prestataires et tarifs, puis aligner `product_reassurance`, le footer, la page Livraison et la mention sous le prix sur les modes réellement activés | Lot 5 |
+| Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
+| Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
+
+Le prompt autonome pour reprendre par le lot 5 est `docs/prompts/prompt-codex-lot5.md`.
