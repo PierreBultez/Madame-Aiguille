@@ -2,9 +2,9 @@
 /**
  * Madame Aiguille — options de tri de la liste produits
  *
- * Un seul sélecteur à trois entrées (maquette Page catégorie), chaque entrée
- * combinant un champ et une direction : Nouveautés (date de mise en ligne
- * décroissante), Prix croissant, Prix décroissant. Une entrée n'est proposée
+ * Un seul sélecteur (maquette Page catégorie), chaque entrée combinant un
+ * champ et une direction : Pertinence (recherche seulement), Nouveautés (date
+ * de mise en ligne décroissante), Prix croissant, Prix décroissant. Une entrée n'est proposée
  * que si son champ figure dans les ordres autorisés par Magento pour la
  * catégorie courante (attribut « available_sort_by »).
  */
@@ -19,8 +19,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class Sorting implements ArgumentInterface
 {
-    /** champ, direction, libellé */
+    /** champ, direction, libellé — « relevance » n'existe que sur la page de résultats de recherche */
     private const OPTIONS = [
+        ['relevance', 'desc', 'Pertinence'],
         ['created_at', 'desc', 'Nouveautés'],
         ['price', 'asc', 'Prix croissant'],
         ['price', 'desc', 'Prix décroissant'],

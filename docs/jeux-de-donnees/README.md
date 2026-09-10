@@ -4,14 +4,18 @@ Scripts **hors code applicatif** : ils ne sont ni des data patches ni déployés
 
 | Script | Rôle | Rejouable |
 |---|---|---|
+| `categories.php` | Arborescence des catégories issue des maquettes (Trousses de toilette > Grandes / Petites trousses, Pochettes à livre, Cotons démaquillants, Petits sacs), actives, dans le menu, ancrées | oui (repérage par clé d'URL et parent ; ne supprime jamais rien, vérifie le chemin enregistré) |
 | `produits-test.php` | Douze produits du catalogue Madame Aiguille (photos `maquettes-direction-artistique/brand/p-*.png`) couvrant tous les états du Design System, produits liés, suppression des données d'essai Sneakers / T-Shirts / Jordan | oui (upsert par SKU ; les images ne sont ajoutées qu'à la création) |
 
-Prérequis : catégories du lot 1 présentes, `bin/magento setup:upgrade` passé (attribute set « Création »).
+Prérequis : `bin/magento setup:upgrade` passé (attribute set « Création »). Ordre : catégories, puis produits.
 
 ```bash
+php docs/jeux-de-donnees/categories.php
 php docs/jeux-de-donnees/produits-test.php
 cd shop && bin/magento indexer:reindex && bin/magento cache:flush
 ```
+
+**Règle** : aucun script ne supprime de catégorie. Le 10/09/2026, une catégorie de test enregistrée avec un chemin erroné (`1/2` au lieu de `1/2/<id>`) a été supprimée par script et a emporté toute l'arborescence (Magento supprime tout ce qui commence par le chemin de la catégorie). Pour tester un état vide : désactiver temporairement des produits dans l'admin, ou créer une catégorie dans l'admin et la supprimer depuis l'admin.
 
 ## Produits créés
 

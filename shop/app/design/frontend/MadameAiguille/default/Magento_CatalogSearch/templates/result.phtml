@@ -18,8 +18,10 @@ use Magento\Framework\Escaper;
 /** @var ViewModelRegistry $viewModels */
 
 $query = $viewModels->require(Search::class)->getEscapedQueryText();
+// La liste doit être rendue AVANT tout comptage : c'est elle qui applique tri
+// et pagination à la collection ; getResultCount() figerait la requête sans tri.
+$productList = $block->getProductListHtml();
 $hasResults = (bool) $block->getResultCount();
-$productList = $hasResults ? $block->getProductListHtml() : '';
 $notes = $block->getNoteMessages();
 $noResultText = $hasResults ? null : $block->getNoResultText();
 
