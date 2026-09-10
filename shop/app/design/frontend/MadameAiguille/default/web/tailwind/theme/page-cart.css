@@ -1,0 +1,91 @@
+/* Panier avec articles et mini-panier (maquette Panier, Design System §6.9). */
+
+/* ── Page panier ──────────────────────────────────────────────────────── */
+.cart-page { @apply mx-auto max-w-6xl; }
+.cart-page-header { @apply mb-8 md:mb-10; }
+.cart-page-layout { @apply flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12; }
+.cart-page-items { @apply lg:flex-1 lg:min-w-0; }
+
+/* Barre de franco : le montant restant, jamais un pourcentage. */
+.franco-bar { @apply mt-5 rounded-md border border-brand-line bg-brand-paper px-4 py-3.5 md:px-5; }
+.franco-bar-message { @apply text-base font-medium text-brand-dark; }
+.franco-bar-track { @apply mt-2.5 h-2 w-full overflow-hidden rounded-full bg-brand-blush; }
+.franco-bar-fill { @apply block h-full rounded-full bg-brand-rose transition-[width] duration-500; }
+.franco-bar-amounts { @apply mt-1.5 text-caption text-brand-muted tabular-nums; }
+.franco-bar-reached { @apply border-success-border bg-success-bg; }
+.franco-bar-reached .franco-bar-message { @apply text-success-dark; }
+.franco-bar-reached .franco-bar-fill { @apply bg-success; }
+
+/* ── Lignes ───────────────────────────────────────────────────────────── */
+.cart-lines { @apply w-full; }
+.cart-lines-head {
+    @apply hidden items-end gap-4 border-b border-brand-nude pb-3 text-caption font-medium tracking-label uppercase text-brand-muted md:grid;
+    grid-template-columns: minmax(0, 1fr) 7rem 9rem 7rem 3rem;
+}
+.cart-lines-list { @apply divide-y divide-brand-line; }
+.cart-line-wrapper { @apply py-5 md:py-6; }
+
+.cart-line { @apply grid grid-cols-2 gap-x-4 gap-y-4 md:items-center md:gap-4; }
+/* Sous 768 px, le prix unitaire et le sous-total se rangent côte à côte sous la
+   création ; l'ordre du document reste celui du tableau desktop. */
+.cart-line-product { order: 1; }
+.cart-line-price { order: 2; }
+.cart-line-subtotal { order: 3; }
+.cart-line-qty { order: 4; }
+.cart-line-actions { order: 5; }
+@media (min-width: 768px) {
+    .cart-line { grid-template-columns: minmax(0, 1fr) 7rem 9rem 7rem 3rem; }
+    .cart-line > * { order: initial; }
+}
+.cart-line-product { @apply col-span-2 flex gap-4 md:col-span-1; }
+.cart-line-photo { @apply block w-20 shrink-0 overflow-hidden rounded-sm bg-brand-blush md:w-24; }
+.cart-line-photo img { @apply h-auto w-full; }
+.cart-line-details { @apply min-w-0 flex-1; }
+.cart-line-name { @apply font-body text-subtitle font-medium text-brand-ink; }
+.cart-line-name a { @apply text-brand-ink no-underline hover:text-brand hover:underline decoration-brand-nude underline-offset-4; }
+.cart-line-options { @apply mt-1 text-caption text-brand-muted; }
+.cart-line-options > div { @apply flex flex-wrap gap-x-1; }
+.cart-line-options dt { @apply font-normal; }
+.cart-line-options dd { @apply font-medium text-brand-ink; }
+.cart-line-series { @apply mt-1 text-caption text-brand-muted; }
+.cart-line-scarcity { @apply mt-1 text-caption font-medium text-brand-dark; }
+.cart-line-sku { @apply mt-1 text-caption text-brand-muted; }
+.cart-line-message { @apply mt-2 text-caption; }
+
+.cart-line-label { @apply block text-caption text-brand-muted md:sr-only; }
+.cart-line-value { @apply block font-medium text-base text-brand-ink tabular-nums; }
+.cart-line-price { @apply md:text-right; }
+.cart-line-price .cart-line-value { @apply text-brand-ink; }
+.cart-line-subtotal { @apply text-right; }
+.cart-line-subtotal .cart-line-value { @apply text-subtitle text-brand; }
+
+.cart-line-qty { @apply col-span-2 md:col-span-1 md:justify-self-center; }
+.cart-line-qty .cart-line-label { @apply mb-1.5; }
+.qty-stepper { @apply inline-flex items-stretch overflow-hidden rounded-sm border border-field-border bg-surface; }
+.qty-stepper .qty-step {
+    @apply inline-flex w-11 items-center justify-center text-brand text-subtitle-lg transition-colors
+    hover:bg-brand-blush disabled:cursor-not-allowed disabled:bg-transparent disabled:text-disabled-muted;
+}
+.qty-stepper .qty-step:first-child { @apply border-r border-brand-line; }
+.qty-stepper .qty-step:last-child { @apply border-l border-brand-line; }
+.qty-stepper input {
+    @apply h-12 w-13 border-0 bg-transparent p-0 text-center font-medium text-base text-brand-ink tabular-nums
+    focus:ring-0 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none;
+}
+.cart-line-qty-hint { @apply mt-1.5 min-h-5 max-w-40 text-caption; }
+
+.cart-line-actions { @apply col-span-2 flex flex-wrap items-center gap-1 md:col-span-1 md:justify-end; }
+.cart-line-remove,
+.cart-line-edit {
+    @apply inline-flex min-h-11 items-center gap-1.5 rounded-sm px-2 text-caption text-brand-muted no-underline
+    transition-colors hover:bg-brand-blush hover:text-brand-dark;
+}
+.cart-line-remove-label,
+.cart-line-edit-label { @apply md:sr-only; }
+
+/* Ligne devenue incommandable : la dernière pièce est partie entre-temps. */
+.cart-line-unavailable .cart-line-photo { @apply opacity-60 grayscale; }
+.cart-line-unavailable .cart-line-name { @apply text-brand-muted; }
+
+.cart-actions { @apply mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap; }
+.cart-actions > * { @apply sm:w-auto; }

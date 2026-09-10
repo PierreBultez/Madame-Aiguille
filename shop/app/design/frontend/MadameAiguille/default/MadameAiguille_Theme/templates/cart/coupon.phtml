@@ -1,0 +1,99 @@
+<?php
+/**
+ * Madame Aiguille — champ code promo, masqué par défaut
+ *
+ * Décision de Pierre du 10/09/2026 : le champ reste caché tant qu'aucune règle
+ * de panier n'existe — un champ ouvert donne à celles qui n'ont pas de code le
+ * sentiment de payer trop cher (maquette Panier, « Décisions de cette page »).
+ * Il s'active dans Général › Madame Aiguille › Panier, sans toucher au layout.
+ *
+ * Un coupon déjà appliqué reste toujours affiché et retirable, même réglage
+ * désactivé : une remise en cours ne doit jamais devenir invisible.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use MadameAiguille\Theme\ViewModel\Cart\Options;
+use Magento\Checkout\Block\Cart\Coupon;
+use Magento\Framework\Escaper;
+
+/** @var Coupon $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Options $cartOptions */
+$cartOptions = $block->getData('cart_options') ?? $viewModels->require(Options::class);
+
+// strlen : un code peut valoir « 0 », que le transtypage booléen perdrait.
+$hasCouponCode = (bool) strlen($block->getCouponCode() ?: '');
+
+if (!$cartOptions->isCouponVisible() && !$hasCouponCode) {
+    return;
+}
+
+/** @var ReCaptcha|null $recaptcha */
+$recaptcha = $block->getData('viewModelRecaptcha');
+?>
+<script>
+    function initCouponForm() {
+        return {
+            errors: 0,
+            showCouponForm: <?= $hasCouponCode ? 'true' : 'false' ?>,
+            toggleShowCoupon() {
+                this.showCouponForm = !this.showCouponForm;
+                if (this.showCouponForm) {
+                    this.$nextTick(() => this.$refs.couponInput && this.$refs.couponInput.select());
+                }
+            },
+            submitForm() {
+                const form = document.querySelector('#discount-coupon-form');
+                <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_COUPON_CODE) : '' ?>
+
+                if (this.errors === 0) {
+                    hyva.postCart(form);
+                }
+            }
+        };
+    }
+    window.addEventListener('alpine:init', () => Alpine.data('initCouponForm', initCouponForm), { once: true });
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<details class="cart-summary-block coupon-form group" x-data="initCouponForm" :open="showCouponForm">
+    <summary class="cart-summary-toggle" @click.prevent="toggleShowCoupon">
+        <span><?= $escaper->escapeHtml(__('Code promo')) ?></span>
+        <span class="cart-summary-chevron" aria-hidden="true">⌄</span>
+    </summary>
+    <form
+        id="discount-coupon-form"
+        class="cart-summary-block-body"
+        action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/couponPost')) ?>"
+        method="post"
+        @submit.prevent="submitForm"
+    >
+        <?= $block->getBlockHtml('formkey') ?>
+        <label for="coupon_code" class="sr-only"><?= $escaper->escapeHtml(__('Saisir un code promo')) ?></label>
+        <input
+            type="text"
+            id="coupon_code"
+            name="coupon_code"
+            class="form-input w-full"
+            value="<?= $escaper->escapeHtmlAttr($block->getCouponCode()) ?>"
+            x-ref="couponInput"
+            placeholder="<?= $escaper->escapeHtmlAttr(__('Saisir un code promo')) ?>"
+            <?= $hasCouponCode ? 'disabled' : 'required' ?>
+        >
+        <?php if ($hasCouponCode): ?>
+            <input type="hidden" name="remove" id="remove-coupon" value="1">
+            <button type="submit" class="btn btn-size-lg w-full"><?= $escaper->escapeHtml(__('Retirer le code')) ?></button>
+        <?php else: ?>
+            <button type="submit" class="btn btn-size-lg w-full"><?= $escaper->escapeHtml(__('Appliquer')) ?></button>
+        <?php endif ?>
+        <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_COUPON_CODE) : '' ?>
+        <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_COUPON_CODE) : '' ?>
+    </form>
+</details>

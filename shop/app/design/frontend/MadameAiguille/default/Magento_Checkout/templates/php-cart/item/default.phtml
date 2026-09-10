@@ -1,0 +1,169 @@
+<?php
+/**
+ * Madame Aiguille — ligne de panier (maquette Panier, artboards 07 et 07b)
+ *
+ * Image 4:5, nom, variante, mention de série ou de rareté, prix unitaire,
+ * quantité plafonnée au stock réel et sous-total. Sous 768 px, la ligne devient
+ * une carte empilée.
+ *
+ * Le plafond vient du ViewModel Cart\Stock : le renderer natif borne la
+ * quantité sur `max_sale_qty` (10 000 par défaut), ce qui laisserait commander
+ * six exemplaires d'une série où il en reste trois. La rareté remonte dans la
+ * ligne : le plafond ne doit pas être une surprise au moment de valider.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductStockItem;
+use MadameAiguille\Theme\ViewModel\Cart\Stock;
+use Magento\Checkout\Block\Cart\Item\Renderer;
+use Magento\Framework\Escaper;
+
+/** @var Renderer $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductStockItem $stockItemViewModel */
+$stockItemViewModel = $viewModels->require(ProductStockItem::class);
+/** @var Stock $cartStock */
+$cartStock = $viewModels->require(Stock::class);
+
+$item = $block->getItem();
+$product = $item->getProduct();
+
+$minQty = max(1, (int) $stockItemViewModel->getMinSaleQty($product));
+$maxQty = $cartStock->getMaxQty($item);
+$qty = max($minQty, (int) ceil((float) $block->getQty()));
+$isAvailable = $cartStock->isAvailable($item);
+
+$seriesLabel = $cartStock->getSeriesLabel($item);
+$scarcityLabel = $cartStock->getScarcityLabel($item);
+$options = $block->getOptionList();
+$itemId = (int) $item->getId();
+?>
+<article class="cart-line<?= $isAvailable ? '' : ' cart-line-unavailable' ?>"
+    <?php foreach ($block->getData('cart_item_data_attributes') ?? [] as $attribute => $include): ?>
+        <?php if ($include): ?>
+            <?= $escaper->escapeHtml(sprintf('data-%s', $attribute)); ?>="<?= $escaper->escapeHtmlAttr($item->getData($attribute)); ?>"
+        <?php endif ?>
+    <?php endforeach ?>
+>
+    <div class="cart-line-product">
+        <?php if ($block->hasProductUrl()): ?>
+            <a href="<?= $escaper->escapeUrl($block->getProductUrl()) ?>" tabindex="-1" class="cart-line-photo">
+        <?php else: ?>
+            <div class="cart-line-photo">
+        <?php endif ?>
+            <?= $block->getImage($block->getProductForThumbnail(), 'cart_page_product_thumbnail')
+                ->setTemplate('Magento_Catalog::product/image.phtml')
+                ->toHtml() ?>
+        <?php if ($block->hasProductUrl()): ?>
+            </a>
+        <?php else: ?>
+            </div>
+        <?php endif ?>
+
+        <div class="cart-line-details">
+            <h3 class="cart-line-name">
+                <?php if ($block->hasProductUrl()): ?>
+                    <a href="<?= $escaper->escapeUrl($block->getProductUrl()) ?>"><?= $escaper->escapeHtml($block->getProductName()) ?></a>
+                <?php else: ?>
+                    <?= $escaper->escapeHtml($block->getProductName()) ?>
+                <?php endif ?>
+            </h3>
+
+            <?php if ($options): ?>
+                <dl class="cart-line-options">
+                    <?php foreach ($options as $option): ?>
+                        <?php $formattedValue = $block->getFormatedOptionValue($option) ?>
+                        <div>
+                            <dt><?= $escaper->escapeHtml($option['label']) ?><span aria-hidden="true"> :</span></dt>
+                            <dd>
+                                <?php if (isset($formattedValue['full_view'])): ?>
+                                    <?= $escaper->escapeHtml($formattedValue['full_view']) ?>
+                                <?php else: ?>
+                                    <?= $escaper->escapeHtml($formattedValue['value'], ['span', 'a']) ?>
+                                <?php endif ?>
+                            </dd>
+                        </div>
+                    <?php endforeach ?>
+                </dl>
+            <?php endif ?>
+
+            <?php if ($scarcityLabel !== null): ?>
+                <p class="cart-line-scarcity"><?= $escaper->escapeHtml($scarcityLabel) ?><?= $maxQty !== null ? ' — ' . $escaper->escapeHtml(__('quantité plafonnée')) : '' ?></p>
+            <?php elseif ($seriesLabel !== null): ?>
+                <p class="cart-line-series"><?= $escaper->escapeHtml($seriesLabel) ?></p>
+            <?php endif ?>
+
+            <?php if ($sku = (string) $item->getSku()): ?>
+                <p class="cart-line-sku"><?= $escaper->escapeHtml(__('réf. %1', $sku)) ?></p>
+            <?php endif ?>
+
+            <?php foreach ($block->getMessages() as $message): ?>
+                <div class="message <?= $escaper->escapeHtmlAttr($message['type']) ?> cart-line-message" role="status">
+                    <div><?= $escaper->escapeHtml($message['text']) ?></div>
+                </div>
+            <?php endforeach ?>
+
+            <?php $addInfoBlock = $block->getProductAdditionalInformationBlock() ?>
+            <?php if ($addInfoBlock): ?>
+                <?= $addInfoBlock->setItem($item)->toHtml() ?>
+            <?php endif ?>
+        </div>
+    </div>
+
+    <p class="cart-line-price">
+        <span class="cart-line-label"><?= $escaper->escapeHtml(__('Prix unitaire')) ?></span>
+        <span class="cart-line-value"><?= $block->getUnitPriceHtml($item) ?></span>
+    </p>
+
+    <div
+        class="cart-line-qty"
+        x-data="initCartLineQty"
+        data-qty="<?= $qty ?>"
+        data-min="<?= $minQty ?>"
+        data-max="<?= $maxQty === null ? '' : (int) $maxQty ?>"
+        data-labels="<?= $escaper->escapeHtmlAttr(json_encode([
+            'max' => (string) __('Stock maximum atteint'),
+            'remaining' => (string) __('Plafonné à %1'),
+        ])) ?>"
+    >
+        <label class="cart-line-label" for="cart-qty-<?= $itemId ?>"><?= $escaper->escapeHtml(__('Quantité')) ?></label>
+        <div class="qty-stepper">
+            <button type="button" @click="decrement" :disabled="atMin"
+                    class="qty-step"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Retirer un exemplaire')) ?>">−</button>
+            <input
+                id="cart-qty-<?= $itemId ?>"
+                name="cart[<?= $itemId ?>][qty]"
+                type="number"
+                inputmode="numeric"
+                :value="qty"
+                value="<?= $qty ?>"
+                min="<?= $minQty ?>"
+                :max="max ?? ''"
+                @input="onInput($event)"
+                required
+                data-role="cart-item-qty"
+                aria-describedby="cart-qty-hint-<?= $itemId ?>"
+            >
+            <button type="button" @click="increment" :disabled="atMax"
+                    class="qty-step"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Ajouter un exemplaire')) ?>">+</button>
+        </div>
+        <p id="cart-qty-hint-<?= $itemId ?>" class="cart-line-qty-hint"
+           :class="atMax ? 'font-medium text-error' : 'text-brand-muted'"
+           x-text="hint" aria-live="polite"></p>
+    </div>
+
+    <p class="cart-line-subtotal">
+        <span class="cart-line-label"><?= $escaper->escapeHtml(__('Sous-total')) ?></span>
+        <span class="cart-line-value"><?= $block->getRowTotalHtml($item) ?></span>
+    </p>
+
+    <div class="cart-line-actions">
+        <?= /* @noEscape */ $block->getActions($item) ?>
+    </div>
+</article>

@@ -1,0 +1,121 @@
+<?php
+/**
+ * Madame Aiguille — liste des lignes du panier (maquette Panier, artboards 07 et 07b)
+ *
+ * Au-delà de 768 px, un vrai tableau à quatre intitulés : Article, Prix
+ * unitaire, Quantité, Sous-total. En dessous, les lignes deviennent des cartes
+ * empilées — un tableau à quatre colonnes ne tient pas sur 390 px sans réduire
+ * les cibles sous 44 px. Les intitulés et les lignes partagent la même grille
+ * (`.cart-lines`, `theme/page-cart.css`).
+ *
+ * Le formulaire, sa clé, son action et sa soumission Alpine restent ceux du
+ * parent : seul le gabarit change.
+ */
+
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Cart\Grid;
+use Magento\Checkout\ViewModel\Cart as CartViewModel;
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+
+/** @var Grid $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var CartViewModel $cartViewModel */
+$cartViewModel = $viewModels->require(CartViewModel::class);
+?>
+<script>
+    /**
+     * Sélecteur de quantité d'une ligne de panier : même comportement que celui
+     * de la fiche produit (documentation-theme.md §10). Alpine ne fait que borner
+     * l'interface — le plafond vient du serveur (ViewModel Cart\Stock) et la
+     * quantité n'est enregistrée que par « Mettre à jour le panier ».
+     */
+    function initCartLineQty() {
+        const root = this.$root.dataset;
+        return {
+            qty: parseInt(root.qty, 10),
+            min: parseInt(root.min, 10),
+            max: root.max === '' ? null : parseInt(root.max, 10),
+            labels: JSON.parse(root.labels),
+            setQty(value) {
+                let qty = Number.isFinite(value) ? Math.round(value) : this.min;
+                qty = Math.max(this.min, qty);
+                if (this.max !== null) qty = Math.min(this.max, qty);
+                this.qty = qty;
+            },
+            decrement() { this.setQty(this.qty - 1); },
+            increment() { this.setQty(this.qty + 1); },
+            onInput(event) { this.setQty(hyva.safeParseNumber(event.target.value)); },
+            get atMin() { return this.qty <= this.min; },
+            get atMax() { return this.max !== null && this.qty >= this.max; },
+            get hint() {
+                if (this.atMax) return this.labels.max;
+                if (this.max !== null) return this.labels.remaining.replace('%1', this.max);
+                return '';
+            }
+        };
+    }
+    window.addEventListener('alpine:init', () => Alpine.data('initCartLineQty', initCartLineQty), { once: true });
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+<?= $block->getChildHtml('form_before') ?>
+<form
+    id="form-validate"
+    class="form form-cart"
+    action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/updatePost')) ?>"
+    method="post"
+    @submit.prevent="postCart"
+>
+    <?= $block->getBlockHtml('formkey') ?>
+
+    <fieldset id="shopping-cart-table" class="cart-lines">
+        <legend class="sr-only"><?= $escaper->escapeHtml(__('Créations dans votre panier')) ?></legend>
+
+        <div class="cart-lines-head" aria-hidden="true">
+            <span><?= $escaper->escapeHtml(__('Article')) ?></span>
+            <span class="text-right"><?= $escaper->escapeHtml(__('Prix unitaire')) ?></span>
+            <span class="text-center"><?= $escaper->escapeHtml(__('Quantité')) ?></span>
+            <span class="text-right"><?= $escaper->escapeHtml(__('Sous-total')) ?></span>
+            <span><span class="sr-only"><?= $escaper->escapeHtml(__('Retirer')) ?></span></span>
+        </div>
+
+        <ul class="cart-lines-list">
+            <?php foreach ($block->getItems() as $item): ?>
+                <li class="cart-line-wrapper">
+                    <?= $block->getItemHtml($item) ?>
+                </li>
+            <?php endforeach ?>
+        </ul>
+    </fieldset>
+
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="toolbar cart-products-toolbar mt-8">
+            <?= $block->getPagerHtml() ?>
+        </div>
+    <?php endif ?>
+
+    <div class="cart-actions">
+        <a href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>" class="btn btn-size-lg">
+            <?= $escaper->escapeHtml(__('Continuer mes achats')) ?>
+        </a>
+        <button
+            type="submit"
+            name="update_cart_action"
+            value="update_qty"
+            class="btn btn-size-lg"
+            data-cart-item-update
+        ><?= $escaper->escapeHtml(__('Mettre à jour le panier')) ?></button>
+
+        <?php if ($cartViewModel->isClearShoppingCartEnabled()): ?>
+            <?= $block->getChildHtml('checkout.cart.form.clear') ?>
+        <?php endif ?>
+
+        <?= $block->getChildHtml('checkout.cart.order.actions') ?>
+    </div>
+</form>
+<?= $block->getChildHtml('shopping.cart.table.after') ?>

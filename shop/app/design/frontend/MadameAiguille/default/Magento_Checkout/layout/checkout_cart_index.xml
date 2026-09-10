@@ -1,8 +1,35 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — page panier
+ *
+ * Lot 3 : état vide (« checkout.cart.empty » et ses recommandations).
+ * Lot 4 : panier contenant des articles — gabarit deux colonnes, lignes
+ * plafonnées au stock, récapitulatif et estimation de livraison.
+ *
+ * Le champ code promo reste déclaré par le parent : seule sa visibilité est
+ * conditionnée par le ViewModel Cart\Options (réglage admin), pour que son
+ * activation ne demande pas de modification de layout.
+ */
+-->
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="catalog_list_item"/>
     <body>
         <referenceBlock name="page.main.title" remove="true"/>
+
+        <referenceBlock name="checkout.cart.wrapper" template="Magento_Checkout::php-cart/wrapper.phtml">
+            <arguments>
+                <argument name="cart_summary" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\Summary</argument>
+                <argument name="free_shipping" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\FreeShipping</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="checkout.cart.coupon" template="MadameAiguille_Theme::cart/coupon.phtml">
+            <arguments>
+                <argument name="cart_options" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\Options</argument>
+            </arguments>
+        </referenceBlock>
+
         <referenceBlock name="checkout.cart.empty" template="Magento_Checkout::php-cart/noItems.phtml">
             <block class="MadameAiguille\Theme\Block\Home\NewProducts" name="checkout.cart.empty.recommendations" as="recommendations" template="MadameAiguille_Theme::home/products.phtml">
                 <arguments>

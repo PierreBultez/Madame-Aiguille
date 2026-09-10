@@ -1,0 +1,69 @@
+<?php
+/**
+ * Madame Aiguille — gabarit de la page panier (maquette Panier, artboards 07 et 07b)
+ *
+ * Deux colonnes au-delà de 1024 px, récapitulatif collant à droite ; une seule
+ * colonne en dessous, le récapitulatif passant sous les lignes. Le titre est
+ * rendu ici : le layout du lot 3 retire `page.main.title`.
+ *
+ * La barre de franco est le premier élément lu — c'est elle qui fait grossir un
+ * panier de 15 €. Son état vient entièrement du serveur (ViewModels Summary et
+ * FreeShipping) ; aucun montant n'est relu dans le DOM.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Cart\FreeShipping;
+use MadameAiguille\Theme\ViewModel\Cart\Summary;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+/** @var Summary $summary */
+$summary = $block->getData('cart_summary');
+/** @var FreeShipping $freeShipping */
+$freeShipping = $block->getData('free_shipping');
+
+$subtotal = $summary->getSubtotal();
+$itemsLabel = $summary->getItemsLabel();
+$franco = $freeShipping->isEnabled() ? $freeShipping->getState($subtotal) : null;
+?>
+<div class="cart-page">
+    <header class="cart-page-header">
+        <h1 class="font-display text-display md:text-display-lg text-brand">
+            <?= $escaper->escapeHtml(__('Mon panier')) ?><?php if ($itemsLabel): ?><span class="font-body font-light text-subtitle text-brand-muted"> — <?= $escaper->escapeHtml($itemsLabel) ?></span><?php endif ?>
+        </h1>
+
+        <?php if ($franco !== null): ?>
+            <section class="franco-bar<?= $franco['reached'] ? ' franco-bar-reached' : '' ?>"
+                     aria-label="<?= $escaper->escapeHtmlAttr(__('Progression vers la livraison offerte')) ?>">
+                <p class="franco-bar-message"><?= $escaper->escapeHtml($franco['message']) ?></p>
+                <div class="franco-bar-track" role="progressbar"
+                     aria-valuemin="0" aria-valuemax="100"
+                     aria-valuenow="<?= (int) $franco['progress'] ?>"
+                     aria-valuetext="<?= $escaper->escapeHtmlAttr($franco['message']) ?>">
+                    <span class="franco-bar-fill" style="width: <?= (int) $franco['progress'] ?>%"></span>
+                </div>
+                <?php if (!$franco['reached']): ?>
+                    <?php /* Une fois le franco atteint, la barre passe en succès et se tait (Design System §6.9). */ ?>
+                    <p class="franco-bar-amounts"><?= $escaper->escapeHtml($franco['progress_label']) ?></p>
+                <?php endif ?>
+            </section>
+        <?php endif ?>
+    </header>
+
+    <div class="cart-page-layout">
+        <div class="cart-page-items">
+            <?= $block->getChildHtml('form_before') ?>
+            <?= $block->getChildHtml('cart-items') ?>
+            <?= $block->getChildHtml('checkout_cart_widget') ?>
+        </div>
+
+        <aside class="cart-summary-panel" aria-label="<?= $escaper->escapeHtmlAttr(__('Récapitulatif')) ?>">
+            <h2 class="font-display text-display text-brand"><?= $escaper->escapeHtml(__('Récapitulatif')) ?></h2>
+            <?= $block->getChildHtml('cart.summary') ?>
+        </aside>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<?php
+/**
+ * Madame Aiguille — modification d'une ligne de panier
+ *
+ * Utile sur un configurable, pour changer de taille sans repartir de la fiche.
+ * Comportement et URL natifs ; seuls le gabarit et le libellé changent.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Checkout\Block\Cart\Item\Renderer\Actions\Edit;
+use Magento\Framework\Escaper;
+
+/** @var Edit $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$item = $block->getItem();
+$productName = (string) $item->getName();
+?>
+<?php if ($block->isProductVisibleInSiteVisibility()): ?>
+    <a
+        class="cart-line-edit"
+        href="<?= $escaper->escapeUrl($block->getConfigureUrl()) ?>"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Modifier %1', $productName)) ?>"
+    >
+        <?= $lucideIcons->pencilHtml('', 20, 20, ['aria-hidden' => 'true']) ?>
+        <span class="cart-line-edit-label"><?= $escaper->escapeHtml(__('Modifier')) ?></span>
+    </a>
+<?php endif ?>

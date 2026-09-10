@@ -1,0 +1,41 @@
+<?php
+/**
+ * Madame Aiguille — retrait d'une ligne de panier
+ *
+ * Même comportement que le parent (post natif, événement `cart-item-removed`) ;
+ * seuls la cible tactile de 44 px, le libellé français et l'icône changent.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Checkout\Block\Cart\Item\Renderer\Actions\Remove;
+use Magento\Framework\Escaper;
+
+/** @var Remove $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$item = $block->getItem();
+$productName = (string) $item->getName();
+?>
+<button
+    type="button"
+    class="cart-line-remove"
+    data-delete-post-json="<?= $escaper->escapeHtmlAttr($block->getDeletePostJson()) ?>"
+    data-cart-item-removed-payload="<?= $escaper->escapeHtml(json_encode([
+        'product_sku' => $item->getSku(),
+        'product_name' => $item->getName(),
+        'product_price_value' => $item->getPrice(),
+        'quantity' => $item->getQty()
+    ])) ?>"
+    @click.prevent="removeItem"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Retirer %1 du panier', $productName)) ?>"
+>
+    <?= $lucideIcons->trashHtml('', 20, 20, ['aria-hidden' => 'true']) ?>
+    <span class="cart-line-remove-label"><?= $escaper->escapeHtml(__('Retirer')) ?></span>
+</button>
