@@ -19,12 +19,12 @@
             </block>
         </referenceBlock>
 
-        <!-- Logo : lockup horizontal (PNG 2x en attendant les SVG), 356 × 56 px -->
+        <!-- Logo : verrou horizontal officiel, ratio intrinsèque conservé -->
         <referenceBlock name="logo">
             <arguments>
-                <argument name="logo_file" xsi:type="string">images/logo-horizontal.png</argument>
+                <argument name="logo_file" xsi:type="string">images/logo-rectangulaire.jpg</argument>
                 <argument name="logo_width" xsi:type="number">356</argument>
-                <argument name="logo_height" xsi:type="number">56</argument>
+                <argument name="logo_height" xsi:type="number">66</argument>
             </arguments>
         </referenceBlock>
 

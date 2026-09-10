@@ -2,7 +2,7 @@
 /**
  * Madame Aiguille — logo du header
  *
- * Lockup horizontal : 240 px sur mobile, 356 px sur desktop (plancher 220 px).
+ * Verrou horizontal : 240 px sur mobile, 356 px sur desktop (plancher 220 px).
  * Le nom est toujours une image, jamais du texte stylé (Design System §01).
  * Surcharge de Magento_Theme::html/header/logo.phtml (Hyvä 1.5.2).
  */
@@ -49,7 +49,7 @@ $logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
         alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ?: $storeName) ?>"
         class="block h-auto w-60 md:w-72 lg:w-89"
         <?= $logoWidth ? 'width="' . $escaper->escapeHtmlAttr($logoWidth) . '"' : 'width="356"' ?>
-        <?= $logoHeight ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"' : 'height="56"' ?>
+        <?= $logoHeight ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"' : 'height="66"' ?>
         loading="eager"
         fetchpriority="high"
     >
