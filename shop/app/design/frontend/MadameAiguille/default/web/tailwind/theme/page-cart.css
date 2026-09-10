@@ -130,3 +130,75 @@
 .estimate-rate-title { @apply min-w-0 flex-1 hyphens-auto; }
 .estimate-rate-price { @apply shrink-0 text-right font-medium tabular-nums; }
 .estimate-empty { @apply mt-3 text-caption text-brand-muted; }
+
+/* ── Mini-panier en tiroir (Design System §6.9) ───────────────────────── */
+.cart-drawer {
+    @apply me-0 h-full max-h-full w-full max-w-full flex-col gap-0 overflow-hidden
+    rounded-none border-0 bg-brand-paper p-0 shadow-drawer open:flex md:w-95;
+}
+.cart-drawer::backdrop { background: color-mix(in srgb, var(--color-brand-ink) 35%, transparent); }
+/* x-show écrit `display: block` en style inline à l'ouverture, ce qui casserait
+   la colonne (liste défilante + pied fixe). L'attribut `open` du dialog fait foi. */
+.cart-drawer[open] { display: flex !important; }
+
+/* Glissement depuis la droite, en CSS : les attributs x-transition d'Alpine sur
+   un <dialog> piloté par x-htmldialog retardent l'ouverture de plusieurs
+   secondes et empêchent la fermeture. */
+.cart-drawer[open] { animation: cart-drawer-in 300ms ease-in-out both; }
+.cart-drawer[open]::backdrop { animation: cart-drawer-backdrop-in 300ms ease-in-out both; }
+
+@keyframes cart-drawer-in {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+@keyframes cart-drawer-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cart-drawer[open],
+    .cart-drawer[open]::backdrop { animation: none; }
+}
+
+.cart-drawer-header { @apply flex shrink-0 items-center justify-between gap-2 border-b border-brand-line px-5 py-4; }
+.cart-drawer-title { @apply font-display text-display text-brand; }
+.cart-drawer-count { @apply font-body text-subtitle text-brand-muted; }
+.cart-drawer-close {
+    @apply -me-2 inline-flex h-11 w-11 items-center justify-center rounded-sm text-brand-muted
+    transition-colors hover:bg-brand-blush hover:text-brand-dark;
+}
+
+.cart-drawer .franco-bar { @apply mt-0 shrink-0 rounded-none border-x-0 border-t-0 px-5 py-3.5; }
+
+.cart-drawer-items { @apply grow divide-y divide-brand-line overflow-y-auto overscroll-contain px-5; }
+.cart-drawer-item { @apply flex gap-3 py-4; }
+.cart-drawer-photo { @apply block w-18 shrink-0 overflow-hidden rounded-sm bg-brand-blush; }
+.cart-drawer-photo img { @apply h-auto w-full; }
+.cart-drawer-details { @apply min-w-0 flex-1; }
+.cart-drawer-line { @apply flex items-start justify-between gap-2; }
+.cart-drawer-name { @apply min-w-0 font-medium text-label text-brand-ink; }
+.cart-drawer-price { @apply shrink-0 font-medium text-label text-brand tabular-nums; }
+.cart-drawer-options { @apply mt-1 text-caption text-brand-muted; }
+.cart-drawer-options > div { @apply flex flex-wrap gap-x-1; }
+.cart-drawer-options dt::after { content: " :"; }
+.cart-drawer-options dd { @apply font-medium text-brand-ink; }
+.cart-drawer-actions { @apply mt-2 flex items-center justify-between gap-2; }
+.qty-stepper-sm .qty-step { @apply w-9; }
+.qty-stepper-sm .qty-value { @apply inline-flex h-11 w-9 items-center justify-center font-medium text-base text-brand-ink tabular-nums; }
+.cart-drawer-remove {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-sm text-brand-muted
+    transition-colors hover:bg-brand-blush hover:text-brand-dark;
+}
+.cart-drawer-hint { @apply mt-1 text-caption text-brand-muted; }
+.cart-drawer-message { @apply mt-2 text-caption; }
+
+.cart-drawer-empty { @apply grid grow place-items-center px-5 py-10 text-center; }
+.cart-drawer-empty-title { @apply mt-6 font-display text-display text-brand; }
+.cart-drawer-empty-copy { @apply mx-auto mt-2 max-w-xs text-base text-brand-ink; }
+
+.cart-drawer-footer { @apply shrink-0 border-t border-brand-line bg-brand-paper px-5 py-4; }
+.cart-drawer-count-note { @apply mb-2 text-caption text-brand-muted; }
+.cart-drawer-subtotal { @apply flex items-baseline justify-between gap-3 text-subtitle text-brand-ink; }
+.cart-drawer-subtotal dd { @apply font-medium text-brand tabular-nums; }
+.cart-drawer-note { @apply mt-1 text-caption text-brand-muted; }
+.cart-drawer-buttons { @apply mt-4 flex flex-col gap-2; }
