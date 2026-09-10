@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — le module LayeredNavigation force le gabarit 2columns-left
+ * sur les catégories « ancrées » ; on rétablit une colonne (pas de filtres à
+ * facettes en v1, spécification §1.2). Le bloc catalog.leftnav est retiré dans
+ * Magento_Catalog/layout/catalog_category_view.xml.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"/>

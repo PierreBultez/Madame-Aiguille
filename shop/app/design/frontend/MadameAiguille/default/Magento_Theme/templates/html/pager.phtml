@@ -1,0 +1,100 @@
+<?php
+/**
+ * Madame Aiguille — pagination (Design System §6.5)
+ *
+ * Cibles de 44 px, page courante en aplat brand avec aria-current, flèches
+ * désactivées aux extrémités mais jamais masquées. Pas de limiteur ni de
+ * compteur : la barre du haut s'en charge.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\LocaleFormatter;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Pager;
+
+/** @var Pager $block */
+/** @var Escaper $escaper */
+/** @var LocaleFormatter $localeFormatter */
+/** @var ViewModelRegistry $viewModels */
+
+if (!$block->getCollection()->getSize() || $block->getLastPageNum() <= 1) {
+    return;
+}
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$anchor = $block->hasData('pagination_url_anchor')
+    ? '#' . $escaper->escapeHtmlAttr((string) $block->getData('pagination_url_anchor'))
+    : '';
+
+$itemClass = 'inline-flex min-w-11 min-h-11 items-center justify-center rounded-sm border px-1.5 font-medium text-label transition-colors';
+$pageClass = $itemClass . ' border-brand-nude bg-surface text-brand no-underline hover:border-brand-dark hover:bg-brand-blush hover:text-brand-dark';
+$currentClass = $itemClass . ' border-brand bg-brand text-white';
+$arrowClass = $pageClass . ' aria-disabled:pointer-events-none aria-disabled:border-disabled-border aria-disabled:bg-transparent aria-disabled:text-disabled-muted';
+
+$previousLabel = $block->getAnchorTextForPrevious() ?: __('Page précédente');
+$nextLabel = $block->getAnchorTextForNext() ?: __('Page suivante');
+$previousUrl = $block->isFirstPage() ? $block->getPageUrl($block->getCurrentPage()) : $block->getPreviousPageUrl();
+$nextUrl = $block->isLastPage() ? $block->getPageUrl($block->getCurrentPage()) : $block->getNextPageUrl();
+?>
+<nav class="pager mt-12 flex justify-center" aria-label="<?= $escaper->escapeHtmlAttr(__('Pagination')) ?>">
+    <ol class="pages flex flex-wrap items-center justify-center gap-2">
+        <li>
+            <a href="<?= $escaper->escapeUrl($previousUrl . $anchor) ?>"
+               class="pages-item-previous <?= $escaper->escapeHtmlAttr($arrowClass) ?>"
+               aria-label="<?= $escaper->escapeHtmlAttr($previousLabel) ?>"
+               <?php if ($block->isFirstPage()): ?>aria-disabled="true" tabindex="-1"<?php endif; ?>
+            ><?= $lucideIcons->chevronLeftHtml('', 20, 20, ['aria-hidden' => 'true']) ?></a>
+        </li>
+
+        <?php if ($block->canShowFirst()): ?>
+            <li>
+                <a href="<?= $escaper->escapeUrl($block->getFirstPageUrl() . $anchor) ?>" class="<?= $escaper->escapeHtmlAttr($pageClass) ?>"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('Page %1', 1)) ?>"><?= $escaper->escapeHtml($localeFormatter->formatNumber(1)) ?></a>
+            </li>
+        <?php endif; ?>
+        <?php if ($block->canShowPreviousJump()): ?>
+            <li>
+                <a href="<?= $escaper->escapeUrl($block->getPreviousJumpUrl() . $anchor) ?>" class="<?= $escaper->escapeHtmlAttr($pageClass) ?>"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('Aller à la page %1', $localeFormatter->formatNumber($block->getPreviousJumpPage()))) ?>">…</a>
+            </li>
+        <?php endif; ?>
+
+        <?php foreach ($block->getFramePages() as $page): ?>
+            <li>
+                <?php if ($block->isPageCurrent($page)): ?>
+                    <span class="<?= $escaper->escapeHtmlAttr($currentClass) ?>" aria-current="page"
+                          aria-label="<?= $escaper->escapeHtmlAttr(__('Page %1, page courante', $localeFormatter->formatNumber($page))) ?>"><?= $escaper->escapeHtml($localeFormatter->formatNumber($page)) ?></span>
+                <?php else: ?>
+                    <a href="<?= $escaper->escapeUrl($block->getPageUrl($page) . $anchor) ?>" class="<?= $escaper->escapeHtmlAttr($pageClass) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Page %1', $localeFormatter->formatNumber($page))) ?>"><?= $escaper->escapeHtml($localeFormatter->formatNumber($page)) ?></a>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+
+        <?php if ($block->canShowNextJump()): ?>
+            <li>
+                <a href="<?= $escaper->escapeUrl($block->getNextJumpUrl() . $anchor) ?>" class="<?= $escaper->escapeHtmlAttr($pageClass) ?>"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('Aller à la page %1', $localeFormatter->formatNumber($block->getNextJumpPage()))) ?>">…</a>
+            </li>
+        <?php endif; ?>
+        <?php if ($block->canShowLast()): ?>
+            <li>
+                <a href="<?= $escaper->escapeUrl($block->getLastPageUrl() . $anchor) ?>" class="<?= $escaper->escapeHtmlAttr($pageClass) ?>"
+                   aria-label="<?= $escaper->escapeHtmlAttr(__('Page %1', $localeFormatter->formatNumber($block->getLastPageNum()))) ?>"><?= $escaper->escapeHtml($localeFormatter->formatNumber($block->getLastPageNum())) ?></a>
+            </li>
+        <?php endif; ?>
+
+        <li>
+            <a href="<?= $escaper->escapeUrl($nextUrl . $anchor) ?>"
+               class="pages-item-next <?= $escaper->escapeHtmlAttr($arrowClass) ?>"
+               aria-label="<?= $escaper->escapeHtmlAttr($nextLabel) ?>"
+               <?php if ($block->isLastPage()): ?>aria-disabled="true" tabindex="-1"<?php endif; ?>
+            ><?= $lucideIcons->chevronRightHtml('', 20, 20, ['aria-hidden' => 'true']) ?></a>
+        </li>
+    </ol>
+</nav>

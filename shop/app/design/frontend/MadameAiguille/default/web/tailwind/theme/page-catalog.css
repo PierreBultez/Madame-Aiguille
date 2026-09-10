@@ -32,3 +32,14 @@
     display: block;
     margin-inline: auto;
 }
+
+/* Carte produit Madame Aiguille : le prix hérite de la taille et de la graisse
+   du conteneur (text-subtitle, 500) ; « À partir de » n'est pas affiché en vignette */
+.product-item {
+    --price-font-size: 1em;
+    --price-font-weight: 500;
+
+    & .price-box .price-label {
+        @apply sr-only;
+    }
+}

@@ -1,0 +1,108 @@
+<?php
+/**
+ * Madame Aiguille — liste produits d'une catégorie ou d'une recherche
+ *
+ * Barre de tri, grille 2 / 3 / 4 colonnes, puis les créations épuisées de la
+ * page regroupées sous l'intertitre « Séries terminées » avec un encart de mise
+ * en relation (décision du 05/09/2026 : épuisés visibles en fin de liste), puis
+ * la pagination. Le regroupement se fait par page : la collection est triée par
+ * le moteur de recherche, un tri global par stock exigerait un attribut indexé.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductListItem;
+use MadameAiguille\Theme\ViewModel\Product\LimitedSeries;
+use Magento\Catalog\Block\Product\ListProduct;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+
+/** @var ListProduct $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+/** @var LimitedSeries $limitedSeries */
+$limitedSeries = $block->getData('limited_series') ?? $viewModels->require(LimitedSeries::class);
+
+$productCollection = $block->getLoadedProductCollection();
+$eagerLoadImagesCount = (int) ($block->getData('eager_load_images_count') ?? 4);
+
+$available = [];
+$soldOut = [];
+/** @var Product $product */
+foreach ($productCollection->getItems() as $product) {
+    if ($limitedSeries->isSoldOut($product)) {
+        $soldOut[] = $product;
+    } else {
+        $available[] = $product;
+    }
+}
+foreach (array_slice($available, 0, $eagerLoadImagesCount) as $product) {
+    $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
+}
+
+$renderItem = static fn(Product $product): string => $productListItemViewModel->getItemHtml(
+    $product,
+    $block,
+    'grid',
+    ReviewRendererInterface::SHORT_VIEW,
+    'category_page_grid',
+    false
+);
+
+$gridClasses = 'grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4';
+$toolbar = $block->getToolbarBlock();
+$toolbar->setData('soldout_count', count($soldOut));
+?>
+<?php if (!$productCollection->count()): ?>
+    <?= $block->getChildHtml('empty') ?: '<div class="message notice"><div>' . $escaper->escapeHtml(__('Aucune création dans cette catégorie pour le moment.')) . '</div></div>' ?>
+<?php else: ?>
+    <section class="product-list" id="product-list" aria-label="<?= $escaper->escapeHtmlAttr(__('Liste des créations')) ?>" tabindex="-1">
+        <?= $block->getToolbarHtml() ?>
+        <?= $block->getAdditionalHtml() ?>
+
+        <?php if ($available): ?>
+            <ul role="list" class="products product-items <?= /* @noEscape */ $gridClasses ?> pt-6 md:pt-10">
+                <?php foreach ($available as $product): ?>
+                    <li class="flex flex-col"><?= /* @noEscape */ $renderItem($product) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+
+        <?php if ($soldOut): ?>
+            <div class="flex items-center gap-4 pt-11 pb-7 md:gap-5" role="separator" aria-label="<?= $escaper->escapeHtmlAttr(__('Séries terminées')) ?>">
+                <span class="h-px flex-1 bg-brand-nude" aria-hidden="true"></span>
+                <h2 class="font-body font-medium text-label text-brand-muted"><?= $escaper->escapeHtml(__('Séries terminées')) ?></h2>
+                <span class="h-px flex-1 bg-brand-nude" aria-hidden="true"></span>
+            </div>
+            <ul role="list" class="products product-items soldout <?= /* @noEscape */ $gridClasses ?>">
+                <?php foreach ($soldOut as $product): ?>
+                    <li class="flex flex-col"><?= /* @noEscape */ $renderItem($product) ?></li>
+                <?php endforeach; ?>
+                <li class="col-span-2 flex items-center rounded-md border border-info-border bg-info-bg p-6">
+                    <div class="flex gap-3.5">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" class="mt-0.5 shrink-0 text-info">
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M10 9v5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            <circle cx="10" cy="5.9" r="1.1" fill="currentColor"/>
+                        </svg>
+                        <div>
+                            <p class="mb-1 font-medium text-base text-info-dark"><?= $escaper->escapeHtml(__('Une série terminée vous plaît ?')) ?></p>
+                            <p class="text-label leading-relaxed text-info">
+                                <?= $escaper->escapeHtml(__('Il m’arrive de retrouver un coupon.')) ?>
+                                <a href="<?= $escaper->escapeUrl($block->getUrl('contact')) ?>" class="inline-flex min-h-11 items-center text-brand underline decoration-brand-nude underline-offset-3 hover:text-brand-dark hover:decoration-brand"><?= $escaper->escapeHtml(__('Écrivez-moi')) ?></a>
+                                <?= $escaper->escapeHtml(__('en précisant le modèle : je vous dirai si c’est possible.')) ?>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        <?php endif; ?>
+
+        <?= $toolbar->setIsBottom(true)->toHtml() ?>
+    </section>
+<?php endif; ?>

@@ -19,6 +19,15 @@
                 <weight_unit>kgs</weight_unit>
             </locale>
         </general>
+        <!-- Liste produits : grille seule, 24 par page (les épuisés sont regroupés par page), tri par nouveauté -->
+        <catalog>
+            <frontend>
+                <list_mode>grid</list_mode>
+                <grid_per_page_values>24</grid_per_page_values>
+                <grid_per_page>24</grid_per_page>
+                <default_sort_by>created_at</default_sort_by>
+            </frontend>
+        </catalog>
         <cataloginventory>
             <options>
                 <show_out_of_stock>1</show_out_of_stock>

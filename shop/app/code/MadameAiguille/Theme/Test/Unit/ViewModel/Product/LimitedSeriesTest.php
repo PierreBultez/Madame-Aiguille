@@ -132,6 +132,7 @@ class LimitedSeriesTest extends TestCase
 
         self::assertSame(LimitedSeries::BADGE_SCARCE, $badge['type']);
         self::assertSame('Plus que 2 exemplaires', (string) $badge['label']);
+        self::assertSame('Plus que 2', (string) $badge['short']);
         self::assertSame(2, $this->viewModel->getMaxQty($product));
         // La ligne secondaire rappelle la série puisque le badge dit autre chose
         self::assertSame('Série limitée — 10 pièces', $this->viewModel->getCardSubtitle($product));
@@ -141,7 +142,10 @@ class LimitedSeriesTest extends TestCase
     {
         $product = $this->product(['serie_limitee' => 0], true, 1.0);
 
-        self::assertSame('Plus qu’un exemplaire', (string) $this->viewModel->getBadge($product)['label']);
+        $badge = $this->viewModel->getBadge($product);
+
+        self::assertSame('Plus qu’un exemplaire', (string) $badge['label']);
+        self::assertSame('Dernier exemplaire', (string) $badge['short']);
     }
 
     public function testNoveltyBeatsLimitedSeries(): void
@@ -165,6 +169,7 @@ class LimitedSeriesTest extends TestCase
 
         self::assertSame(LimitedSeries::BADGE_LIMITED, $badge['type']);
         self::assertSame('Série limitée — 6 pièces', (string) $badge['label']);
+        self::assertSame('6 pièces', (string) $badge['short']);
         self::assertSame('Doublée coton, fermeture aimantée.', $this->viewModel->getCardSubtitle($product));
     }
 

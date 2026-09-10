@@ -1,0 +1,64 @@
+<?php
+/**
+ * Madame Aiguille — fil d'Ariane rendu côté serveur (catégories, CMS)
+ * Design System §6.5 : la page courante n'est pas un lien, séparateur nude
+ * décoratif masqué aux lecteurs d'écran, cibles de 44 px. Le JSON-LD natif
+ * est conservé.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Breadcrumbs;
+
+/** @var Escaper $escaper */
+/** @var Breadcrumbs $block */
+/** @var array[] $crumbs */
+
+if (!$crumbs || !is_array($crumbs)) {
+    return '';
+}
+
+$skipLinkedDataJsonSchema = $block->getData('skip_ld_json_schema');
+$schemaBreadcrumbs = [];
+$position = 1;
+$currentPageUrl = preg_replace('/[?#].*$/', '', $block->getUrl('', ['_current' => true, '_use_rewrite' => true]));
+?>
+<nav class="breadcrumbs" aria-label="<?= $escaper->escapeHtmlAttr(__('Fil d’Ariane')) ?>">
+    <div class="container">
+        <ol class="items flex flex-wrap items-center gap-x-2.5 pt-1 text-label">
+            <?php foreach ($crumbs as $crumbName => $crumbInfo): ?>
+                <li class="item flex items-center gap-x-2.5 <?= $escaper->escapeHtmlAttr($crumbName) ?>">
+                    <?php if (!$crumbInfo['first']): ?>
+                        <span aria-hidden="true" class="separator text-brand-nude">/</span>
+                    <?php endif; ?>
+                    <?php if ($crumbInfo['link']): ?>
+                        <a href="<?= $escaper->escapeUrl($crumbInfo['link']) ?>"
+                           class="inline-flex min-h-11 items-center text-brand no-underline hover:text-brand-dark hover:underline hover:decoration-brand-nude hover:underline-offset-3"
+                           <?php if ($crumbInfo['title']): ?>aria-label="<?= $escaper->escapeHtmlAttr($crumbInfo['title']) ?>"<?php endif; ?>
+                        ><?= $escaper->escapeHtml($crumbInfo['label']) ?></a>
+                    <?php elseif ($crumbInfo['last']): ?>
+                        <span class="inline-flex min-h-11 items-center text-brand-muted" aria-current="page"><?= $escaper->escapeHtml($crumbInfo['label']) ?></span>
+                    <?php else: ?>
+                        <span class="inline-flex min-h-11 items-center text-brand-muted"><?= $escaper->escapeHtml($crumbInfo['label']) ?></span>
+                    <?php endif; ?>
+                </li>
+                <?php if (!$skipLinkedDataJsonSchema) {
+                    $schemaBreadcrumbs[] = [
+                        '@type' => 'ListItem',
+                        'position' => $position,
+                        'item' => [
+                            '@id' => $crumbInfo['last'] ? $currentPageUrl : $crumbInfo['link'],
+                            'name' => $crumbInfo['label'],
+                        ],
+                    ];
+                } ?>
+            <?php $position++; endforeach; ?>
+        </ol>
+    </div>
+</nav>
+<?php if (!$skipLinkedDataJsonSchema): ?>
+    <script type="application/ld+json">
+        { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": <?= /* @noEscape */ json_encode($schemaBreadcrumbs) ?> }
+    </script>
+<?php endif; ?>

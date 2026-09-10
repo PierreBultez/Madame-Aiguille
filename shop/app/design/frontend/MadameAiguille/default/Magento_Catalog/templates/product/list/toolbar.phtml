@@ -1,0 +1,54 @@
+<?php
+/**
+ * Madame Aiguille — barre d'outils de la liste produits
+ *
+ * En haut : nombre de créations (et de séries terminées) + sélecteur de tri.
+ * En bas : pagination seule. Pas de bascule grille / liste, pas de limiteur.
+ * Le tri combine champ et direction en une seule valeur (« price:asc ») :
+ * le composant Alpine ne fait que réécrire l'URL avec les deux paramètres.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use MadameAiguille\Theme\ViewModel\Catalog\Sorting;
+use Magento\Catalog\Block\Product\ProductList\Toolbar;
+use Magento\Framework\Escaper;
+
+/** @var Toolbar $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+if (!$block->getCollection()->getSize()) {
+    return;
+}
+
+/** @var Sorting $sorting */
+$sorting = $block->getData('sorting') ?? $viewModels->require(Sorting::class);
+$uniqueId = '_' . uniqid();
+?>
+<?php if ($block->getIsBottom()): ?>
+    <?= $block->getPagerHtml() ?>
+<?php else: ?>
+    <script>
+        function initToolbar<?= /* @noEscape */ $uniqueId ?>() {
+            return {
+                options: <?= /* @noEscape */ $block->getWidgetOptionsJson(['page' => 'p']) ?>.productListToolbarForm || {},
+                sort(value) {
+                    const [field, direction] = value.split(':');
+                    const url = new URL(this.options.url, window.location.origin);
+                    url.searchParams.delete(this.options.page);
+                    url.searchParams.set(this.options.order, field);
+                    url.searchParams.set(this.options.direction, direction);
+                    window.location.assign(url.toString());
+                }
+            }
+        }
+    </script>
+    <div x-data="initToolbar<?= /* @noEscape */ $uniqueId ?>()"
+         class="toolbar toolbar-products full-bleed flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-y border-brand-line bg-surface py-3 md:py-4"
+    >
+        <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/amount.phtml')) ?>
+        <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/sorter.phtml')) ?>
+    </div>
+<?php endif; ?>

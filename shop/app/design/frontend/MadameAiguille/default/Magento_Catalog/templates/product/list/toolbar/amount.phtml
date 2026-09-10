@@ -1,0 +1,34 @@
+<?php
+/**
+ * Madame Aiguille — « 9 créations — dont 2 séries terminées »
+ * Le nombre de séries terminées est celui de la page affichée (cf. list.phtml).
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\LocaleFormatter;
+use Magento\Catalog\Block\Product\ProductList\Toolbar;
+use Magento\Framework\Escaper;
+
+/** @var Toolbar $block */
+/** @var Escaper $escaper */
+/** @var LocaleFormatter $localeFormatter */
+
+$total = (int) $block->getTotalNum();
+$soldOutCount = (int) $block->getData('soldout_count');
+?>
+<p class="toolbar-amount text-label text-brand-muted" id="toolbar-amount">
+    <strong class="font-medium text-brand-ink">
+        <?= $escaper->escapeHtml($total === 1
+            ? __('%1 création', $localeFormatter->formatNumber($total))
+            : __('%1 créations', $localeFormatter->formatNumber($total))) ?>
+    </strong>
+    <?php if ($block->getLastPageNum() > 1): ?>
+        <span class="hidden sm:inline">— <?= $escaper->escapeHtml(__('%1 à %2', $localeFormatter->formatNumber($block->getFirstNum()), $localeFormatter->formatNumber($block->getLastNum()))) ?></span>
+    <?php endif; ?>
+    <?php if ($soldOutCount > 0): ?>
+        <span class="hidden sm:inline">— <?= $escaper->escapeHtml($soldOutCount === 1
+            ? __('dont %1 série terminée', $localeFormatter->formatNumber($soldOutCount))
+            : __('dont %1 séries terminées', $localeFormatter->formatNumber($soldOutCount))) ?></span>
+    <?php endif; ?>
+</p>

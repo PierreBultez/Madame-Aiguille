@@ -212,8 +212,9 @@ class LimitedSeries implements ArgumentInterface
 
     /**
      * Un seul badge par produit, par priorité : épuisé > rareté > nouveauté > série limitée.
+     * « short » est la forme abrégée des vignettes mobiles (« 8 pièces », « Plus que 2 »).
      *
-     * @return array{type: string, label: Phrase, css: string}|null
+     * @return array{type: string, label: Phrase, short: Phrase, css: string}|null
      */
     public function getBadge(Product $product): ?array
     {
@@ -222,7 +223,13 @@ class LimitedSeries implements ArgumentInterface
         }
 
         if ($this->isScarce($product)) {
-            return $this->badge(self::BADGE_SCARCE, $this->getScarcityLabel($product));
+            $remaining = (int) $this->getRemainingQty($product);
+
+            return $this->badge(
+                self::BADGE_SCARCE,
+                $this->getScarcityLabel($product),
+                $remaining === 1 ? __('Dernier exemplaire') : __('Plus que %1', $remaining)
+            );
         }
 
         if ($this->isNew($product)) {
@@ -231,7 +238,17 @@ class LimitedSeries implements ArgumentInterface
 
         $seriesLabel = $this->getSeriesLabel($product);
 
-        return $seriesLabel !== null ? $this->badge(self::BADGE_LIMITED, $seriesLabel) : null;
+        if ($seriesLabel === null) {
+            return null;
+        }
+
+        $size = $this->getSeriesSize($product);
+
+        return $this->badge(
+            self::BADGE_LIMITED,
+            $seriesLabel,
+            $size !== null ? __('%1 pièces', $size) : __('Série limitée')
+        );
     }
 
     /**
@@ -300,11 +317,11 @@ class LimitedSeries implements ArgumentInterface
     // ── Internes ─────────────────────────────────────────────────────────
 
     /**
-     * @return array{type: string, label: Phrase, css: string}
+     * @return array{type: string, label: Phrase, short: Phrase, css: string}
      */
-    private function badge(string $type, Phrase $label): array
+    private function badge(string $type, Phrase $label, ?Phrase $short = null): array
     {
-        return ['type' => $type, 'label' => $label, 'css' => self::BADGE_CSS[$type]];
+        return ['type' => $type, 'label' => $label, 'short' => $short ?? $label, 'css' => self::BADGE_CSS[$type]];
     }
 
     /**

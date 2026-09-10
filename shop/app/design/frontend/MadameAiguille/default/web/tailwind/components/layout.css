@@ -21,3 +21,10 @@
         grid-template-columns: 1.4fr 1fr 1.2fr 1.2fr;
     }
 }
+
+/* Bande pleine largeur depuis l'intérieur du conteneur (barre de tri, feston de section).
+   Le débordement horizontal est rogné sur .page-wrapper (theme/page-layout.css). */
+@utility full-bleed {
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50%);
+}

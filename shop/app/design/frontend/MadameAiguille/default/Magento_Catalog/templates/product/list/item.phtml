@@ -1,0 +1,107 @@
+<?php
+/**
+ * Madame Aiguille — carte produit (Design System §6.3)
+ *
+ * Image 4:5, un seul badge (priorité décidée par le ViewModel), nom, ligne
+ * secondaire à 13 px, prix tabulaire, bouton « Voir le produit » sur desktop.
+ * La carte entière mène à la fiche : pas d'ajout au panier depuis la liste,
+ * pas de comparateur, pas de liste d'envies. Une carte épuisée est grisée et
+ * son bouton est inactif.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductListItem;
+use MadameAiguille\Theme\ViewModel\Product\LimitedSeries;
+use Magento\Catalog\Block\Product\View;
+use Magento\Catalog\Helper\Output as CatalogOutputHelper;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Product $product */
+if (!($product = $block->getData('product'))) {
+    return;
+}
+
+/** @var LimitedSeries $limitedSeries */
+$limitedSeries = $block->getData('limited_series') ?? $viewModels->require(LimitedSeries::class);
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+/** @var CatalogOutputHelper $catalogOutputHelper */
+$catalogOutputHelper = $this->helper(CatalogOutputHelper::class);
+
+$productId = (int) $product->getId();
+$productUrl = $product->getProductUrl();
+$productName = $catalogOutputHelper->productAttribute($product, $product->getName(), 'name');
+$imageDisplayArea = $block->getData('image_display_area') ?: 'category_page_grid';
+$imageCustomAttributes = $product->getData('image_custom_attributes') ?? $block->getData('image_custom_attributes') ?? [];
+
+$isSoldOut = $limitedSeries->isSoldOut($product);
+$badge = $limitedSeries->getBadge($product);
+$subtitle = $limitedSeries->getCardSubtitle($product);
+$headingTag = $block->getData('heading_tag') ?: 'h2';
+?>
+<article
+    class="product-item group relative flex h-full w-full flex-col overflow-hidden rounded-md border bg-surface text-brand-ink
+        <?= $isSoldOut ? 'is-soldout border-brand-line' : 'card-interactive border-brand-line shadow-card' ?>"
+    <?php foreach ($block->getData('product_data_attributes') ?? [] as $attribute => $include): ?>
+        <?php if ($include): ?>
+            <?= $escaper->escapeHtml(sprintf('data-%s', $attribute)) ?>="<?= $escaper->escapeHtmlAttr($product->getData($attribute)) ?>"
+        <?php endif; ?>
+    <?php endforeach; ?>
+>
+    <a href="<?= $escaper->escapeUrl($productUrl) ?>"
+       class="product-item-photo relative block aspect-4/5 overflow-hidden <?= $isSoldOut ? 'bg-soldout-bg' : 'bg-brand-blush' ?>"
+       tabindex="-1"
+       aria-hidden="true"
+    >
+        <?php if ($blockImage = $block->getImage($product, $imageDisplayArea)): ?>
+            <?= $blockImage
+                ->setTemplate('Magento_Catalog::product/list/image.phtml')
+                ->setData('custom_attributes', $imageCustomAttributes)
+                ->setData('class', 'product-image-photo block size-full object-cover transition-transform duration-300 motion-reduce:transition-none'
+                    . ($isSoldOut ? ' opacity-50 saturate-[.55]' : ' group-hover:scale-[1.04]'))
+                ->setProductId($productId)
+                ->toHtml() ?>
+        <?php endif; ?>
+        <?php if ($badge): ?>
+            <span class="<?= $escaper->escapeHtmlAttr($badge['css']) ?> absolute top-2 left-2 md:top-2.5 md:left-2.5">
+                <span class="md:hidden"><?= $escaper->escapeHtml($badge['short']) ?></span>
+                <span class="hidden md:inline"><?= $escaper->escapeHtml($badge['label']) ?></span>
+            </span>
+        <?php endif; ?>
+    </a>
+
+    <div class="product-item-details flex grow flex-col gap-1 p-3 md:gap-1.5 md:p-4">
+        <<?= /* @noEscape */ $headingTag ?> class="product-item-name font-body font-medium text-subtitle md:text-subtitle-lg <?= $isSoldOut ? 'text-soldout-fg' : 'text-brand-ink' ?>">
+            <a href="<?= $escaper->escapeUrl($productUrl) ?>" class="product-item-link after:absolute after:inset-0 after:content-['']">
+                <?= /* @noEscape */ $productName ?>
+            </a>
+        </<?= /* @noEscape */ $headingTag ?>>
+
+        <?php if ($subtitle !== null): ?>
+            <p class="product-item-subtitle text-caption text-brand-muted"><?= $escaper->escapeHtml($subtitle) ?></p>
+        <?php endif; ?>
+
+        <div class="product-item-price mt-auto pt-1 font-medium tabular-nums text-subtitle md:text-subtitle-lg <?= $isSoldOut ? 'text-brand-muted' : 'text-brand' ?>">
+            <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+        </div>
+
+        <?php if ($isSoldOut): ?>
+            <span class="btn btn-size-sm mt-2.5 hidden w-full md:inline-flex" aria-disabled="true">
+                <?= $escaper->escapeHtml($limitedSeries->getSoldOutLabel($product)) ?>
+            </span>
+        <?php else: ?>
+            <span class="btn btn-size-sm mt-2.5 hidden w-full md:inline-flex group-hover:border-brand-dark group-hover:bg-brand-blush group-hover:text-brand-dark" aria-hidden="true">
+                <?= $escaper->escapeHtml(__('Voir le produit')) ?>
+            </span>
+        <?php endif; ?>
+    </div>
+</article>

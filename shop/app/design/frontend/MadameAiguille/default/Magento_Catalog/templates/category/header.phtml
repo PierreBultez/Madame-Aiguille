@@ -1,0 +1,39 @@
+<?php
+/**
+ * Madame Aiguille — en-tête de catégorie : titre centré entre deux filets
+ * ornés, description en dessous (maquette Page catégorie).
+ * Le titre et la description s'éditent dans l'admin (Catalogue › Catégories).
+ */
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Category\View;
+use Magento\Catalog\ViewModel\Category\Output as CategoryOutput;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+
+$category = $block->getCurrentCategory();
+/** @var CategoryOutput $output */
+$output = $block->getData('output');
+$description = trim((string) $category->getDescription());
+
+$ornament = '<svg width="96" height="12" viewBox="0 0 96 12" fill="none" aria-hidden="true" class="hidden shrink-0 text-brand-nude sm:block %s">'
+    . '<path d="M0 6h52" stroke="currentColor" stroke-width="1"/>'
+    . '<path d="M58 6c5-6 11-6 16 0-5 6-11 6-16 0Z" fill="var(--color-brand-paper)" stroke="currentColor" stroke-width="1"/>'
+    . '<path d="M78 6c4-4 9-4 13 0-4 4-9 4-13 0Z" fill="currentColor"/>'
+    . '</svg>';
+?>
+<header class="category-header pt-5 pb-6 text-center md:pt-9 md:pb-10">
+    <div class="flex items-center justify-center gap-5">
+        <?= /* @noEscape */ sprintf($ornament, '') ?>
+        <h1 class="font-body font-medium text-title text-brand-ink md:text-title-lg"><?= $escaper->escapeHtml($category->getName()) ?></h1>
+        <?= /* @noEscape */ sprintf($ornament, '-scale-x-100') ?>
+    </div>
+    <?php if ($description !== ''): ?>
+        <div class="category-description mx-auto mt-3.5 max-w-2xl text-base text-brand-ink text-pretty">
+            <?= /* @noEscape */ $output->categoryAttribute($category, $description, 'description') ?>
+        </div>
+    <?php endif; ?>
+</header>

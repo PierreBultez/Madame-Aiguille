@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — carte produit (handle partagé par la catégorie, la recherche
+ * et les sliders). Fusionné avec le catalog_list_item.xml du parent Hyvä :
+ * on injecte le ViewModel des séries limitées et on retire la liste d'envies.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product_list_item">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+                <!-- Aucun script de vignette (pas de comparateur, pas de liste d'envies, pas d'ajout direct) -->
+                <argument name="hyva_js_block_dependencies" xsi:type="array"/>
+                <argument name="hyva_js_template_dependencies" xsi:type="array"/>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="catalog.list.item.wishlist" remove="true"/>
+        <referenceBlock name="category.products.list.js.compare" remove="true"/>
+        <referenceBlock name="category.products.list.js.wishlist" remove="true"/>
+    </body>
+</page>

@@ -58,3 +58,8 @@
             var(--sidebar-width);
     }
 }
+
+/* Nécessaire aux bandes .full-bleed : 50vw inclut la barre de défilement */
+.page-wrapper {
+    overflow-x: clip;
+}

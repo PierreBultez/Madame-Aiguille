@@ -1,0 +1,41 @@
+<?php
+/**
+ * Madame Aiguille — sélecteur de tri à trois entrées (ViewModel Sorting).
+ * Le label est visible : c'est un champ comme les autres.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use MadameAiguille\Theme\ViewModel\Catalog\Sorting;
+use Magento\Catalog\Block\Product\ProductList\Toolbar;
+use Magento\Framework\Escaper;
+
+/** @var Toolbar $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Sorting $sorting */
+$sorting = $block->getData('sorting') ?? $viewModels->require(Sorting::class);
+$options = $sorting->getOptions($block);
+
+if (count($options) < 2) {
+    return;
+}
+$selectId = 'sorter-' . uniqid();
+?>
+<div class="toolbar-sorter sorter flex items-center gap-3">
+    <label for="<?= $escaper->escapeHtmlAttr($selectId) ?>" class="sr-only font-medium text-label text-brand-ink sm:not-sr-only"><?= $escaper->escapeHtml(__('Trier par')) ?></label>
+    <select id="<?= $escaper->escapeHtmlAttr($selectId) ?>"
+            name="sorter"
+            data-role="sorter"
+            class="form-select sorter-options min-w-40 sm:min-w-48 md:min-w-56"
+            @change="sort($event.currentTarget.value)"
+    >
+        <?php foreach ($options as $option): ?>
+            <option value="<?= $escaper->escapeHtmlAttr($option['value']) ?>"<?= $option['current'] ? ' selected' : '' ?>>
+                <?= $escaper->escapeHtml($option['label']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>

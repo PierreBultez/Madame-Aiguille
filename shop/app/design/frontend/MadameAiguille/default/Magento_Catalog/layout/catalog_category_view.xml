@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — page catégorie (maquette « Page catégorie », Design System §6.3 à §6.5)
+ *
+ * Une colonne, sans navigation à facettes (spécification §1.2). L'en-tête de
+ * catégorie (titre orné + description) remplace le titre de page natif. Le tri
+ * par défaut est la nouveauté (created_at décroissant). Fusionné avec le
+ * catalog_category_view.xml du parent Hyvä.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Titre natif remplacé par l'en-tête de catégorie ; image et description natives intégrées à l'en-tête -->
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="category.image" remove="true"/>
+        <referenceBlock name="category.description" remove="true"/>
+        <referenceBlock name="catalog.compare.sidebar" remove="true"/>
+        <!-- Pas de filtres à facettes en v1 (spécification §1.2) : bloc ajouté par le handle *_type_layered -->
+        <referenceBlock name="catalog.leftnav" remove="true"/>
+        <referenceBlock name="recently_viewed_products.default_widget_plp" remove="true"/>
+
+        <referenceContainer name="category.view.container" htmlClass="category-view">
+            <block class="Magento\Catalog\Block\Category\View" name="category.header" before="-" template="Magento_Catalog::category/header.phtml">
+                <arguments>
+                    <argument name="output" xsi:type="object">Magento\Catalog\ViewModel\Category\Output</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+
+        <referenceBlock name="category.products.list">
+            <arguments>
+                <argument name="limited_series" xsi:type="object">MadameAiguille\Theme\ViewModel\Product\LimitedSeries</argument>
+                <argument name="eager_load_images_count" xsi:type="number">4</argument>
+            </arguments>
+        </referenceBlock>
+
+        <referenceBlock name="product_list_toolbar">
+            <arguments>
+                <argument name="sorting" xsi:type="object">MadameAiguille\Theme\ViewModel\Catalog\Sorting</argument>
+            </arguments>
+            <!-- Nouveautés = created_at décroissant : la direction par défaut suit -->
+            <action method="setDefaultDirection">
+                <argument name="dir" xsi:type="string">desc</argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>
