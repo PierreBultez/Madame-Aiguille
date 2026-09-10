@@ -72,11 +72,19 @@ $labelClass = 'font-body font-medium text-label text-brand-ink';
 $noteClass = 'font-body text-caption text-brand-muted';
 $spinner = '<svg class="size-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".3" stroke-width="2"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 $wave = '<svg width="80" height="12" viewBox="0 0 80 12" fill="none" aria-hidden="true" class="text-brand-nude shrink-0"><path d="M0 6c8-8 12 8 20 0s12 8 20 0 12 8 20 0 12 8 20 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+$mediaUrl = $block->getBaseUrl() . 'media/madameaiguille/photos-test/'; // photos du jeu de données (dev uniquement)
+$productCards = [
+    ['Repos', 'p-trousse-romantique.png', 'Trousse Romantique', 'Deux tailles disponibles', '29,00 €', 'badge badge-limited', 'Série limitée — 8 pièces', '8 pièces', false, false],
+    ['Survol (simulé)', 'p-pochette-isabelle.png', 'Pochette à Livre Isabelle', 'Coton fleuri terracotta, fermeture aimantée.', '24,00 €', 'badge badge-limited', 'Série limitée — 6 pièces', '6 pièces', true, false],
+    ['Nouveauté', 'p-sac-aurora-mini.png', 'Sac Aurora Mini', 'Série limitée — 5 pièces', '32,00 €', 'badge badge-new', 'Nouveauté', 'Nouveauté', false, false],
+    ['Dernières pièces', 'p-cotons-demaquillants.png', 'Cotons Démaquillants', 'Série limitée — 10 pièces', '12,00 €', 'badge badge-scarce', 'Plus que 2 exemplaires', 'Plus que 2', false, false],
+    ['Épuisé', 'p-trousse-lin-perle.png', 'Trousse Lin Perle', 'Série limitée — 6 pièces', '22,00 €', 'badge badge-soldout', 'Épuisé', 'Épuisé', false, true],
+];
 $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" aria-hidden="true" class="text-brand-rose"><path d="M8 13.5 1.6 7.4A3.7 3.7 0 0 1 6.9 2.2L8 3.3l1.1-1.1a3.7 3.7 0 0 1 5.3 5.2L8 13.5Z"/></svg>';
 ?>
 <div class="pb-24">
     <header class="pt-8 pb-10 border-b border-brand-line">
-        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lot 1')) ?></p>
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 et 2')) ?></p>
         <h1 class="font-display text-display-xl md:text-display-2xl text-brand mb-4"><?= $escaper->escapeHtml(__('Madame Aiguille')) ?></h1>
         <p class="font-body italic text-lead text-brand-ink max-w-2xl"><?= $escaper->escapeHtml(__('Délicate, élégante, attentionnée. Un écrin neutre ; la couleur vient des tissus.')) ?></p>
         <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Cette page n’est servie qu’en mode developer / default. Utilisez Tab pour parcourir les états de focus.')) ?></p>
@@ -359,6 +367,132 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                     <div class="h-14 bg-brand-blush"></div>
                     <div class="scallop scallop-from-brand-blush scallop-to-brand-ivory"></div>
                     <div class="h-14 bg-brand-ivory"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 07 · Carte produit (lot 2) — gabarit statique, reflet de Magento_Catalog::product/list/item.phtml -->
+    <section aria-labelledby="sg-card">
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mt-16"><?= $escaper->escapeHtml(__('Lot 2 · catalogue')) ?></p>
+        <h2 id="sg-card" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?> mt-1"><?= $escaper->escapeHtml(__('Carte produit')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> max-w-3xl"><?= $escaper->escapeHtml(__('Image 4:5, un seul badge par priorité (épuisé > rareté > nouveauté > série limitée, ViewModel LimitedSeries), nom en text-subtitle, ligne secondaire 13 px, prix tabulaire, bouton « Voir le produit » à partir de md. Badge abrégé sous md. Gabarit statique : le vrai rendu est celui des pages catégorie.')) ?></p>
+        <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?> mt-6">
+            <div class="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-5">
+                <?php foreach ($productCards as [$state, $image, $name, $subtitle, $price, $badgeClass, $badgeLabel, $badgeShort, $hover, $soldOut]): ?>
+                    <div>
+                        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3.5"><?= $escaper->escapeHtml($state) ?></p>
+                        <article class="product-item group relative flex h-full flex-col overflow-hidden rounded-md border bg-surface text-brand-ink <?= $soldOut ? 'border-brand-line' : ($hover ? 'border-brand-nude shadow-raised' : 'card-interactive border-brand-line shadow-card') ?>">
+                            <div class="relative aspect-4/5 overflow-hidden <?= $soldOut ? 'bg-soldout-bg' : 'bg-brand-blush' ?>">
+                                <img src="<?= $escaper->escapeUrl($mediaUrl . $image) ?>" alt="" loading="lazy" width="480" height="600" class="block size-full object-cover <?= $soldOut ? 'opacity-50 saturate-[.55]' : ($hover ? 'scale-[1.04]' : '') ?>">
+                                <span class="<?= $escaper->escapeHtmlAttr($badgeClass) ?> absolute top-2 left-2 md:top-2.5 md:left-2.5"><span class="md:hidden"><?= $escaper->escapeHtml($badgeShort) ?></span><span class="hidden md:inline"><?= $escaper->escapeHtml($badgeLabel) ?></span></span>
+                            </div>
+                            <div class="flex grow flex-col gap-1 p-3 md:gap-1.5 md:p-4">
+                                <p class="font-body font-medium text-subtitle md:text-subtitle-lg <?= $soldOut ? 'text-soldout-fg' : 'text-brand-ink' ?>"><?= $escaper->escapeHtml($name) ?></p>
+                                <p class="text-caption text-brand-muted"><?= $escaper->escapeHtml($subtitle) ?></p>
+                                <p class="mt-auto pt-1 font-medium tabular-nums text-subtitle md:text-subtitle-lg <?= $soldOut ? 'text-brand-muted' : 'text-brand' ?>"><?= $escaper->escapeHtml($price) ?></p>
+                                <?php if ($soldOut): ?>
+                                    <span class="btn btn-size-sm mt-2.5 hidden w-full md:inline-flex" aria-disabled="true"><?= $escaper->escapeHtml(__('Série terminée')) ?></span>
+                                <?php else: ?>
+                                    <span class="btn btn-size-sm mt-2.5 hidden w-full md:inline-flex <?= $hover ? 'border-brand-dark bg-brand-blush text-brand-dark' : '' ?>"><?= $escaper->escapeHtml(__('Voir le produit')) ?></span>
+                                <?php endif; ?>
+                            </div>
+                        </article>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- 08 · Navigation & sélecteurs (lot 2) -->
+    <section aria-labelledby="sg-nav">
+        <h2 id="sg-nav" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?>"><?= $escaper->escapeHtml(__('Navigation et sélecteurs')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?>"><?= $escaper->escapeHtml(__('Toutes les cibles font 44 px minimum, y compris les numéros de pagination et les boutons de quantité.')) ?></p>
+        <div class="grid md:grid-cols-2 gap-5 mt-6">
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-5"><?= $escaper->escapeHtml(__('Fil d’Ariane')) ?></p>
+                <ol class="flex flex-wrap items-center gap-x-2.5 text-label">
+                    <li class="flex items-center gap-x-2.5"><a href="#" class="inline-flex min-h-11 items-center text-brand no-underline hover:text-brand-dark hover:underline hover:decoration-brand-nude hover:underline-offset-3"><?= $escaper->escapeHtml(__('Accueil')) ?></a></li>
+                    <li class="flex items-center gap-x-2.5"><span aria-hidden="true" class="text-brand-nude">/</span><a href="#" class="inline-flex min-h-11 items-center text-brand no-underline hover:text-brand-dark hover:underline hover:decoration-brand-nude hover:underline-offset-3">Trousses de toilette</a></li>
+                    <li class="flex items-center gap-x-2.5"><span aria-hidden="true" class="text-brand-nude">/</span><span class="inline-flex min-h-11 items-center text-brand-muted" aria-current="page">Trousse Romantique</span></li>
+                </ol>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('La page courante n’est pas un lien. Séparateur nude, décoratif, masqué aux lecteurs d’écran. Magento_Theme::html/breadcrumbs.phtml (catégories) et Magento_Catalog::product/view/breadcrumbs.phtml (fiche).')) ?></p>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-5"><?= $escaper->escapeHtml(__('Pagination')) ?></p>
+                <?php
+                $pg = 'inline-flex min-w-11 min-h-11 items-center justify-center rounded-sm border px-1.5 font-medium text-label transition-colors';
+                $pgLink = $pg . ' border-brand-nude bg-surface text-brand no-underline hover:border-brand-dark hover:bg-brand-blush hover:text-brand-dark';
+                ?>
+                <nav aria-label="<?= $escaper->escapeHtmlAttr(__('Pagination (démonstration)')) ?>"><ol class="flex items-center gap-2">
+                    <li><span class="<?= $escaper->escapeHtmlAttr($pg) ?> border-disabled-border text-disabled-muted" aria-disabled="true">‹</span></li>
+                    <li><span class="<?= $escaper->escapeHtmlAttr($pg) ?> border-brand bg-brand text-white" aria-current="page">1</span></li>
+                    <li><a href="#" class="<?= $escaper->escapeHtmlAttr($pgLink) ?>">2</a></li>
+                    <li><a href="#" class="<?= $escaper->escapeHtmlAttr($pgLink) ?>">3</a></li>
+                    <li><a href="#" class="<?= $escaper->escapeHtmlAttr($pgLink) ?>">›</a></li>
+                </ol></nav>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Page courante en aplat brand et aria-current="page". Flèches désactivées aux extrémités, jamais masquées. Magento_Theme::html/pager.phtml.')) ?></p>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-5"><?= $escaper->escapeHtml(__('Sélecteur de quantité — plafonné au stock')) ?></p>
+                <div class="flex flex-wrap items-start gap-8">
+                    <?php foreach ([['1', false, false, '8 en stock', false], ['1', true, false, 'Minimum atteint', false], ['2', false, true, 'Stock maximum atteint', true]] as [$q, $minOff, $maxOff, $hint, $isError]): ?>
+                        <div>
+                            <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> mb-1.5"><?= $escaper->escapeHtml(__('Quantité')) ?></p>
+                            <div class="inline-flex items-stretch overflow-hidden rounded-sm border border-field-border bg-surface">
+                                <span class="inline-flex w-11 items-center justify-center border-r border-brand-line text-subtitle-lg <?= $minOff ? 'text-disabled-muted' : 'text-brand' ?>">−</span>
+                                <span class="inline-flex h-12 w-13 items-center justify-center font-medium text-base text-brand-ink tabular-nums"><?= $escaper->escapeHtml($q) ?></span>
+                                <span class="inline-flex w-11 items-center justify-center border-l border-brand-line text-subtitle-lg <?= $maxOff ? 'text-disabled-muted' : 'text-brand' ?>">+</span>
+                            </div>
+                            <p class="mt-1.5 text-caption <?= $isError ? 'font-medium text-error' : 'text-brand-muted' ?>"><?= $escaper->escapeHtml($hint) ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Magento_Catalog::product/view/quantity.phtml — le plafond vient du ViewModel LimitedSeries (stock de la taille choisie sur un configurable).')) ?></p>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="font-body font-medium text-subtitle text-brand-ink mb-1"><?= $escaper->escapeHtml(__('Sélecteur de taille — 2 options maximum')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mb-5"><?= $escaper->escapeHtml(__('Swatch texte natif (attribut taille), restylé dans components/swatches.css. Absent de la majorité des fiches.')) ?></p>
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> mb-2.5"><?= $escaper->escapeHtml(__('Taille')) ?></p>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <span class="swatch-option" data-swatch-type="text" aria-checked="true"><span class="swatch-label font-medium text-base">Petit</span></span>
+                    <span class="swatch-option" data-swatch-type="text"><span class="swatch-label font-medium text-base">Grand</span></span>
+                </div>
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> mb-2.5"><?= $escaper->escapeHtml(__('Taille — une option épuisée')) ?></p>
+                <div class="flex flex-wrap gap-3">
+                    <span class="swatch-option" data-swatch-type="text" aria-checked="true"><span class="swatch-label font-medium text-base">Petit</span></span>
+                    <span class="swatch-option" data-swatch-type="text" aria-disabled="true"><span class="swatch-label font-medium text-base">Grand</span><span class="swatch-note text-caption"><?= $escaper->escapeHtml(__('Épuisé')) ?></span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 09 · États vides (lot 2) -->
+    <section aria-labelledby="sg-empty">
+        <h2 id="sg-empty" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?>"><?= $escaper->escapeHtml(__('États vides')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?>"><?= $escaper->escapeHtml(__('Trois règles : nommer ce qui manque, expliquer pourquoi, offrir une sortie. Magento_Catalog::product/list/empty.phtml, modes « category » et « search ».')) ?></p>
+        <div class="grid md:grid-cols-2 gap-5 mt-6">
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-5"><?= $escaper->escapeHtml(__('Catégorie sans produit')) ?></p>
+                <div class="rounded-sm bg-brand-ivory px-6 py-10 text-center">
+                    <svg width="52" height="52" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true" class="mx-auto mb-5 text-brand-nude"><path d="M10 14h20l-1.6 18H11.6L10 14Z"/><path d="M15.5 14v-2.5a4.5 4.5 0 0 1 9 0V14"/><path d="M15 22.5h10" stroke-dasharray="2.5 3.5"/></svg>
+                    <p class="mb-2.5 font-display text-display text-brand"><?= $escaper->escapeHtml(__('La série est en cours de couture')) ?></p>
+                    <p class="mx-auto mb-6 max-w-sm text-base text-brand-ink"><?= $escaper->escapeHtml(__('Aucune création disponible pour le moment dans cette catégorie.')) ?></p>
+                    <span class="btn"><?= $escaper->escapeHtml(__('Voir toute la boutique')) ?></span>
+                </div>
+            </div>
+            <div class="<?= $escaper->escapeHtmlAttr($cardClass) ?>">
+                <p class="<?= $escaper->escapeHtmlAttr($labelClass) ?> text-brand-muted mb-5"><?= $escaper->escapeHtml(__('Aucun résultat de recherche')) ?></p>
+                <div class="rounded-sm bg-brand-ivory px-6 py-10 text-center">
+                    <svg width="52" height="52" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true" class="mx-auto mb-5 text-brand-nude"><circle cx="9.5" cy="9.5" r="6.5"/><path d="M14.5 14.5 19 19"/></svg>
+                    <p class="mb-2.5 font-display text-display text-brand"><?= $escaper->escapeHtml(__('Aucune création trouvée')) ?></p>
+                    <p class="mx-auto mb-5 max-w-sm text-base text-brand-ink"><?= $escaper->escapeHtml(__('Rien ne correspond à « trousse bleue ». Le plus simple est de tout parcourir.')) ?></p>
+                    <div class="mb-5 flex flex-wrap justify-center gap-2.5">
+                        <?php foreach (['Trousses de toilette', 'Pochettes à livre', 'Cotons démaquillants'] as $chip): ?>
+                            <span class="inline-flex min-h-11 items-center rounded-full border border-brand-nude bg-surface px-4 text-label text-brand"><?= $escaper->escapeHtml($chip) ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                    <span class="btn btn-primary"><?= $escaper->escapeHtml(__('Voir toute la boutique')) ?></span>
                 </div>
             </div>
         </div>

@@ -58,7 +58,7 @@ $sourceImagesDir = dirname(__DIR__) . '/maquettes-direction-artistique/brand';
 
 // Magento n'accepte que des images situées sous pub/media : copie de travail
 // (pub/media est ignoré par git).
-$imagesDir = $shopRoot . '/pub/media/import/madameaiguille';
+$imagesDir = $shopRoot . '/pub/media/madameaiguille/photos-test'; // pas pub/media/import : bloqué par le .htaccess racine
 if (!is_dir($imagesDir) && !mkdir($imagesDir, 0775, true)) {
     fwrite(STDERR, "Impossible de créer {$imagesDir}\n");
     exit(1);

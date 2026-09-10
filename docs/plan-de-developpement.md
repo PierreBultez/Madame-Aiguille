@@ -1,7 +1,9 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.1 (05/09/2026), livré en fin de lot 1
+Document interne — v1.2 (10/09/2026), mis à jour en fin de lot 2
 
+> **v1.2** — Lot 2 livré (catalogue). Décisions consignées ci-dessous ; nouvelles questions pour Céline (page « Boutique » globale, newsletter) et pour Pierre (WebP).
+>
 > **v1.1** — Décision checkout : **Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`, gratuit, OSL-3.0). Hyvä Checkout (1 000 € de licence) est écarté. Lots 5 et 6 mis à jour en conséquence.
 
 Découpage en lots du développement restant, après les fondations (lot 1). Pour chaque lot : périmètre, dépendances, points d'incertitude et effort relatif (S · M · L · XL — à l'échelle d'un développeur seul, le lot 1 valant **M**).
@@ -20,6 +22,28 @@ Livré et validé :
 
 Reste ouvert, transverse à tous les lots : les **SVG du logo** (brief `prompt-logos-svg.md`) — le header utilise un PNG 2× provisoire ; les **photos produit** au ratio 4:5 ; les **textes** (pages légales, À propos, descriptions).
 
+## État après le lot 2 (10/09/2026)
+
+Livré et validé (commits `92500b5` → `ccabeab`, détail dans `documentation-theme.md` §8 à §12) :
+
+- modèle de données : attributs `taille` (swatch texte), `serie_limitee`, `taille_serie`, `composition`, `dimensions`, `entretien` ; `weight` obligatoire, en kg ; attribute set « Création » ; seuil de rareté et mention sous le prix en configuration admin ; `created_at` triable ;
+- ViewModels `LimitedSeries` (toutes les règles séries limitées / stock / badges, testé), `Sorting`, `Characteristics` ;
+- page catégorie et page de résultats sur le même gabarit (une colonne, sans facettes, tri Nouveautés / Prix, épuisés regroupés en fin de page sous « Séries terminées », pagination 44 px, états vides) ;
+- fiche produit complète (galerie 4:5 + lightbox natif, sélecteur de taille, quantité plafonnée au stock, encarts rareté et contact, rassurance en bloc CMS, caractéristiques, « Vous aimerez aussi », barre d'achat mobile, variante épuisée) ;
+- fraîcheur des badges : purge des caches produit à chaque réservation MSI et à chaque enregistrement de stock, cron nocturne pour le badge « Nouveauté » ;
+- jeux de données de test versionnés (`docs/jeux-de-donnees/`), styleguide enrichi, documentation à jour.
+
+**Décisions prises (Pierre, 05/09/2026)** : produits épuisés **visibles** en fin de liste ; **lightbox natif Hyvä** restylé (pas de librairie) ; configurable à une seule taille en stock : **sélecteur affiché**, option épuisée barrée ; données d'essai Sneakers / T-Shirts / Jordan **supprimées**.
+
+**Points ouverts issus du lot 2**
+
+- **WebP** : Magento 2.4.9 ne génère pas de WebP nativement ; les tailles 4:5 sont en place. Reporté au lot 8 (perf) ou module tiers gratuit à valider (compatibilité Hyvä) — Pierre.
+- **Page « Boutique » globale** : « Voir toute la boutique » (états vides) et « Boutique » du fil d'Ariane des maquettes pointent aujourd'hui vers l'accueil, faute de page regroupant tout le catalogue. Une catégorie « Boutique » ancrée, ou l'accueil comme vitrine, à décider avec Céline (lot 3).
+- **Champ « Me prévenir »** (catégorie vide, fiche épuisée) : posé seulement si la newsletter est retenue (lot 3).
+- **Catégories réelles** : celles en base sont celles des maquettes (`docs/jeux-de-donnees/categories.php`) ; à définir avec Céline.
+- **Contact** : la page du lot 3 doit lire `?product=<sku>` (lien « Une question sur le tissu ou le motif ? » et encarts de mise en relation).
+- **Suivi de la fraîcheur des caches** en conditions réelles : à recetter au lot 4 (première commande de test) ; le cron Magento doit tourner (lot 8).
+
 ## Vue d'ensemble
 
 | Lot | Titre | Dépend de | Effort | Risque |
@@ -36,9 +60,9 @@ Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 
 
 ---
 
-## Lot 2 — Catalogue
+## Lot 2 — Catalogue — **livré le 10/09/2026**
 
-**Périmètre**
+**Périmètre** (tel que planifié ; réalisé intégralement, voir « État après le lot 2 »)
 
 - Attributs catalogue via data patch du module (`Setup/Patch/Data/`) : `taille` (dropdown, 2 valeurs, utilisé pour les configurables), `serie_limitee` (booléen), `taille_serie` (entier). `weight` natif rendu **obligatoire** dans l'attribute set par défaut.
 - Attribute set « Création » avec ces attributs et le poids en champ requis.
@@ -52,11 +76,11 @@ Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 
 
 **Dépendances** : lot 1. Les catégories réelles restent à définir avec Céline (celles du lot 1 sont issues des maquettes).
 
-**Incertitudes**
+**Incertitudes — tranchées le 05/09/2026**
 
-- Produit épuisé : visible et marqué, ou masqué ? (spécification §8, recommandation « visible »). Conditionne le tri en catégorie et l'exclusion du bloc Nouveautés.
-- Le zoom natif Hyvä suffit-il ou faut-il un lightbox plein écran sur mobile ?
-- Configurable avec un seul enfant en stock : afficher le sélecteur ou basculer directement ?
+- ~~Produit épuisé : visible et marqué, ou masqué ?~~ → **visible**, regroupé en fin de liste ; à exclure du bloc Nouveautés (lot 3).
+- ~~Zoom natif ou lightbox plein écran ?~~ → **lightbox natif Hyvä** restylé.
+- ~~Configurable avec un seul enfant en stock~~ → **sélecteur affiché**, option épuisée barrée.
 
 **Effort : L.** Le gros du travail est le retemplating de deux pages denses (catégorie, fiche) plus le ViewModel.
 
@@ -66,7 +90,7 @@ Ordre recommandé : **2 → 6a (installer le fallback, ½ journée) → 3 → 5 
 
 **Périmètre**
 
-- Page d'accueil (`cms_index_index.xml` + blocs CMS + widgets) dans l'ordre validé : hero (visuel plafonné à 240 px sur mobile pour que « Nouveautés » soit sous le pli), **Nouveautés** (widget *New Products* natif basé sur `news_from_date`, produits épuisés exclus — plugin ou collection dédiée), Incontournables (widget produits sur sélection manuelle ou catégorie « Incontournables » non visible dans le menu), Histoire (bloc CMS + image atelier), Pourquoi choisir (4 arguments, bloc CMS), Instagram (galerie statique de 4 visuels, bloc CMS), Newsletter (`Magento_Newsletter`, sous réserve). Chaque bloc restylable par Céline sans code, dans la limite des classes déclarées en `@source inline`.
+- Page d'accueil (`cms_index_index.xml` + blocs CMS + widgets) dans l'ordre validé : hero (visuel plafonné à 240 px sur mobile pour que « Nouveautés » soit sous le pli), **Nouveautés** (widget *New Products* natif basé sur `news_from_date`, produits épuisés exclus — plugin ou collection dédiée ; réutiliser la carte `product_list_item` et le ViewModel `LimitedSeries` du lot 2, dont le cron purge déjà les caches aux dates de nouveauté), Incontournables (widget produits sur sélection manuelle ou catégorie « Incontournables » non visible dans le menu), Histoire (bloc CMS + image atelier), Pourquoi choisir (4 arguments, bloc CMS), Instagram (galerie statique de 4 visuels, bloc CMS), Newsletter (`Magento_Newsletter`, sous réserve). Chaque bloc restylable par Céline sans code, dans la limite des classes déclarées en `@source inline`.
 - Gabarit de mise en avant de section (titre display + filets ondulés + accroche + lien) réutilisé partout.
 - Pages statiques : À propos, Livraison & retours, CGV, Mentions légales, Confidentialité — gabarit `1column` typographié (classe `prose` de hyva-modules, adaptée aux tokens), largeur de lecture ~65 caractères.
 - **Formulaire de contact** — module custom léger dans `MadameAiguille_Theme` (ou module dédié `MadameAiguille_Contact`) : surcharge du contrôleur `contact/index/post` ou nouveau contrôleur ; champs nom, email, message, **pièce jointe** (JPG/PNG, 5 Mo, validation serveur du type MIME, stockage hors `pub/` ou envoi en pièce jointe d'email puis suppression), **produit concerné** pré-rempli depuis la fiche (`?product=`), reCAPTCHA natif, email à Céline + accusé de réception au visiteur. ViewModel `ContactForm`.
@@ -206,7 +230,8 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 
 ## Décisions à prendre avec Céline avant les lots 3 et 5
 
-1. Produits épuisés : visibles ou masqués (lot 2).
+1. ~~Produits épuisés : visibles ou masqués (lot 2)~~ — **visibles** (Pierre, 05/09/2026), à confirmer par Céline.
+1 bis. Page « Boutique » globale (catégorie ancrée regroupant tout) ou accueil comme vitrine ? Conditionne « Voir toute la boutique » et le fil d'Ariane (lot 3).
 2. « Actualités » : produits seulement, ou aussi de l'information (lot 3).
 3. Newsletter au lancement ? Page « Nos tissus » ? (lot 3)
 4. Franco de port : montant (lots 4-5).
@@ -223,4 +248,6 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 2. **Stripe ou Mollie** — Pierre se renseigne et tranche avant la création du compte marchand ; les deux sont compatibles avec le checkout Luma.
 3. Module Mondial Relay — spike en début de lot 5.
 4. Formulaire de contact : module dédié `MadameAiguille_Contact` ou dans `MadameAiguille_Theme` (recommandé : dédié, pour isoler l'upload).
-5. Catégories de test « Sneakers » et « T-Shirts » à supprimer avec le jeu de données de démonstration.
+5. ~~Catégories de test « Sneakers » et « T-Shirts » à supprimer~~ — fait au lot 2.
+6. **WebP** : reporté au lot 8 ou module tiers gratuit (compatibilité Hyvä à vérifier avant installation).
+7. Fraîcheur des caches : valider en conditions réelles au lot 4 ; s'assurer que le cron Magento tourne (lot 8).
