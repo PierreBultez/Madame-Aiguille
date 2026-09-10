@@ -1,0 +1,15 @@
+<!--@subject Madame Aiguille — votre message a bien été reçu @-->
+<!--@vars {
+"var data.name|escape":"Nom",
+"var data.subject_label|escape":"Objet",
+"var data.comment|escape|nl2br":"Message"
+} @-->
+{{template config_path="design/email/header_template"}}
+<p class="greeting">Bonjour {{var data.name|escape}},</p>
+<p>Merci pour votre message. Il a bien été transmis à Madame Aiguille.</p>
+<div class="email-note">
+    <p><strong>Objet :</strong> {{var data.subject_label|escape}}</p>
+    <p>{{var data.comment|escape|nl2br}}</p>
+</div>
+<p>Vous pouvez conserver cet email comme récapitulatif de votre demande.</p>
+{{template config_path="design/email/footer_template"}}

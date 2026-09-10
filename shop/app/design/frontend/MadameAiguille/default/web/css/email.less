@@ -1,0 +1,16 @@
+/**
+ * Point d’entrée des styles non inline des emails Hyvä.
+ */
+
+@import 'source/lib/_lib.less';
+@import 'source/lib/variables/_email.less';
+@import 'source/_theme.less';
+@import 'source/_variables.less';
+@import 'source/_email-variables.less';
+@import (reference) 'source/_email-base.less';
+@import (reference) 'source/_email-extend.less';
+@import 'source/lib/_responsive.less';
+
+@media-target: 'all';
+
+.email-non-inline();

@@ -1,0 +1,34 @@
+<!--@subject Madame Aiguille — paiement reçu pour la commande #{{var order.increment_id}} @-->
+<!--@vars {
+"var customer_name":"Nom de la cliente",
+"var order.increment_id":"Numéro de commande",
+"var order_url":"Lien vers la commande"
+} @-->
+{{template config_path="design/email/header_template"}}
+<table role="presentation">
+    <tr class="email-intro">
+        <td>
+            <p class="greeting">{{trans "Hello %name," name=$customer_name}}</p>
+            <p>{{trans "Your payment has been received. Thank you for your trust."}}</p>
+        </td>
+    </tr>
+    <tr class="email-summary">
+        <td>
+            <span class="email-kicker">{{trans "Payment received"}}</span>
+            <h1>{{trans "Order #%order_id" order_id=$order.increment_id}}</h1>
+            <p>{{trans "Your order will now enter preparation in the workshop."}}</p>
+        </td>
+    </tr>
+    {{depend order_url}}
+    <tr>
+        <td>
+            <table class="button" width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                <tr><td><table class="inner-wrapper" border="0" cellspacing="0" cellpadding="0" align="center" role="presentation">
+                    <tr><td align="center"><a href="{{var order_url}}">{{trans "View my order"}}</a></td></tr>
+                </table></td></tr>
+            </table>
+        </td>
+    </tr>
+    {{/depend}}
+</table>
+{{template config_path="design/email/footer_template"}}

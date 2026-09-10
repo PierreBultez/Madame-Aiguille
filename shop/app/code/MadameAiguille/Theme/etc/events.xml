@@ -3,4 +3,8 @@
     <event name="catalog_product_save_commit_after">
         <observer name="madameaiguille_refresh_home_products" instance="MadameAiguille\Theme\Observer\RefreshHomeProducts"/>
     </event>
+    <event name="sales_order_save_after">
+        <observer name="madameaiguille_send_order_status_email"
+                  instance="MadameAiguille\Theme\Observer\SendOrderStatusEmail"/>
+    </event>
 </config>

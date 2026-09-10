@@ -1,0 +1,29 @@
+/**
+ * Les fontes web sont un enrichissement progressif : Georgia reste le repli sûr.
+ */
+
+& when (@media-common = true) {
+    @font-face {
+        font-family: 'Sentient';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('@{baseUrl}fonts/Sentient-Regular.woff2') format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Sentient';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('@{baseUrl}fonts/Sentient-Medium.woff2') format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Britney';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('@{baseUrl}fonts/Britney-Regular.woff2') format('woff2');
+    }
+}

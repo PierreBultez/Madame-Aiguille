@@ -1,0 +1,137 @@
+/**
+ * Habillage commun de tous les emails transactionnels Madame Aiguille.
+ */
+
+@import url('@{baseUrl}css/email-fonts.css');
+
+body,
+html {
+    background-color: @brand-ivory;
+}
+
+.wrapper-inner {
+    padding: 28px 12px 40px;
+}
+
+.main {
+    border: 1px solid @brand-line;
+    background-color: @brand-paper;
+}
+
+.header {
+    border-bottom: 1px solid @brand-line;
+    background-color: @brand-blush;
+    padding: 28px 32px 24px;
+    text-align: center;
+
+    .logo img {
+        display: inline-block;
+        max-width: 220px;
+    }
+}
+
+.main-content {
+    color: @brand-ink;
+    line-height: 1.65;
+    padding: 36px 40px;
+}
+
+h1,
+h2 {
+    color: @brand;
+    font-family: 'Britney', Georgia, serif;
+    font-weight: 400;
+}
+
+h1 {
+    font-size: 30px;
+    line-height: 1.2;
+}
+
+h3,
+.greeting {
+    color: @brand-ink;
+    font-weight: 500;
+}
+
+.greeting {
+    font-size: 18px;
+}
+
+.email-kicker {
+    color: @brand-dark;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.email-summary {
+    td {
+        border-bottom: 1px solid @brand-line;
+        border-top: 1px solid @brand-line;
+        padding-bottom: 24px;
+        padding-top: 24px;
+    }
+}
+
+.order-details {
+    border: 1px solid @brand-line;
+    width: 100%;
+
+    td {
+        padding: 20px;
+    }
+}
+
+blockquote,
+.email-note {
+    border-left: 3px solid @brand-nude;
+    margin: 20px 0;
+    background-color: @brand-ivory;
+    padding: 16px 20px;
+}
+
+.footer {
+    border-top: 1px solid @brand-line;
+    background-color: @brand-blush;
+    color: @brand-muted;
+    padding: 24px 32px;
+    text-align: center;
+
+    p {
+        margin: 0 0 8px;
+    }
+
+    .closing {
+        color: @brand-ink;
+        font-weight: 500;
+    }
+
+    .footer-note {
+        font-size: 12px;
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__s) {
+    .wrapper-inner {
+        padding: 0 !important;
+    }
+
+    .main {
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
+
+    .header,
+    .main-content,
+    .footer {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .order-details td {
+        display: block;
+        width: auto !important;
+    }
+}

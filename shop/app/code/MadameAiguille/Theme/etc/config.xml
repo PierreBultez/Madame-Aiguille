@@ -42,5 +42,17 @@
                 <show_out_of_stock>1</show_out_of_stock>
             </options>
         </cataloginventory>
+        <sales_email>
+            <madameaiguille_payment_received>
+                <enabled>1</enabled>
+                <identity>sales</identity>
+                <template>madameaiguille_payment_received</template>
+            </madameaiguille_payment_received>
+            <madameaiguille_ready_for_pickup>
+                <enabled>1</enabled>
+                <identity>sales</identity>
+                <template>madameaiguille_ready_for_pickup</template>
+            </madameaiguille_ready_for_pickup>
+        </sales_email>
     </default>
 </config>
