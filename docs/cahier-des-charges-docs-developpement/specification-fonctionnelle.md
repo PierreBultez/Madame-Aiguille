@@ -140,7 +140,7 @@ Livraison **France métropolitaine uniquement** en v1. Trois transporteurs **con
 
 | Moyen | Implémentation | Règle de gestion |
 |---|---|---|
-| **Carte bancaire** | Module Stripe officiel | Aucune donnée bancaire ne transite par le serveur ; commande validée automatiquement après paiement accepté |
+| **Carte bancaire** | Module **Mollie** (tranché le 10/09/2026) | Aucune donnée bancaire ne transite par le serveur ; commande validée automatiquement après paiement accepté. Mollie couvre aussi le virement SEPA |
 | **[NOUVEAU] Virement bancaire** | Natif Magento (« Bank Transfer Payment ») | La commande est créée en statut **« En attente de paiement »**. Les coordonnées bancaires et une **référence de commande à rappeler** sont affichées à la validation **et** dans l'email de confirmation. Le stock est réservé. **[À trancher]** délai au-delà duquel une commande non réglée est annulée et le stock relibéré — indispensable avec des séries limitées |
 | **[NOUVEAU] Remise en main propre** | Paiement hors ligne, associé au mode de retrait | Commande créée en attente, réglée lors de la remise |
 | PayPal | Non retenu | — |

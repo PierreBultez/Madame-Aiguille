@@ -1,10 +1,10 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.0 (10/09/2026), lots 6a, 3 et 4 livrés ; identité visuelle officielle intégrée. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.1 (10/09/2026), lots 6a, 3 et 4 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b sont en attente : le développement se poursuit par le lot 7. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
-Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
+Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. **Céline peut aller directement au §22**, qui récapitule tout ce qui se règle sans toucher au code. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
 
 ## 1. Vue d'ensemble
 
@@ -132,6 +132,7 @@ Après un build, en mode developer, la feuille est servie directement (`pub/stat
 - Une séquence `*/` dans un commentaire CSS (par ex. `gray-*/slate-*`) ferme le commentaire et casse le build.
 - Les classes utilisées **uniquement** dans le CMS (pages, blocs) ne sont pas vues par le scanner : les déclarer dans `@source inline(...)` de `tailwind-source.css`, sinon elles disparaissent du CSS.
 - `@utility container` est défini dans `components/wrapper.css` (marges 20 / 80 px) — ne pas le redéfinir ailleurs.
+- **La feuille compilée est servie sous une URL versionnée figée** (`/static/version…/css/styles.css`). Après un build, le navigateur peut continuer à servir l'ancienne version : une règle pourtant présente dans `web/css/styles.css` semble alors « ne pas prendre ». Recharger sans cache (Ctrl+Maj+R) ; en cas de doute, comparer la taille du fichier servi et celle du fichier compilé.
 
 ## 3. Tokens de design — où changer quoi
 
@@ -203,6 +204,10 @@ Définis dans `web/tailwind/components/` ; démonstration sur `/styleguide`.
 | `swatch-option[data-swatch-type="text"]` | `swatches.css` | sélecteur de taille en boutons 120 × 56 px : choisi en aplat brand, épuisé grisé et barré |
 | `product-gallery`, `gallery-thumb` | `slider.css` | miniatures 4:5 du pager de la galerie |
 | `pdp-price`, `pdp-price-compact` | `theme/page-catalog.css` | prix de la fiche (26 / 32 px) et de la barre collante mobile ; `.product-item` règle le prix des cartes |
+| `franco-bar` (+ `-message`, `-track`, `-fill`, `-amounts`, `franco-bar-reached`) | `theme/page-cart.css` | barre de livraison offerte, page panier et mini-panier ; l'état `reached` passe en vert |
+| `cart-lines`, `cart-line*`, `qty-stepper` | `theme/page-cart.css` | tableau du panier ≥ 768 px, cartes empilées en dessous, sélecteur de quantité |
+| `cart-summary-panel`, `cart-total-row`, `cart-summary-block` | `theme/page-cart.css` | récapitulatif, totaux et blocs repliables (code promo, estimation) |
+| `cart-drawer*` | `theme/page-cart.css` | mini-panier en tiroir ; `.cart-drawer[open]` force la colonne et anime le glissement |
 
 Les composants du catalogue (carte produit, pagination, sélecteurs de quantité et de taille, états vides) sont écrits en classes utilitaires directement dans leurs templates ; leur référence visuelle est sur `/styleguide`, sections « Lot 2 · catalogue ».
 
@@ -474,6 +479,7 @@ Références en lecture seule : `vendor/magento/module-checkout/view/frontend/we
 bin/magento cache:flush                      # après un nouveau layout, une route, une section system.xml
 bin/magento cache:clean full_page block_html # après modification d'un template ou d'un bloc CMS
 bin/magento setup:upgrade --keep-generated   # nouveau module, nouveau data patch
+bin/magento setup:di:compile                 # OBLIGATOIRE après un nouveau plugin : --keep-generated fige la liste des plugins
 bin/magento config:set <chemin> <valeur>     # ex. design/footer/copyright "…"
 bin/magento indexer:reindex                  # après création de catégories/produits par script
 bin/magento cron:run --group=default         # exécuter les crons (dont le badge Nouveauté) à la main
@@ -592,6 +598,8 @@ Le calcul est **entièrement natif** : appels REST `estimate-shipping-methods` e
 
 Les lots 3 et 4 sont fonctionnellement terminés. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
 
+> **Réorganisation du 10/09/2026.** Les lots 5 (livraison et paiements) et 6b (habillage du checkout) attendent la création du compte marchand **Mollie** — prestataire de paiement retenu, déjà installé et activé dans le projet — et un brief avec Céline sur les modes de livraison. Le développement se poursuit par le **lot 7** (compte client, emails, statuts de commande). Toutes les lignes marquées « lot 5 » ci-dessous restent donc ouvertes plus longtemps que prévu : ce sont, pour la plupart, des **promesses affichées à la cliente qui doivent devenir vraies avant l'ouverture des ventes**.
+
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
 | Histoire et présentation | Remplacer les textes génériques de `a-propos`, `home_story` et `contact_help` depuis *Contenu › Pages / Blocs* | Céline, avant publication |
@@ -611,4 +619,51 @@ Les lots 3 et 4 sont fonctionnellement terminés. Les éléments suivants demand
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
 | Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
 
-Le lot suivant est le **lot 5 — Livraison et paiements**, qui conditionne la véracité du franco affiché, du pays par défaut et des tarifs de l'estimateur.
+Le lot suivant est le **lot 7 — Compte client, emails et statuts de commande** : son prompt de reprise est `docs/prompts/prompt-codex-lot7.md`. Le lot 5, qui conditionne la véracité du franco affiché, du pays par défaut et des tarifs de l'estimateur, reprendra après.
+
+## 22. Mémo Céline — tout ce qui se règle depuis le back-office
+
+Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Chaque ligne renvoie à la section détaillée. **Après avoir modifié un bloc ou une page CMS, vider le cache** : *Système › Gestion du cache › Actualiser le cache invalidé*.
+
+### Contenus éditables — *Contenu › Éléments › Blocs et Pages*
+
+| Identifiant du bloc / page | Ce qu'il pilote | Détail |
+|---|---|---|
+| `header_announcement` | Bandeau en haut de toutes les pages. Le vider ou le désactiver masque le bandeau | §5 |
+| `home_hero`, `home_story`, `home_actualities` | Accueil : image et accroche, histoire de l'atelier, marchés et congés | §7 |
+| `product_reassurance` | Quatre arguments sous le bouton d'achat de la fiche produit | §10 |
+| `cart_reassurance` | Deux lignes sous « Passer commande » dans le panier | §20 |
+| `contact_help`, `contact_locations` | Encarts de la page Contact | §18 |
+| Pages `a-propos`, `nos-tissus`, `livraison-retours`, `cgv`, `mentions-legales`, `confidentialite` | Pages éditoriales et juridiques | §7 |
+
+### Réglages — *Boutiques › Configuration › Général › Madame Aiguille*
+
+| Réglage | Effet | Détail |
+|---|---|---|
+| Réseaux sociaux | Liens affichés dans le pied de page ; un champ vide masque le réseau | §3 |
+| Catalogue › Seuil de rareté | À partir de combien d'exemplaires restants la mention « Plus que N exemplaires » s'affiche. `0` désactive | §8 |
+| Catalogue › Mention sous le prix | Petite ligne sous le prix en fiche produit **et** sous le total du panier. Vide = rien | §8, §20 |
+| Panier › Seuil de livraison offerte | Montant de la barre « Plus que X € pour la livraison offerte ». `0` masque la barre. **Doit correspondre à une vraie règle de livraison gratuite** | §20 |
+| Panier › Afficher le champ code promo | Masqué tant qu'aucun code n'existe | §20 |
+| Formulaire de contact › Conservation des pièces jointes | Durée avant suppression automatique des photos reçues (30 jours par défaut) | §18 |
+
+### Catalogue — *Catalogue › Produits* et *Catalogue › Catégories*
+
+| Quoi | Où | Détail |
+|---|---|---|
+| Créer une création | *Produits › Ajouter un produit* → choisir l'attribute set **« Création »** | §8 |
+| Photos | Ratio **4:5** (portrait), trois vues minimum. Une photo hors ratio est rognée, pas déformée | §8 |
+| Poids | **Obligatoire**, en kilogrammes — il servira au calcul des frais de port | §8 |
+| Stock | Le nombre saisi est le nombre de pièces restantes. À 0, la création passe « Épuisé » et reste visible en fin de liste | §8 |
+| Série limitée | Cocher *Série limitée* et renseigner le nombre de pièces | §8 |
+| Modèle en deux tailles | Produit **configurable** sur l'attribut Taille ; chaque taille a son propre stock et son propre poids | §8 |
+| Badge « Nouveauté » | Dates *Définir le produit comme nouveau à partir de / jusqu'au*. Ces dates alimentent aussi le bloc Nouveautés de l'accueil et les suggestions du panier vide | §8, §19 |
+| Suggestions « Vous aimerez aussi » | Onglet *Produits liés*, section **Produits liés** | §10 |
+| Ordre du menu et des catégories | *Catégories*, par glisser-déposer ; case « Inclure dans le menu » | §5 |
+
+### Ce qu'il ne faut pas faire
+
+- **Ne pas décocher « Gérer le stock »** sur une création : les badges et le plafond de quantité du panier en dépendent.
+- **Ne pas supprimer une catégorie contenant des produits** sans les avoir déplacés d'abord.
+- **Ne pas annoncer un délai ou un tarif** dans un bloc CMS tant qu'il n'est pas confirmé : les textes actuels sont des exemples à remplacer.
+

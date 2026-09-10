@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.0 (10/09/2026), lots 6a et 3 validés, lot 4 livré ; prochain lot : lot 5
+Document interne — v2.1 (10/09/2026), lots 6a et 3 validés, lot 4 livré ; **prochain lot : lot 7**, les lots 5 et 6b étant mis en attente
+
+> **v2.1** — **Réorganisation décidée par Pierre.** Les lots 5 (livraison et paiements) et 6b (habillage du checkout) sont mis **en attente** de deux éléments extérieurs au code : la création du compte marchand Mollie, et un brief avec Céline sur les modes de livraison. Le développement se poursuit donc par le **lot 7** (compte client, emails, statuts de commande), dont l'essentiel ne dépend pas des paiements. **Décision tranchée : le prestataire de paiement est Mollie, pas Stripe** — Mollie 3.1.3 et sa compatibilité Hyvä sont déjà installés et activés dans le projet ; Stripe ne l'a jamais été et sort du périmètre.
 
 > **v2.0** — Lot 4 livré sur `codex/lot-4-panier`. Décisions de Pierre : franco affiché dès la v1 au seuil de 49 € des maquettes, montant configurable dans l'admin ; code promo masqué, activable sans toucher au layout. L'estimateur n'affiche que les méthodes réellement retournées par Magento — à ce jour Flat Rate seul. Trois points restent suspendus au lot 5 : la règle de livraison gratuite qui doit correspondre au seuil affiché, le pays par défaut encore réglé sur les États-Unis, et les tarifs réels des transporteurs.
 
@@ -96,12 +98,16 @@ Ordre terminé : **1)** lot 6a ; **2)** composant partagé ; **3)** accueil ; **
 | 2 | Catalogue : modèle de données, catégorie, fiche produit | 1 | **L** | faible |
 | 3 | Accueil, pages CMS, formulaire de contact | 2 | **L** | moyen (contenu) |
 | 4 | Panier et mini-panier | 2, config livraison du lot 5 | **M** | faible |
-| 5 | Livraison et paiements (table rates, Mondial Relay, Stripe ou Mollie, virement, main propre) | 2, 6a | **XL** | **élevé** |
-| 6 | Checkout Luma fallback : installation (6a) puis habillage (6b) | 5 | **L** | moyen |
-| 7 | Compte client, emails transactionnels, statuts de commande | 6 | **M** | faible |
+| 5 | Livraison et paiements (table rates, Mondial Relay, **Mollie**, virement, main propre) — **en attente** | 2, 6a + compte Mollie + brief Céline | **XL** | **élevé** |
+| 6 | Checkout Luma fallback : installation (6a, livrée) puis habillage (6b) — **6b en attente** | 5 | **L** | moyen |
+| 7 | Compte client, emails transactionnels, statuts de commande | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
 
-Ordre retenu : **2 → 6a → 3 → 4 → 5 → 6b → 7 → 8**. Le lot 4 construit d'abord le panier et l'estimateur avec les méthodes actuellement disponibles. Les tarifs et la barre de franco seront recettés de nouveau après la configuration réelle des transporteurs au lot 5.
+Ordre retenu : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8** (révisé le 10/09/2026).
+
+Les lots 5 et 6b attendent deux éléments qui ne dépendent pas du code : le **compte marchand Mollie** et un **brief avec Céline sur les modes de livraison**. Plutôt que d'attendre, le lot 7 est avancé : les pages du compte client, les statuts de commande et l'habillage des emails ne demandent ni transporteur configuré ni paiement actif. Seule leur **recette de bout en bout** — une commande réellement payée qui parcourt tous les statuts — devra être rejouée après les lots 5 et 6b.
+
+Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement disponibles ; les tarifs et la barre de franco seront recettés de nouveau après la configuration réelle des transporteurs.
 
 ---
 
@@ -174,7 +180,9 @@ Ordre retenu : **2 → 6a → 3 → 4 → 5 → 6b → 7 → 8**. Le lot 4 const
 
 ---
 
-## Lot 5 — Livraison et paiements
+## Lot 5 — Livraison et paiements — **en attente**
+
+> **Mis en attente le 10/09/2026.** Deux prérequis extérieurs au code : la création du **compte marchand Mollie** (clés API de test puis de production) et un **brief avec Céline sur les modes de livraison** (transporteurs retenus, paliers de poids, périmètre de la remise en main propre). Le développement se poursuit par le lot 7 en attendant.
 
 C'est le lot le plus risqué du projet : il combine configuration métier à cadrer avec Céline, la **seule dépendance tierce structurante** (Mondial Relay) et les prestataires de paiement.
 
@@ -184,16 +192,16 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 - Contrôle « poids renseigné » : commande CLI `madameaiguille:catalog:check-weight` (ou requête SQL documentée) listant les produits publiés sans poids — à passer avant chaque mise en prod (plan de tests §2).
 - **Remise en main propre** : méthode d'expédition à 0 € (natif *Free Shipping* ou table rate dédiée), restreinte par code postal si Céline le souhaite ; libellés et texte d'aide.
 - **Mondial Relay — sélecteur de point relais** : *spike* de 1 à 2 jours **en tout début de lot** : identifier les modules candidats, vérifier la compatibilité Hyvä **et** la compatibilité avec le checkout retenu (lot 6), tester en sandbox. Sortie du spike : module retenu ou décision de repli (sélection du point relais par email après commande, ou saisie libre du point relais dans un champ d'adresse).
-- **Paiements** : Stripe (module officiel, à vérifier : compatibilité Hyvä + checkout retenu), virement bancaire natif (`Magento_OfflinePayments` — RIB et référence affichés après validation et dans l'email, jamais sur une page indexable), remise en main propre = paiement hors ligne (*Cash on delivery* renommé, restreint au mode de retrait).
+- **Paiements** : **Mollie** (`mollie/magento2` 3.1.3, déjà installé et activé avec `mollie/magento2-hyva-compatibility` et le bundle de thème Hyvä ; à ce jour `payment/mollie_general/enabled = 0` et mode `test`) — carte bancaire et virement SEPA par le même prestataire. Virement bancaire natif (`Magento_OfflinePayments` — RIB et référence affichés après validation et dans l'email, jamais sur une page indexable), remise en main propre = paiement hors ligne (*Cash on delivery* renommé, restreint au mode de retrait).
 - **TVA** : paramétrage selon le statut fiscal (franchise en base probable → prix TTC = HT, mention « TVA non applicable, art. 293 B du CGI » sur factures et footer).
 - **Expiration des commandes en attente de virement** : cron d'annulation + relibération du stock après N jours (à trancher), email de relance à J-2.
 
-**Dépendances** : lot 2 (poids sur les produits) ; lot 6a (checkout Luma fallback installé) pour tester les modules dans le vrai tunnel. Critère de compatibilité des modules Stripe/Mollie et Mondial Relay : le **checkout natif Magento (Knockout)** — le cas standard de l'écosystème, donc large choix. La compatibilité Hyvä ne compte que pour ce qui s'affiche hors tunnel (panier, mini-panier, fiche produit, compte).
+**Dépendances** : lot 2 (poids sur les produits) ; lot 6a (checkout Luma fallback installé) pour tester les modules dans le vrai tunnel. Critère de compatibilité des modules Mollie et Mondial Relay : le **checkout natif Magento (Knockout)** — le cas standard de l'écosystème, donc large choix. La compatibilité Hyvä ne compte que pour ce qui s'affiche hors tunnel (panier, mini-panier, fiche produit, compte).
 
 **Incertitudes (fortes)**
 
 - Aucun module Mondial Relay compatible Hyvä n'est encore identifié. C'est le point à lever en premier.
-- **Constat du lot 1** : Mollie (`mollie/magento2` + `mollie/magento2-hyva-compatibility`) est déjà installé dans `vendor/`. Mollie couvre carte bancaire **et** virement SEPA. Stripe ou Mollie : les deux fonctionnent avec le checkout Luma ; **Pierre se renseigne et tranche** avant la création du compte marchand — l'un des deux est à retirer du projet. Points de comparaison : frais par transaction sur des paniers de 10-20 €, gestion du virement (SEPA par le prestataire vs virement natif rapproché à la main).
+- ~~Stripe ou Mollie~~ → **tranché le 10/09/2026 : Mollie.** Le module `mollie/magento2` 3.1.3 est déjà installé et activé, avec `mollie/magento2-hyva-compatibility` et `hyva-themes/magento2-mollie-theme-bundle` ; Mollie couvre carte bancaire **et** virement SEPA. Stripe n'a jamais été installé et sort du périmètre. Reste à créer le compte marchand, saisir les clés de test puis de production, et activer `payment/mollie_general/enabled`.
 - Paliers de poids, franco, périmètre de la remise en main propre, délai d'expiration du virement : quatre décisions de Céline.
 - Statut fiscal de Céline : à connaître avant la première vente.
 
@@ -213,7 +221,9 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - Vérifier que les scripts RequireJS ne se chargent **que** sur les pages du tunnel (performance).
 - Documenter dans `documentation-theme.md` où vivent les surcharges Luma (`Magento_Checkout/web/template/*.html`, `web/css/source/*.less` dans un thème Luma enfant ou via le mécanisme du fallback — à lire dans le README du module).
 
-**6b — Habillage (après le lot 5)**
+**6b — Habillage — en attente (après le lot 5)**
+
+> Mis en attente le 10/09/2026 : l'habillage du tunnel n'a de sens qu'une fois les modes de livraison et le paiement Mollie réellement configurés, sans quoi les écrans à habiller sont incomplets.
 
 - Tunnel en trois temps (spécification §4) : livraison (adresse, mode, point relais), paiement, récapitulatif + CGV.
 - Branding **aux couleurs** plutôt qu'au pixel du Design System : palette, fontes (les mêmes `.woff2`), boutons 48 px, champs, messages d'erreur — par LESS/CSS et quelques templates Knockout ciblés. On retemplate le natif, on ne réécrit pas.
@@ -234,6 +244,8 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 
 ## Lot 7 — Compte client, emails, statuts de commande
 
+> **Prochain lot.** Prompt de reprise : `docs/prompts/prompt-codex-lot7.md`. Deux décisions attendent Pierre avant de coder : le jeu de statuts définitif (faut-il « prête pour retrait » avant que Céline ait confirmé la remise en main propre ?) et le choix des gabarits d'email (templates natifs habillés via `Hyva_Email`, ou gabarits propres au thème).
+
 **Périmètre**
 
 - Pages compte (`customer_account_*`, `sales_order_*`) : navigation latérale restylée, tableau des commandes avec statuts en badges, adresses, informations personnelles, mot de passe oublié. Formulaires au gabarit du Design System.
@@ -241,12 +253,19 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - Emails transactionnels : en-tête / pied aux couleurs de la marque (module `hyva-themes/magento2-email-module` présent), variantes virement (RIB + référence), paiement reçu, expédition, prêt pour retrait, accusé de réception du formulaire de contact, bienvenue, réinitialisation.
 - Textes français : dictionnaire `i18n/fr_FR.csv` du thème pour les chaînes Hyvä encore en anglais (« Sign In », « Create an Account », « We can't find products… », etc.).
 
-**Dépendances** : lot 6 (statuts liés aux paiements), lot 3 (accusé de réception contact).
+**Dépendances révisées (10/09/2026)** : lot 3 (accusé de réception du formulaire de contact) et lot 4 (panier) suffisent pour développer. Le lot 6 n'est plus un prérequis : les statuts se créent par data patch, les pages du compte et les gabarits d'email s'habillent sans qu'aucun paiement soit actif.
+
+**Ce qui ne pourra pas être bouclé avant les lots 5 et 6b** — à isoler dès le départ pour ne pas bloquer le reste :
+
+- la recette de bout en bout d'une commande réellement payée qui parcourt tous les statuts ;
+- le contenu exact de l'email de virement (RIB, référence, délai d'annulation) : la structure se construit, les valeurs viennent du lot 5 ;
+- l'email « prête pour retrait », qui dépend des modalités de la remise en main propre, à cadrer avec Céline ;
+- la délivrabilité (SPF / DKIM / DMARC), qui dépend du domaine — lot 8.
 
 **Incertitudes**
 
-- Délivrabilité : SPF / DKIM / DMARC dépendent du nom de domaine, pas encore réservé.
 - Emails HTML : le module email Hyvä impose-t-il ses gabarits ou laisse-t-il surcharger les templates natifs ?
+- Jeu de statuts définitif : « prête pour retrait » n'a de sens que si la remise en main propre est retenue par Céline.
 
 **Effort : M.**
 
@@ -292,7 +311,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 ## Décisions techniques à prendre (Pierre)
 
 1. ~~Hyvä Checkout ou checkout Luma~~ — **tranché : Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`), lot 6a.
-2. **Stripe ou Mollie** — Pierre se renseigne et tranche avant la création du compte marchand ; les deux sont compatibles avec le checkout Luma.
+2. ~~Stripe ou Mollie~~ — **tranché : Mollie** (10/09/2026). Déjà installé et activé ; reste la création du compte marchand et la saisie des clés.
 3. Module Mondial Relay — spike en début de lot 5.
 4. ~~Formulaire de contact~~ — module dédié `MadameAiguille_Contact`; logique dans le module, surcharge visuelle dans le thème enfant.
 5. ~~Catégories de test « Sneakers » et « T-Shirts » à supprimer~~ — fait au lot 2.

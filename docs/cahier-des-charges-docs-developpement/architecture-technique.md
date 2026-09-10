@@ -82,7 +82,7 @@ Le front n'est pas une application séparée : il n'y a qu'un seul déploiement 
 
 | Besoin | Solution envisagée | Statut |
 |---|---|---|
-| Paiement carte bancaire | Module Stripe officiel (compatible Hyvä) | **Retenu** — à finaliser côté compte marchand Stripe |
+| Paiement carte bancaire et virement SEPA | Module **Mollie** (`mollie/magento2`, compatibilité Hyvä officielle) | **Retenu le 10/09/2026** — déjà installé et activé ; à finaliser côté compte marchand Mollie |
 | **[NOUVEAU]** Paiement par virement | Natif Magento — `Magento_OfflinePayments` / *Bank Transfer Payment* | **Retenu** — aucun développement, mais un process manuel de rapprochement à cadrer avec la cliente |
 | **[NOUVEAU]** Remise en main propre | Natif Magento — *Cash On Delivery* ou méthode d'expédition à 0 € + paiement hors ligne | **Retenu** — à restreindre par code postal si la cliente ne veut pas la proposer partout |
 | **[RÉVISÉ]** Frais de port au poids | **Table rates Magento en condition `Weight vs. Destination`**, une grille par transporteur | **Retenu** — répond au souhait de calcul automatique selon le poids **sans API transporteur temps réel**. Import des grilles par CSV |
@@ -103,7 +103,7 @@ Le front n'est pas une application séparée : il n'y a qu'un seul déploiement 
 
 - Mise à jour régulière de Magento et de ses dépendances (composer) — point de vigilance particulier compte tenu du précédent incident de sécurité sur l'infrastructure de Pierre (compromission via extension WordPress vulnérable)
 - HTTPS obligatoire (Certbot déjà en place)
-- Aucune donnée bancaire ne transite ni n'est stockée côté serveur Magento (délégué au prestataire de paiement — Stripe/PayPal)
+- Aucune donnée bancaire ne transite ni n'est stockée côté serveur Magento (délégué au prestataire de paiement — Mollie)
 - Sauvegardes régulières de la base de données et des médias (fréquence à définir)
 - Accès admin Magento restreint par ACL (cf. spécification fonctionnelle §6), authentification forte recommandée pour le compte administrateur technique de Pierre
 - **[NOUVEAU]** Captcha natif Magento à activer sur le formulaire de contact et la création de compte : le formulaire de contact accepte une pièce jointe, ce qui en fait une cible d'abus — restreindre les types de fichiers et la taille côté serveur

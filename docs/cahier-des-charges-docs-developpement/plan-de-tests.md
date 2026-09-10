@@ -63,8 +63,8 @@ Garantir qu'un client puisse, de bout en bout, découvrir un produit, l'ajouter 
 - [ ] **[NOUVEAU]** Panier contenant un produit dont le poids n'est pas renseigné : le calcul ne doit **ni** échouer silencieusement **ni** afficher 0 €
 - [ ] **[NOUVEAU] Remise en main propre** : le mode apparaît, les frais de port sont bien à 0 €, et la commande se crée avec le bon statut
 - [ ] **[NOUVEAU]** Si la remise en main propre est restreinte géographiquement : elle n'est pas proposée hors de la zone définie
-- [ ] Paiement carte en environnement de test (sandbox Stripe) : cas de succès
-- [ ] Paiement refusé (carte simulée refusée en sandbox) : message d'erreur clair, commande non créée, panier conservé
+- [ ] Paiement carte en environnement de test (**Mollie en mode test**) : cas de succès
+- [ ] Paiement refusé (statut de test Mollie « failed ») : message d'erreur clair, commande non créée, panier conservé
 - [ ] **[NOUVEAU] Virement bancaire** : la commande se crée en statut "en attente de paiement", le RIB et la référence à rappeler sont affichés à la validation **et** présents dans l'email
 - [ ] **[NOUVEAU]** Le stock est bien réservé dès la création d'une commande en attente de virement (un autre visiteur ne peut pas acheter la dernière pièce)
 - [ ] **[NOUVEAU]** Passage manuel de la commande en "payée" côté back-office : le client reçoit bien l'email de confirmation de paiement

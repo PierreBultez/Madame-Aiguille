@@ -101,7 +101,7 @@ Souhaits de la cliente : **carte bancaire, virement, et remise en main propre**.
 
 | Moyen | Statut | Remarque |
 |---|---|---|
-| Carte bancaire | **Retenu** — Stripe | Moyen principal, à finaliser à la création du compte marchand |
+| Carte bancaire | **Retenu** — **Mollie** (10/09/2026) | Moyen principal, à finaliser à la création du compte marchand |
 | Virement bancaire | **Retenu** | Natif Magento (« Bank Transfer Payment ») ; commande en attente jusqu'à réception des fonds — **implique un suivi manuel par Céline**, à cadrer avec elle |
 | Remise en main propre | **Retenu** | À traiter comme un mode de **retrait** (pas de frais de port) associé à un paiement sur place ; pertinent vu son activité sur les marchés et brocantes. Point à cadrer : lieu et modalités de retrait |
 | PayPal | Non retenu à ce stade | — |

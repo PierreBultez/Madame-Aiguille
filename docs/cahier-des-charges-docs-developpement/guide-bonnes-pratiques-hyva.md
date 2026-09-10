@@ -168,13 +168,13 @@ Avant d'installer toute extension Magento (paiement, avis clients...), vérifier
 
 | Extension | Besoin couvert | Module de compatibilité Hyvä | Statut |
 |---|---|---|---|
-| Stripe (officiel) | Paiement CB | À vérifier au moment de l'installation | À faire |
+| **Mollie** (`mollie/magento2` 3.1.3) | Paiement CB et virement SEPA | `mollie/magento2-hyva-compatibility` + `hyva-themes/magento2-mollie-theme-bundle` | **Installé et activé** — compte marchand et clés à saisir (lot 5) |
 | Mondial Relay | Sélecteur point relais | À identifier (cf. architecture-technique.md §5) | À faire |
 
 ## 8. Sécurité
 
 - Escaping systématique (§2) — non négociable, y compris sur les données affichées dans les emails ou dans le formulaire de contact
-- Aucun secret (clé API Stripe, identifiants) dans le code du thème : tout passe par la configuration Magento (chiffrée en base) ou `app/etc/env.php`, jamais en dur dans un `.phtml`/ViewModel
+- Aucun secret (clé API Mollie, identifiants) dans le code du thème : tout passe par la configuration Magento (chiffrée en base) ou `app/etc/env.php`, jamais en dur dans un `.phtml`/ViewModel
 - Le thème `Hyva/default-csp` (Content Security Policy) est une option à évaluer si tu veux durcir davantage la sécurité front — à ne considérer qu'une fois le site stabilisé, ça ajoute une contrainte sur tout script/style inline
 
 ## 9. Performance
