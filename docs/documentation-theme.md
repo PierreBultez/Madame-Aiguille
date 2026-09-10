@@ -1,10 +1,10 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.1 (10/09/2026), lots 6a, 3 et 4 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b sont en attente : le développement se poursuit par le lot 7. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.2 (10/09/2026), lots 6a, 3, 4 et 7 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b restent en attente du compte marchand Mollie et du brief livraison. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
-Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. **Céline peut aller directement au §22**, qui récapitule tout ce qui se règle sans toucher au code. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
+Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. **Céline peut aller directement au §24**, qui récapitule tout ce qui se règle sans toucher au code. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
 
 ## 1. Vue d'ensemble
 
@@ -420,7 +420,7 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 
 ## 13. Page de contrôle `/styleguide`
 
-Route `styleguide` (module, `etc/frontend/routes.xml`), contrôleur `Controller/Index/Index.php` — **404 en mode production**. Layout `MadameAiguille_Theme/layout/madameaiguille_styleguide_index_index.xml`, template `MadameAiguille_Theme/templates/styleguide.phtml`. Tenir la page à jour à chaque nouveau composant : c'est la référence visuelle de recette. Sections lot 2 : carte produit (cinq états), fil d'Ariane, pagination, sélecteur de quantité, sélecteur de taille, états vides. Section lot 4 : barre de franco dans ses trois états (calculée par le vrai ViewModel), ligne de panier normale / rare / devenue incommandable, récapitulatif et pied de mini-panier. Les photos des cartes viennent de `pub/media/madameaiguille/photos-test/` (jeu de données, dev uniquement).
+Route `styleguide` (module, `etc/frontend/routes.xml`), contrôleur `Controller/Index/Index.php` — **404 en mode production**. Layout `MadameAiguille_Theme/layout/madameaiguille_styleguide_index_index.xml`, template `MadameAiguille_Theme/templates/styleguide.phtml`. Tenir la page à jour à chaque nouveau composant : c'est la référence visuelle de recette. Sections lot 2 : carte produit (cinq états), fil d'Ariane, pagination, sélecteur de quantité, sélecteur de taille, états vides. Section lot 4 : barre de franco dans ses trois états (calculée par le vrai ViewModel), ligne de panier normale / rare / devenue incommandable, récapitulatif et pied de mini-panier. Section lot 7 : tableau des six statuts avec leur état Magento, une carte de commande par statut, les deux frises de suivi (livraison et retrait) et la navigation du compte — tout y est produit par `ViewModel\Styleguide\OrderStates`, qui fait passer des commandes d'exemple **non enregistrées** par le vrai `Order\Progress`. Les photos des cartes viennent de `pub/media/madameaiguille/photos-test/` (jeu de données, dev uniquement).
 
 ## 14. Checkout — Luma fallback (lot 6a)
 
@@ -495,6 +495,7 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 - Toute surcharge visuelle frontend appartient au thème enfant : layouts, `.phtml`, Tailwind/CSS, assets et templates JavaScript. `app/code` porte la logique et les valeurs par défaut, jamais le rendu personnalisé livré à la boutique.
 - Commits atomiques en français, un par étape cohérente.
 - Toute règle liée au stock ou aux séries limitées passe par `ViewModel\Product\LimitedSeries` — jamais de `getQty()` ni de comparaison de seuil dans un template.
+- Toute règle liée à un statut de commande passe par `ViewModel\Order\Progress` — jamais de `switch` ni de comparaison de code de statut dans un template.
 - Pour tester un état vide ou une suppression : l'admin, pas un script.
 
 ## 17. Journal des livraisons
@@ -508,6 +509,10 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 3 — Contact et états vides | module Contact, pièce jointe privée, 404 interactive, panier vide, styleguide et recette transversale | `dfb6b45` → `6cbe5cc` |
 | 3 — Identité visuelle | logos officiels header/footer, favicon carré multi-tailles, rendu Contact replacé dans le thème enfant | `9c48987` |
 | 4 — Panier et mini-panier | ViewModels Cart (franco, stock, récapitulatif, options), plugin customer-data, page panier, récapitulatif et estimateur, mini-panier en tiroir, traductions des messages de stock, styleguide et documentation | `3316965` → `eb54441` |
+| 7 — Statuts de commande | six statuts par data patch idempotent, `Model\Order\StatusConfig`, ViewModel `Order\Progress` (phrase d'avancement, badge, frise datée) et ses tests | `d889482` |
+| 7 — Compte client | navigation restylée avec l'identité de la cliente, tableau de bord, commandes en cartes, détail avec frise, formulaires, retrait de l'assistance distante, dictionnaire `fr_FR.csv` | `b4c1f86` |
+| 7 — Emails | enveloppe commune header/footer aux couleurs de la marque, styles LESS email, notifications « paiement reçu » et « prête pour retrait » (observateur + envoi configurable), accusé de réception du contact réaligné | `635efa5` |
+| 7 — Styleguide et documentation | états du compte sur `/styleguide` via `ViewModel\Styleguide\OrderStates`, sections §21 et §22, mémo Céline complété | `8f33ac5` → documentation |
 
 ## 18. Formulaire de contact
 
@@ -590,15 +595,102 @@ Le calcul est **entièrement natif** : appels REST `estimate-shipping-methods` e
 - Mini-panier à 1440 et 390 px : ouverture, fermeture au bouton, à la touche Échap et au clic extérieur, retour du focus au bouton panier, liste défilante à six lignes, quantité jusqu'au plafond, suppression, compteur synchronisé avec la page panier.
 - Estimateur avec et sans code postal : France 75011 renvoie la méthode active et met à jour le total ; destination non desservie affiche le message dédié.
 - **Concurrence** : stock ramené à 1 sur une ligne qui en contenait 3 → bandeau « Une création de votre panier vient d'être épuisée », message sur la ligne, photo grisée, plafond atteint, et **retour au panier au lieu du tunnel de commande**. Stock restauré ensuite.
-- **Produit désactivé pendant que le panier est ouvert** : Magento retire la ligne **sans aucun message**. Comportement natif, conservé faute de pouvoir l'améliorer sans ajouter de logique métier — à trancher avec Pierre (voir §21).
+- **Produit désactivé pendant que le panier est ouvert** : Magento retire la ligne **sans aucun message**. Comportement natif, conservé faute de pouvoir l'améliorer sans ajouter de logique métier — à trancher avec Pierre (voir §23).
 - Accès au checkout, et absence de RequireJS/Knockout sur le panier comme sur le tiroir.
 - Tests unitaires du module : **24 tests, 64 assertions**.
 
-## 21. Après le lot 4 : ce qui reste à faire
+## 21. Compte client et commandes (lot 7)
 
-Les lots 3 et 4 sont fonctionnellement terminés. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
+Les pages du compte restent en **Hyvä** — seul le checkout bascule sur le thème Luma du fallback. Tout ce que Magento fournit nativement est conservé : formulaires, validation, pagination, carnet d'adresses, sections privées. Le lot n'ajoute que des gabarits de rendu et des ViewModels.
 
-> **Réorganisation du 10/09/2026.** Les lots 5 (livraison et paiements) et 6b (habillage du checkout) attendent la création du compte marchand **Mollie** — prestataire de paiement retenu, déjà installé et activé dans le projet — et un brief avec Céline sur les modes de livraison. Le développement se poursuit par le **lot 7** (compte client, emails, statuts de commande). Toutes les lignes marquées « lot 5 » ci-dessous restent donc ouvertes plus longtemps que prévu : ce sont, pour la plupart, des **promesses affichées à la cliente qui doivent devenir vraies avant l'ouverture des ventes**.
+### Où se trouve quoi
+
+| Écran | Layout du thème | Gabarit |
+|---|---|---|
+| Toutes les pages du compte | `Magento_Customer/layout/customer_account.xml` | ajoute la classe `madameaiguille-account`, injecte le ViewModel d'identité, retire les entrées inutiles (liste d'envies, avis, produits téléchargeables, cartes bancaires) et remonte le lien de déconnexion |
+| Navigation latérale | idem | `Magento_Customer/templates/account/navigation.phtml` |
+| Tableau de bord | `Magento_Sales/layout/customer_account_index.xml` | `Magento_Sales/templates/order/recent.phtml` — le bloc des dernières commandes est remonté au-dessus des informations |
+| Mes commandes | `Magento_Sales/layout/sales_order_history.xml` | `Magento_Sales/templates/order/history.phtml` |
+| Détail d'une commande | `Magento_Sales/layout/sales_order_view.xml` | `Magento_Sales/templates/order/view.phtml` |
+| Création de compte | — | `Magento_Customer/templates/newcustomer.phtml` |
+| Réinitialisation du mot de passe | — | `Magento_Customer/templates/form/resetforgottenpassword.phtml` |
+| Assistance distante | `Magento_LoginAsCustomerAssistance/layout/customer_account_{create,edit}.xml` | le bloc natif d'opt-in est retiré : il n'entre pas dans le parcours convenu. **Le retirer par un `.phtml` vide ne suffit pas** — son layout est chargé après celui du compte, il faut viser le nom du bloc |
+
+Styles : `web/tailwind/theme/account-nav.css` (colonne de 280 px, accordéon sous 768 px, entrée courante en `<strong>`) et `web/tailwind/theme/page-customer.css` (cartes de commande, badges de statut, frise, états vides, formulaires).
+
+### ViewModels
+
+| ViewModel | Rôle |
+|---|---|
+| `ViewModel\Customer\AccountSummary` | Nom et adresse email de la cliente connectée, affichés en tête de la navigation |
+| `ViewModel\Order\Progress` | Phrase d'avancement, variante de badge, étape courante et frise datée d'une commande |
+| `ViewModel\Styleguide\OrderStates` | Uniquement pour `/styleguide` : construit des commandes d'exemple **non enregistrées** et les fait passer par `Order\Progress` |
+
+**Aucun `switch` sur un code de statut dans un `.phtml`.** Le gabarit reçoit une phrase et un nom de variante ; toute la correspondance vit dans `Order\Progress`. Une carte de commande n'affiche donc jamais un statut sec : elle dit où en est la commande (« Je couds votre commande avec soin avant son expédition. »).
+
+### Les six statuts
+
+Créés par le data patch `Setup/Patch/Data/CreateOrderStatuses`, à partir de la table unique `Model/Order/StatusConfig`. Le patch écrit en `insertOnDuplicate` : rejouer `setup:upgrade` ne crée jamais de doublon, il rafraîchit le libellé.
+
+| Libellé (cliente et back-office) | Code | État Magento |
+|---|---|---|
+| En attente de paiement | `madameaiguille_pending_payment` | `pending_payment` |
+| Paiement reçu | `madameaiguille_payment_received` | `processing` |
+| En préparation | `madameaiguille_preparing` | `processing` |
+| Expédiée | `madameaiguille_shipped` | `complete` |
+| Prête pour retrait | `madameaiguille_ready_for_pickup` | `processing` |
+| Livrée | `madameaiguille_delivered` | `complete` |
+
+La frise du détail de commande a cinq étapes. Elle suit le parcours livraison par défaut et remplace « Expédiée » par « Prête pour retrait » dès qu'un passage par ce statut figure dans l'historique. Les dates viennent de l'historique natif des statuts, jamais d'un champ ajouté. Les statuts natifs des commandes antérieures (`pending`, `processing`, `complete`) sont ramenés au statut équivalent pour que leur suivi reste cohérent.
+
+### Textes français
+
+`i18n/fr_FR.csv` du thème, 220 lignes. Les paquets de langue Magento 2.4.9 sont **vides** : sans ce dictionnaire, le compte affiche « Sign In », « Order # » ou « My Account ». Les clés sont les chaînes réellement émises par Magento — les recopier exactement, ponctuation comprise, en les relevant sur la page plutôt qu'en les devinant.
+
+### Recette
+
+À rejouer à **1440 et 390 px** : création de compte, connexion, déconnexion, mot de passe oublié et réinitialisation, tableau de bord, liste de commandes vide puis remplie, détail d'une commande, ajout et modification d'adresse, changement de mot de passe. Vérifier qu'aucune page du compte ne charge RequireJS ni Knockout. Les états visuels sans donnée réelle sont consultables sur `/styleguide`, section « Compte client et commandes ».
+
+## 22. Emails transactionnels (lot 7)
+
+**Décision** : on garde les gabarits transactionnels **natifs de Magento**, habillés par une enveloppe commune. Céline continue donc de les éditer dans *Marketing › Communications › Modèles d'e-mail*, et une montée de version de Magento ne réécrit pas des gabarits maison.
+
+### L'enveloppe commune
+
+`Magento_Email/email/header.html` et `Magento_Email/email/footer.html` dans le thème enfant : logo officiel, salutation de clôture, mention « Fait main en France en très petites séries », liens Contact et Mon compte. Tous les emails du site en héritent, y compris ceux que Magento envoie sans qu'on les ait touchés.
+
+Les styles email sont en **LESS** (Magento ne compile pas Tailwind pour l'email) :
+
+| Fichier | Rôle |
+|---|---|
+| `web/css/source/_email-variables.less` | Palette de marque en hexadécimal, synchronisée à la main avec `hyva.config.json` — les clients email ne comprennent pas les variables CSS |
+| `web/css/source/_email-extend.less` | Habillage : en-tête, cartouche de commande, bouton, note, pied |
+| `web/css/source/_typography.less` | `@font-face` des fontes de marque, avec repli Georgia / serif |
+| `web/css/email.less`, `email-inline.less`, `email-fonts.less` | Points d'entrée compilés par Magento |
+
+### Les deux notifications métier
+
+Elles n'existent pas dans Magento : « paiement reçu » et « prête pour retrait » sont propres au parcours de l'atelier.
+
+- Gabarits : `MadameAiguille_Theme/email/payment_received.html` et `ready_for_pickup.html`, déclarés dans `etc/email_templates.xml`.
+- Déclenchement : `Observer/SendOrderStatusEmail` sur `sales_order_save_after`, **uniquement si le statut a réellement changé**, puis `Model/Order/Email/StatusEmailSender`. Aucune règle d'envoi dans un gabarit.
+- Réglages : *Boutiques › Configuration › Ventes › Emails de vente*, groupes « Paiement reçu » et « Prête pour retrait » (activation, expéditeur, gabarit). Les deux sont activés par défaut sur le gabarit du module.
+- L'email de retrait reprend le **commentaire de statut visible par la cliente** saisi dans la commande : c'est là que Céline écrira l'adresse, la date et l'heure de la remise en main propre.
+
+L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/acknowledgement.html`) a été repris pour utiliser la même enveloppe.
+
+### Ce qui n'est pas bouclé
+
+- **Email de virement** (RIB, référence à rappeler, délai d'annulation) : la structure existe, les valeurs viendront de la configuration des moyens de paiement, au **lot 5**.
+- **Modalités de retrait** : le gabarit est prêt, le texte exact attend le cadrage avec Céline.
+- **Délivrabilité et SMTP** (SPF, DKIM, DMARC) : dépendent du domaine, **lot 8**. Tant que le SMTP de production n'est pas en place, un email peut partir sans arriver.
+- **Recette de bout en bout** d'une commande réellement payée qui parcourt tous les statuts : elle attend Mollie, **lot 5**.
+
+## 23. Après les lots 4 et 7 : ce qui reste à faire
+
+Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
+
+> **Réorganisation du 10/09/2026.** Les lots 5 (livraison et paiements) et 6b (habillage du checkout) attendent la création du compte marchand **Mollie** — prestataire de paiement retenu, déjà installé et activé dans le projet — et un brief avec Céline sur les modes de livraison. Le **lot 7** a été livré à leur place ; la suite est donc **5 → 6b → 8**. Toutes les lignes marquées « lot 5 » ci-dessous restent ouvertes plus longtemps que prévu : ce sont, pour la plupart, des **promesses affichées à la cliente qui doivent devenir vraies avant l'ouverture des ventes**.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
@@ -608,7 +700,7 @@ Les lots 3 et 4 sont fonctionnellement terminés. Les éléments suivants demand
 | Tissus et photos | Remplacer les références et visuels génériques de `nos-tissus`, puis fournir les photos catalogue finales au ratio 4:5 | Céline, avant mise en production |
 | CTA « Voir toutes les nouveautés » | Choisir sa destination définitive ; l'accueil ne possède pas de catégorie globale « Boutique » | Pierre / Céline, avant publication |
 | Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
-| Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter l'accusé de réception et la pièce jointe sur le domaine final | Lot 7–8 |
+| Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter tous les emails sur le domaine final. **Sans SMTP de production, un email peut partir sans arriver** | Lot 8 |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
 | **Franco de port** | Le seuil de 49 € est **affiché** mais aucune règle Magento n'offre encore la livraison : au lot 5, activer la livraison gratuite au même montant, ou ajuster le seuil dans *Madame Aiguille › Panier* | Pierre, lot 5 — **avant ouverture des ventes** |
 | **Pays par défaut de l'estimateur** | `general/country/default` et `shipping/origin/country_id` valent encore « États-Unis » : l'estimateur propose ce pays à l'ouverture. À passer sur la France | Pierre, lot 5 |
@@ -616,12 +708,17 @@ Les lots 3 et 4 sont fonctionnellement terminés. Les éléments suivants demand
 | **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié, hors périmètre du lot 4 | Décision Pierre |
 | **Rassurance et code promo du panier** | Renseigner `cart_reassurance` avec les moyens de paiement et le délai réellement tenus ; activer le champ code promo le jour où une règle de panier existe | Céline, avant publication |
 | Livraison et paiement | Choisir les prestataires et tarifs, puis aligner `product_reassurance`, le footer, la page Livraison et la mention sous le prix sur les modes réellement activés | Lot 5 |
+| **Parcours réel des statuts** | Recetter une commande réellement payée qui parcourt les six statuts, du paiement à la livraison. Les statuts, les phrases et la frise sont livrés, mais aucun paiement ne les déclenche encore | Pierre, lot 5 |
+| **Email de virement** | Structure prête, valeurs manquantes : RIB, référence à rappeler et délai d'annulation. À écrire avec les coordonnées bancaires réelles | Pierre / Céline, lot 5 |
+| **Modalités de retrait en main propre** | Confirmer que la remise en main propre est retenue, puis fixer le texte type : lieu, créneaux, pièce à présenter. Le gabarit reprend le commentaire de statut visible saisi dans la commande | Céline, avant ouverture des ventes |
+| **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* ; l'enveloppe de marque s'applique automatiquement | Céline, avant publication |
+| **Expéditeur des emails** | Renseigner les identités d'expéditeur (*Boutiques › Configuration › Général › Contacts de la boutique*) : elles apparaissent dans chaque email envoyé | Céline / Pierre, lot 8 |
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
 | Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
 
-Le lot suivant est le **lot 7 — Compte client, emails et statuts de commande** : son prompt de reprise est `docs/prompts/prompt-codex-lot7.md`. Le lot 5, qui conditionne la véracité du franco affiché, du pays par défaut et des tarifs de l'estimateur, reprendra après.
+Le lot suivant est le **lot 5 — Livraison et paiements**, qui conditionne la véracité du franco affiché, du pays par défaut, des tarifs de l'estimateur et du parcours des statuts. Il attend le compte marchand Mollie et le brief livraison avec Céline. Viennent ensuite le lot 6b (habillage du checkout) puis le lot 8 (back-office, exploitation, mise en production).
 
-## 22. Mémo Céline — tout ce qui se règle depuis le back-office
+## 24. Mémo Céline — tout ce qui se règle depuis le back-office
 
 Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Chaque ligne renvoie à la section détaillée. **Après avoir modifié un bloc ou une page CMS, vider le cache** : *Système › Gestion du cache › Actualiser le cache invalidé*.
 
@@ -646,6 +743,25 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Panier › Seuil de livraison offerte | Montant de la barre « Plus que X € pour la livraison offerte ». `0` masque la barre. **Doit correspondre à une vraie règle de livraison gratuite** | §20 |
 | Panier › Afficher le champ code promo | Masqué tant qu'aucun code n'existe | §20 |
 | Formulaire de contact › Conservation des pièces jointes | Durée avant suppression automatique des photos reçues (30 jours par défaut) | §18 |
+
+### Emails — *Boutiques › Configuration › Ventes › Emails de vente*
+
+| Réglage | Effet | Détail |
+|---|---|---|
+| Paiement reçu › Activé / Expéditeur / Gabarit | Notification envoyée automatiquement quand une commande passe au statut « Paiement reçu » | §22 |
+| Prête pour retrait › Activé / Expéditeur / Gabarit | Notification envoyée quand une commande passe au statut « Prête pour retrait ». **Le corps du message reprend le commentaire de statut visible saisi dans la commande** : c'est là qu'on écrit le lieu, la date et l'heure du retrait | §22 |
+| Confirmation, expédition, avoir… | Réglages natifs de Magento, inchangés | §22 |
+
+Les **textes** des emails se modifient dans *Marketing › Communications › Modèles d'e-mail* : dupliquer le gabarit voulu, le modifier, puis le sélectionner dans le réglage correspondant. L'en-tête au logo et le pied de page de la marque s'appliquent automatiquement — inutile de les recopier dans chaque gabarit.
+
+### Commandes — *Ventes › Commandes*
+
+| Quoi | Où | Détail |
+|---|---|---|
+| Faire avancer une commande | Ouvrir la commande, puis **Commentaires sur l'historique** : choisir le statut et enregistrer | §21 |
+| Les six statuts | *En attente de paiement*, *Paiement reçu*, *En préparation*, *Expédiée*, *Prête pour retrait*, *Livrée*. La cliente voit le même libellé, accompagné d'une phrase qui explique où en est sa commande | §21 |
+| Prévenir la cliente | Cocher **Visible par le client** avant d'enregistrer un commentaire. Pour un retrait, y écrire les modalités : elles partent dans l'email | §21, §22 |
+| Renommer un statut | *Ventes › Statuts de commande* : le libellé change côté cliente **et** côté back-office. Ne pas supprimer un statut ni changer son code | §21 |
 
 ### Catalogue — *Catalogue › Produits* et *Catalogue › Catégories*
 

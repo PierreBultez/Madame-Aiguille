@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.1 (10/09/2026), lots 6a et 3 validés, lot 4 livré ; **prochain lot : lot 7**, les lots 5 et 6b étant mis en attente
+Document interne — v2.2 (10/09/2026), lots 6a et 3 validés, lots 4 et 7 livrés ; **prochain lot : lot 5**, toujours suspendu au compte marchand Mollie et au brief livraison
+
+> **v2.2** — Lot 7 livré sur `codex/lot-7-compte-emails` (`d889482` → documentation). Les deux décisions ouvertes ont été tranchées : **les six statuts sont livrés, « prête pour retrait » comprise**, et **les gabarits d'email restent ceux de Magento**, habillés par une enveloppe commune — Céline garde la main dessus depuis l'administration et les montées de version ne réécrivent rien. Ce qui n'a pas pu être bouclé est isolé : le parcours réel des statuts et le contenu de l'email de virement attendent Mollie (lot 5), les modalités de retrait attendent Céline, la délivrabilité attend le domaine (lot 8).
 
 > **v2.1** — **Réorganisation décidée par Pierre.** Les lots 5 (livraison et paiements) et 6b (habillage du checkout) sont mis **en attente** de deux éléments extérieurs au code : la création du compte marchand Mollie, et un brief avec Céline sur les modes de livraison. Le développement se poursuit donc par le **lot 7** (compte client, emails, statuts de commande), dont l'essentiel ne dépend pas des paiements. **Décision tranchée : le prestataire de paiement est Mollie, pas Stripe** — Mollie 3.1.3 et sa compatibilité Hyvä sont déjà installés et activés dans le projet ; Stripe ne l'a jamais été et sort du périmètre.
 
@@ -91,6 +93,20 @@ Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et da
 
 Ordre terminé : **1)** lot 6a ; **2)** composant partagé ; **3)** accueil ; **4)** pages CMS et Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Pierre a validé le lot 3. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`) ; son dernier commit d'implémentation est `9c48987`.
 
+## État après le lot 7 (10/09/2026)
+
+Livré (commits `d889482` → `8f33ac5` + documentation, détail dans `documentation-theme.md` §21 et §22) :
+
+- **six statuts de commande** créés par data patch idempotent depuis une table unique (`Model\Order\StatusConfig`) : en attente de paiement, paiement reçu, en préparation, expédiée, prête pour retrait, livrée. Libellés français identiques côté cliente et côté back-office ; deux `setup:upgrade` de suite ne créent aucun doublon ;
+- ViewModel `Order\Progress` : phrase d'avancement, variante de badge, étape courante et **frise datée** construite sur l'historique natif des statuts. Aucun `switch` sur un code de statut dans un gabarit ; les anciennes commandes en statut natif sont ramenées au statut équivalent ;
+- **pages du compte** en Hyvä : navigation latérale de 280 px avec l'identité de la cliente et accordéon sous 768 px, tableau de bord, « Mes commandes » en cartes portant une phrase et non un statut sec, détail de commande avec frise, adresses, informations personnelles, mot de passe oublié et réinitialisation. L'opt-in d'assistance distante, hors périmètre, est retiré ;
+- **dictionnaire `i18n/fr_FR.csv`** de 220 lignes : les paquets de langue Magento 2.4.9 sont vides, sans lui le compte affichait « Sign In », « Order # » ou « My Account » ;
+- **emails** : enveloppe commune au logo et aux couleurs de la marque (`Magento_Email/email/header.html` et `footer.html`, styles LESS), dont héritent tous les emails du site ; deux notifications métier « paiement reçu » et « prête pour retrait », déclenchées par un observateur sur le changement réel de statut et configurables dans *Emails de vente* ; accusé de réception du formulaire de contact réaligné ;
+- **styleguide** : tableau des six statuts, une carte de commande par statut, les deux frises et la navigation du compte, tous produits par le vrai `Order\Progress` sur des commandes d'exemple non enregistrées ;
+- 39 tests unitaires sur le module.
+
+**Points ouverts** : le parcours réel des six statuts et le contenu de l'email de virement (RIB, référence, délai d'annulation) attendent Mollie — **lot 5** ; les modalités de la remise en main propre attendent Céline ; la délivrabilité (SPF, DKIM, DMARC) et le SMTP attendent le domaine — **lot 8**. Le contrôle visuel a été fait à 1440 et 390 px.
+
 ## Vue d'ensemble
 
 | Lot | Titre | Dépend de | Effort | Risque |
@@ -100,12 +116,12 @@ Ordre terminé : **1)** lot 6a ; **2)** composant partagé ; **3)** accueil ; **
 | 4 | Panier et mini-panier | 2, config livraison du lot 5 | **M** | faible |
 | 5 | Livraison et paiements (table rates, Mondial Relay, **Mollie**, virement, main propre) — **en attente** | 2, 6a + compte Mollie + brief Céline | **XL** | **élevé** |
 | 6 | Checkout Luma fallback : installation (6a, livrée) puis habillage (6b) — **6b en attente** | 5 | **L** | moyen |
-| 7 | Compte client, emails transactionnels, statuts de commande | 3 ; recette finale après 5 et 6b | **M** | faible |
+| 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
 
 Ordre retenu : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8** (révisé le 10/09/2026).
 
-Les lots 5 et 6b attendent deux éléments qui ne dépendent pas du code : le **compte marchand Mollie** et un **brief avec Céline sur les modes de livraison**. Plutôt que d'attendre, le lot 7 est avancé : les pages du compte client, les statuts de commande et l'habillage des emails ne demandent ni transporteur configuré ni paiement actif. Seule leur **recette de bout en bout** — une commande réellement payée qui parcourt tous les statuts — devra être rejouée après les lots 5 et 6b.
+Les lots 5 et 6b attendent deux éléments qui ne dépendent pas du code : le **compte marchand Mollie** et un **brief avec Céline sur les modes de livraison**. Plutôt que d'attendre, le lot 7 a été avancé et livré : les pages du compte client, les statuts de commande et l'habillage des emails ne demandaient ni transporteur configuré ni paiement actif. Seule leur **recette de bout en bout** — une commande réellement payée qui parcourt tous les statuts — reste à rejouer après les lots 5 et 6b.
 
 Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement disponibles ; les tarifs et la barre de franco seront recettés de nouveau après la configuration réelle des transporteurs.
 
@@ -242,11 +258,11 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 
 ---
 
-## Lot 7 — Compte client, emails, statuts de commande
+## Lot 7 — Compte client, emails, statuts de commande — **livré le 10/09/2026**
 
-> **Prochain lot.** Prompt de reprise : `docs/prompts/prompt-codex-lot7.md`. Deux décisions attendent Pierre avant de coder : le jeu de statuts définitif (faut-il « prête pour retrait » avant que Céline ait confirmé la remise en main propre ?) et le choix des gabarits d'email (templates natifs habillés via `Hyva_Email`, ou gabarits propres au thème).
+> **Livré** sur `codex/lot-7-compte-emails`, voir « État après le lot 7 ». Les deux décisions ouvertes ont été tranchées par Pierre : **six statuts, « prête pour retrait » comprise** — l'ajouter plus tard aurait obligé à reprendre la frise et l'email — et **gabarits natifs de Magento habillés par une enveloppe commune**, plus sûrs pour les montées de version et modifiables par Céline depuis l'administration.
 
-**Périmètre**
+**Périmètre** (réalisé intégralement, voir « État après le lot 7 »)
 
 - Pages compte (`customer_account_*`, `sales_order_*`) : navigation latérale restylée, tableau des commandes avec statuts en badges, adresses, informations personnelles, mot de passe oublié. Formulaires au gabarit du Design System.
 - Statuts de commande : *en attente de paiement*, *paiement reçu*, *en préparation*, *expédiée*, *prête pour retrait*, *livrée* — statuts et états Magento (data patch), libellés français.
@@ -262,12 +278,12 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - l'email « prête pour retrait », qui dépend des modalités de la remise en main propre, à cadrer avec Céline ;
 - la délivrabilité (SPF / DKIM / DMARC), qui dépend du domaine — lot 8.
 
-**Incertitudes**
+**Incertitudes — levées le 10/09/2026**
 
-- Emails HTML : le module email Hyvä impose-t-il ses gabarits ou laisse-t-il surcharger les templates natifs ?
-- Jeu de statuts définitif : « prête pour retrait » n'a de sens que si la remise en main propre est retenue par Céline.
+- ~~Emails HTML : le module email Hyvä impose-t-il ses gabarits ?~~ → il laisse surcharger les gabarits natifs. L'habillage passe par `Magento_Email/email/header.html` et `footer.html` du thème enfant, avec des styles LESS ; tous les emails en héritent, y compris ceux qu'on n'a pas touchés.
+- ~~Jeu de statuts définitif~~ → **six statuts livrés**. « Prête pour retrait » n'apparaît dans la frise de la cliente que si la commande passe réellement par ce statut ; tant que la remise en main propre n'est pas confirmée, il reste simplement inutilisé.
 
-**Effort : M.**
+**Effort : M — réalisé.**
 
 ---
 
