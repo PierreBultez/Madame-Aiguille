@@ -15,6 +15,11 @@
                 <scarcity_threshold>3</scarcity_threshold>
                 <price_note/>
             </catalog>
+            <!-- Décision de Pierre du 10/09/2026 : franco affiché dès la v1 au seuil des maquettes ; code promo masqué -->
+            <cart>
+                <free_shipping_threshold>49</free_shipping_threshold>
+                <show_coupon>0</show_coupon>
+            </cart>
         </madameaiguille>
         <!-- Décision du 05/09/2026 : les produits épuisés restent visibles (badge « Épuisé », fin de liste) -->
         <!-- Poids saisis en kilogrammes (grilles transporteurs françaises) -->

@@ -34,6 +34,20 @@
                     <comment>Texte court affiché sous le prix en fiche produit (par ex. régime de TVA, frais de port au poids). Vide = rien n'est affiché.</comment>
                 </field>
             </group>
+            <group id="cart" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Panier</label>
+                <comment>Barre de livraison offerte et champ code promo, sur la page panier et dans le mini-panier.</comment>
+                <field id="free_shipping_threshold" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Seuil de livraison offerte</label>
+                    <comment>Montant du panier, TTC, à partir duquel la livraison est annoncée offerte. 0 masque la barre de progression. Ce seuil est un affichage : il doit correspondre à la règle de livraison gratuite réellement configurée dans Ventes › Modes de livraison.</comment>
+                    <validate>validate-zero-or-greater</validate>
+                </field>
+                <field id="show_coupon" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Afficher le champ code promo</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>À activer le jour où une règle de panier existe. Un champ vide proposé sans code disponible dégrade la conversion.</comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>
