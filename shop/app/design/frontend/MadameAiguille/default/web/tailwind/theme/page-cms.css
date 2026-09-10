@@ -7,4 +7,102 @@
     .table-wrapper {
         @apply overflow-auto;
     }
+
+    .cms-page {
+        @apply pb-12 md:pb-20;
+    }
+
+    .cms-page-header {
+        @apply mx-auto max-w-4xl py-8 md:py-12;
+    }
+
+    .cms-page-body {
+        @apply mx-auto max-w-4xl text-brand-ink;
+    }
+
+    .cms-page-body > :not(.cms-media, .fabric-grid, .cms-callout, .cms-actions) {
+        max-width: 65ch;
+        margin-inline: auto;
+    }
+
+    .cms-content {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .cms-content :is(h2) {
+        @apply mt-10 mb-4 font-display text-display text-brand md:text-display-xl;
+    }
+
+    .cms-content :is(h3) {
+        @apply mt-8 mb-3 font-body text-subtitle-lg font-medium text-brand-dark;
+    }
+
+    .cms-content :is(a:not(.btn)) {
+        @apply text-brand-dark underline underline-offset-4;
+    }
+
+    .cms-content blockquote {
+        @apply my-10 border-l-0 bg-brand-blush px-6 py-8 text-center font-display text-display text-brand;
+    }
+
+    .cms-lead {
+        @apply mb-8 text-center text-lead italic text-brand-dark;
+    }
+
+    .cms-media {
+        @apply mb-8 overflow-hidden rounded-sm bg-brand-blush shadow-soft;
+    }
+
+    .cms-media img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+    }
+
+    .cms-actions {
+        @apply mt-10 flex flex-col justify-center gap-3 sm:flex-row;
+    }
+
+    .fabric-grid {
+        @apply my-10 grid grid-cols-2 gap-4 md:gap-6;
+    }
+
+    .fabric-card {
+        @apply overflow-hidden rounded-sm border border-brand-line bg-surface shadow-card;
+    }
+
+    .fabric-card img {
+        @apply aspect-square w-full object-cover;
+    }
+
+    .fabric-card figcaption {
+        @apply flex flex-col gap-1 p-3 md:p-4;
+    }
+
+    .fabric-card strong {
+        @apply text-base font-medium text-brand-ink;
+    }
+
+    .fabric-card span {
+        @apply text-caption text-brand-muted;
+    }
+
+    .cms-callout {
+        @apply mt-12 rounded-sm bg-brand-blush px-5 py-8 text-center text-brand-dark md:px-10 md:py-10;
+    }
+
+    .cms-callout h2 {
+        @apply mt-0;
+    }
+
+    .cms-callout .btn {
+        @apply mt-4;
+    }
+
+    @variant md {
+        .cms-media img {
+            height: 420px;
+        }
+    }
 }

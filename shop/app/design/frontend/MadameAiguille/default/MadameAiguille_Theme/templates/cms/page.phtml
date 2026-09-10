@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Cms\Page;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var Page $page */
+$page = $block->getData('cms_page_view_model');
+$headingId = 'cms-page-' . $page->getIdentifier();
+$block->setData('section_heading', [
+    'title' => $page->getHeading(),
+    'tag' => 'h1',
+    'id' => $headingId,
+    'heading_class' => 'font-display text-display-xl md:text-display-2xl text-brand',
+]);
+?>
+<article class="cms-page" aria-labelledby="<?= $escaper->escapeHtmlAttr($headingId) ?>">
+    <header class="cms-page-header">
+        <?= $block->fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml')) ?>
+    </header>
+    <div class="cms-page-body cms-content">
+        <?= $block->getChildHtml('content') ?>
+    </div>
+</article>

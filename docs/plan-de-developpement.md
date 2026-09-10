@@ -1,8 +1,10 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.5 (10/09/2026), lot 6a validé ; lot 3, accueil livré pour recette
+Document interne — v1.6 (10/09/2026), lot 6a validé ; lot 3, pages CMS livrées pour recette
 
-> **v1.5** — Étape 2 validée par Pierre. Étape 3 : accueil complet en blocs CMS, Nouveautés automatiques sans produits épuisés, Incontournables par attribut produit, actualités éditoriales, galerie et newsletter native avec double opt-in. Purge de cache étendue aux sélections de l'accueil ; recette à 390 / 1440 px effectuée. Validation Pierre en attente avant les pages CMS.
+> **v1.6** — Étape 3 validée par Pierre. Étape 4 : gabarit commun des pages CMS, contenu générique À propos sans écrasement des modifications, page Nos tissus avec quatre références éditables et lien dans le footer. Les pages juridiques restent « À rédiger ». Recette des six URL et contrôles à 390 / 1440 px effectués ; validation Pierre en attente avant le formulaire de contact.
+
+> **v1.5** — Étape 2 validée par Pierre. Étape 3 : accueil complet en blocs CMS, Nouveautés automatiques sans produits épuisés, Incontournables par attribut produit, actualités éditoriales, galerie et newsletter native avec double opt-in. Purge de cache étendue aux sélections de l'accueil ; recette à 390 / 1440 px effectuée.
 
 > **v1.4** — Pierre valide le lot 6a après une commande. Branche `lot-3-accueil-cms-contact` créée depuis `7f46bb1`. Étape 2 : titre de section factorisé, réutilisé par les catégories, le slider produit et le styleguide ; recette à 390 / 1440 px effectuée.
 
@@ -62,7 +64,7 @@ Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et da
 - **Contenus** : textes génériques éditables dans le back-office et emplacements documentés ; aucune biographie, date de marché ou promesse de délai fictive présentée comme validée. Les pages légales restent « À rédiger » sans texte fourni.
 - **404** : même direction artistique que les états vides avec un petit easter egg ludique. Proposition : bobine déroulée, « On a perdu le fil… », aiguille animée au clic, accessible au clavier et respectant la préférence de réduction des animations.
 
-Ordre des étapes à valider séparément : **1)** lot 6a (validé) ; **2)** composant partagé de titre de section (validé) ; **3)** accueil (livré pour recette) ; **4)** pages CMS dont Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
+Ordre des étapes à valider séparément : **1)** lot 6a (validé) ; **2)** composant partagé de titre de section (validé) ; **3)** accueil (validé) ; **4)** pages CMS dont Nos tissus (livrées pour recette) ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
 
 ## Vue d'ensemble
 

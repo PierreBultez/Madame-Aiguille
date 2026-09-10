@@ -47,6 +47,10 @@
                             <item name="label" xsi:type="string" translate="true">À propos</item>
                             <item name="path" xsi:type="string">a-propos</item>
                         </item>
+                        <item name="fabrics" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Nos tissus</item>
+                            <item name="path" xsi:type="string">nos-tissus</item>
+                        </item>
                         <item name="contact" xsi:type="array">
                             <item name="label" xsi:type="string" translate="true">Contact</item>
                             <item name="path" xsi:type="string">contact</item>

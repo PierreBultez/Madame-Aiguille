@@ -192,3 +192,5 @@
 
 /* Blocs CMS accueil : les classes home-* ont leurs règles dans page-home.css. */
 @source inline("home-hero home-hero-image home-hero-copy home-kicker home-intro home-story home-news home-reasons home-gallery");
+/* Pages CMS : classes autorisées dans l'éditeur de contenu. */
+@source inline("cms-lead cms-media cms-actions cms-callout fabric-grid fabric-card");

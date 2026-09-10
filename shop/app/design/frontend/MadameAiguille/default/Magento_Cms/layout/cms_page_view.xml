@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceContainer name="content">
+            <block name="cms.page.frame" template="MadameAiguille_Theme::cms/page.phtml" before="cms_page">
+                <arguments>
+                    <argument name="cms_page_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Cms\Page</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <move element="cms_page" destination="cms.page.frame" as="content"/>
+    </body>
+</page>

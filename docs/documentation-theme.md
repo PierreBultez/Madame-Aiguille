@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.5 (10/09/2026), lot 6a validé par Pierre ; lot 3, accueil et gabarit de section livrés pour recette. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.6 (10/09/2026), lot 6a validé par Pierre ; lot 3, accueil et pages CMS livrés pour recette. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -260,6 +260,7 @@ Créés par data patch (`Setup/Patch/Data/`), **une seule fois** ; ensuite ils v
 | `cgv` | page | Conditions générales de vente |
 | `mentions-legales` | page | Mentions légales |
 | `confidentialite` | page | Politique de confidentialité |
+| `nos-tissus` | page | galerie de motifs référencés pour préparer une demande par contact |
 | `header_announcement` | bloc | bandeau du header |
 | `product_reassurance` | bloc | quatre arguments sous le bouton d'achat de la fiche produit (expédition, paiement, transporteurs, emballage). À aligner sur les modes réels au lot 5 |
 
@@ -285,6 +286,24 @@ Les cartes utilisent le renderer partagé `product_list_item`. Le tag `madameaig
 Pour les données de recette uniquement, `php docs/jeux-de-donnees/accueil.php` coche quatre SKU existants comme Incontournables. Ce script ne crée et ne supprime aucun produit.
 
 Classes Tailwind utilisables dans le CMS : celles listées dans `@source inline(...)` de `tailwind-source.css` (couleurs `bg-/text-/border-brand*`, échelle `text-*`, espacements courants, grilles, `btn`, `badge`, `scallop`, `card`, `prose`, et celles du bloc de rassurance). Pour en ajouter une : la déclarer là, puis `npm run build`.
+
+### Gabarit des pages CMS — lot 3, étape 4
+
+Toutes les pages CMS hors accueil utilisent le gabarit `Magento_Cms/layout/cms_page_view.xml` : titre H1 orné, contenu centré, largeur de lecture d'environ 65 caractères et footer repoussé en bas de l'écran. Le contenu reste celui du moteur CMS natif, avec son filtrage des directives `{{view}}` et `{{store}}` et ses tags de cache.
+
+| Quoi | Modification dans l'admin | Structure dans le code |
+|---|---|---|
+| Titre visible et balise title | *Contenu › Pages* › page concernée › *Content Heading* et *Page Title* | `ViewModel/Cms/Page.php`, `templates/cms/page.phtml`, titre partagé `section/heading.phtml` |
+| Texte, listes, tableaux et liens | éditeur de la page | `.cms-content` dans `web/tailwind/theme/page-cms.css` ; prose limitée à 65 caractères |
+| Image large | ajouter un élément avec la classe `cms-media` | image à 260 px mobile / 420 px desktop, rognage `cover` |
+| Introduction | paragraphe de classe `cms-lead` | texte 18 px italique Sentient |
+| Groupe de boutons | conteneur `cms-actions`, liens `btn btn-primary` ou `btn btn-secondary` | empilé sur mobile, horizontal à partir de `sm` |
+| Encart | conteneur `cms-callout` | fond blush et texte `brand-dark` |
+| Galerie de tissus | page `nos-tissus`, cartes `fabric-card` dans `fabric-grid` | deux colonnes à toutes les largeurs, images carrées et référence sous le visuel |
+
+Le patch `CreateFabricPageAndPrepareAbout` crée `nos-tissus` une seule fois. Il remplace le placeholder d'À propos uniquement si son contenu correspond encore exactement au texte initial « À rédiger » ; toute modification faite par Céline est préservée. Le texte livré reste générique et signale que l'histoire définitive attend validation. Les contenus Livraison, CGV, Mentions légales et Confidentialité restent « À rédiger » jusqu'à réception des informations réelles.
+
+Pour actualiser la galerie : *Contenu › Pages › Nos tissus*, remplacer chaque image, son texte alternatif, la référence `T01`… et la disponibilité. Le lien *Nos tissus* est ajouté à la colonne Informations du footer. Les liens vers `/contact` deviendront actifs à l'étape 5 du lot 3.
 
 ## 8. Catalogue — modèle de données
 
