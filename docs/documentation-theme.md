@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v1.3 (10/09/2026), lot 6a installé, recette Pierre en attente. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v1.4 (10/09/2026), lot 6a validé par Pierre ; lot 3, gabarit de section livré pour recette. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -201,6 +201,24 @@ Les composants du catalogue (carte produit, pagination, sélecteurs de quantité
 
 Règles de base (`base/brand.css`) : liens sans classe soulignés nude, `font-display` jamais italique, anneau de focus ivoire sur fond `bg-brand`, chiffres tabulaires sur `.price`.
 
+### Gabarit partagé de titre de section — lot 3, étape 2
+
+Template : `MadameAiguille_Theme/templates/section/heading.phtml` dans le thème enfant. Il est utilisé par `Magento_Catalog/templates/category/header.phtml`, `Magento_Catalog/templates/product/slider/product-slider.phtml` et les trois exemples réels du styleguide (`/styleguide#sg-section-heading`). Les prochains blocs d'accueil réutiliseront ce même rendu.
+
+| Quoi | Où | Comment |
+|---|---|---|
+| Titre et description de catégorie | Admin › *Catalogue › Catégories › Contenu* | Le nom reste le H1 Sentient 26 / 32 px. La description HTML CMS conserve son rendu natif sous le titre |
+| Titre du slider produit | Layout / données du bloc slider (`title`, `heading_tag`, `heading_css_classes`) | Les paramètres existants sont conservés ; ajout des options `subtitle`, `link_label`, `link_url` |
+| Ornements et disposition communs | `MadameAiguille_Theme/templates/section/heading.phtml` | Filets décoratifs de 48 px sous 640 px, 96 px au-delà ; transparents sur papier, ivoire et blush |
+| Typographie de section | même template, valeur par défaut de `heading_class` | Britney 30 px, 40 px dès 768 px ; accroche Sentient italique 18 px, texte et lien `brand-dark` compatibles avec le fond blush |
+| Lien facultatif | données du bloc appelant | Sous l'accroche, cible d'au moins 44 px de haut, focus natif du thème conservé ; masqué si URL ou libellé absent |
+
+**API de présentation** : le bloc appelant fournit un tableau `section_heading` (`title`, `tag`, `id`, `heading_class`, `subtitle`, `link_label`, `link_url`), puis appelle `fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml'))`, comme pour les colonnes du footer. Il est aussi possible de déclarer directement ce template avec le tableau en arguments de layout. Le niveau de titre est limité à `h1`…`h6`, avec `h2` par défaut. Tous les textes et attributs sont échappés ; `title`, `subtitle` et `link_label` attendent du texte brut traduit par l'appelant. Aucun HTML CMS brut ne transite par ce gabarit ; il reste rendu par le bloc CMS ou le renderer natif de catégorie. Le composant ne porte aucune règle catalogue/stock.
+
+Le scanner Tailwind couvre déjà tous les `.phtml` du thème : ces classes sont compilées automatiquement. Après changement : `npm run build`, puis `bin/magento cache:clean full_page block_html`. En développement, si le navigateur conserve l'ancienne feuille CSS malgré le rebuild, effectuer un rechargement sans cache (Ctrl+Maj+R).
+
+**Recette technique** : syntaxe PHP des quatre templates et build Tailwind validés ; captures Chrome headless à 390 et 1440 px sur le styleguide, la catégorie Trousses de toilette et la fiche Sac Aurora Verveine. Contrôle des titres longs, du fond blush et des ornements mobiles. Recette Pierre de cette étape en attente.
+
 ## 5. Header
 
 Template : `Magento_Theme/templates/html/header.phtml`. Layout : `Magento_Theme/layout/default.xml` (bloc `header-content`).
@@ -400,7 +418,7 @@ Références en lecture seule : `vendor/magento/module-checkout/view/frontend/we
 - Contrôle visuel du checkout à **1440 et 390 px**, via le navigateur Chromium intégré à Codex (utilisé à la place de la commande Chrome headless du brief). Le branding Luma et les libellés partiellement anglais sont attendus avant le lot 6b. Le pays par défaut États-Unis et le tarif existant sont à reprendre au lot 5.
 - Comparaison des scripts du DOM : accueil `/`, catégorie `/petits-sacs.html` et panier `/checkout/cart/` chargent Alpine du thème Madame Aiguille, **aucun script RequireJS/Knockout** ; le checkout charge `requirejs/require.js` et `knockoutjs/knockout.js` sous `frontend/Magento/luma/fr_FR/`. Aucune erreur JavaScript relevée au chargement du checkout.
 - Régression du module : **10 tests, 28 assertions**. La commande habituelle signale l'absence de `allure/allure.config.php` ; relance avec `--no-extensions` réussie, sans changement du code de test.
-- Recette Pierre en attente. Le paiement, la commande complète, la connexion pendant le tunnel et les transporteurs seront recettés avec les lots correspondants.
+- **Pierre a validé le lot 6a après avoir passé une commande**, puis autorisé le lot 3. Le moyen de paiement et les détails de cette commande n'ont pas été relevés par l'agent ; la recette des prestataires, de la connexion pendant le tunnel et des transporteurs reste dans les lots correspondants.
 
 ## 15. Commandes utiles
 
@@ -430,4 +448,5 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 |---|---|---|
 | 1 — Fondations | dépôt, thème enfant, chaîne Tailwind, fontes, tokens, composants, styleguide, module, header, footer | `62dca83` → `7af01df` |
 | 2 — Catalogue | attributs et set « Création », jeu de données, ViewModel LimitedSeries, view.xml 4:5, page catégorie, fraîcheur des badges, fiche produit, états vides, styleguide et documentation | `92500b5` → `ccabeab` + documentation |
-| 6a — Checkout | installation Luma fallback 1.1.7 + Theme Fallback 1.0.4, contrôle invité et isolation des scripts, documentation des surcharges 6b ; recette Pierre en attente | branche `lot-6a-checkout` |
+| 6a — Checkout | installation Luma fallback 1.1.7 + Theme Fallback 1.0.4, contrôle invité et isolation des scripts, documentation des surcharges 6b ; validé par Pierre après une commande | `7f46bb1` |
+| 3 — Étape 2 | gabarit partagé des titres de section, intégration catégorie / slider, trois rendus du styleguide, documentation ; recette Pierre en attente | branche `lot-3-accueil-cms-contact` |

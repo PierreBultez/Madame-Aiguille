@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v1.3 (10/09/2026), lot 6a installé, recette Pierre en attente
+Document interne — v1.4 (10/09/2026), lot 6a validé ; lot 3, gabarit de section livré pour recette
+
+> **v1.4** — Pierre valide le lot 6a après une commande. Branche `lot-3-accueil-cms-contact` créée depuis `7f46bb1`. Étape 2 : titre de section factorisé, réutilisé par les catégories, le slider produit et le styleguide ; recette à 390 / 1440 px effectuée, validation Pierre en attente avant l'accueil.
 
 > **v1.3** — Luma Checkout 1.1.7 et Theme Fallback 1.0.4 installés sur `lot-6a-checkout`. Formulaire invité et isolation des scripts contrôlés ; aucun habillage ni changement de paiement. Le fallback change la page entière vers Luma (correction de la description initiale). Décisions du lot 3 consignées ci-dessous ; développement du lot 3 non commencé.
 
@@ -58,7 +60,7 @@ Ces décisions remplacent les questions ouvertes correspondantes ci-dessus et da
 - **Contenus** : textes génériques éditables dans le back-office et emplacements documentés ; aucune biographie, date de marché ou promesse de délai fictive présentée comme validée. Les pages légales restent « À rédiger » sans texte fourni.
 - **404** : même direction artistique que les états vides avec un petit easter egg ludique. Proposition : bobine déroulée, « On a perdu le fil… », aiguille animée au clic, accessible au clavier et respectant la préférence de réduction des animations.
 
-Ordre des étapes à valider séparément : **1)** lot 6a (en attente de recette) ; **2)** composant partagé de titre de section ; **3)** accueil ; **4)** pages CMS dont Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. Créer `lot-3-accueil-cms-contact` depuis `lot-6a-checkout` seulement après validation du 6a.
+Ordre des étapes à valider séparément : **1)** lot 6a (validé après une commande de Pierre) ; **2)** composant partagé de titre de section (livré pour recette) ; **3)** accueil ; **4)** pages CMS dont Nos tissus ; **5)** contact ; **6)** 404, panier vide et recette transversale. Chaque livraison inclut sa documentation, un commit atomique et un feu vert de Pierre avant l'étape suivante. La branche `lot-3-accueil-cms-contact` a été créée depuis le lot 6a validé (`7f46bb1`).
 
 ## Vue d'ensemble
 
@@ -178,7 +180,7 @@ C'est le lot le plus risqué du projet : il combine configuration métier à cad
 
 **6a — Installation (½ journée, à faire juste après le lot 2)**
 
-Installation et vérifications techniques terminées, **feu vert de Pierre en attente**. `setup:upgrade --keep-generated` et `cache:flush` réussis ; invité activé, formulaire testé à 1440 et 390 px après ajout d'un produit depuis sa fiche. RequireJS/Knockout absents des pages accueil, catégorie et panier contrôlées, présents uniquement sur le checkout parmi ces pages. Dix tests du module existant passent. Détails, limites de recette et chemins de surcharge : `documentation-theme.md` §14.
+Installation et vérifications techniques terminées, **validées par Pierre après une commande**. `setup:upgrade --keep-generated` et `cache:flush` réussis ; invité activé, formulaire testé à 1440 et 390 px après ajout d'un produit depuis sa fiche. RequireJS/Knockout absents des pages accueil, catégorie et panier contrôlées, présents uniquement sur le checkout parmi ces pages. Dix tests du module existant passent. Détails, limites de recette et chemins de surcharge : `documentation-theme.md` §14.
 
 - `composer require hyva-themes/magento2-luma-checkout`, `setup:upgrade`, vérification de `/checkout` avec un produit de test, guest checkout activé.
 - Vérifier que les scripts RequireJS ne se chargent **que** sur les pages du tunnel (performance).

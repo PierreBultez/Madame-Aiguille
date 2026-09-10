@@ -1,0 +1,46 @@
+<?php
+/**
+ * Titre orné partagé — données de présentation dans « section_heading ».
+ * title, id, tag (h1…h6), heading_class, subtitle, link_label et link_url.
+ * Les textes sont bruts : le HTML CMS éventuel reste dans le bloc appelant.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$heading = (array) $block->getData('section_heading');
+$tag = in_array($heading['tag'] ?? '', ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], true)
+    ? $heading['tag']
+    : 'h2';
+$headingClass = $heading['heading_class'] ?? 'font-display text-display md:text-display-xl text-brand';
+$ornament = '<svg width="96" height="12" viewBox="0 0 96 12" fill="none" aria-hidden="true" focusable="false" class="h-3 w-12 shrink-0 text-brand-nude sm:w-24 %s">'
+    . '<path d="M0 6h52" stroke="currentColor" stroke-width="1"/>'
+    . '<path d="M58 6c5-6 11-6 16 0-5 6-11 6-16 0Z" stroke="currentColor" stroke-width="1"/>'
+    . '<path d="M78 6c4-4 9-4 13 0-4 4-9 4-13 0Z" fill="currentColor"/></svg>';
+?>
+<div class="section-heading min-w-0 text-center">
+    <div class="flex items-center justify-center gap-3 md:gap-5">
+        <?= /* @noEscape */ sprintf($ornament, '') ?>
+        <<?= /* @noEscape */ $tag ?>
+            <?php if (!empty($heading['id'])): ?>id="<?= $escaper->escapeHtmlAttr($heading['id']) ?>"<?php endif; ?>
+            class="min-w-0 <?= $escaper->escapeHtmlAttr($headingClass) ?>"
+        ><?= $escaper->escapeHtml($heading['title'] ?? '') ?></<?= /* @noEscape */ $tag ?>>
+        <?= /* @noEscape */ sprintf($ornament, '-scale-x-100') ?>
+    </div>
+    <?php if (!empty($heading['subtitle'])): ?>
+        <p class="mx-auto mt-3 max-w-2xl font-body text-lead italic text-brand-dark text-pretty">
+            <?= $escaper->escapeHtml($heading['subtitle']) ?>
+        </p>
+    <?php endif; ?>
+    <?php if (!empty($heading['link_url']) && !empty($heading['link_label'])): ?>
+        <a class="mt-4 inline-flex min-h-11 items-center justify-center px-2 text-base text-brand-dark"
+           href="<?= $escaper->escapeUrl($heading['link_url']) ?>">
+            <?= $escaper->escapeHtml($heading['link_label']) ?>
+        </a>
+    <?php endif; ?>
+</div>

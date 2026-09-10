@@ -84,7 +84,7 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
 ?>
 <div class="pb-24">
     <header class="pt-8 pb-10 border-b border-brand-line">
-        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 et 2')) ?></p>
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 3')) ?></p>
         <h1 class="font-display text-display-xl md:text-display-2xl text-brand mb-4"><?= $escaper->escapeHtml(__('Madame Aiguille')) ?></h1>
         <p class="font-body italic text-lead text-brand-ink max-w-2xl"><?= $escaper->escapeHtml(__('Délicate, élégante, attentionnée. Un écrin neutre ; la couleur vient des tissus.')) ?></p>
         <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Cette page n’est servie qu’en mode developer / default. Utilisez Tab pour parcourir les états de focus.')) ?></p>
@@ -463,6 +463,43 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                     <span class="swatch-option" data-swatch-type="text" aria-checked="true"><span class="swatch-label font-medium text-base">Petit</span></span>
                     <span class="swatch-option" data-swatch-type="text" aria-disabled="true"><span class="swatch-label font-medium text-base">Grand</span><span class="swatch-note text-caption"><?= $escaper->escapeHtml(__('Épuisé')) ?></span></span>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lot 3 · Vrais rendus du gabarit partagé (pas de copie de démonstration) -->
+    <section aria-labelledby="sg-section-heading">
+        <h2 id="sg-section-heading" class="<?= $escaper->escapeHtmlAttr($sectionTitle) ?>"><?= $escaper->escapeHtml(__('Mise en avant de section')) ?></h2>
+        <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?>"><?= $escaper->escapeHtml(__('Gabarit partagé par les catégories et les sliders : filets de 48 px sur mobile, 96 px dès 640 px. Titre Britney de 30 à 40 px, accroche et lien facultatifs.')) ?></p>
+        <div class="mt-6 space-y-6">
+            <div class="rounded-md border border-brand-line bg-brand-paper px-4 py-10 md:px-10">
+                <?php $block->setData('section_heading', [
+                    'title' => __('Nouveautés'),
+                    'tag' => 'h3',
+                    'id' => 'sg-heading-new',
+                ]); ?>
+                <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml')) ?>
+            </div>
+            <div class="on-blush rounded-md border border-brand-nude bg-brand-blush px-4 py-10 md:px-10">
+                <?php $block->setData('section_heading', [
+                    'title' => __('Les Incontournables'),
+                    'tag' => 'h3',
+                    'id' => 'sg-heading-featured',
+                    'subtitle' => __('Les créations qui reviennent le plus souvent — quand le tissu le permet.'),
+                    'link_label' => __('Voir toute la boutique'),
+                    'link_url' => $block->getUrl(''),
+                ]); ?>
+                <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml')) ?>
+            </div>
+            <div class="rounded-md border border-brand-line bg-brand-ivory px-4 py-10 md:px-10">
+                <?php $block->setData('section_heading', [
+                    'title' => __('Trousses de toilette'),
+                    'tag' => 'h3',
+                    'id' => 'sg-heading-category',
+                    'heading_class' => 'font-body font-medium text-title text-brand-ink md:text-title-lg',
+                ]); ?>
+                <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml')) ?>
+                <p class="mx-auto mt-4 max-w-2xl text-caption text-brand-muted"><?= $escaper->escapeHtml(__('Variante catégorie : Sentient et dimensions du H1 conservées ; niveau H3 uniquement dans cette démonstration.')) ?></p>
             </div>
         </div>
     </section>

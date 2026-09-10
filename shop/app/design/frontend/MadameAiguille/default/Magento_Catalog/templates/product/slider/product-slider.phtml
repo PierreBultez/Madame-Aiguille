@@ -148,22 +148,18 @@ $itemRenderer->setData('hide_details', $hideDetails);
         class="sr-only focus:not-sr-only focus:absolute focus:z-30 focus:bg-white"
     ><?= $escaper->escapeHtml(__('Press to skip carousel')) ?></a>
 
-    <?php
-    $ornament = '<svg width="96" height="12" viewBox="0 0 96 12" fill="none" aria-hidden="true" class="hidden shrink-0 text-brand-nude sm:block %s">'
-        . '<path d="M0 6h52" stroke="currentColor" stroke-width="1"/>'
-        . '<path d="M58 6c5-6 11-6 16 0-5 6-11 6-16 0Z" fill="var(--color-brand-paper)" stroke="currentColor" stroke-width="1"/>'
-        . '<path d="M78 6c4-4 9-4 13 0-4 4-9 4-13 0Z" fill="currentColor"/></svg>';
-    ?>
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4 md:mb-9">
         <?php if ($showHeading): ?>
-            <div class="flex grow items-center justify-center gap-5">
-                <?= /* @noEscape */ sprintf($ornament, '') ?>
-                <?= $escaper->escapeHtml(str_replace(
-                    ['%1', '%2', '%3'],
-                    [$headingTag, $title, $headingCssClasses],
-                    '<%1 class="%3">%2</%1>'
-                ), ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']) ?>
-                <?= /* @noEscape */ sprintf($ornament, '-scale-x-100') ?>
+            <div class="min-w-0 grow">
+                <?php $block->setData('section_heading', [
+                    'title' => $title,
+                    'tag' => $headingTag,
+                    'heading_class' => $headingCssClasses,
+                    'subtitle' => $block->getData('subtitle'),
+                    'link_label' => $block->getData('link_label'),
+                    'link_url' => $block->getData('link_url'),
+                ]); ?>
+                <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('MadameAiguille_Theme::section/heading.phtml')) ?>
             </div>
         <?php endif; ?>
         <div class="flex gap-2">
