@@ -1,10 +1,10 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.2 (10/09/2026), lots 6a, 3, 4 et 7 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b restent en attente du compte marchand Mollie et du brief livraison. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.3 (11/09/2026), lots 6a, 3, 4 et 7 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b restent en attente du compte marchand Mollie et du brief livraison. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
-Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. **Céline peut aller directement au §24**, qui récapitule tout ce qui se règle sans toucher au code. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
+Ce document décrit ce qui a été construit, où se trouve chaque chose, et **où modifier quoi** — dans le code ou dans le back-office Magento. **Céline peut aller directement au §24**, qui récapitule tout ce qui se règle sans toucher au code. **Tout développement se termine par le §25**, le rituel de fin de lot. Il complète `guide-bonnes-pratiques-hyva.md` (conventions de code) et `charte-graphique.md` / l'artboard *Design System* (décisions visuelles).
 
 ## 1. Vue d'ensemble
 
@@ -512,7 +512,8 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 7 — Statuts de commande | six statuts par data patch idempotent, `Model\Order\StatusConfig`, ViewModel `Order\Progress` (phrase d'avancement, badge, frise datée) et ses tests | `d889482` |
 | 7 — Compte client | navigation restylée avec l'identité de la cliente, tableau de bord, commandes en cartes, détail avec frise, formulaires, retrait de l'assistance distante, dictionnaire `fr_FR.csv` | `b4c1f86` |
 | 7 — Emails | enveloppe commune header/footer aux couleurs de la marque, styles LESS email, notifications « paiement reçu » et « prête pour retrait » (observateur + envoi configurable), accusé de réception du contact réaligné | `635efa5` |
-| 7 — Styleguide et documentation | états du compte sur `/styleguide` via `ViewModel\Styleguide\OrderStates`, sections §21 et §22, mémo Céline complété | `8f33ac5` → documentation |
+| 7 — Styleguide et documentation | états du compte sur `/styleguide` via `ViewModel\Styleguide\OrderStates`, sections §21 et §22, mémo Céline complété | `8f33ac5` → `8f2c4c4` |
+| 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
 
@@ -704,12 +705,13 @@ Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants dem
 | Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
 | Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter tous les emails sur le domaine final. **Sans SMTP de production, un email peut partir sans arriver** | Lot 8 |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
-| **Franco de port** | Le seuil de 49 € est **affiché** mais aucune règle Magento n'offre encore la livraison : au lot 5, activer la livraison gratuite au même montant, ou ajuster le seuil dans *Madame Aiguille › Panier* | Pierre, lot 5 — **avant ouverture des ventes** |
-| **Pays par défaut de l'estimateur** | `general/country/default` et `shipping/origin/country_id` valent encore « États-Unis » : l'estimateur propose ce pays à l'ouverture. À passer sur la France | Pierre, lot 5 |
-| **Tarif d'expédition provisoire** | Seul Flat Rate est actif (5 € par article) ; c'est ce que l'estimateur affiche. À remplacer par les table rates au poids des trois transporteurs | Pierre, lot 5 |
+| **Franco de port** | ~~Aucune règle Magento n'offre la livraison~~ → **réglé** : au 11/09/2026, `carriers/freeshipping/active = 1` avec `free_shipping_subtotal = 49`, soit le même montant que la barre affichée. Reste à recetter le franco **dans le tunnel** une fois les vrais transporteurs en place | Pierre, lot 5 |
+| **Pays par défaut et origine d'expédition** | `general/country/default` est passé à **FR**. En revanche `shipping/origin/country_id` vaut toujours **US** (code postal `90034`) et `tax/defaults/country` aussi : à passer sur la France avant tout calcul de port ou de TVA | Pierre, lot 5 |
+| **Tarif d'expédition provisoire** | État au 11/09/2026 : `flatrate` actif à **5 € par article** (`type = I`) et `freeshipping` actif ; `tablerate` inactif, sa condition est déjà `package_weight`. À remplacer par les grilles au poids des trois transporteurs | Pierre, lot 5 |
 | **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié, hors périmètre du lot 4 | Décision Pierre |
 | **Rassurance et code promo du panier** | Renseigner `cart_reassurance` avec les moyens de paiement et le délai réellement tenus ; activer le champ code promo le jour où une règle de panier existe | Céline, avant publication |
 | Livraison et paiement | Choisir les prestataires et tarifs, puis aligner `product_reassurance`, le footer, la page Livraison et la mention sous le prix sur les modes réellement activés | Lot 5 |
+| **Moyens de paiement à nettoyer** | `checkmo` (chèque) et `free` sont actifs, hors périmètre convenu ; Mollie expose ses 38 méthodes tant que le compte marchand n'a pas restreint l'offre. À trancher au lot 5 | Pierre, lot 5 |
 | **Parcours réel des statuts** | Recetter une commande réellement payée qui parcourt les six statuts, du paiement à la livraison. Les statuts, les phrases et la frise sont livrés, mais aucun paiement ne les déclenche encore | Pierre, lot 5 |
 | **Email de virement** | Structure prête, valeurs manquantes : RIB, référence à rappeler et délai d'annulation. À écrire avec les coordonnées bancaires réelles | Pierre / Céline, lot 5 |
 | **Modalités de retrait en main propre** | Confirmer que la remise en main propre est retenue, puis fixer le texte type : lieu, créneaux, pièce à présenter. Le gabarit reprend le commentaire de statut visible saisi dans la commande | Céline, avant ouverture des ventes |
@@ -718,7 +720,7 @@ Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants dem
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
 | Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
 
-Le lot suivant est le **lot 5 — Livraison et paiements**, qui conditionne la véracité du franco affiché, du pays par défaut, des tarifs de l'estimateur et du parcours des statuts. Il attend le compte marchand Mollie et le brief livraison avec Céline. Viennent ensuite le lot 6b (habillage du checkout) puis le lot 8 (back-office, exploitation, mise en production).
+Le lot suivant est le **lot 5 — Livraison et paiements** (prompt de reprise : `docs/prompts/prompt-lot5.md`), qui conditionne la véracité du franco affiché, du pays par défaut, des tarifs de l'estimateur et du parcours des statuts. Il attend le compte marchand Mollie et le brief livraison avec Céline. Viennent ensuite le lot 6b (habillage du checkout) puis le lot 8 (back-office, exploitation, mise en production).
 
 ## 24. Mémo Céline — tout ce qui se règle depuis le back-office
 
@@ -785,3 +787,34 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 - **Ne pas supprimer une catégorie contenant des produits** sans les avoir déplacés d'abord.
 - **Ne pas annoncer un délai ou un tarif** dans un bloc CMS tant qu'il n'est pas confirmé : les textes actuels sont des exemples à remplacer.
 
+## 25. Rituel de fin de lot
+
+**Un lot n'est pas fini quand le code marche : il est fini quand il est recetté, documenté, fusionné et que le lot suivant est prêt à démarrer.** Cette liste est à dérouler intégralement, sans qu'on ait à la redemander. Si un point ne peut pas être tenu, on le dit et on le consigne comme limite — on ne le saute pas en silence.
+
+### 1. Recette
+
+- Contrôle visuel à **1440 et 390 px** sur chaque écran livré.
+- Contrôle **dans l'administration** de chaque écran touché par le lot : une section de configuration qui ne s'ouvre plus ne se voit ni dans les tests, ni en façade (cf. §22, l'identifiant de gabarit d'email).
+- Tests unitaires du module et `phpcs --standard=Magento2` sur les fichiers touchés.
+- Vérifier que la feuille servie au navigateur est bien la dernière compilée (§2, taille du fichier).
+
+### 2. Documentation
+
+- Une **section par écran ou par mécanisme livré** dans ce document, avec les chemins réels.
+- **§24 Mémo Céline** : tout ce que le lot rend réglable sans code — un lot qui ajoute un réglage et ne l'y inscrit pas est un réglage qu'elle ne trouvera jamais.
+- **§23** : ce qui n'a pas pu être bouclé, avec son responsable et son échéance.
+- **§17 Journal des livraisons** : une ligne par étape, avec les commits.
+- **Pièges rencontrés** : consignés là où on les cherchera, pas dans un commit.
+- `plan-de-developpement.md` : note de version, état après le lot, incertitudes levées, titre du lot marqué livré.
+- `/styleguide` : les états visuels du lot, produits par les **vrais** ViewModels quand c'est possible.
+
+### 3. Fusion et publication
+
+- Vérifier `git status` propre et l'arbre à jour.
+- Fusionner dans `main` — l'historique du dépôt est **linéaire**, on fusionne en avance rapide.
+- Pousser `main` et la branche du lot sur GitHub.
+
+### 4. Passer la main
+
+- Écrire le **prompt de reprise du lot suivant** dans `docs/prompts/`, sur le modèle de `prompt-lot5.md` : état de départ vérifiable, ce qui est déjà tranché, règles non négociables, périmètre, ce qui ne pourra pas être bouclé, décisions à demander à Pierre, pièges connus du projet.
+- Mettre à jour le prompt avec les pièges découverts pendant le lot qu'on vient de finir.

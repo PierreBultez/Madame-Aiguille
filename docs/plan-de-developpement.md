@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.2 (10/09/2026), lots 6a et 3 validés, lots 4 et 7 livrés ; **prochain lot : lot 5**, toujours suspendu au compte marchand Mollie et au brief livraison
+Document interne — v2.3 (11/09/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5**, toujours suspendu au compte marchand Mollie et au brief livraison
+
+> **v2.3** — Lot 7 fusionné dans `main` et poussé. Une correction du 11/09/2026 a suivi la recette dans l'administration : l'identifiant des deux gabarits d'email doit être le chemin de configuration avec des underscores, sinon toute la section *Emails de vente* est inaccessible. Le **rituel de fin de lot** est désormais écrit (`documentation-theme.md` §25, rappelé dans `AGENTS.md`) : recette écrans **et** administration, documentation, fusion, push, prompt du lot suivant. Relevé de configuration du 11/09 : `general/country/default` est passé à FR et la livraison gratuite à 49 € est réellement active ; `shipping/origin/country_id` et `tax/defaults/country` valent toujours US.
 
 > **v2.2** — Lot 7 livré sur `codex/lot-7-compte-emails` (`d889482` → documentation). Les deux décisions ouvertes ont été tranchées : **les six statuts sont livrés, « prête pour retrait » comprise**, et **les gabarits d'email restent ceux de Magento**, habillés par une enveloppe commune — Céline garde la main dessus depuis l'administration et les montées de version ne réécrivent rien. Ce qui n'a pas pu être bouclé est isolé : le parcours réel des statuts et le contenu de l'email de virement attendent Mollie (lot 5), les modalités de retrait attendent Céline, la délivrabilité attend le domaine (lot 8).
 
@@ -197,6 +199,8 @@ Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement d
 ---
 
 ## Lot 5 — Livraison et paiements — **en attente**
+
+> **Prochain lot.** Prompt de reprise : `docs/prompts/prompt-lot5.md`, qui porte l'état de configuration réel relevé le 11/09/2026.
 
 > **Mis en attente le 10/09/2026.** Deux prérequis extérieurs au code : la création du **compte marchand Mollie** (clés API de test puis de production) et un **brief avec Céline sur les modes de livraison** (transporteurs retenus, paliers de poids, périmètre de la remise en main propre). Le développement se poursuit par le lot 7 en attendant.
 
