@@ -7,6 +7,7 @@
             <module name="Magento_Sales"/>
             <module name="Magento_OfflineShipping"/>
             <module name="Magento_Csp"/>
+            <module name="Mollie_Payment"/>
             <module name="MadameAiguille_Theme"/>
         </sequence>
     </module>

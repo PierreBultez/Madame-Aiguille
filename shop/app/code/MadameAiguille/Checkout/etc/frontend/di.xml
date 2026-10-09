@@ -5,6 +5,7 @@
             <argument name="configProviders" xsi:type="array">
                 <item name="madameaiguille_relay_point" xsi:type="object">MadameAiguille\Checkout\Model\RelayPoint\ConfigProvider</item>
                 <item name="madameaiguille_pickup" xsi:type="object">MadameAiguille\Checkout\Model\Pickup\ConfigProvider</item>
+                <item name="madameaiguille_gift_wrap" xsi:type="object">MadameAiguille\Checkout\Model\GiftWrap\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

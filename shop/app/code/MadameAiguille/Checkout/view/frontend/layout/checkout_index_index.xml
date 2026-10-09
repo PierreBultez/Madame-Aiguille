@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!--
 /**
- * Sélection du point relais et rendez-vous de retrait, sous la liste des modes de livraison (région native shippingAdditional).
+ * Sélection du point relais, rendez-vous de retrait et emballage cadeau, sous la liste des modes de livraison (région native shippingAdditional).
+ * Ligne « Emballage cadeau » dans le récapitulatif.
  * Composant fonctionnel du module ; son habillage relève du thème Luma enfant (lot 6b).
  */
 -->
@@ -16,6 +17,23 @@
                     <item name="components" xsi:type="array">
                         <item name="checkout" xsi:type="array">
                             <item name="children" xsi:type="array">
+                                <item name="sidebar" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="summary" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="totals" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="madameaiguille_gift_wrap" xsi:type="array">
+                                                            <item name="component" xsi:type="string">MadameAiguille_Checkout/js/view/summary/gift-wrap</item>
+                                                            <!-- Après la livraison (30), avant la taxe (40) : Ventes › Ordre des totaux du tunnel -->
+                                                            <item name="sortOrder" xsi:type="string">35</item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
                                 <item name="steps" xsi:type="array">
                                     <item name="children" xsi:type="array">
                                         <item name="shipping-step" xsi:type="array">
@@ -33,6 +51,10 @@
                                                                 <item name="madameaiguille-pickup-slot" xsi:type="array">
                                                                     <item name="component" xsi:type="string">MadameAiguille_Checkout/js/view/pickup-slot</item>
                                                                     <item name="sortOrder" xsi:type="string">20</item>
+                                                                </item>
+                                                                <item name="madameaiguille-gift-wrap" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">MadameAiguille_Checkout/js/view/gift-wrap</item>
+                                                                    <item name="sortOrder" xsi:type="string">30</item>
                                                                 </item>
                                                             </item>
                                                         </item>

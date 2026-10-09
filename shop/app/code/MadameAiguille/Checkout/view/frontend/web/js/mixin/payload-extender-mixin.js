@@ -1,11 +1,12 @@
 /**
- * Joint le point relais ou le créneau de retrait choisi aux informations de livraison envoyées au serveur.
+ * Joint le point relais ou le créneau de retrait choisi, et l'emballage cadeau, aux informations de livraison envoyées au serveur.
  */
 define([
     'mage/utils/wrapper',
     'MadameAiguille_Checkout/js/model/relay-point',
-    'MadameAiguille_Checkout/js/model/pickup-slot'
-], function (wrapper, relayPoint, pickupSlot) {
+    'MadameAiguille_Checkout/js/model/pickup-slot',
+    'MadameAiguille_Checkout/js/model/gift-wrap'
+], function (wrapper, relayPoint, pickupSlot, giftWrap) {
     'use strict';
 
     return function (payloadExtender) {
@@ -23,6 +24,8 @@ define([
             if (pickupSlot.isPickupMethod() && pickupSlot.selected()) {
                 attributes['madameaiguille_pickup_slot'] = pickupSlot.selected();
             }
+
+            attributes['madameaiguille_gift_wrap'] = !!giftWrap.requested();
 
             return payload;
         });

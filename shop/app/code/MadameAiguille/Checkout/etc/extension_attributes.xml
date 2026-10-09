@@ -3,5 +3,6 @@
     <extension_attributes for="Magento\Checkout\Api\Data\ShippingInformationInterface">
         <attribute code="madameaiguille_relay_point" type="MadameAiguille\Checkout\Api\Data\RelayPointInterface"/>
         <attribute code="madameaiguille_pickup_slot" type="string"/>
+        <attribute code="madameaiguille_gift_wrap" type="boolean"/>
     </extension_attributes>
 </config>

@@ -66,6 +66,25 @@
                     <comment>Congés, marchés… Une date par ligne au format AAAA-MM-JJ, ou une période AAAA-MM-JJ/AAAA-MM-JJ. Exemple : 2026-12-21/2027-01-04</comment>
                 </field>
             </group>
+            <group id="gift_wrap" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Emballage cadeau</label>
+                <comment>Option payante proposée dans le tunnel de commande, ajoutée au total, à la facture et aux e-mails. Le message cadeau, lui, se saisit dans le panier.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Proposer l'emballage cadeau</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="price" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Prix</label>
+                    <comment>En euros, par commande.</comment>
+                    <validate>required-entry validate-zero-or-greater validate-number</validate>
+                </field>
+                <field id="label" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Libellé</label>
+                </field>
+                <field id="description" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Texte sous l'option</label>
+                </field>
+            </group>
         </section>
         <section id="carriers">
             <group id="madameaiguille_pickup" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">

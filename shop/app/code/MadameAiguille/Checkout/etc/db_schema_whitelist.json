@@ -3,7 +3,9 @@
         "column": {
             "madameaiguille_relay_point_id": true,
             "madameaiguille_pickup_slot": true,
-            "madameaiguille_relay_point": true
+            "madameaiguille_relay_point": true,
+            "madameaiguille_gift_wrap_amount": true,
+            "base_madameaiguille_gift_wrap_amount": true
         }
     },
     "sales_order_address": {
@@ -28,6 +30,29 @@
         "constraint": {
             "PRIMARY": true,
             "MADAMEAIGUILLE_PICKUP_BOOKING_SLOT_SEAT": true
+        }
+    },
+    "quote": {
+        "column": {
+            "madameaiguille_gift_wrap": true
+        }
+    },
+    "sales_order": {
+        "column": {
+            "madameaiguille_gift_wrap_amount": true,
+            "base_madameaiguille_gift_wrap_amount": true
+        }
+    },
+    "sales_invoice": {
+        "column": {
+            "madameaiguille_gift_wrap_amount": true,
+            "base_madameaiguille_gift_wrap_amount": true
+        }
+    },
+    "sales_creditmemo": {
+        "column": {
+            "madameaiguille_gift_wrap_amount": true,
+            "base_madameaiguille_gift_wrap_amount": true
         }
     }
 }

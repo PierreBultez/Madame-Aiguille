@@ -7,11 +7,21 @@
     <type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
         <plugin name="madameaiguille_assign_relay_point" type="MadameAiguille\Checkout\Plugin\Checkout\AssignRelayPoint" sortOrder="10"/>
         <plugin name="madameaiguille_assign_pickup_slot" type="MadameAiguille\Checkout\Plugin\Checkout\AssignPickupSlot" sortOrder="20"/>
+        <plugin name="madameaiguille_assign_gift_wrap" type="MadameAiguille\Checkout\Plugin\Checkout\AssignGiftWrap" sortOrder="30"/>
     </type>
 
     <!-- Point relais et créneau de retrait : du panier à la commande -->
     <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
         <plugin name="madameaiguille_copy_delivery_choices_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyDeliveryChoicesToOrder" sortOrder="10"/>
+    </type>
+
+    <!-- Emballage cadeau : une ligne à part dans la demande de paiement Mollie, pour que la somme des lignes égale le total -->
+    <type name="Mollie\Payment\Service\Order\Lines\OrderLinesGenerator">
+        <arguments>
+            <argument name="generators" xsi:type="array">
+                <item name="madameaiguille_gift_wrap" xsi:type="object">MadameAiguille\Checkout\Model\Mollie\GiftWrapLine</item>
+            </argument>
+        </arguments>
     </type>
 
     <!-- Expédition : « Expédiée » ou « Livrée » (retrait) au lieu du statut natif « complete » -->

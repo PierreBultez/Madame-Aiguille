@@ -5,10 +5,16 @@
  * point relais Mondial Relay (ex. « FR-087807 », et ses coordonnées tant que la commande n'est pas passée)
  * ou créneau de retrait (« AAAA-MM-JJ HH:MM », heure de la boutique).
  * Les places réservées sur les créneaux vivent dans leur propre table.
+ * Emballage cadeau : choix sur le panier, montant sur l'adresse du panier, la commande, la facture et l'avoir.
  */
 -->
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote">
+        <column xsi:type="smallint" name="madameaiguille_gift_wrap" unsigned="true" nullable="false" default="0" comment="Gift wrapping requested"/>
+    </table>
     <table name="quote_address">
+        <column xsi:type="decimal" name="madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Gift wrapping amount"/>
+        <column xsi:type="decimal" name="base_madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Base gift wrapping amount"/>
         <column xsi:type="varchar" name="madameaiguille_relay_point_id" nullable="true" length="16" comment="Mondial Relay point ID"/>
         <column xsi:type="text" name="madameaiguille_relay_point" nullable="true" comment="Mondial Relay point details, JSON"/>
         <column xsi:type="varchar" name="madameaiguille_pickup_slot" nullable="true" length="16" comment="Pickup slot, store local time"/>
@@ -16,6 +22,18 @@
     <table name="sales_order_address">
         <column xsi:type="varchar" name="madameaiguille_relay_point_id" nullable="true" length="16" comment="Mondial Relay point ID"/>
         <column xsi:type="varchar" name="madameaiguille_pickup_slot" nullable="true" length="16" comment="Pickup slot, store local time"/>
+    </table>
+    <table name="sales_order">
+        <column xsi:type="decimal" name="madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Gift wrapping amount"/>
+        <column xsi:type="decimal" name="base_madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Base gift wrapping amount"/>
+    </table>
+    <table name="sales_invoice">
+        <column xsi:type="decimal" name="madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Gift wrapping amount"/>
+        <column xsi:type="decimal" name="base_madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Base gift wrapping amount"/>
+    </table>
+    <table name="sales_creditmemo">
+        <column xsi:type="decimal" name="madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Gift wrapping amount"/>
+        <column xsi:type="decimal" name="base_madameaiguille_gift_wrap_amount" scale="4" precision="20" unsigned="false" nullable="true" comment="Base gift wrapping amount"/>
     </table>
     <table name="madameaiguille_pickup_booking" resource="default" engine="innodb" comment="Pickup slot bookings, one row per seat">
         <column xsi:type="int" name="booking_id" unsigned="true" nullable="false" identity="true" comment="Booking ID"/>

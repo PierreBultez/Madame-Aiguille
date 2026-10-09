@@ -20,6 +20,13 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
                 <horizon_days>21</horizon_days>
                 <closed_dates/>
             </pickup>
+            <!-- Décision de Pierre du 09/10/2026 : option payante à 2 €, prix réglable -->
+            <gift_wrap>
+                <enabled>1</enabled>
+                <price>2.00</price>
+                <label>Emballage cadeau</label>
+                <description>Votre commande est emballée avec soin pour être offerte. Ajoutez un message cadeau : je l'écris à la main sur une petite carte.</description>
+            </gift_wrap>
         </madameaiguille>
         <carriers>
             <madameaiguille_pickup>
