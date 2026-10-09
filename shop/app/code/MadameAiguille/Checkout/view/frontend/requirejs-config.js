@@ -1,10 +1,12 @@
 /**
  * Widget Mondial Relay : chargé à la demande, seulement quand la cliente choisit le point relais.
- * Leaflet est figé en 1.9.4 ; le widget, lui, n'est pas versionnable (Mondial Relay sert toujours la dernière 4.x).
+ * Même URL Leaflet que le chargeur interne du widget : sa déduplication compare les src exacts.
+ * Une URL versionnée différente lui fait réinjecter un module AMD anonyme et interrompt RequireJS.
+ * Les deux ressources distantes suivent désormais les versions servies par leurs éditeurs.
  */
 var config = {
     paths: {
-        'madameaiguille/leaflet': 'https://unpkg.com/leaflet@1.9.4/dist/leaflet',
+        'madameaiguille/leaflet': 'https://unpkg.com/leaflet/dist/leaflet',
         'madameaiguille/mondialRelayWidget':
             'https://widget.mondialrelay.com/parcelshop-picker/jquery.plugin.mondialrelay.parcelshoppicker.min'
     },
