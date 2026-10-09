@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.4 (09/10/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5**, recadré par le call Céline du 11/09/2026
+Document interne — v2.5 (09/10/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5 + 8a**, cadré par le call Céline et les arbitrages de Pierre du 09/10/2026
+
+> **v2.5** — Quatre arbitrages de Pierre closent les points les plus structurants du lot 5 : **zone de vente limitée aux pays desservis par Mondial Relay** (BE, LU, NL, DE, AT, IT, ES, PT — à confirmer sur l'offre pro) ; **aucune TVA facturée**, y compris en Europe, Céline étant en franchise de base — à revoir si les ventes à distance intra-UE dépassent 10 000 € sur l'année ; **franco à 60 €** sur le point relais ; **annulation d'un retrait au rendez-vous non honoré**, donc sans cron, par une action de Céline dans l'administration. Restent ouverts : langue du site, carte du lieu de retrait, prise de rendez-vous — devenue structurante puisqu'elle conditionne la règle d'annulation —, délai d'expédition annoncé et emballage cadeau.
 
 > **v2.4** — **Call Céline du 11/09/2026 dépouillé** (compte rendu complet : `docs/brief-call-celine-2026-09-11.md`). Le lot 5 est recadré et s'allège sur plusieurs points, mais s'alourdit sur trois autres.
 >
@@ -217,8 +219,10 @@ Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement d
 - **Mondial Relay point relais, transporteur unique.** Une seule grille au poids → le carrier **`tablerate` natif suffit** (`Weight vs. Destination`, condition déjà réglée sur `package_weight`). Grille versionnée en CSV avec un script d'import rejouable. Flat Rate à couper.
 - **Sélecteur de point relais** : spike en tout début de lot, avec les identifiants **Offre Start** de Céline (compte à ouvrir ou transférer — il n'est pas pro aujourd'hui). Repli assumé si rien de compatible : point relais choisi par email après commande.
 - **Mollie en carte bancaire seule** : clés de test puis de production, les 38 méthodes exposées restreintes à la CB. `checkmo` à désactiver.
-- **Click & collect** : méthode à 0 €, **payée sur place** (TPE ou espèces) → un mode de paiement hors ligne restreint à ce mode de livraison. Créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30. C'est lui qui fait vivre le statut « Prête pour retrait » du lot 7.
-- **Franchise en base de TVA** : `tax/defaults/country` → FR, `shipping/origin` → Saint-Épain 37800, prix TTC = prix encaissés, mention « TVA non applicable, art. 293 B du CGI ».
+- **Click & collect** : méthode à 0 €, **payée sur place** (TPE ou espèces) → un mode de paiement hors ligne restreint à ce mode de livraison. Créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30. C'est lui qui fait vivre le statut « Prête pour retrait » du lot 7. **Annulation au rendez-vous non honoré** : pas de cron, Céline annule la commande dans l'administration et le stock se relibère — procédure à écrire dans le mémo Céline.
+- **Franchise en base de TVA** : `tax/defaults/country` → FR, `shipping/origin` → Saint-Épain 37800, prix TTC = prix encaissés, mention « TVA non applicable, art. 293 B du CGI ». **Aucune TVA facturée, y compris sur les ventes européennes** — à revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année.
+- **Zone de vente** : France plus les pays desservis par Mondial Relay (BE, LU, NL, DE, AT, IT, ES, PT, à confirmer). Une zone par grille tarifaire.
+- **Franco à 60 €** sur le point relais : seuil à porter de 49 € à 60 € dans *Madame Aiguille › Panier* **et** dans `carriers/freeshipping/free_shipping_subtotal`.
 - **Statuts du lot 7 câblés sur le réel** : paiement capté → « Paiement reçu », expédition → « Expédiée ».
 - **Contrôle « poids renseigné »** : commande CLI ou requête SQL documentée, à passer avant chaque mise en production.
 - **Aligner l'affichage sur le réel** : `product_reassurance`, `cart_reassurance`, footer, page *Livraison et retours*, mention sous le prix.
@@ -233,11 +237,11 @@ Virement SEPA et tout ce qui en découlait (cron d'expiration, relance à J-2, R
 
 **Ce qui s'y ajoute et reste à chiffrer**
 
-- **Vente dans toute l'Europe** : zones et grilles Mondial Relay par pays, impact sur la TVA (seuil de 10 000 € de ventes à distance intra-UE, puis guichet OSS — **à faire confirmer par un conseil**) et sur les CGV. Site monolingue français à confirmer.
+- **Vente en Europe** : zones et grilles Mondial Relay par pays, mentions des CGV. Site monolingue français à confirmer.
 - **TikTok** au pied de page, **Pinterest** à retirer.
 - **Emballage cadeau et carte personnalisée** : le message cadeau natif de Magento est déjà affiché dans le détail de commande depuis le lot 7 ; l'option d'emballage reste à spécifier.
 
-**Décisions encore ouvertes** : périmètre européen exact, TVA en Europe, langue du site, franco 49 € ou 60 €, délai d'annulation d'un retrait non honoré, carte du lieu de retrait, prise de rendez-vous, délai d'expédition annoncé, emballage cadeau. Détail et impact dans le compte rendu du call.
+**Décisions encore ouvertes** : langue du site, carte du lieu de retrait, **prise de rendez-vous** (elle conditionne désormais la règle d'annulation du retrait), délai d'expédition annoncé, emballage cadeau. Détail et impact dans le compte rendu du call.
 
 **Effort : L** (ramené de XL — un seul transporteur, un seul moyen de paiement), plus **8a**.
 

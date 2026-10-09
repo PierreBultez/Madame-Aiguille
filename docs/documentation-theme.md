@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.4 (09/10/2026), lots 6a, 3, 4 et 7 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b restent en attente du compte marchand Mollie et du brief livraison. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.5 (09/10/2026), lots 6a, 3, 4 et 7 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b restent en attente du compte marchand Mollie et du brief livraison. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -704,7 +704,8 @@ Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants dem
 | CTA « Voir toutes les nouveautés » | Choisir sa destination définitive ; l'accueil ne possède pas de catégorie globale « Boutique » | Pierre / Céline, avant publication |
 | Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
 | Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter tous les emails sur le domaine final. **Sans SMTP de production, un email peut partir sans arriver** | Lot 8 |
-| **Vente en Europe** | Décidée au call du 11/09/2026, périmètre non précisé. Impacte les zones et grilles Mondial Relay, la TVA (seuil de 10 000 € puis guichet OSS — **à faire confirmer par un conseil**) et les CGV. Langue du site à décider | Pierre / Céline, lot 5 |
+| **Vente en Europe** | Limitée aux pays desservis par Mondial Relay : BE, LU, NL, DE, AT, IT, ES, PT (à confirmer sur l'offre pro). **Aucune TVA facturée**, Céline étant en franchise de base — **à revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année**, le régime change alors. Langue du site à décider | Pierre, lot 5 |
+| **Franco porté à 60 €** | Décision du 09/10/2026. Le seuil est encore à **49 €** à deux endroits qui doivent rester d'accord : *Madame Aiguille › Panier* et `carriers/freeshipping/free_shipping_subtotal` | Pierre, lot 5 |
 | **Réseaux sociaux** | Pinterest n'est pas utilisé : à retirer. **TikTok à ajouter** (champ de configuration, icône, pied de page) | Pierre, lot 5 |
 | **Emballage cadeau et carte personnalisée** | Besoin exprimé au call, hors périmètre actuel. Le message cadeau natif de Magento est déjà affiché dans le détail de commande (lot 7) ; l'option d'emballage reste à spécifier et à chiffrer | Pierre / Céline, à planifier |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
@@ -717,7 +718,7 @@ Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants dem
 | **Moyens de paiement à nettoyer** | `checkmo` (chèque) à désactiver ; `free` à conserver. Mollie expose 38 méthodes → **à restreindre à la carte bancaire seule** (décision du call du 11/09/2026) | Pierre, lot 5 |
 | **Parcours réel des statuts** | Recetter une commande réellement payée qui parcourt les six statuts, du paiement à la livraison. Les statuts, les phrases et la frise sont livrés, mais aucun paiement ne les déclenche encore | Pierre, lot 5 |
 | ~~**Email de virement**~~ | **Sans objet** : le call du 11/09/2026 retient la **carte bancaire uniquement**. La structure esquissée au lot 7 est à retirer ou neutraliser au lot 5 | Pierre, lot 5 |
-| **Modalités de retrait** | Retenu au call du 11/09/2026 : **paiement sur place** (TPE ou espèces), créneaux **jeudi 9 h-18 h** et **vendredi 9 h-11 h 30**. Restent ouverts : la zone, la carte du lieu, la prise de rendez-vous et le délai d'annulation | Pierre / Céline, lot 5 |
+| **Modalités de retrait** | **Paiement sur place** (TPE ou espèces), créneaux **jeudi 9 h-18 h** et **vendredi 9 h-11 h 30**. **Annulation au rendez-vous non honoré** : pas de cron, Céline annule la commande dans l'administration. Restent ouverts : la zone, la carte du lieu et la prise de rendez-vous — qui conditionne la règle d'annulation | Pierre / Céline, lot 5 |
 | **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* ; l'enveloppe de marque s'applique automatiquement | Céline, avant publication |
 | **Expéditeur des emails** | Renseigner les identités d'expéditeur (*Boutiques › Configuration › Général › Contacts de la boutique*) : elles apparaissent dans chaque email envoyé | Céline / Pierre, lot 8 |
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |

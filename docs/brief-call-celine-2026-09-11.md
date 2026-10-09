@@ -19,7 +19,7 @@
 | SIREN · SIRET | `940 760 911` · `940 760 911 00013` |
 | Activité | Fabrication d'autres vêtements et accessoires |
 | Siège et expédition | **35 Grande Rue, 37800 Saint-Épain** |
-| TVA | **Aucun numéro de TVA → franchise en base.** Mention « TVA non applicable, art. 293 B du CGI » sur les factures et en pied de site |
+| TVA | **Aucun numéro de TVA → franchise en base.** Mention « TVA non applicable, art. 293 B du CGI » sur les factures et en pied de site. **Décision Pierre du 09/10/2026 : au plus simple, aucune TVA facturée, y compris sur les ventes européennes.** Limite à surveiller : au-delà de 10 000 € de ventes à distance intra-UE sur l'année, le régime change et le guichet OSS devient obligatoire — à revoir à ce moment-là, avec un conseil |
 
 Conséquences techniques : `shipping/origin` → Saint-Épain (37800, FR), `tax/defaults/country` → FR, prix TTC = prix encaissés, aucune TVA sur les documents.
 
@@ -37,13 +37,15 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 - **Compte Mondial Relay : celui de Céline n'est pas un compte pro.** Action : ouvrir ou transférer vers l'**Offre Start**, puis transmettre code enseigne et clé privée — sans eux, pas de carte de points relais sur le site.
 - **Délai d'expédition** : aujourd'hui 4 à 5 jours, **cible 48 h**.
 - **Livraison offerte** : 49 € maintenu pour l'instant, **60 € envisagé** — non tranché.
-- **Zone de vente : France *et toute l'Europe*.** Changement de périmètre majeur par rapport à « France métropolitaine » (voir les questions ouvertes).
+- **Zone de vente : France et Europe, limitée aux pays desservis par Mondial Relay** (décision Pierre du 09/10/2026). À la grille actuelle : Belgique, Luxembourg, Pays-Bas, Allemagne, Autriche, Italie, Espagne, Portugal — **liste à confirmer sur l'offre pro au moment de l'implémentation**.
+- **Franco : 60 €** (décision Pierre du 09/10/2026), sur le point relais Mondial Relay. Le seuil affiché passe donc de 49 € à 60 € dans *Madame Aiguille › Panier* **et** dans la règle de livraison gratuite.
 
 ## Click & collect (§5.8 — répondu)
 
 - Retenu, avec **paiement sur place** (TPE ou espèces), pas en ligne.
 - **Créneaux fixes** : jeudi 9 h – 18 h, vendredi 9 h – 11 h 30.
 - Rendez-vous convenu à l'heure ; **une carte du lieu de retrait est envisagée** (à trancher).
+- **Annulation : au rendez-vous non honoré** (décision Pierre du 09/10/2026). Pas de délai en jours, donc **pas de cron** : c'est Céline qui annule la commande dans l'administration après un rendez-vous manqué, ce qui relibère le stock. À documenter dans le mémo Céline.
 - Ces créneaux donnent enfin son contenu à l'email « Prête pour retrait » du lot 7.
 
 ## Catalogue et contenus (§7 et §8 — répondu)
@@ -57,17 +59,13 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 
 # QUESTIONS RESTÉES OUVERTES
 
-À trancher avant ou pendant le lot 5. Les trois premières sont bloquantes.
+À trancher avant ou pendant le lot 5. **Quatre des dix ont été tranchées par Pierre le 09/10/2026** et sont remontées dans « Résultat du call ».
 
 | # | Question | Pourquoi ça bloque |
 |---|---|---|
-| 1 | **Europe : quels pays exactement ?** Mondial Relay livre en BE, ES, LU, NL, PT, DE, IT, AT, mais avec des grilles et des délais distincts. Vend-on dans toute l'UE, ou dans les pays servis par Mondial Relay ? | Conditionne les grilles tarifaires, les zones de livraison et les CGV |
-| 2 | **Vente en Europe et franchise de TVA** : sous 10 000 € de ventes à distance intra-UE par an, tout reste taxable en France (donc rien à facturer en franchise) ; au-delà, le guichet OSS devient obligatoire. **À faire confirmer par un conseil ou la CMA** — je ne suis pas fiscaliste | Conditionne le paramétrage TVA et les factures |
 | 3 | **Site en français uniquement** alors qu'on vend en Europe ? Un site monolingue est acceptable, mais il faut le décider | Conditionne le périmètre du lot 8 |
-| 4 | **Franco : 49 € ou 60 € ?** Et offert sur le point relais uniquement, ou aussi ailleurs ? | Réglage simple, mais à figer avant la recette |
-| 5 | **Click & collect payé sur place** : le stock d'une série limitée reste bloqué entre la commande et le retrait. Quel délai maximal avant annulation ? | Risque réel sur des séries de 5 à 10 pièces |
 | 6 | **Carte du lieu de retrait** : simple adresse et plan statique, ou carte interactive ? | La seconde option demande du développement |
-| 7 | **Prise de rendez-vous** : la cliente choisit-elle son créneau à la commande, ou Céline confirme-t-elle l'heure ensuite par email ? | Le premier cas demande un sélecteur dans le tunnel, le second se fait avec l'existant |
+| 7 | **Prise de rendez-vous** : la cliente choisit-elle son créneau à la commande, ou Céline confirme-t-elle l'heure ensuite par email ? **Devenue structurante** depuis que l'annulation est adossée au rendez-vous : s'il n'y a jamais de rendez-vous pris, il n'y a jamais de rendez-vous manqué, et le stock reste bloqué sans fin | Le premier cas demande un sélecteur dans le tunnel, le second se fait avec l'existant |
 | 8 | **Délai d'expédition annoncé** : on affiche la réalité d'aujourd'hui (4-5 jours) ou la cible (48 h) ? | Mieux vaut sous-promettre |
 | 9 | **Emballage cadeau et carte personnalisée** : option gratuite ou payante ? Dans quel lot ? Magento a un message cadeau natif, déjà affiché dans le détail de commande au lot 7 | Nouveau périmètre à chiffrer |
 | 10 | Rédaction des **CGV, mentions légales et page Livraison et retours**, choix d'un **médiateur de la consommation**, confirmation du **domaine** | Obligatoire avant la première vente, et avant la validation Mollie |
@@ -82,7 +80,7 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 | 2 | Ouvrir ou transférer le compte **Mondial Relay Offre Start**, transmettre code enseigne et clé privée | Céline | ⬜ |
 | 3 | Peser l'emballage type et les créations | Céline | ⬜ |
 | 4 | Donner les tarifs Mondial Relay pro et la politique de prix | Céline | ⬜ |
-| 5 | Trancher les questions 1 à 9 ci-dessus | Pierre / Céline | ⬜ |
+| 5 | Trancher les questions restantes (3, 6, 7, 8, 9) | Pierre / Céline | 🔸 4 tranchées le 09/10 |
 | 6 | Rédiger CGV, mentions légales, Livraison et retours · choisir un médiateur | Céline (+ relecture) | ⬜ |
 | 7 | Confirmer le domaine et son titulaire | Céline / Pierre | ⬜ |
 | 8 | **Mettre une préproduction en ligne sur le domaine** (lot 8a) | Pierre | ⬜ |

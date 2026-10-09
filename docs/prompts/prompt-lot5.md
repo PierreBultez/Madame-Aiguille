@@ -27,7 +27,10 @@ Crée la branche `codex/lot-5-livraison-paiements` depuis `main` à jour, avant 
 - **Mollie ne valide le compte qu'avec un site en ligne et un paiement réel effectué par nous-mêmes.** C'est une dépendance dure, pas une formalité de fin de projet.
 - **Mondial Relay point relais, transporteur unique.** Colissimo et Chronopost sont écartés. Une seule grille → **le carrier `tablerate` natif suffit**, pas de carriers maison.
 - **Click & collect payé sur place** (TPE ou espèces), créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30.
-- **Entreprise individuelle en franchise de TVA** : BULTEZ CELINE, nom commercial MADAME AIGUILLE, SIRET 940 760 911 00013, 35 Grande Rue 37800 Saint-Épain, non inscrite au RCS. Prix TTC = prix encaissés, aucune TVA, mention « TVA non applicable, art. 293 B du CGI ».
+- **Entreprise individuelle en franchise de TVA** : BULTEZ CELINE, nom commercial MADAME AIGUILLE, SIRET 940 760 911 00013, 35 Grande Rue 37800 Saint-Épain, non inscrite au RCS. Prix TTC = prix encaissés, **aucune TVA facturée nulle part, ventes européennes comprises**, mention « TVA non applicable, art. 293 B du CGI ».
+- **Zone de vente** : France plus les pays desservis par Mondial Relay — BE, LU, NL, DE, AT, IT, ES, PT à la grille actuelle, **à confirmer sur l'offre pro**. Pas de vente hors de cette liste.
+- **Franco à 60 €** sur le point relais. Le seuil actuel est à 49 € : le porter à 60 € dans `madameaiguille/cart/free_shipping_threshold` **et** dans `carriers/freeshipping/free_shipping_subtotal`, les deux doivent rester d'accord.
+- **Annulation d'un retrait non honoré : au rendez-vous manqué**, pas après N jours. Donc **aucun cron à écrire** — Céline annule la commande dans l'administration, ce qui relibère le stock. La procédure va dans le mémo Céline (§24).
 - **Checkout : Luma Fallback** (`hyva-themes/magento2-luma-checkout` 1.1.7). Toute la page du tunnel bascule sur Luma ; son habillage est le **lot 6b**, pas celui-ci.
 - Commande invité autorisée (`checkout/options/guest_checkout = 1`).
 - Franco de port **affiché à 49 €**, configurable dans *Madame Aiguille › Panier*.
@@ -90,19 +93,18 @@ Domaine, DNS, préproduction HTTPS, SMTP. Puis **un paiement réel** pour faire 
 
 - L'**habillage du tunnel** : lot 6b.
 - Les **clés de production** Mollie tant que le compte n'est pas validé — ce qui dépend de 8a.
-- Le **périmètre européen** : grilles par pays, TVA, langue du site. À chiffrer une fois les questions ci-dessous tranchées.
+- Les **grilles européennes par pays** tant que Céline n'a pas transmis ses tarifs pro Mondial Relay.
 - **Emballage cadeau et carte personnalisée** : nouveau besoin, à spécifier. Le message cadeau natif de Magento est déjà affiché dans le détail de commande depuis le lot 7.
 
 ## Décisions à demander à Pierre avant de coder
 
-Les dix questions ouvertes sont listées et expliquées dans `docs/brief-call-celine-2026-09-11.md`. Les quatre qui bloquent du code :
+Quatre des dix questions du compte rendu ont été tranchées le 09/10/2026 et figurent ci-dessus. Restent, par ordre d'impact sur le code :
 
-1. **Europe : quels pays ?** Toute l'UE, ou seulement ceux que Mondial Relay dessert ? Cela détermine les zones et les grilles.
-2. **TVA en Europe** en franchise de base — seuil de 10 000 €, puis guichet OSS. **À faire confirmer par un conseil**, ne pas trancher seul.
-3. **Franco : 49 € ou 60 €**, et sur quels modes ?
-4. **Délai d'annulation d'un retrait non honoré** : le stock d'une série limitée reste bloqué entre la commande et le retrait, puisque le paiement se fait sur place.
-
-Et deux qui changent la charge : carte du lieu de retrait (statique ou interactive) et prise de rendez-vous (créneau choisi à la commande, ou confirmé ensuite par email).
+1. **Prise de rendez-vous du retrait** : la cliente choisit-elle son créneau à la commande (sélecteur dans le tunnel, du développement) ou Céline confirme-t-elle l'heure ensuite par email (faisable avec l'existant) ? **C'est devenu structurant** : l'annulation est adossée au rendez-vous manqué, donc une commande dont le rendez-vous n'est jamais pris bloque le stock sans fin. Prévoir un garde-fou dans les deux cas.
+2. **Carte du lieu de retrait** : adresse et plan statique, ou carte interactive ?
+3. **Langue du site** : français seul alors qu'on vend dans huit pays ?
+4. **Délai d'expédition annoncé** : la réalité d'aujourd'hui (4-5 jours) ou la cible (48 h) ?
+5. **Emballage cadeau et carte personnalisée** : option gratuite ou payante, et dans quel lot ?
 
 ## Pièges connus sur ce projet
 
