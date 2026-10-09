@@ -38,7 +38,7 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 - **Délai d'expédition** : aujourd'hui 4 à 5 jours, **cible 48 h**.
 - **Livraison offerte** : 49 € maintenu pour l'instant, **60 € envisagé** — non tranché.
 - **Zone de vente : pays francophones de l'Union européenne** (stratégie révisée par Pierre le 09/10/2026, en remplacement de « tous les pays Mondial Relay »). Croisée avec la desserte Mondial Relay, la liste se réduit à **France, Belgique, Luxembourg** — Monaco étant traité comme la France (codes postaux 980xx, même territoire douanier et fiscal).
-  > ⚠️ **La Suisse, citée dans la décision, n'est pas dans l'Union européenne** et n'est pas desservie par Mondial Relay en point relais. Y vendre impliquerait une déclaration douanière à chaque colis, la TVA suisse à l'import à la charge de la cliente et des frais de dédouanement — à l'opposé du « au plus simple » retenu pour la TVA. **Laissée hors périmètre en attendant un arbitrage explicite.**
+  > **La Suisse est écartée** (confirmé par Pierre le 09/10/2026) : elle n'est pas dans l'Union européenne et n'est pas desservie par Mondial Relay en point relais. La règle tient en une phrase — **pays de l'UE francophones et desservis par Mondial Relay**.
 - **Franco : 60 €** (décision Pierre du 09/10/2026), sur le point relais Mondial Relay. Le seuil affiché passe donc de 49 € à 60 € dans *Madame Aiguille › Panier* **et** dans la règle de livraison gratuite.
 
 ## Click & collect (§5.8 — répondu)
@@ -64,13 +64,12 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 
 # QUESTIONS RESTÉES OUVERTES
 
-**Neuf des dix questions ont été tranchées par Pierre le 09/10/2026** et sont remontées dans « Résultat du call ». Il reste ceci.
+**Les dix questions ont été tranchées par Pierre le 09/10/2026** et sont remontées dans « Résultat du call ». Il ne reste que des valeurs à fournir.
 
 | # | Question | Pourquoi ça bloque |
 |---|---|---|
-| 1 | **Suisse : on y va ou pas ?** Hors UE et hors desserte Mondial Relay — il faudrait un second transporteur, des déclarations douanières et un traitement fiscal distinct. **Ma recommandation : non en v1** | Conditionne la zone de livraison, les CGV et le choix des transporteurs |
-| 2 | **Lieu de retrait réel** : adresse exacte de Céline pour le click & collect. Un lieu générique est posé en attendant | Le champ est prévu dans le back-office, seule la valeur manque |
-| 3 | Rédaction définitive des **CGV, mentions légales et page Livraison et retours** sur la base des contenus génériques, choix d'un **médiateur de la consommation**, confirmation du **domaine** | Obligatoire avant la première vente, et avant la validation Mollie |
+| 1 | **Lieu de retrait réel** : adresse exacte de Céline pour le click & collect. Un lieu générique est posé en attendant | Le champ est prévu dans le back-office, seule la valeur manque |
+| 2 | Rédaction définitive des **CGV, mentions légales et page Livraison et retours** sur la base des contenus génériques, choix d'un **médiateur de la consommation**, confirmation du **domaine** | Obligatoire avant la première vente, et avant la validation Mollie |
 
 ---
 

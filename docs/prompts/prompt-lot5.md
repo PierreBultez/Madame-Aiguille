@@ -28,7 +28,7 @@ Crée la branche `codex/lot-5-livraison-paiements` depuis `main` à jour, avant 
 - **Mondial Relay point relais, transporteur unique.** Colissimo et Chronopost sont écartés. Une seule grille → **le carrier `tablerate` natif suffit**, pas de carriers maison.
 - **Click & collect payé sur place** (TPE ou espèces), créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30.
 - **Entreprise individuelle en franchise de TVA** : BULTEZ CELINE, nom commercial MADAME AIGUILLE, SIRET 940 760 911 00013, 35 Grande Rue 37800 Saint-Épain, non inscrite au RCS. Prix TTC = prix encaissés, **aucune TVA facturée nulle part, ventes européennes comprises**, mention « TVA non applicable, art. 293 B du CGI ».
-- **Zone de vente : France, Belgique, Luxembourg** — pays francophones de l'UE desservis par Mondial Relay. Monaco suit la France. **La Suisse est hors périmètre** : hors UE (donc douane et TVA à l'import) et hors desserte Mondial Relay. Ne pas l'ajouter sans arbitrage explicite de Pierre.
+- **Zone de vente : France, Belgique, Luxembourg.** La règle : **pays de l'UE francophones et desservis par Mondial Relay**. Monaco suit la France. **La Suisse est explicitement écartée** (hors UE, hors desserte Mondial Relay) : ne pas l'ajouter.
 - **Site monolingue français**, même pour la Belgique et le Luxembourg.
 - **Franco à 60 €** sur le point relais. Le seuil actuel est à 49 € : le porter à 60 € dans `madameaiguille/cart/free_shipping_threshold` **et** dans `carriers/freeshipping/free_shipping_subtotal`, les deux doivent rester d'accord.
 - **Rendez-vous de retrait choisi par la cliente dans le tunnel**, parmi les disponibilités de Céline (jeudi 9 h-18 h, vendredi 9 h-11 h 30), **confirmé automatiquement** si le créneau est libre. Un **lieu de retrait unique**, adresse paramétrable en back-office, avec aperçu cartographique ; poser un lieu générique en attendant celui de Céline.
@@ -108,11 +108,10 @@ Domaine, DNS, préproduction HTTPS, SMTP. Puis **un paiement réel** pour faire 
 
 ## Décisions à demander à Pierre avant de coder
 
-Neuf des dix questions du compte rendu ont été tranchées le 09/10/2026 et figurent ci-dessus. Restent :
+Les dix questions du compte rendu ont été tranchées le 09/10/2026 et figurent ci-dessus. Restent seulement :
 
-1. **La Suisse** : hors UE et hors desserte Mondial Relay. L'y inclure demanderait un second transporteur, des déclarations douanières et un traitement fiscal distinct. **Recommandation : non en v1** — mais c'est à Pierre de trancher.
-2. **L'adresse réelle du lieu de retrait**, en attendant laquelle un lieu générique est posé.
-3. **Le chiffrage du sélecteur de rendez-vous et de l'emballage cadeau** avant de s'y engager : ce sont les deux postes qui ont fait repasser le lot de L à XL.
+1. **L'adresse réelle du lieu de retrait**, en attendant laquelle un lieu générique est posé.
+2. **Le chiffrage du sélecteur de rendez-vous et de l'emballage cadeau** à présenter à Pierre avant de s'y engager : ce sont les deux postes qui ont fait repasser le lot de L à XL.
 
 ## Pièges connus sur ce projet
 
