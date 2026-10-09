@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.8 (09/10/2026), lots 6a, 3, 4, 7, 5 et **6b** livrés (hors dépendances de production 8a). Prochain lot : **8a**, préproduction HTTPS, emails et recette Mollie. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.9 (09/10/2026), lots 6a, 3, 4, 7, 5 et **6b** livrés (hors dépendances de production 8a) ; **boutique entièrement en français** (§28). Prochain lot : **8a**, préproduction HTTPS, emails et recette Mollie. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
