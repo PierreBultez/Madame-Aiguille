@@ -88,7 +88,7 @@ class Assignment
     /**
      * Point mémorisé sur l'adresse du panier, ou null.
      *
-     * @return array{id: string, name: string, street: list<string>, postcode: string, city: string, country_id: string}|null
+     * @return array<string, mixed>|null id, name, street, postcode, city, country_id
      */
     public function recall(DataObject $quoteAddress): ?array
     {
@@ -98,14 +98,16 @@ class Assignment
         }
         $point = $this->json->unserialize($details);
 
-        return is_array($point) && ($point['id'] ?? null) === $quoteAddress->getData(self::ADDRESS_FIELD) ? $point : null;
+        $isCurrent = is_array($point) && ($point['id'] ?? null) === $quoteAddress->getData(self::ADDRESS_FIELD);
+
+        return $isCurrent ? $point : null;
     }
 
     /**
      * L'adresse du point devient l'adresse de livraison de la commande.
      *
      * @param OrderAddressInterface&DataObject $orderAddress
-     * @param array{id: string, name: string, street: list<string>, postcode: string, city: string, country_id: string} $point
+     * @param array<string, mixed> $point tel que rendu par recall()
      */
     public function applyToOrderAddress(OrderAddressInterface $orderAddress, array $point): void
     {

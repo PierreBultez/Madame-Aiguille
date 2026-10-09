@@ -17,7 +17,8 @@ class EnablePayOnSite implements DataPatchInterface
     private const VALUES = [
         'payment/cashondelivery/active' => '1',
         'payment/cashondelivery/title' => 'Paiement sur place',
-        'payment/cashondelivery/instructions' => 'Vous réglez votre commande au moment du retrait, par carte bancaire ou en espèces.',
+        'payment/cashondelivery/instructions' =>
+            'Vous réglez votre commande au moment du retrait, par carte bancaire ou en espèces.',
         'payment/cashondelivery/allowspecific' => '0',
     ];
 

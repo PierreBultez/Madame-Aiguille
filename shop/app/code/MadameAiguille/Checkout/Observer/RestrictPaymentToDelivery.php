@@ -29,7 +29,10 @@ class RestrictPaymentToDelivery implements ObserverInterface
         $quote = $observer->getEvent()->getQuote();
         $code = (string) $observer->getEvent()->getMethodInstance()->getCode();
 
-        if (!$result->getData('is_available') || !$quote instanceof CartInterface || in_array($code, self::ALWAYS_ALLOWED, true)) {
+        if (!$result->getData('is_available')
+            || !$quote instanceof CartInterface
+            || in_array($code, self::ALWAYS_ALLOWED, true)
+        ) {
             return;
         }
 

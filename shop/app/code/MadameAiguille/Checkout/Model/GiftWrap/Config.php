@@ -37,17 +37,21 @@ class Config
      */
     public function getPrice(?int $storeId = null): float
     {
-        return max(0.0, round((float) $this->scopeConfig->getValue(self::PREFIX . 'price', ScopeInterface::SCOPE_STORE, $storeId), 2));
+        return max(0.0, round((float) $this->get('price', $storeId), 2));
     }
 
     public function getLabel(?int $storeId = null): string
     {
-        return trim((string) $this->scopeConfig->getValue(self::PREFIX . 'label', ScopeInterface::SCOPE_STORE, $storeId))
-            ?: (string) __('Gift wrapping');
+        return trim((string) $this->get('label', $storeId)) ?: (string) __('Gift wrapping');
     }
 
     public function getDescription(?int $storeId = null): string
     {
-        return trim((string) $this->scopeConfig->getValue(self::PREFIX . 'description', ScopeInterface::SCOPE_STORE, $storeId));
+        return trim((string) $this->get('description', $storeId));
+    }
+
+    private function get(string $field, ?int $storeId): mixed
+    {
+        return $this->scopeConfig->getValue(self::PREFIX . $field, ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

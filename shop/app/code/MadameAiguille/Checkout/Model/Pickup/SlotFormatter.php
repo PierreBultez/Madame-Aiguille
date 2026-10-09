@@ -30,7 +30,10 @@ class SlotFormatter
             return $slot;
         }
 
-        $locale = (string) $this->scopeConfig->getValue(DirectoryHelper::XML_PATH_DEFAULT_LOCALE, ScopeInterface::SCOPE_STORE);
+        $locale = (string) $this->scopeConfig->getValue(
+            DirectoryHelper::XML_PATH_DEFAULT_LOCALE,
+            ScopeInterface::SCOPE_STORE
+        );
         $formatter = new \IntlDateFormatter(
             $locale ?: 'fr_FR',
             \IntlDateFormatter::FULL,

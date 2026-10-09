@@ -15,7 +15,7 @@ class SlotCalendar
     public const FORMAT = 'Y-m-d H:i';
 
     /**
-     * @param list<array{day: int, from: string, to: string}> $ranges jour ISO-8601 (1 = lundi … 7 = dimanche), heures « HH:MM »
+     * @param list<array{day: int, from: string, to: string}> $ranges jour ISO-8601 (1 = lundi), heures « HH:MM »
      * @param list<string> $closedDates jours fermés, « AAAA-MM-JJ »
      * @return list<string>
      */
@@ -52,10 +52,12 @@ class SlotCalendar
                     continue;
                 }
 
-                for ($slot = $start; $slot->add($step) <= $end; $slot = $slot->add($step)) {
+                $slot = $start;
+                while ($slot->add($step) <= $end) {
                     if ($slot >= $earliest) {
                         $slots[] = $slot->format(self::FORMAT);
                     }
+                    $slot = $slot->add($step);
                 }
             }
         }

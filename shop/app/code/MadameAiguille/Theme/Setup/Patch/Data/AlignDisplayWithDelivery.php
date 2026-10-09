@@ -32,7 +32,8 @@ class AlignDisplayWithDelivery implements DataPatchInterface
             '>Papier de soie et mot manuscrit sur demande.<' => '>En option, avec votre message écrit à la main.<',
         ],
         'cart_reassurance' => [
-            '>Paiement sécurisé — carte, virement ou main propre<' => '>Paiement sécurisé — carte bancaire en ligne, ou sur place au retrait<',
+            '>Paiement sécurisé — carte, virement ou main propre<' =>
+                '>Paiement sécurisé — carte bancaire en ligne, ou sur place au retrait<',
             '>Expédition sous 2 à 3 jours ouvrés<' => '>Expédition sous 4 à 5 jours ouvrés<',
         ],
     ];
@@ -91,7 +92,8 @@ class AlignDisplayWithDelivery implements DataPatchInterface
         foreach ($this->pageRepository->getList($criteria)->getItems() as $page) {
             $content = (string) $page->getContent();
             if (str_contains($content, self::CONTACT_PLACEHOLDER)) {
-                $this->pageRepository->save($page->setContent(str_replace(self::CONTACT_PLACEHOLDER, $email, $content)));
+                $page->setContent(str_replace(self::CONTACT_PLACEHOLDER, $email, $content));
+                $this->pageRepository->save($page);
             }
         }
     }

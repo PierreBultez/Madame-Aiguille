@@ -42,8 +42,8 @@ class ImportTableRates extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $file = $input->getOption('file')
-            ?: $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, 'MadameAiguille_Theme') . '/' . self::DEFAULT_FILE;
+        $moduleDir = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, 'MadameAiguille_Theme');
+        $file = $input->getOption('file') ?: $moduleDir . '/' . self::DEFAULT_FILE;
         $dryRun = (bool) $input->getOption('dry-run');
 
         try {
