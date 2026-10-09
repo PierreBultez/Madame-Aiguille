@@ -1,7 +1,7 @@
 <?php
 /**
- * Au passage de l'étape Livraison : refuse le point relais sans point choisi,
- * et remplace l'adresse de livraison par celle du point.
+ * Au passage de l'étape Livraison : refuse le point relais sans point valide,
+ * et mémorise le point sur l'adresse du panier (appliqué à la commande par Observer\ApplyRelayPoint).
  */
 
 declare(strict_types=1);
@@ -37,7 +37,7 @@ class AssignRelayPoint
         }
 
         if ($addressInformation->getShippingCarrierCode() !== Assignment::CARRIER_CODE) {
-            $this->assignment->clear($address);
+            $this->assignment->forget($address);
             return [$cartId, $addressInformation];
         }
 
@@ -47,7 +47,7 @@ class AssignRelayPoint
         } catch (LocalizedException $exception) {
             throw new InputException(__($exception->getMessage()));
         }
-        $this->assignment->apply($address, $point);
+        $this->assignment->remember($address, $point);
 
         return [$cartId, $addressInformation];
     }

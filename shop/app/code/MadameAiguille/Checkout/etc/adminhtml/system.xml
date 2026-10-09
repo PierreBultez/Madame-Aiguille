@@ -11,6 +11,61 @@
                     <validate>required-entry validate-alphanum</validate>
                 </field>
             </group>
+            <group id="pickup" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Retrait à l'atelier</label>
+                <comment>Lieu et rendez-vous du retrait sur place. La cliente choisit son créneau dans le tunnel ; il est confirmé automatiquement s'il est libre. Le transporteur lui-même s'active dans Ventes › Méthodes de livraison.</comment>
+                <field id="location_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Nom du lieu</label>
+                </field>
+                <field id="location_address" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Adresse et indications</label>
+                    <comment>Affichée dans le tunnel et dans l'e-mail « Prête pour retrait ».</comment>
+                </field>
+                <field id="latitude" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Latitude</label>
+                    <comment>Pour le lien « Itinéraire ». Clic droit sur le lieu dans Google Maps : les deux nombres affichés sont la latitude puis la longitude.</comment>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="longitude" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Longitude</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="map_image" translate="label comment" type="image" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Plan d'accès (image)</label>
+                    <comment>Facultatif : une capture du plan, affichée dans le tunnel. JPG ou PNG.</comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">madameaiguille/pickup</upload_dir>
+                    <base_url type="media" scope_info="1">madameaiguille/pickup</base_url>
+                </field>
+                <field id="weekly_hours" translate="label comment" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Disponibilités chaque semaine</label>
+                    <comment>Plages pendant lesquelles un retrait est possible. Plusieurs plages par jour sont permises.</comment>
+                    <frontend_model>MadameAiguille\Checkout\Block\Adminhtml\Form\Field\WeeklyHours</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="slot_duration" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Durée d'un créneau (minutes)</label>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="capacity" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Clientes par créneau</label>
+                    <comment>1 : un créneau pris disparaît pour les autres clientes.</comment>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="min_notice_hours" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Délai minimum avant un retrait (heures)</label>
+                    <comment>Temps laissé pour préparer la commande. 48 : une commande passée lundi midi peut être retirée à partir de mercredi midi.</comment>
+                    <validate>required-entry validate-digits validate-zero-or-greater</validate>
+                </field>
+                <field id="horizon_days" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Créneaux proposés sur (jours)</label>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="closed_dates" translate="label comment" type="textarea" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Jours sans retrait</label>
+                    <comment>Congés, marchés… Une date par ligne au format AAAA-MM-JJ, ou une période AAAA-MM-JJ/AAAA-MM-JJ. Exemple : 2026-12-21/2027-01-04</comment>
+                </field>
+            </group>
         </section>
         <section id="carriers">
             <group id="madameaiguille_pickup" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">

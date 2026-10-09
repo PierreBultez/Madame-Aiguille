@@ -2,5 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
     <extension_attributes for="Magento\Checkout\Api\Data\ShippingInformationInterface">
         <attribute code="madameaiguille_relay_point" type="MadameAiguille\Checkout\Api\Data\RelayPointInterface"/>
+        <attribute code="madameaiguille_pickup_slot" type="string"/>
     </extension_attributes>
 </config>

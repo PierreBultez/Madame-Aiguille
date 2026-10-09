@@ -1,12 +1,33 @@
 {
     "quote_address": {
         "column": {
-            "madameaiguille_relay_point_id": true
+            "madameaiguille_relay_point_id": true,
+            "madameaiguille_pickup_slot": true,
+            "madameaiguille_relay_point": true
         }
     },
     "sales_order_address": {
         "column": {
-            "madameaiguille_relay_point_id": true
+            "madameaiguille_relay_point_id": true,
+            "madameaiguille_pickup_slot": true
+        }
+    },
+    "madameaiguille_pickup_booking": {
+        "column": {
+            "booking_id": true,
+            "slot": true,
+            "seat": true,
+            "quote_id": true,
+            "order_id": true,
+            "created_at": true
+        },
+        "index": {
+            "MADAMEAIGUILLE_PICKUP_BOOKING_QUOTE_ID": true,
+            "MADAMEAIGUILLE_PICKUP_BOOKING_ORDER_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MADAMEAIGUILLE_PICKUP_BOOKING_SLOT_SEAT": true
         }
     }
 }

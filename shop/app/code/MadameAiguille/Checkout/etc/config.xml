@@ -6,6 +6,20 @@
             <mondial_relay>
                 <brand_code>BDTEST</brand_code>
             </mondial_relay>
+            <!-- Lieu générique en attendant l'adresse de Céline ; plages du call du 11/09/2026 (jeudi 9 h-18 h, vendredi 9 h-11 h 30) -->
+            <pickup>
+                <location_name>Atelier Madame Aiguille</location_name>
+                <location_address>Saint-Épain (37800)
+L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_address>
+                <latitude>47.1450</latitude>
+                <longitude>0.5370</longitude>
+                <weekly_hours>{"thursday":{"day":"4","from":"09:00","to":"18:00"},"friday":{"day":"5","from":"09:00","to":"11:30"}}</weekly_hours>
+                <slot_duration>30</slot_duration>
+                <capacity>1</capacity>
+                <min_notice_hours>48</min_notice_hours>
+                <horizon_days>21</horizon_days>
+                <closed_dates/>
+            </pickup>
         </madameaiguille>
         <carriers>
             <madameaiguille_pickup>

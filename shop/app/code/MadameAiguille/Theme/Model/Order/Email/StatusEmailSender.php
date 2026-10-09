@@ -27,7 +27,8 @@ class StatusEmailSender
         private readonly ScopeConfigInterface $scopeConfig,
         private readonly TransportBuilder $transportBuilder,
         private readonly StateInterface $inlineTranslation,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly array $variableProviders = []
     ) {
     }
 
@@ -102,13 +103,20 @@ class StatusEmailSender
             );
         }
 
-        return [
+        $variables = [
             'order' => $order,
             'store' => $order->getStore(),
             'customer_name' => $order->getCustomerName(),
             'order_url' => $orderUrl,
             'pickup_details' => $this->getPickupDetails($order),
         ];
+        foreach ($this->variableProviders as $provider) {
+            if ($provider instanceof TemplateVariablesProviderInterface) {
+                $variables += $provider->getVariables($order);
+            }
+        }
+
+        return $variables;
     }
 
     private function getPickupDetails(Order $order): string

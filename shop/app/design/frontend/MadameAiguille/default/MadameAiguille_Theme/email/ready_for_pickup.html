@@ -3,7 +3,11 @@
 "var customer_name":"Nom de la cliente",
 "var order.increment_id":"Numéro de commande",
 "var order_url":"Lien vers la commande",
-"var pickup_details|escape|nl2br":"Modalités saisies dans le commentaire visible"
+"var pickup_details|escape|nl2br":"Modalités saisies dans le commentaire visible",
+"var pickup_slot":"Rendez-vous choisi dans le tunnel",
+"var pickup_location_name":"Nom du lieu de retrait",
+"var pickup_location_address|escape|nl2br":"Adresse du lieu de retrait",
+"var pickup_directions_url":"Lien d'itinéraire"
 } @-->
 {{template config_path="design/email/header_template"}}
 <table role="presentation">
@@ -19,6 +23,18 @@
             <h1>{{trans "Order #%order_id" order_id=$order.increment_id}}</h1>
         </td>
     </tr>
+    {{depend pickup_slot}}
+    <tr>
+        <td>
+            <div class="email-note">
+                <p><strong>{{trans "Your appointment"}}</strong><br/>{{var pickup_slot}}</p>
+                <p><strong>{{var pickup_location_name}}</strong><br/>{{var pickup_location_address|escape|nl2br}}</p>
+                {{depend pickup_directions_url}}<p><a href="{{var pickup_directions_url}}">{{trans "Get directions"}}</a></p>{{/depend}}
+                <p>{{trans "Payment is made on site, by card or in cash."}}</p>
+            </div>
+        </td>
+    </tr>
+    {{/depend}}
     {{depend pickup_details}}
     <tr><td><div class="email-note">{{var pickup_details|escape|nl2br}}</div></td></tr>
     {{/depend}}

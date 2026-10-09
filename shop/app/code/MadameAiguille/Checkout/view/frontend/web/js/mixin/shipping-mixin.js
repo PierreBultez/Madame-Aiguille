@@ -1,11 +1,12 @@
 /**
- * L'étape Livraison ne se valide pas en point relais tant qu'aucun point n'est choisi.
- * Le serveur refuse de toute façon (Plugin\Checkout\AssignRelayPoint) ; ceci évite l'aller-retour.
+ * L'étape Livraison ne se valide pas sans point relais (livraison en point relais)
+ * ni sans créneau (retrait à l'atelier). Le serveur refuse de toute façon ; ceci évite l'aller-retour.
  */
 define([
     'mage/translate',
-    'MadameAiguille_Checkout/js/model/relay-point'
-], function ($t, relayPoint) {
+    'MadameAiguille_Checkout/js/model/relay-point',
+    'MadameAiguille_Checkout/js/model/pickup-slot'
+], function ($t, relayPoint, pickupSlot) {
     'use strict';
 
     return function (Shipping) {
@@ -13,6 +14,12 @@ define([
             validateShippingInformation: function () {
                 if (relayPoint.isRelayMethod() && !relayPoint.selected()) {
                     this.errorValidationMessage($t('Please choose your relay point.'));
+
+                    return false;
+                }
+
+                if (pickupSlot.isPickupMethod() && !pickupSlot.selected()) {
+                    this.errorValidationMessage($t('Please choose your pickup time.'));
 
                     return false;
                 }

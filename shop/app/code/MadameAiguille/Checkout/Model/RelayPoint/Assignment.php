@@ -1,7 +1,12 @@
 <?php
 /**
- * Livraison en point relais : l'adresse du point choisi devient l'adresse de livraison.
+ * Livraison en point relais.
  *
+ * Pendant le tunnel, l'adresse du panier reste celle de la cliente : le point validé est seulement
+ * mémorisé à côté (identifiant + coordonnées). Sinon, au rechargement de la page, Luma préremplirait
+ * le formulaire avec l'adresse du point, et elle se retrouverait en facturation ou sur un retrait.
+ *
+ * À la validation de la commande, l'adresse du point devient l'adresse de livraison de la commande.
  * Le nom et le téléphone de la cliente sont conservés (Mondial Relay en a besoin sur l'étiquette) ;
  * la société porte le nom et l'identifiant du point, ce qui le rend lisible partout où Magento
  * affiche l'adresse de livraison : administration, emails, facture, compte client.
@@ -13,20 +18,24 @@ namespace MadameAiguille\Checkout\Model\RelayPoint;
 
 use MadameAiguille\Checkout\Api\Data\RelayPointInterface;
 use Magento\Directory\Model\AllowedCountries;
+use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Quote\Api\Data\AddressInterface;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Sales\Api\Data\OrderAddressInterface;
 
 class Assignment
 {
     public const CARRIER_CODE = 'tablerate';
     public const SHIPPING_METHOD = 'tablerate_bestway';
     public const ADDRESS_FIELD = 'madameaiguille_relay_point_id';
+    public const DETAILS_FIELD = 'madameaiguille_relay_point';
 
     private const ID_PATTERN = '/^([A-Z]{2})-[0-9A-Z]{5,6}$/';
     private const MAX_LENGTH = 128;
 
     public function __construct(
-        private readonly AllowedCountries $allowedCountries
+        private readonly AllowedCountries $allowedCountries,
+        private readonly Json $json
     ) {
     }
 
@@ -55,29 +64,61 @@ class Assignment
     }
 
     /**
-     * @param AddressInterface&\Magento\Framework\DataObject $address
+     * Mémorise le point validé sur l'adresse du panier, sans la modifier.
      */
-    public function apply(AddressInterface $address, RelayPointInterface $point): void
+    public function remember(DataObject $quoteAddress, RelayPointInterface $point): void
     {
-        $address->setCompany((string) __('%1 — Relay point %2', trim($point->getName()), $point->getId()));
-        $address->setStreet(array_values(array_filter(array_map('trim', $point->getStreet()))));
-        $address->setPostcode(trim($point->getPostcode()));
-        $address->setCity(trim($point->getCity()));
-        $address->setCountryId($point->getCountryId());
-        $address->setRegionId(null);
-        $address->setRegion(null);
-        $address->setRegionCode(null);
-        // Ce n'est plus une adresse de la cliente : ni rattachée à son carnet, ni enregistrée dedans
-        $address->setCustomerAddressId(null);
-        $address->setSaveInAddressBook(0);
-        $address->setData(self::ADDRESS_FIELD, $point->getId());
+        $quoteAddress->setData(self::ADDRESS_FIELD, $point->getId());
+        $quoteAddress->setData(self::DETAILS_FIELD, $this->json->serialize([
+            'id' => $point->getId(),
+            'name' => trim($point->getName()),
+            'street' => array_values(array_filter(array_map('trim', $point->getStreet()))),
+            'postcode' => trim($point->getPostcode()),
+            'city' => trim($point->getCity()),
+            'country_id' => $point->getCountryId(),
+        ]));
+    }
+
+    public function forget(DataObject $quoteAddress): void
+    {
+        $quoteAddress->setData(self::ADDRESS_FIELD, null);
+        $quoteAddress->setData(self::DETAILS_FIELD, null);
     }
 
     /**
-     * @param AddressInterface&\Magento\Framework\DataObject $address
+     * Point mémorisé sur l'adresse du panier, ou null.
+     *
+     * @return array{id: string, name: string, street: list<string>, postcode: string, city: string, country_id: string}|null
      */
-    public function clear(AddressInterface $address): void
+    public function recall(DataObject $quoteAddress): ?array
     {
-        $address->setData(self::ADDRESS_FIELD, null);
+        $details = (string) $quoteAddress->getData(self::DETAILS_FIELD);
+        if ($details === '' || !$quoteAddress->getData(self::ADDRESS_FIELD)) {
+            return null;
+        }
+        $point = $this->json->unserialize($details);
+
+        return is_array($point) && ($point['id'] ?? null) === $quoteAddress->getData(self::ADDRESS_FIELD) ? $point : null;
+    }
+
+    /**
+     * L'adresse du point devient l'adresse de livraison de la commande.
+     *
+     * @param OrderAddressInterface&DataObject $orderAddress
+     * @param array{id: string, name: string, street: list<string>, postcode: string, city: string, country_id: string} $point
+     */
+    public function applyToOrderAddress(OrderAddressInterface $orderAddress, array $point): void
+    {
+        $orderAddress->setCompany((string) __('%1 — Relay point %2', $point['name'], $point['id']));
+        $orderAddress->setStreet($point['street']);
+        $orderAddress->setPostcode($point['postcode']);
+        $orderAddress->setCity($point['city']);
+        $orderAddress->setCountryId($point['country_id']);
+        $orderAddress->setRegionId(null);
+        $orderAddress->setRegion(null);
+        $orderAddress->setRegionCode(null);
+        // Ce n'est pas une adresse du carnet de la cliente
+        $orderAddress->setCustomerAddressId(null);
+        $orderAddress->setData(self::ADDRESS_FIELD, $point['id']);
     }
 }

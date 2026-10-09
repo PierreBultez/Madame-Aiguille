@@ -6,8 +6,10 @@ namespace MadameAiguille\Checkout\Test\Unit\Model\RelayPoint;
 use MadameAiguille\Checkout\Model\RelayPoint;
 use MadameAiguille\Checkout\Model\RelayPoint\Assignment;
 use Magento\Directory\Model\AllowedCountries;
+use Magento\Framework\DataObject;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Sales\Model\Order\Address as OrderAddress;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Quote\Model\Quote\Address;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +22,7 @@ class AssignmentTest extends TestCase
         $allowed = $this->createStub(AllowedCountries::class);
         $allowed->method('getAllowedCountries')->willReturn(['FR', 'BE', 'LU', 'MC']);
 
-        return new Assignment($allowed);
+        return new Assignment($allowed, new Json());
     }
 
     private function point(array $data = []): RelayPoint
@@ -68,26 +70,42 @@ class AssignmentTest extends TestCase
         $this->assignment()->validate($this->point($data));
     }
 
-    public function testThePointReplacesTheDeliveryAddressButNotTheRecipient(): void
+    public function testTheCartAddressIsKeptAndThePointRemembered(): void
     {
-        $address = $this->getMockBuilder(Address::class)->disableOriginalConstructor()->onlyMethods([])->getMock();
-        $address->setData([
+        $quoteAddress = new DataObject(['street' => '1 rue des Lilas', 'city' => 'Tours']);
+
+        $this->assignment()->remember($quoteAddress, $this->point());
+        $point = $this->assignment()->recall($quoteAddress);
+
+        self::assertSame('1 rue des Lilas', $quoteAddress->getData('street'));
+        self::assertSame('FR-087807', $point['id']);
+        self::assertSame(['66 R.N. 10'], $point['street']);
+
+        $this->assignment()->forget($quoteAddress);
+        self::assertNull($this->assignment()->recall($quoteAddress));
+    }
+
+    public function testThePointBecomesTheOrderDeliveryAddressButNotTheRecipient(): void
+    {
+        $quoteAddress = new DataObject();
+        $this->assignment()->remember($quoteAddress, $this->point());
+        $orderAddress = $this->getMockBuilder(OrderAddress::class)->disableOriginalConstructor()->onlyMethods([])->getMock();
+        $orderAddress->setData([
             'firstname' => 'Lou', 'lastname' => 'Martin', 'telephone' => '0600000000',
             'street' => '1 rue des Lilas', 'postcode' => '37000', 'city' => 'Tours', 'country_id' => 'FR',
-            'region_id' => 219, 'customer_address_id' => 12, 'save_in_address_book' => 1,
+            'region_id' => 219, 'customer_address_id' => 12,
         ]);
 
-        $this->assignment()->apply($address, $this->point());
+        $this->assignment()->applyToOrderAddress($orderAddress, $this->assignment()->recall($quoteAddress));
 
-        self::assertSame('Lou', $address->getFirstname());
-        self::assertSame('0600000000', $address->getTelephone());
-        self::assertSame(['66 R.N. 10'], $address->getStreet());
-        self::assertSame('86220', $address->getPostcode());
-        self::assertSame('LES ORMES', $address->getCity());
-        self::assertStringContainsString('FR-087807', (string) $address->getCompany());
-        self::assertNull($address->getData('region_id'));
-        self::assertNull($address->getCustomerAddressId());
-        self::assertSame(0, $address->getSaveInAddressBook());
-        self::assertSame('FR-087807', $address->getData(Assignment::ADDRESS_FIELD));
+        self::assertSame('Lou', $orderAddress->getFirstname());
+        self::assertSame('0600000000', $orderAddress->getTelephone());
+        self::assertSame(['66 R.N. 10'], $orderAddress->getStreet());
+        self::assertSame('86220', $orderAddress->getPostcode());
+        self::assertSame('LES ORMES', $orderAddress->getCity());
+        self::assertStringContainsString('FR-087807', (string) $orderAddress->getCompany());
+        self::assertNull($orderAddress->getData('region_id'));
+        self::assertNull($orderAddress->getCustomerAddressId());
+        self::assertSame('FR-087807', $orderAddress->getData(Assignment::ADDRESS_FIELD));
     }
 }

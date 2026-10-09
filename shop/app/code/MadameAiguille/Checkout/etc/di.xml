@@ -1,19 +1,30 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="MadameAiguille\Checkout\Api\Data\RelayPointInterface" type="MadameAiguille\Checkout\Model\RelayPoint"/>
+    <preference for="MadameAiguille\Checkout\Api\PickupSlotsInterface" type="MadameAiguille\Checkout\Model\Pickup\PickupSlots"/>
 
-    <!-- Point relais : contrôle et adresse du point, pour le tunnel comme pour l'API -->
+    <!-- Point relais et créneau de retrait : contrôlés au passage de l'étape Livraison, pour le tunnel comme pour l'API -->
     <type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
         <plugin name="madameaiguille_assign_relay_point" type="MadameAiguille\Checkout\Plugin\Checkout\AssignRelayPoint" sortOrder="10"/>
+        <plugin name="madameaiguille_assign_pickup_slot" type="MadameAiguille\Checkout\Plugin\Checkout\AssignPickupSlot" sortOrder="20"/>
     </type>
 
-    <!-- Identifiant du point relais : du panier à la commande -->
+    <!-- Point relais et créneau de retrait : du panier à la commande -->
     <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
-        <plugin name="madameaiguille_copy_relay_point_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyRelayPointToOrder" sortOrder="10"/>
+        <plugin name="madameaiguille_copy_delivery_choices_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyDeliveryChoicesToOrder" sortOrder="10"/>
     </type>
 
     <!-- Expédition : « Expédiée » ou « Livrée » (retrait) au lieu du statut natif « complete » -->
     <type name="Magento\Sales\Model\ResourceModel\Order\Handler\State">
         <plugin name="madameaiguille_status_on_completion" type="MadameAiguille\Checkout\Plugin\Sales\StatusOnCompletion" sortOrder="10"/>
+    </type>
+
+    <!-- Email « Prête pour retrait » du lot 7 : rendez-vous, lieu et itinéraire -->
+    <type name="MadameAiguille\Theme\Model\Order\Email\StatusEmailSender">
+        <arguments>
+            <argument name="variableProviders" xsi:type="array">
+                <item name="madameaiguille_pickup" xsi:type="object">MadameAiguille\Checkout\Model\Pickup\EmailVariables</item>
+            </argument>
+        </arguments>
     </type>
 </config>
