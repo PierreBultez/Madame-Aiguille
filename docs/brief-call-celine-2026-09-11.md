@@ -86,7 +86,7 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 | 7 | Confirmer le domaine et son titulaire | Céline / Pierre | ⬜ |
 | 8 | **Mettre une préproduction en ligne sur le domaine** (lot 8a) | Pierre | ⬜ |
 | 9 | **Effectuer un paiement réel pour valider le compte Mollie** | Pierre / Céline | ⬜ après 8 |
-| 10 | Développer le lot 5 | Pierre | ⬜ dès la clé de test |
+| 10 | Développer le lot 5 | Pierre | ✅ livré le 09/10/2026, hors 8a (`documentation-theme.md` §26) |
 
 ---
 

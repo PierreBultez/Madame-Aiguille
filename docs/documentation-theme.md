@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.6 (09/10/2026), lots 6a, 3, 4 et 7 livrés ; identité visuelle officielle intégrée. Les lots 5 et 6b restent en attente du compte marchand Mollie et du brief livraison. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.7 (09/10/2026), lots 6a, 3, 4, 7 et **5** livrés (le 5 hors mise en ligne 8a) ; identité visuelle officielle intégrée. Prochain lot : **6b**, habillage du tunnel. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -12,11 +12,12 @@ Ce document décrit ce qui a été construit, où se trouve chaque chose, et **o
 |---|---|---|
 | Thème enfant | `shop/app/design/frontend/MadameAiguille/default/` | Tout le visuel : CSS, templates, layouts, fontes, images |
 | Module | `shop/app/code/MadameAiguille/Theme/` | Tout le PHP : ViewModels, routes, configuration admin, data patches |
+| Module du tunnel | `shop/app/code/MadameAiguille/Checkout/` | Lot 5 : point relais, retrait sur rendez-vous, paiement sur place, emballage cadeau, et leurs composants Knockout (§26) |
 | Documentation | `docs/` | Cahier des charges, spécifications, charte, maquettes, ce document |
 
 Parent : `Hyva/default` 1.5.2 (`vendor/hyva-themes/magento2-default-theme`). **On ne modifie jamais `vendor/`.** Un template du parent se surcharge en le copiant au même chemin relatif dans le thème enfant (`Magento_Theme/templates/html/header.phtml`, par exemple).
 
-**Règle d'architecture visuelle** : toute surcharge de rendu frontend vit dans le thème enfant, même lorsqu'un module dédié porte la logique métier. Le module expose ses blocs, ViewModels, contrôleurs, validations et configurations ; le thème enfant surcharge ses layouts, `.phtml`, CSS, assets et templates JavaScript. Exemple : le traitement sécurisé de Contact reste dans `app/code/MadameAiguille/Contact`, mais son formulaire est rendu par `app/design/frontend/MadameAiguille/default/MadameAiguille_Contact/templates/form.phtml`. Le checkout Luma du fallback suivra la même règle dans son propre thème enfant Luma au lot 6b.
+**Règle d'architecture visuelle** : toute surcharge de rendu frontend vit dans le thème enfant, même lorsqu'un module dédié porte la logique métier. Le module expose ses blocs, ViewModels, contrôleurs, validations et configurations ; le thème enfant surcharge ses layouts, `.phtml`, CSS, assets et templates JavaScript. Exemple : le traitement sécurisé de Contact reste dans `app/code/MadameAiguille/Contact`, mais son formulaire est rendu par `app/design/frontend/MadameAiguille/default/MadameAiguille_Contact/templates/form.phtml`. Le checkout Luma du fallback suivra la même règle dans son propre thème enfant Luma au lot 6b. **Exception assumée du lot 5** : les composants Knockout du tunnel (point relais, rendez-vous, emballage) sont livrés par `MadameAiguille_Checkout`, faute de thème Luma enfant ; ils restent bruts, et le 6b les habillera en les surchargeant dans ce thème (§26).
 
 Le thème est activé pour la vue *Default Store View* (`design/theme/theme_id = 5`, admin *Contenu › Design › Configuration*).
 
@@ -255,11 +256,11 @@ Template : `Magento_Theme/templates/html/footer.phtml` ; colonnes déclarées da
 | Quoi | Où | Comment |
 |---|---|---|
 | Accroche sous le logo | `default.xml` → bloc `footer.brand`, argument `tagline` | texte traduisible |
-| **Réseaux sociaux** | Admin › *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | Instagram, Facebook, Pinterest — vide = masqué. Ajouter un réseau : `ViewModel/SocialLinks.php` (constante `NETWORKS`) + `system.xml` + icône Lucide (ou SVG dans `Hyva_Theme/web/svg/lucide/`) |
+| **Réseaux sociaux** | Admin › *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | Instagram, Facebook, TikTok (Pinterest retiré au lot 5) — vide = masqué. Ajouter un réseau : `ViewModel/SocialLinks.php` (constante `NETWORKS`) + `system.xml` + icône Lucide (ou SVG dans `Hyva_Theme/web/svg/lucide/`, comme `tiktok.svg`) |
 | Colonne **Boutique** | automatique : catégories de niveau 1 | `footer/shop.phtml` |
 | Colonne **Informations** | `default.xml` → bloc `footer.info`, argument `links` (`label` + `path`) | les `path` sont des URL relatives : identifiant de page CMS, `contact`, etc. |
-| Colonne **Paiement & livraison** | `default.xml` → bloc `footer.services`, arguments `payment_methods` / `shipping_methods` | mentions en mots, à aligner sur les modes réellement activés (lot 5) |
-| **Copyright** | Admin › *Contenu › Design › Configuration › Footer › Copyright* (`design/footer/copyright`) | mention TVA à ajouter quand le statut fiscal sera connu |
+| Colonne **Paiement & livraison** | `default.xml` → bloc `footer.services`, arguments `payment_methods` / `shipping_methods` | Carte bancaire, Sur place au retrait · Mondial Relay, Retrait à l'atelier (alignés au lot 5) |
+| **Copyright** | Admin › *Contenu › Design › Configuration › Footer › Copyright* (`design/footer/copyright`) | porte la mention « TVA non applicable, art. 293 B du CGI. » depuis le lot 5 |
 | Gabarit de colonne (titre + liste, accordéon mobile) | `footer/column.phtml` | réutilisable via `fetchView` |
 
 ## 7. Pages et blocs CMS
@@ -275,7 +276,7 @@ Créés par data patch (`Setup/Patch/Data/`), **une seule fois** ; ensuite ils v
 | `confidentialite` | page | Politique de confidentialité — **contenu générique en place** |
 | `nos-tissus` | page | galerie de motifs référencés pour préparer une demande par contact |
 | `header_announcement` | bloc | bandeau du header |
-| `product_reassurance` | bloc | quatre arguments sous le bouton d'achat de la fiche produit (expédition, paiement, transporteurs, emballage). À aligner sur les modes réels au lot 5 |
+| `product_reassurance` | bloc | quatre arguments sous le bouton d'achat de la fiche produit : expédition sous 4 à 5 jours ouvrés, paiement, Mondial Relay offert dès 60 €, emballage cadeau (alignés au lot 5) |
 
 ### Pages juridiques — contenus génériques
 
@@ -475,6 +476,10 @@ Créer au lot 6b un **second thème enfant de `Magento/luma`**, par exemple `sho
 
 Références en lecture seule : `vendor/magento/module-checkout/view/frontend/web/template/`, `vendor/magento/theme-frontend-luma/Magento_Checkout/web/css/source/`, et les README de `vendor/hyva-themes/magento2-{luma-checkout,theme-fallback}/`. Les templates UI génériques viennent de `vendor/magento/module-ui/view/base/web/templates/`. Luma compile du **LESS**, pas le Tailwind du thème Hyvä. Les styles générés vivent dans `pub/static/frontend/<Vendor>/<theme>/<locale>/css/` et ne se modifient pas directement. En production, leur génération passe par `setup:static-content:deploy`.
 
+### Composants ajoutés au lot 5
+
+Sous la liste des modes de livraison (région native `shippingAdditional`) : carte Mondial Relay, rendez-vous de retrait, case « Emballage cadeau » ; dans le récapitulatif, la ligne d'emballage. Livrés par `MadameAiguille_Checkout`, gabarits bruts, détail au §26. Le 6b les surchargera au même chemin relatif dans le thème Luma enfant (`MadameAiguille_Checkout/web/template/{relay-point,pickup-slot,gift-wrap}.html`, `summary/gift-wrap.html`) et pourra s'appuyer sur leurs classes `madameaiguille-*`.
+
 ### Recette technique du 10/09/2026
 
 - Ajout depuis `/sac-aurora-verveine.html` : une unité de `MA-SAC-VER`, puis accès invité à `/checkout/#shipping` ; formulaire d'adresse et tarif natif Flat Rate existant affichés. Aucune commande créée.
@@ -493,7 +498,9 @@ bin/magento setup:di:compile                 # OBLIGATOIRE après un nouveau plu
 bin/magento config:set <chemin> <valeur>     # ex. design/footer/copyright "…"
 bin/magento indexer:reindex                  # après création de catégories/produits par script
 bin/magento cron:run --group=default         # exécuter les crons (dont le badge Nouveauté) à la main
-vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Theme/Test/Unit   # tests du module
+vendor/bin/phpunit --no-extensions -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille   # tests des modules
+bin/magento madameaiguille:shipping:import-rates [--dry-run]   # grille de frais de port au poids (§26)
+bin/magento madameaiguille:catalog:check-weight                # produits activés sans poids : à passer avant chaque mise en production
 ```
 
 ## 16. Conventions rappelées
@@ -524,6 +531,10 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 7 — Emails | enveloppe commune header/footer aux couleurs de la marque, styles LESS email, notifications « paiement reçu » et « prête pour retrait » (observateur + envoi configurable), accusé de réception du contact réaligné | `635efa5` |
 | 7 — Styleguide et documentation | états du compte sur `/styleguide` via `ViewModel\Styleguide\OrderStates`, sections §21 et §22, mémo Céline complété | `8f33ac5` → `8f2c4c4` |
 | 5 — Préparation (09/10/2026) | contenus génériques des quatre pages juridiques par data patch non destructif, styles CMS des listes, définitions et bandeau de brouillon | `5a23cb8` |
+| 5 — Spike et socle (09/10/2026) | spike Mondial Relay ; zone FR/BE/LU/MC, origine Saint-Épain, TVA FR, chèque coupé, Mollie restreint, message cadeau | `8982ecb` → `718f8bc` |
+| 5 — Livraison | grille au poids versionnée et commande d'import, franco à 60 € depuis le seul seuil du panier, contrôle des poids | `0171883` → `871c67d` |
+| 5 — Tunnel | module `MadameAiguille_Checkout` : point relais Mondial Relay, retrait payé sur place, statuts câblés sur Mollie et l'expédition, rendez-vous de retrait avec réservation, emballage cadeau | `94d5aca` → `cede240` |
+| 5 — Affichage et recette | rassurance, pied de page, bandeau, mention de TVA (PDF, emails, prix), TikTok, lignes longues | `acf530c`, `f1201b7`, `c236760` + documentation |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
@@ -561,7 +572,7 @@ Le panier vide relève du lot 3 (§19). Cette section traite le panier contenant
 
 | Quoi | Où | Comment |
 |---|---|---|
-| **Seuil de livraison offerte** | Admin › *Stores › Configuration › Général › Madame Aiguille › Panier › Seuil de livraison offerte* | Défaut **49 €** (décision de Pierre du 10/09/2026, montant des maquettes). **0 masque complètement la barre.** Ce seuil est un affichage : il devra correspondre à la règle de livraison gratuite réellement configurée au lot 5 |
+| **Seuil de livraison offerte** | Admin › *Stores › Configuration › Général › Madame Aiguille › Panier › Seuil de livraison offerte* | Défaut **60 €** depuis le lot 5 (49 € auparavant). **0 masque la barre et supprime le franco.** C'est aussi ce seuil qui rend le point relais gratuit au checkout (§26) : barre et tarif ne peuvent plus diverger |
 | **Champ code promo** | même écran, *Afficher le champ code promo* | Masqué par défaut : un champ ouvert donne à celles qui n'ont pas de code le sentiment de payer trop cher. À activer le jour où une règle de panier existe. Un coupon déjà appliqué reste toujours affiché et retirable, même réglage désactivé |
 | **Rassurance sous le bouton de commande** | Admin › *Contenu › Blocs › `cart_reassurance`* | Deux lignes : paiement et délai d'expédition. Textes éditables, à aligner sur les prestataires réellement activés (lot 5) |
 | **Mention sous le total** | Admin › *Configuration › Madame Aiguille › Catalogue › Mention sous le prix* | Même réglage que la fiche produit. Vide = rien n'est affiché ; aucune mention fiscale n'est écrite dans le code |
@@ -599,7 +610,7 @@ Le panier vide relève du lot 3 (§19). Cette section traite le panier contenant
 
 Le calcul est **entièrement natif** : appels REST `estimate-shipping-methods` et `totals-information`, mémorisation de l'adresse dans customer-data. Seul le gabarit change.
 
-**Seules les méthodes réellement retournées par Magento sont affichées**, groupées par transporteur. À ce jour une seule méthode est active (Flat Rate, 5 € par article) : c'est elle qui apparaît. Aucun nom de transporteur ni aucun tarif n'est écrit en dur — la boucle par transporteur accueillera Colissimo, Mondial Relay et Chronopost au lot 5 sans refonte. Quand aucune méthode n'est retournée, un message le dit au lieu de laisser la zone vide.
+**Seules les méthodes réellement retournées par Magento sont affichées**, groupées par transporteur. Depuis le lot 5 : Mondial Relay (grille au poids, 0 € au-delà du franco) et, en France, le retrait à l'atelier à 0 €. Aucun nom de transporteur ni aucun tarif n'est écrit en dur. Quand aucune méthode n'est retournée, un message le dit au lieu de laisser la zone vide.
 
 ### Recette du 10/09/2026
 
@@ -695,49 +706,47 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 
 ### Ce qui n'est pas bouclé
 
-- **Email de virement** (RIB, référence à rappeler, délai d'annulation) : la structure existe, les valeurs viendront de la configuration des moyens de paiement, au **lot 5**.
-- **Modalités de retrait** : le gabarit est prêt, le texte exact attend le cadrage avec Céline.
+- ~~**Email de virement**~~ : sans objet depuis le call du 11/09/2026 (carte bancaire en ligne, paiement sur place au retrait). Aucun gabarit n'avait été créé.
+- ~~**Modalités de retrait**~~ : depuis le lot 5, l'email « Prête pour retrait » reçoit aussi `pickup_slot`, `pickup_location_name`, `pickup_location_address` et `pickup_directions_url` (§26). Le commentaire visible reste repris en complément.
+- **Mention de TVA** : en pied de tous les emails depuis le lot 5, via `{{config path="madameaiguille/legal/vat_mention"}}`.
 - **Délivrabilité et SMTP** (SPF, DKIM, DMARC) : dépendent du domaine, **lot 8**. Tant que le SMTP de production n'est pas en place, un email peut partir sans arriver.
-- **Recette de bout en bout** d'une commande réellement payée qui parcourt tous les statuts : elle attend Mollie, **lot 5**.
+- **Recette de bout en bout** d'une commande réellement payée par Mollie : statuts câblés au lot 5, paiement de test à finir par Pierre (§23).
 
-## 23. Après les lots 4 et 7 : ce qui reste à faire
+## 23. Après le lot 5 : ce qui reste à faire
 
-Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants demandent encore du contenu réel, une configuration de production ou appartiennent aux lots suivants.
-
-> **Réorganisation du 10/09/2026.** Les lots 5 (livraison et paiements) et 6b (habillage du checkout) attendent la création du compte marchand **Mollie** — prestataire de paiement retenu, déjà installé et activé dans le projet — et un brief avec Céline sur les modes de livraison. Le **lot 7** a été livré à leur place ; la suite est donc **5 → 6b → 8**. Toutes les lignes marquées « lot 5 » ci-dessous restent ouvertes plus longtemps que prévu : ce sont, pour la plupart, des **promesses affichées à la cliente qui doivent devenir vraies avant l'ouverture des ventes**.
+Les lots 3, 4, 7 et 5 sont fonctionnellement terminés. Les éléments suivants demandent du contenu réel, une configuration de production, une action de Pierre ou de Céline, ou appartiennent aux lots suivants. Ordre restant : **8a → 6b → 8** (8a peut avancer en parallèle du 6b).
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
+| **Mise en ligne anticipée (8a)** | Domaine, DNS, préproduction HTTPS, SMTP ; `payment/mollie_general/use_webhooks` à réactiver ; si authentification HTTP, **exclure la route du webhook Mollie** ; rejouer `madameaiguille:shipping:import-rates` et `madameaiguille:catalog:check-weight`. Puis **un paiement réel** pour faire valider le compte Mollie, et les clés de production | Pierre, dès que domaine et serveur sont disponibles — différé le 09/10/2026 |
+| **Paiement Mollie de bout en bout** | Finir le paiement de test de la commande `000000005` (carte de test Mollie, les champs carte refusent la saisie simulée de l'agent) ; vérifier le passage en « Paiement reçu » et l'email | Pierre, avant 8a |
+| **Recette visuelle de l'administration** | Ouvrir *Madame Aiguille* (Mondial Relay, Retrait à l'atelier, Emballage cadeau, Mentions légales), *Méthodes de livraison* (Retrait à l'atelier, Mondial Relay), *Moyens de paiement*, une commande de retrait, une facture et un avoir avec emballage. L'agent n'a pas de session : structure et grille contrôlées par script seulement | Pierre, avant la fusion du 6b |
+| **Commandes et stocks de test** | Les commandes de recette `000000005` à `000000018` réservent du stock (le sac Verveine n'est plus vendable) et une place de rendez-vous : les **annuler dans l'administration** (jamais par script) | Pierre |
+| **Code enseigne Mondial Relay** | Ouvrir ou transférer le compte **Offre Start**, puis saisir le code dans *Madame Aiguille › Mondial Relay*. Tant que `BDTEST` est en place, la carte affiche « compte de démonstration » | Céline, avant 8a |
+| **Tarifs Mondial Relay** | Remplacer les tarifs provisoires de `Theme/data/tablerates-mondial-relay.csv` (FR, MC, BE, LU) par la politique de prix de Céline, puis rejouer l'import ; peser l'emballage type | Céline (tarifs), Pierre (CSV) |
+| **Lieu de retrait réel** | Adresse, coordonnées et, si souhaité, image de plan dans *Madame Aiguille › Retrait à l'atelier*. Un lieu générique « Saint-Épain (37800) » est en place | Céline |
+| **Moyens de paiement Mollie** | Pierre a réactivé Apple Pay, Google Pay, Bancontact, iDEAL, Wero et **Klarna** après le patch « carte seule », et souhaite garder cette configuration. **Écart avec le call** (CB uniquement, pas de paiement fractionné) et avec la **CGV**, qui ne cite que la carte bancaire : trancher, puis aligner la CGV ou l'admin | Pierre / Céline, avant 8a |
+| **Contenus juridiques** | Brouillons en place, e-mail de contact rempli au lot 5. Restent entre crochets : hébergeur, médiateur de la consommation, prestataire d'envoi d'e-mails, date de mise en ligne, délai de réponse. Ajouter l'emballage cadeau à la CGV ; la confidentialité doit citer Mondial Relay et OpenStreetMap (chargés au choix du point relais) | Céline avec conseil, avant ouverture des ventes |
+| **Habillage du tunnel (6b)** | Thème Luma enfant ; habiller les composants du lot 5 (bruts) ; la page de succès et plusieurs libellés du tunnel sont encore en anglais (« Next », « Shipping Methods », « Thank you for your purchase! ») | Lot 6b |
+| **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
+| **Colis de plus de 5 kg** | `tablerate` n'a pas de borne haute : un colis lourd prend le tarif du dernier palier | Limite assumée, improbable |
+| **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
 | Histoire et présentation | Remplacer les textes génériques de `a-propos`, `home_story` et `contact_help` depuis *Contenu › Pages / Blocs* | Céline, avant publication |
-| Marchés, congés et annonces | Renseigner `home_actualities` et `contact_locations` ; ne publier que des dates confirmées | Céline, au fil de l'activité |
-| Pages juridiques | Rédiger `livraison-retours`, `cgv`, `mentions-legales` et `confidentialite` avec les coordonnées, délais et règles réels | Céline avec conseil adapté, avant ouverture des ventes |
+| Marchés, congés et annonces | Renseigner `home_actualities` et `contact_locations` ; ne publier que des dates confirmées. Les jours sans retrait se saisissent dans *Retrait à l'atelier* | Céline, au fil de l'activité |
 | Tissus et photos | Remplacer les références et visuels génériques de `nos-tissus`, puis fournir les photos catalogue finales au ratio 4:5 | Céline, avant mise en production |
 | CTA « Voir toutes les nouveautés » | Choisir sa destination définitive ; l'accueil ne possède pas de catégorie globale « Boutique » | Pierre / Céline, avant publication |
 | Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
-| Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter tous les emails sur le domaine final. **Sans SMTP de production, un email peut partir sans arriver** | Lot 8 |
-| **Zone de vente** | **France, Belgique, Luxembourg** — pays francophones de l'UE desservis par Mondial Relay ; Monaco suit la France. **Site monolingue français.** **Aucune TVA facturée**, Céline étant en franchise de base — **à revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année**. La **Suisse** est écartée : hors UE, hors desserte Mondial Relay | Pierre, lot 5 |
-| **Rendez-vous de retrait** | Sélecteur de date et d'heure dans le tunnel, auto-confirmé, lieu unique paramétrable avec aperçu cartographique. **Composant Knockout** (le tunnel est en Luma), réservation réelle du créneau à prévoir. Lieu générique en attendant l'adresse de Céline | Pierre, lot 5 |
-| **Emballage cadeau** | Option payante à **2 €**, prix réglable en back-office. **Pas natif en Open Source** (le *Gift Wrapping* est réservé à Adobe Commerce) : option, ligne de total, report sur commande, facture et emails à construire | Pierre, lot 5 |
-| **Contenus juridiques** | Brouillons génériques **en place** (§7). Restent à faire : relecture, remplacement des valeurs entre crochets (e-mail de contact, hébergeur, médiateur, date) et retrait du bandeau « Brouillon » | Céline, avant ouverture des ventes |
-| **Franco porté à 60 €** | Décision du 09/10/2026. Le seuil est encore à **49 €** à deux endroits qui doivent rester d'accord : *Madame Aiguille › Panier* et `carriers/freeshipping/free_shipping_subtotal` | Pierre, lot 5 |
-| **Réseaux sociaux** | Pinterest n'est pas utilisé : à retirer. **TikTok à ajouter** (champ de configuration, icône, pied de page) | Pierre, lot 5 |
+| Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter tous les emails sur le domaine final. **Sans SMTP de production, un email peut partir sans arriver** | 8a |
+| **Seuil de TVA intra-UE** | Aucune TVA facturée, Céline étant en franchise de base. **À revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année** (guichet OSS) ; la mention se change dans *Mentions légales* | Céline avec conseil |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
-| **Franco de port** | ~~Aucune règle Magento n'offre la livraison~~ → **réglé** : au 11/09/2026, `carriers/freeshipping/active = 1` avec `free_shipping_subtotal = 49`, soit le même montant que la barre affichée. Reste à recetter le franco **dans le tunnel** une fois les vrais transporteurs en place | Pierre, lot 5 |
-| **Pays par défaut et origine d'expédition** | `general/country/default` est passé à **FR**. `shipping/origin/country_id` vaut toujours **US** (`90034`) et `tax/defaults/country` aussi : à passer sur **35 Grande Rue, 37800 Saint-Épain, FR** avant tout calcul de port ou de TVA | Pierre, lot 5 |
-| **Tarif d'expédition provisoire** | `flatrate` actif à **5 € par article** (`type = I`), `freeshipping` actif, `tablerate` inactif avec sa condition déjà sur `package_weight`. À remplacer par **une** grille au poids — Mondial Relay est le transporteur unique retenu au call du 11/09/2026 | Pierre, lot 5 |
-| **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié, hors périmètre du lot 4 | Décision Pierre |
-| **Rassurance et code promo du panier** | Renseigner `cart_reassurance` avec les moyens de paiement et le délai réellement tenus ; activer le champ code promo le jour où une règle de panier existe | Céline, avant publication |
-| Livraison et paiement | Choisir les prestataires et tarifs, puis aligner `product_reassurance`, le footer, la page Livraison et la mention sous le prix sur les modes réellement activés | Lot 5 |
-| **Moyens de paiement à nettoyer** | `checkmo` (chèque) à désactiver ; `free` à conserver. Mollie expose 38 méthodes → **à restreindre à la carte bancaire seule** (décision du call du 11/09/2026) | Pierre, lot 5 |
-| **Parcours réel des statuts** | Recetter une commande réellement payée qui parcourt les six statuts, du paiement à la livraison. Les statuts, les phrases et la frise sont livrés, mais aucun paiement ne les déclenche encore | Pierre, lot 5 |
-| ~~**Email de virement**~~ | **Sans objet** : le call du 11/09/2026 retient la **carte bancaire uniquement**. La structure esquissée au lot 7 est à retirer ou neutraliser au lot 5 | Pierre, lot 5 |
-| **Modalités de retrait** | **Paiement sur place** (TPE ou espèces), créneaux **jeudi 9 h-18 h** et **vendredi 9 h-11 h 30**. **Annulation au rendez-vous non honoré** : pas de cron, Céline annule la commande dans l'administration — procédure à écrire dans son mémo au lot 5. Reste ouverte : la zone géographique du retrait | Pierre / Céline, lot 5 |
+| **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié | Décision Pierre |
+| **Code promo du panier** | Activer le champ le jour où une règle de panier existe | Céline |
 | **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* ; l'enveloppe de marque s'applique automatiquement | Céline, avant publication |
-| **Expéditeur des emails** | Renseigner les identités d'expéditeur (*Boutiques › Configuration › Général › Contacts de la boutique*) : elles apparaissent dans chaque email envoyé | Céline / Pierre, lot 8 |
+| **Expéditeur des emails** | Les identités d'expéditeur valent `contact@madame-aiguille.fr` ; à confirmer avec le domaine | Céline / Pierre, 8a |
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
-| Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px. Le contrôle automatisé du 10/09/2026 a été interrompu par la limite d'usage de l'outil navigateur ; les formats, ratios, chemins et caches Magento ont été contrôlés | Prochaine recette locale |
+| Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px | Prochaine recette locale |
 
-Le lot suivant est le **lot 5 — Livraison et paiements** (prompt de reprise : `docs/prompts/prompt-lot5.md`), qui conditionne la véracité du franco affiché, du pays par défaut, des tarifs de l'estimateur et du parcours des statuts. Il attend le compte marchand Mollie et le brief livraison avec Céline. Viennent ensuite le lot 6b (habillage du checkout) puis le lot 8 (back-office, exploitation, mise en production).
+Soldé au lot 5 : zone de vente, origine d'expédition et TVA, franco à 60 € réellement appliqué, grille au poids, point relais, retrait et rendez-vous, emballage cadeau, paiement sur place, chèque coupé, statuts câblés, email de virement (sans objet), rassurance et pied de page, bandeau, mention de TVA, TikTok, contrôle des poids. Détail au §26. Le prompt du lot suivant est `docs/prompts/prompt-lot6b.md`.
 
 ## 24. Mémo Céline — tout ce qui se règle depuis le back-office
 
@@ -759,19 +768,30 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 
 | Réglage | Effet | Détail |
 |---|---|---|
-| Réseaux sociaux | Liens affichés dans le pied de page ; un champ vide masque le réseau | §3 |
+| Réseaux sociaux | Liens affichés dans le pied de page : Instagram, Facebook, TikTok. Un champ vide masque le réseau | §6 |
+| Mentions légales › Mention de TVA | Imprimée sur les factures PDF et en pied de tous les e-mails. « TVA non applicable, art. 293 B du CGI. » tant que la franchise s'applique | §26 |
+| Mondial Relay › Code enseigne | Code du compte pro (Offre Start). « BDTEST » = démonstration, la carte l'affiche | §26 |
+| Retrait à l'atelier | Nom, adresse et indications du lieu ; latitude / longitude (lien « Itinéraire ») ; image de plan facultative ; **disponibilités de chaque semaine** (jour, de, à — plusieurs plages possibles) ; durée d'un créneau ; clientes par créneau ; délai minimum avant un retrait ; nombre de jours proposés ; **jours sans retrait** (une date `AAAA-MM-JJ` par ligne, ou une période `AAAA-MM-JJ/AAAA-MM-JJ`) | §26 |
+| Emballage cadeau | Proposer ou non l'option, son **prix**, son libellé et le texte affiché sous la case | §26 |
 | Catalogue › Seuil de rareté | À partir de combien d'exemplaires restants la mention « Plus que N exemplaires » s'affiche. `0` désactive | §8 |
 | Catalogue › Mention sous le prix | Petite ligne sous le prix en fiche produit **et** sous le total du panier. Vide = rien | §8, §20 |
-| Panier › Seuil de livraison offerte | Montant de la barre « Plus que X € pour la livraison offerte ». `0` masque la barre. **Doit correspondre à une vraie règle de livraison gratuite** | §20 |
+| Panier › Seuil de livraison offerte | Montant à partir duquel le point relais est offert (**60 €**), et montant de la barre du panier. `0` supprime le franco et la barre. Penser au bandeau et au bloc `product_reassurance`, qui citent « 60 € » en toutes lettres | §20, §26 |
 | Panier › Afficher le champ code promo | Masqué tant qu'aucun code n'existe | §20 |
 | Formulaire de contact › Conservation des pièces jointes | Durée avant suppression automatique des photos reçues (30 jours par défaut) | §18 |
+
+### Livraison — *Boutiques › Configuration › Ventes › Méthodes de livraison*
+
+| Réglage | Effet | Détail |
+|---|---|---|
+| Retrait à l'atelier (Madame Aiguille) | Activer ou couper le retrait ; libellés ; **pays où il est proposé** (France par défaut) | §26 |
+| Mondial Relay (*Table Rates*) | Activation et libellés. **Les tarifs ne se saisissent pas ici** : envoyer la grille à Pierre, qui met à jour le fichier versionné et le réimporte | §26 |
 
 ### Emails — *Boutiques › Configuration › Ventes › Emails de vente*
 
 | Réglage | Effet | Détail |
 |---|---|---|
 | Paiement reçu › Activé / Expéditeur / Gabarit | Notification envoyée automatiquement quand une commande passe au statut « Paiement reçu » | §22 |
-| Prête pour retrait › Activé / Expéditeur / Gabarit | Notification envoyée quand une commande passe au statut « Prête pour retrait ». **Le corps du message reprend le commentaire de statut visible saisi dans la commande** : c'est là qu'on écrit le lieu, la date et l'heure du retrait | §22 |
+| Prête pour retrait › Activé / Expéditeur / Gabarit | Notification envoyée quand une commande passe au statut « Prête pour retrait ». Elle contient automatiquement **le rendez-vous choisi, le lieu et le lien d'itinéraire** ; un commentaire visible saisi dans la commande s'y ajoute | §22, §26 |
 | Confirmation, expédition, avoir… | Réglages natifs de Magento, inchangés | §22 |
 
 Les **textes** des emails se modifient dans *Marketing › Communications › Modèles d'e-mail* : dupliquer le gabarit voulu, le modifier, puis le sélectionner dans le réglage correspondant. L'en-tête au logo et le pied de page de la marque s'appliquent automatiquement — inutile de les recopier dans chaque gabarit.
@@ -784,6 +804,11 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Les six statuts | *En attente de paiement*, *Paiement reçu*, *En préparation*, *Expédiée*, *Prête pour retrait*, *Livrée*. La cliente voit le même libellé, accompagné d'une phrase qui explique où en est sa commande | §21 |
 | Prévenir la cliente | Cocher **Visible par le client** avant d'enregistrer un commentaire. Pour un retrait, y écrire les modalités : elles partent dans l'email | §21, §22 |
 | Renommer un statut | *Ventes › Statuts de commande* : le libellé change côté cliente **et** côté back-office. Ne pas supprimer un statut ni changer son code | §21 |
+| **Expédier en point relais** | L'*Adresse de livraison* de la commande est celle du point (« NOM — Point relais FR-087807 »). Créer l'étiquette sur l'espace pro Mondial Relay avec cette adresse, puis cliquer **Expédier** dans la commande (numéro de suivi facultatif) : la commande passe en « Expédiée » et l'email d'expédition part | §26 |
+| **Préparer un retrait** | Le rendez-vous figure dans *Méthode de livraison* (« Retrait à l'atelier — jeudi 15 octobre 2026 à 9 h 00 »). Quand la commande est prête : statut **Prête pour retrait**, l'email part avec le rendez-vous et le lieu | §26 |
+| **Remettre un retrait** | Au rendez-vous, encaisser (TPE ou espèces), puis **Facturer** et **Expédier** la commande : elle passe en « Livrée » | §26 |
+| **Rendez-vous non honoré** | Annuler la commande (*Annuler* en haut de la commande) : le stock des créations et le créneau sont libérés automatiquement. Prévenir la cliente si besoin par un commentaire visible | §26 |
+| Emballage cadeau | Ligne « Emballage cadeau » dans les totaux de la commande ; le message à écrire sur la carte est dans *Message cadeau* du détail | §26 |
 
 ### Catalogue — *Catalogue › Produits* et *Catalogue › Catégories*
 
@@ -804,6 +829,8 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 - **Ne pas décocher « Gérer le stock »** sur une création : les badges et le plafond de quantité du panier en dépendent.
 - **Ne pas supprimer une catégorie contenant des produits** sans les avoir déplacés d'abord.
 - **Ne pas annoncer un délai ou un tarif** dans un bloc CMS tant qu'il n'est pas confirmé : les textes actuels sont des exemples à remplacer.
+- **Ne pas réactiver** les transporteurs *Flat Rate* et *Free Shipping* : le franco est porté par le point relais, une méthode « Livraison gratuite » séparée n'aurait pas de point relais.
+- **Ne pas importer une grille de tarifs depuis l'administration** : elle serait écrasée au prochain import du fichier versionné. Passer par Pierre.
 
 ## 25. Rituel de fin de lot
 
@@ -836,3 +863,132 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 
 - Écrire le **prompt de reprise du lot suivant** dans `docs/prompts/`, sur le modèle de `prompt-lot5.md` : état de départ vérifiable, ce qui est déjà tranché, règles non négociables, périmètre, ce qui ne pourra pas être bouclé, décisions à demander à Pierre, pièges connus du projet.
 - Mettre à jour le prompt avec les pièges découverts pendant le lot qu'on vient de finir.
+
+## 26. Livraison et paiements (lot 5)
+
+Lot livré le 09/10/2026 sur `codex/lot-5-livraison-paiements`, **hors 8a** (mise en ligne anticipée), différé par Pierre faute d'accès au domaine et au serveur. Périmètre arrêté par le call Céline du 11/09/2026 et les arbitrages de Pierre du 09/10/2026 (`docs/brief-call-celine-2026-09-11.md`). Spike Mondial Relay : `docs/spike-mondial-relay.md`.
+
+### Où se trouve quoi
+
+La logique du tunnel vit dans un **nouveau module `MadameAiguille_Checkout`**. Ses composants Knockout (`view/frontend/web/`) sont livrés par le module, et non par le thème enfant : le tunnel tourne dans le thème **Luma** du fallback, qui n'hérite de rien du thème Hyvä, et le thème Luma enfant n'existe pas encore (lot 6b). Les gabarits sont donc volontairement **bruts** ; leur habillage se fera au 6b, en les surchargeant dans `MadameAiguille/checkout` au même chemin relatif.
+
+| Mécanisme | Fichiers |
+|---|---|
+| Socle de vente (zone, origine, TVA, chèque coupé, message cadeau) | `Theme/Setup/Patch/Data/ConfigureSalesFoundations.php` |
+| Grille au poids Mondial Relay | `Theme/data/tablerates-mondial-relay.csv`, `Theme/Model/Shipping/{TableRateImporter,GridRules}.php`, `Theme/Console/Command/ImportTableRates.php`, `Theme/Setup/Patch/Data/ConfigureRelayShipping.php` |
+| Franco | `Theme/Plugin/Shipping/FreeRelayAboveThreshold.php`, `Theme/Setup/Patch/Data/DisableNativeFreeShipping.php` |
+| Contrôle des poids | `Theme/Model/Catalog/MissingWeightFinder.php`, `Theme/Console/Command/CheckWeight.php` |
+| Point relais | `Checkout/Model/RelayPoint/*`, `Checkout/Plugin/Checkout/AssignRelayPoint.php`, `Checkout/Observer/ApplyRelayPoint.php`, `view/frontend/web/js/{view,model}/relay-point.js`, `template/relay-point.html`, `etc/csp_whitelist.xml` |
+| Retrait à l'atelier et paiement sur place | `Checkout/Model/Carrier/Pickup.php`, `Checkout/Observer/RestrictPaymentToDelivery.php`, `Checkout/Setup/Patch/Data/EnablePayOnSite.php` |
+| Rendez-vous de retrait | `Checkout/Model/Pickup/*`, `Checkout/Plugin/Checkout/AssignPickupSlot.php`, `Checkout/Observer/{ReservePickupSlot,AttachPickupBooking,ReleasePickupBooking}.php`, `Checkout/Block/Adminhtml/Form/Field/*`, `etc/webapi.xml`, `js/view/pickup-slot.js`, `template/pickup-slot.html` |
+| Emballage cadeau | `Checkout/Model/GiftWrap/*`, `Checkout/Model/Total/{Quote,Invoice,Creditmemo}/GiftWrap.php`, `etc/sales.xml`, `etc/pdf.xml`, `Checkout/Block/Sales/GiftWrapTotal.php` (+ layouts `sales_*`), `Checkout/Model/Mollie/GiftWrapLine.php`, `js/view/gift-wrap.js`, `js/view/summary/gift-wrap.js` |
+| Statuts sur le réel | `Checkout/Setup/Patch/Data/MapMollieStatuses.php`, `Checkout/Plugin/Sales/StatusOnCompletion.php` |
+| Report sur la commande | `Checkout/Plugin/Sales/CopyDeliveryChoicesToOrder.php` (adresse), `Checkout/Observer/CopyGiftWrapToOrder.php` (montants) |
+| Validation de l'étape Livraison, envoi au serveur, récapitulatif | `js/mixin/{shipping,payload-extender,shipping-information}-mixin.js` |
+| Textes alignés, mention de TVA, TikTok | `Theme/Setup/Patch/Data/{AlignDisplayWithDelivery,AlignHeaderAnnouncement}.php`, `Theme/Plugin/Sales/VatMentionOnInvoicePdf.php`, `Magento_Email/email/footer.html`, `Magento_Theme/layout/default.xml` |
+
+### Configuration arrêtée
+
+Posée par data patches, une seule fois : un réglage modifié ensuite dans l'admin n'est jamais réécrit.
+
+| Chemin | Valeur |
+|---|---|
+| `general/country/allow` | `FR,BE,LU,MC` — la Suisse est écartée |
+| `shipping/origin/*` | 35 Grande Rue, 37800 Saint-Épain, Indre-et-Loire, FR |
+| `tax/defaults/country` | `FR` ; aucune règle de taxe, prix TTC = prix encaissés |
+| `payment/checkmo/active` | `0` |
+| `payment/mollie_methods_*/active` | le patch ne laissait que la carte bancaire ; **Pierre a ensuite réactivé** Apple Pay, Google Pay, Bancontact, iDEAL, Wero et Klarna depuis l'admin et demandé de garder cette configuration (09/10/2026). Écart avec le call consigné au §23 |
+| `payment/mollie_general/order_status_*` | `madameaiguille_pending_payment` / `madameaiguille_payment_received` |
+| `payment/cashondelivery/*` | actif, renommé « Paiement sur place » |
+| `carriers/tablerate/*` | actif, « Mondial Relay — Livraison en point relais », condition `package_weight` |
+| `carriers/flatrate/active`, `carriers/freeshipping/active` | `0` |
+| `carriers/madameaiguille_pickup/*` | actif, France seulement |
+| `sales/gift_options/allow_order` | `1` — le message cadeau natif se saisit dans le panier |
+| `madameaiguille/cart/free_shipping_threshold` | `60` (défaut du module) |
+
+Les clés Mollie (`payment/mollie_general/*`) sont saisies dans l'admin par Pierre ; aucune n'est dans le dépôt. `use_webhooks = disabled` en local : **à réactiver en préproduction**.
+
+### Grille au poids
+
+Le CSV a le format de l'export natif de l'admin (`Country, Region/State, Zip/Postal Code, Weight (and above), Shipping Price`), paliers 0 · 0,25 · 0,5 · 1 · 2 · 5 kg pour FR, MC, BE et LU. **Tarifs provisoires** en attendant les tarifs pro Mondial Relay de Céline.
+
+```bash
+bin/magento madameaiguille:shipping:import-rates --dry-run   # valide sans écrire
+bin/magento madameaiguille:shipping:import-rates             # remplace la grille du site « base »
+```
+
+La lecture reprend l'import natif ; en plus, chaque pays doit être un pays de vente et commencer à 0 kg. Tout se fait dans **une transaction** : un CSV invalide laisse la grille en place. Rejouable en préproduction et en production.
+
+**Limite native** : `tablerate` n'a pas de borne haute. Un colis de plus de 5 kg prend le tarif du dernier palier.
+
+### Franco
+
+Une seule valeur : *Madame Aiguille › Panier › Seuil de livraison offerte*. La barre du panier et le tarif lisent la même valeur ; au-delà du seuil, le point relais passe à 0 € (sous-total avant remise, comme la barre). Le carrier natif `freeshipping`, qui affichait le franco comme une méthode à part sans point relais, est coupé.
+
+### Point relais
+
+Widget officiel Mondial Relay, chargé **à la demande** au premier choix du point relais : aucune requête vers Mondial Relay, unpkg ou OpenStreetMap avant. Seul le **code enseigne** est nécessaire (*Madame Aiguille › Mondial Relay*), `BDTEST` en attendant l'Offre Start ; il est complété à huit caractères par des espaces.
+
+Pendant le tunnel, **l'adresse du panier reste celle de la cliente** : le point validé est mémorisé à côté (`quote_address.madameaiguille_relay_point_id` et `madameaiguille_relay_point`, JSON). À la validation, l'adresse du point devient l'adresse de livraison **de la commande** : société « NOM — Point relais FR-087807 », rue, code postal, ville, pays ; nom et téléphone de la cliente conservés pour l'étiquette. L'identifiant est gardé dans `sales_order_address.madameaiguille_relay_point_id`.
+
+Contrôles serveur : point obligatoire, identifiant `XX-NNNNNN` cohérent avec le pays, pays de vente, champs non vides. Monaco cherche dans le réseau français.
+
+### Retrait à l'atelier et rendez-vous
+
+Transporteur `madameaiguille_pickup` à 0 €, France seulement (réglage natif *Pays*). Paiement **sur place** uniquement — et les paiements en ligne ne sont proposés qu'avec le point relais (`Observer\RestrictPaymentToDelivery`, la méthode `free` reste toujours possible).
+
+La cliente choisit un jour puis une heure parmi les créneaux libres, lus par `GET /V1/madameaiguille/pickup-slots`. Calcul : plages hebdomadaires, durée d'un créneau, délai de prévenance, horizon, jours sans retrait (`Model\Pickup\SlotCalendar`, testé). Le créneau est revérifié au passage de l'étape Livraison, puis **réservé à la validation de la commande** : une ligne par place dans `madameaiguille_pickup_booking`, clé unique `(slot, seat)`. Deux clientes qui valident le même créneau au même instant : la seconde reçoit « Ce créneau vient d'être réservé. Revenez à l'étape Livraison pour en choisir un autre. » La place est libérée si la commande échoue, ou à l'**annulation** de la commande.
+
+Restitution : le rendez-vous s'ajoute à la description de livraison (« Retrait à l'atelier - … — jeudi 15 octobre 2026 à 9 h 00 »), donc à l'admin, aux emails, à la facture et au compte. L'email « Prête pour retrait » reçoit le rendez-vous, le lieu et le lien d'itinéraire (`Model\Pickup\EmailVariables`, branché sur l'expéditeur du lot 7 par `Theme\Model\Order\Email\TemplateVariablesProviderInterface`). Le rendez-vous est formaté dans la **langue de la boutique**, pas celle de l'utilisateur de l'admin.
+
+Lieu générique en place : « Atelier Madame Aiguille, Saint-Épain (37800) ». Pas de carte interactive : une image de plan facultative et un lien d'itinéraire Google Maps, pour un lieu unique et sans question RGPD.
+
+### Emballage cadeau
+
+Option de l'étape Livraison, 2 € par défaut (*Madame Aiguille › Emballage cadeau* : activation, prix, libellé, texte). Le *Gift Wrapping* natif est réservé à Adobe Commerce : la ligne est un total maison, porté par le panier (`quote.madameaiguille_gift_wrap`, montants sur `quote_address`), la commande, **la première facture** et **l'avoir qui solde la commande** (un retour partiel ne rembourse pas l'emballage). Affichée dans le récapitulatif du tunnel, le compte, les emails, l'admin et le PDF. Mollie reçoit une ligne de surcharge dédiée, pour que la somme des lignes égale le total.
+
+Le **message cadeau** natif (la carte écrite à la main) se saisit dans le panier et s'affiche dans le détail de commande depuis le lot 7.
+
+### Statuts
+
+| Évènement | Statut |
+|---|---|
+| Commande Mollie créée | En attente de paiement |
+| Paiement Mollie capté | Paiement reçu → email du lot 7 |
+| Commande de retrait créée | `pending`, affichée « En attente de paiement » |
+| Expédition d'un colis | Expédiée (+ email d'expédition natif) |
+| « Expédition » d'un retrait (remise en main propre) | Livrée |
+
+Un statut posé à la main par Céline n'est jamais réécrit. L'email de virement esquissé au lot 7 n'avait pas de gabarit : rien à retirer ; les mentions « virement » des blocs, du pied de page et du styleguide sont supprimées.
+
+### Mentions et affichage
+
+« TVA non applicable, art. 293 B du CGI. » : réglage *Madame Aiguille › Mentions légales*, imprimé en pied de chaque page des **factures PDF**, en pied de **tous les emails** (`{{config}}` autorisé par `di.xml`), sous le prix et dans le copyright. Rassurance, pied de page et bandeau ne promettent plus que Mondial Relay, le retrait, la carte bancaire ou le paiement sur place, 4 à 5 jours ouvrés et le franco à 60 €. **TikTok** remplace Pinterest.
+
+### Pièges rencontrés
+
+- **CSP bloquante du tunnel** (Magento ≥ 2.4.7) : le widget Mondial Relay injecte un script inline (`MondialRelayLanguage`) et des `onclick` inline. Le script et trois gestionnaires statiques sont autorisés par empreinte ; le composant définit aussi la variable lui-même ; les `onclick` de la liste sont retirés en phase de capture et l'action est rejouée par `FocusOnMap`. Les onglets Horaires / Photo de l'infobulle restent bloqués (identifiants variables).
+- **`populateWithArray()` ignore les clés sans setter** : un fieldset ne suffit pas pour reporter un champ maison du panier vers la commande. Adresse : plugin `afterConvert` sur `ToOrderAddress`. Commande : `QuoteManagement` fusionne en plus par `mergeDataObjects()` → observateur sur `sales_model_service_quote_submit_before`.
+- **Titre d'un segment de total** : l'API ne le rend que si c'est une `Phrase` ; une chaîne donne un titre vide.
+- **Ordre des totaux du tunnel** : fixé par *Ventes › Ordre des totaux du tunnel* (`sales/totals_sort`) ; un `sortOrder` maison doit s'y intercaler (livraison 30, taxe 40).
+- **Clé de traduction avec deux-points** dans un gabarit Knockout (`translate="'Votre rendez-vous :'"`) : le préprocesseur produit une liaison invalide et Knockout abandonne tout le sous-arbre, sans erreur visible.
+- **Fichiers statiques figés en développement** : `Cache-Control: immutable`, un an. Ni Ctrl+Maj+R ni le vidage du cache ne suffisent pour un JS chargé par RequireJS : supprimer `pub/static/deployed_version.txt` (régénéré à la requête suivante). Le dictionnaire `pub/static/frontend/Magento/luma/fr_FR/js-translation.json` se régénère de même, puis vider `mage-translation-storage` dans le `localStorage` du navigateur. La page du tunnel elle-même peut aussi rester en cache : recharger par une URL différente.
+- **Nouvel argument `di.xml` (commande CLI, plugin)** : `setup:di:compile`. Une compilation lancée pendant que php-fpm sert des pages peut échouer sur « directory not empty » : relancer.
+- **Message natif trompeur** : un produit sans stock vendable donne « Some of the products are disabled » au passage de commande par l'API.
+
+### Recette du 09/10/2026
+
+- Spike : widget avec `BDTEST`, points en FR (37800), BE (1000), LU (1611, 2449, 4011, 9010), sélection et callback.
+- Tarifs par l'API : FR 5,50 € et BE / LU 6,50 € pour un sac de 0,25 à 0,5 kg ; Suisse sans tarif ; 0 € au-delà de 60 € ; plus de méthode « Livraison gratuite » séparée.
+- Import : à blanc, réel, rejoué ; CSV invalide refusé, grille intacte.
+- Point relais dans le navigateur : 7 points autour de Saint-Épain, sélection au clic sans erreur CSP, blocage de l'étape sans point, refus serveur sans point ou hors zone, adresse du panier inchangée, adresse de commande = point (`FR-087807`).
+- Retrait : FR seulement, 0 €, « Paiement sur place » seul ; point relais : paiements en ligne seuls.
+- Rendez-vous : 65 créneaux sur 3 semaines au 09/10 (premier : jeudi 15 à 9 h, prévenance 48 h) ; **collision** de deux paniers sur le même créneau → le second refusé ; créneau retiré de l'API puis rendu à l'annulation ; commande passée dans le navigateur, description et réservation conformes.
+- Statuts : commande Mollie en « En attente de paiement » ; retrait facturé puis expédié → « Livrée ».
+- Emballage : segment « Emballage cadeau 2,00 € » placé après la livraison ; commande à 34 € dont 2 € ; facture à 34 €, reste dû 0 ; ligne présente dans l'email et le PDF.
+- Mentions : PDF de facture, directive `{{config}}` des emails en mode strict, sous le prix, copyright.
+- Visuel à 1440 et 390 px : fiche produit (rassurance, mention), panier (barre à 60 €, rassurance, bandeau corrigé), tunnel à 375 px sans débordement.
+- Administration : **pas de session disponible pour l'agent** ; structure des sections *Madame Aiguille* (Mondial Relay, Retrait, Emballage, Mentions légales) et *Méthodes de livraison* chargée sans erreur, grille des plages rendue avec ses valeurs par défaut. Contrôle visuel à faire par Pierre (§23).
+- Tests unitaires : **85 tests, 228 assertions**. `phpcs --standard=Magento2` : 0 erreur ; avertissements de docblocks absents, comme le reste du projet.
+- `/styleguide` : **aucun état ajouté**. Les composants du lot vivent dans le tunnel Luma, que la page Hyvä ne sait pas rendre ; leur démonstration se fait dans le tunnel lui-même. Les textes alignés (rassurance, mention sous le prix) apparaissent dans les vrais blocs de la fiche et du panier.
+- Paiement Mollie de bout en bout **non bouclé par l'agent** : les champs carte de la page de test Mollie sont des iframes qui refusent la saisie simulée. La commande `000000005` attend son paiement de test.

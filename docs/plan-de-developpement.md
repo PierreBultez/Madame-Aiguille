@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.6 (09/10/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5 + 8a**, cadré par le call Céline et les arbitrages de Pierre du 09/10/2026
+Document interne — v2.7 (09/10/2026), lots 6a et 3 validés, lots 4, 7 et **5** livrés et fusionnés (le 5 hors 8a) ; **prochain lot : 6b**, avec 8a en parallèle dès que domaine et serveur sont disponibles
+
+> **v2.7** — **Lot 5 livré** sur `codex/lot-5-livraison-paiements` (`8982ecb` → documentation), fusionné dans `main`. Spike Mondial Relay conclu par l'**intégration maison du widget officiel** : il ne demande que le code enseigne, `BDTEST` en attendant l'Offre Start. Livrés : grille au poids versionnée et rejouable, **franco à 60 € porté par une seule valeur** (la barre du panier et le tarif ne peuvent plus diverger, `freeshipping` coupé), point relais, **retrait à l'atelier payé sur place avec rendez-vous réservé à la commande** (collision gérée par clé unique), **emballage cadeau payant**, statuts du lot 7 câblés sur Mollie et sur l'expédition, mention de TVA sur factures et emails, affichage aligné, TikTok. Nouveau module `MadameAiguille_Checkout`. **Écart assumé par Pierre** : il a réactivé dans l'admin plusieurs méthodes Mollie (wallets, Bancontact, iDEAL, Wero, Klarna) après la restriction à la carte, et souhaite les garder — à trancher avec la CGV. **8a différé** faute d'accès au domaine et au serveur : la validation Mollie reste bloquée.
 
 > **v2.6** — Les dernières questions du call sont tranchées. **Site monolingue français**, et **zone réduite aux pays francophones de l'UE** : croisée avec la desserte Mondial Relay, elle se limite à **France, Belgique, Luxembourg** — la Suisse, citée dans la décision, est hors UE et hors desserte Mondial Relay, et Pierre l'a écartée le jour même. **Délai d'expédition annoncé : 4 à 5 jours.** Deux vrais développements s'ajoutent au lot 5 : un **sélecteur de date et d'heure de retrait** dans le tunnel, auto-confirmé, avec lieu unique paramétrable et aperçu cartographique ; et une **option d'emballage cadeau payante à 2 €**, prix réglable en back-office. Tous deux vivent dans le checkout **Knockout** du fallback Luma, pas en Hyvä, et ne sont natifs ni l'un ni l'autre — l'effort du lot repasse de **L à XL**. Contenus juridiques génériques **écrits le jour même** : les quatre pages portent un brouillon marqué comme tel, aligné sur ces décisions.
 
@@ -123,6 +125,13 @@ Livré (commits `d889482` → `8f33ac5` + documentation, détail dans `documenta
 
 **Points ouverts** : le parcours réel des six statuts et le contenu de l'email de virement (RIB, référence, délai d'annulation) attendent Mollie — **lot 5** ; les modalités de la remise en main propre attendent Céline ; la délivrabilité (SPF, DKIM, DMARC) et le SMTP attendent le domaine — **lot 8**. Le contrôle visuel a été fait à 1440 et 390 px.
 
+## État après le lot 5 (09/10/2026)
+
+- **Le tunnel vend pour de vrai, en test** : Mondial Relay au poids, retrait sur rendez-vous, paiement Mollie ou sur place, emballage cadeau, franco à 60 €. Tout se règle dans l'admin sauf la grille, versionnée en CSV.
+- **Incertitudes levées** : module Mondial Relay (widget maison, sans extension), carriers maison (inutiles, `tablerate` suffit), franco (une seule valeur), Gift Wrapping (construit en Open Source), réservation des créneaux (clé unique en base, pas de verrou applicatif).
+- **Ce qui bloque encore la vente** : 8a (domaine, préproduction, SMTP, webhook Mollie, paiement réel), code enseigne et tarifs Mondial Relay de Céline, contenus juridiques, choix final des moyens de paiement Mollie. Détail : `documentation-theme.md` §23.
+- **Pour le 6b** : les composants du tunnel sont fonctionnels mais bruts, livrés par le module ; le thème Luma enfant les habillera.
+
 ## Vue d'ensemble
 
 | Lot | Titre | Dépend de | Effort | Risque |
@@ -212,9 +221,9 @@ Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement d
 
 ---
 
-## Lot 5 — Livraison et paiements — **recadré le 09/10/2026**
+## Lot 5 — Livraison et paiements — **livré le 09/10/2026, hors 8a**
 
-> **Prompt de reprise : `docs/prompts/prompt-lot5.md`.** Périmètre arrêté par le call Céline du 11/09/2026 — compte rendu et questions ouvertes dans `docs/brief-call-celine-2026-09-11.md`.
+> **Prompt de reprise : `docs/prompts/prompt-lot5.md`.** Périmètre arrêté par le call Céline du 11/09/2026 — compte rendu et questions ouvertes dans `docs/brief-call-celine-2026-09-11.md`. **Livraison documentée dans `documentation-theme.md` §26** ; spike dans `docs/spike-mondial-relay.md`. Seul le **8a** reste à faire, différé par Pierre.
 
 **Périmètre arrêté**
 
@@ -245,7 +254,9 @@ Virement SEPA et tout ce qui en découlait (cron d'expiration, relance à J-2, R
 - **Emballage cadeau payant à 2 €**, prix réglable en back-office. **Pas natif en Magento Open Source** — le *Gift Wrapping* est réservé à Adobe Commerce. À construire : option au tunnel ou au panier, ligne de total dédiée, report sur la commande, la facture et les emails. Le message cadeau natif, lui, existe déjà et s'affiche dans le détail de commande depuis le lot 7.
 - ~~**Contenus juridiques génériques**~~ : **faits le 09/10/2026** — les quatre pages portent un brouillon aligné sur les décisions du call, marqué comme tel, avec les valeurs inconnues entre crochets. Restent la relecture et le remplissage.
 
-**Décisions encore ouvertes** : aucune. Restent à fournir l'adresse réelle du lieu de retrait et la rédaction définitive des pages juridiques. Détail dans le compte rendu du call.
+**Décisions de Pierre au démarrage (09/10/2026)** : widget Mondial Relay maison ; rendez-vous et emballage engagés après chiffrage ; franco porté par la seule valeur du panier ; lieu de retrait générique ; 8a différé ; méthodes Mollie de l'admin conservées telles quelles.
+
+**Restent à fournir** : l'adresse réelle du lieu de retrait, le code enseigne et les tarifs Mondial Relay, la rédaction définitive des pages juridiques, l'accès au domaine et au serveur pour 8a.
 
 **Effort : XL.** Ramené à L par le transporteur et le moyen de paiement uniques, puis **remonté à XL** par le sélecteur de rendez-vous et l'emballage cadeau, qui sont deux développements dans le tunnel Knockout. Plus **8a**.
 
@@ -263,13 +274,14 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - Vérifier que les scripts RequireJS ne se chargent **que** sur les pages du tunnel (performance).
 - Documenter dans `documentation-theme.md` où vivent les surcharges Luma (`Magento_Checkout/web/template/*.html`, `web/css/source/*.less` dans un thème Luma enfant ou via le mécanisme du fallback — à lire dans le README du module).
 
-**6b — Habillage — en attente (après le lot 5)**
+**6b — Habillage — prochain lot (prompt : `docs/prompts/prompt-lot6b.md`)**
 
 > Mis en attente le 10/09/2026 : l'habillage du tunnel n'a de sens qu'une fois les modes de livraison et le paiement Mollie réellement configurés, sans quoi les écrans à habiller sont incomplets.
 
-- Tunnel en trois temps (spécification §4) : livraison (adresse, mode, point relais), paiement, récapitulatif + CGV.
+- Tunnel en deux étapes natives (Livraison → Paiement et récapitulatif), CGV à cocher.
+- **Habiller les composants livrés bruts au lot 5** : carte Mondial Relay, rendez-vous de retrait, case d'emballage cadeau, ligne d'emballage du récapitulatif (`MadameAiguille_Checkout`, `documentation-theme.md` §26).
 - Branding **aux couleurs** plutôt qu'au pixel du Design System : palette, fontes (les mêmes `.woff2`), boutons 48 px, champs, messages d'erreur — par LESS/CSS et quelques templates Knockout ciblés. On retemplate le natif, on ne réécrit pas.
-- Pages de confirmation (Hyvä, déjà retemplatables en `.phtml`) : succès (RIB pour le virement, instructions de retrait), échec de paiement (alerte erreur, panier conservé).
+- Pages de confirmation (Hyvä, déjà retemplatables en `.phtml`) : succès (rendez-vous et lieu pour un retrait, point relais pour un colis), échec de paiement (alerte erreur, panier conservé). Elles sont encore en anglais.
 - reCAPTCHA sur la création de compte au checkout.
 
 **Dépendances** : lot 5 (modes de livraison et paiements), lot 4 (panier).
@@ -277,7 +289,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 **Incertitudes**
 
 - Degré de fidélité au Design System accepté pour le tunnel Luma (recommandation : couleurs, fontes, tailles de cibles ; pas de refonte de la structure).
-- Le module Mondial Relay retenu au lot 5 doit injecter son sélecteur dans le checkout Knockout : à valider pendant le spike.
+- ~~Le sélecteur Mondial Relay dans le checkout Knockout~~ — fait au lot 5 (widget officiel, composant maison).
 - Fusion de panier à la connexion, session expirée en tunnel : comportements natifs à recetter, pas à développer.
 
 **Effort : L** (6a S, 6b M-L).
@@ -342,19 +354,19 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 1 bis. ~~Page « Boutique » globale~~ — accueil retenu comme vitrine ; les CTA contextuels mènent aux catégories.
 2. ~~« Actualités »~~ — nouveautés produit et blocs CMS pour marchés, congés et annonces.
 3. ~~Newsletter et page « Nos tissus »~~ — toutes deux livrées au lot 3.
-4. Franco de port : montant (lots 4-5).
-5. Paliers de poids et grilles transporteurs ; poids d'emballage (lot 5).
-6. Remise en main propre : lieu, créneaux, restriction géographique (lot 5).
-7. Virement : délai d'annulation, acceptation du suivi manuel (lot 5).
-8. Statut fiscal / TVA (lot 5).
-9. Comptes réseaux sociaux réels (configuration déjà en place).
+4. ~~Franco de port~~ — **60 €** en point relais (Pierre, 09/10/2026).
+5. Paliers de poids : posés (0,25 · 0,5 · 1 · 2 · 5 kg) ; **tarifs et poids d'emballage attendus de Céline**.
+6. Remise en main propre : créneaux et restriction (France) posés ; **adresse réelle attendue**.
+7. ~~Virement~~ — sans objet (carte bancaire en ligne, paiement sur place au retrait).
+8. ~~Statut fiscal / TVA~~ — franchise en base, mention en place.
+9. Comptes réseaux sociaux réels : Instagram et Facebook saisis, **URL TikTok à fournir**.
 10. Nom de domaine (lot 8).
 
 ## Décisions techniques à prendre (Pierre)
 
 1. ~~Hyvä Checkout ou checkout Luma~~ — **tranché : Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`), lot 6a.
 2. ~~Stripe ou Mollie~~ — **tranché : Mollie** (10/09/2026). Déjà installé et activé ; reste la création du compte marchand et la saisie des clés.
-3. Module Mondial Relay — spike en début de lot 5.
+3. ~~Module Mondial Relay~~ — **widget officiel intégré en maison** (spike du 09/10/2026).
 4. ~~Formulaire de contact~~ — module dédié `MadameAiguille_Contact`; logique dans le module, surcharge visuelle dans le thème enfant.
 5. ~~Catégories de test « Sneakers » et « T-Shirts » à supprimer~~ — fait au lot 2.
 6. **WebP** : reporté au lot 8 ou module tiers gratuit (compatibilité Hyvä à vérifier avant installation).
