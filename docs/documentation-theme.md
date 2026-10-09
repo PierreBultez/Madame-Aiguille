@@ -294,7 +294,7 @@ L'accueil suit cet ordre : hero, Nouveautés, Incontournables, nouvelles de l'at
 
 | Zone | Modification dans l'admin | Structure dans le code |
 |---|---|---|
-| Hero | *Contenu › Blocs* › `home_hero` : titre, texte, image et lien de catégorie | `Magento_Theme/layout/cms_index_index.xml`, styles `.home-hero` ; image plafonnée à 240 px sur mobile |
+| Hero | *Contenu › Blocs* › `home_hero` : titre, texte, image et lien de catégorie | `Magento_Theme/layout/cms_index_index.xml`, styles `.home-hero` : centré et plafonné à 1440 px (`--breakpoint-2xl`), image plafonnée à 240 px sur mobile |
 | Nouveautés | Dates *Définir le produit comme nouveau à partir de / jusqu'au* sur la fiche ; titre et accroche dans `home_new` | widget Magento `NewWidget`, règles de dates natives ; produits épuisés exclus par `ViewModel/Home/Products.php` |
 | Incontournables | Fiche produit, groupe *Accueil* › *Incontournable sur l'accueil* ; titre et accroche dans `home_featured` | attribut EAV `home_featured`, quatre produits disponibles au maximum, ordre de création décroissant |
 | Marchés, congés, annonces | bloc `home_actualities` | bloc CMS indépendant ; le texte initial est volontairement générique et ne contient ni date ni promesse non validée |
@@ -543,6 +543,7 @@ bin/magento madameaiguille:catalog:check-weight                # produits activ�
 | 6b — Correctif de recette | chargement Leaflet unique, récapitulatif natif du paiement relais rétabli, contrôle console et captures | `f80ceaf` |
 | 6b — Recette et documentation | captures finales, administration, limites, mémo Céline et plan v2.8 | `92a96f6` |
 | 6b — Passage de relais | prompt de reprise 8a écrit après fusion et publication, avec état vérifiable et pièges du 6b | `docs/prompts/prompt-lot8a.md` (commit de passage de relais) |
+| Correctif accueil (09/10/2026) | hero centré et plafonné à 1440 px dans le thème ; contrôles à 1440, 390 et 2560 px, CSS servi identique au build ; recette `docs/recettes/correction-hero.md` | `8316318` |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact

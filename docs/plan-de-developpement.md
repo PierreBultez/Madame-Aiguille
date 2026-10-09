@@ -136,6 +136,8 @@ Livré (commits `d889482` → `8f33ac5` + documentation, détail dans `documenta
 
 ## État après le lot 6b (09/10/2026)
 
+Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px (`8316318`), contrôlé à 1440 / 390 / 2560 px. Détails : `docs/recettes/correction-hero.md`. Le périmètre et l’ordre des lots restent identiques.
+
 - Le fallback utilise `frontend/MadameAiguille/checkout`, parent Luma ; le panier, le compte et les confirmations restent Hyvä.
 - Les décisions de Pierre sont appliquées : récapitulatif des maquettes, téléphone et CGV obligatoires, newsletter non pré-cochée. Pas de nouveau champ message sans arbitrage ; message cadeau natif conservé.
 - Recette et preuves : `docs/recettes/lot-6b.md`. Commandes `000000021` et `000000022` annulées, créneaux libérés, aucun abonné créé sans consentement.
