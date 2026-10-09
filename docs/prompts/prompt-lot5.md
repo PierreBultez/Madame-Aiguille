@@ -35,6 +35,7 @@ Crée la branche `codex/lot-5-livraison-paiements` depuis `main` à jour, avant 
 - **Annulation d'un retrait non honoré : au rendez-vous manqué**, pas après N jours. **Aucun cron à écrire** — Céline annule la commande dans l'administration, ce qui relibère le stock. La procédure va dans le mémo Céline (§24).
 - **Emballage cadeau : option payante à 2 €**, prix réglable en back-office.
 - **Délai d'expédition annoncé : 4 à 5 jours ouvrés.**
+- **Les pages juridiques portent déjà un contenu générique** marqué comme brouillon, aligné sur ces décisions. Ne pas les réécrire : les compléter.
 - **Checkout : Luma Fallback** (`hyva-themes/magento2-luma-checkout` 1.1.7). Toute la page du tunnel bascule sur Luma ; son habillage est le **lot 6b**, pas celui-ci.
 - Commande invité autorisée (`checkout/options/guest_checkout = 1`).
 - Franco de port **affiché à 49 €**, configurable dans *Madame Aiguille › Panier*.
@@ -93,7 +94,7 @@ Celles d'`AGENTS.md`, plus :
 
 11. **Réseaux sociaux** : retirer Pinterest, ajouter **TikTok** (champ de configuration, icône, pied de page).
 
-12. **Contenus juridiques génériques** : CGV, mentions légales, page *Livraison et retours*, confidentialité. Les données d'identité sont connues (BULTEZ CELINE, EI, SIRET 940 760 911 00013, 35 Grande Rue 37800 Saint-Épain, non inscrite au RCS, franchise de TVA). **Marquer explicitement chaque page comme un brouillon à faire relire** — ce sont des documents juridiques, et le médiateur de la consommation reste à choisir.
+12. **Pages juridiques** : les contenus génériques sont **déjà en place** (`Setup/Patch/Data/FillLegalPages`, voir §7). Il reste à **remplacer les valeurs entre crochets** au fil du lot — e-mail de contact, hébergeur, médiateur, date de mise en ligne — et à vérifier que les textes correspondent toujours aux modes de livraison et de paiement réellement activés.
 
 ## 8a — Mise en ligne anticipée, dans ce lot
 

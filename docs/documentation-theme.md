@@ -269,13 +269,23 @@ Créés par data patch (`Setup/Patch/Data/`), **une seule fois** ; ensuite ils v
 | Identifiant | Type | Rôle |
 |---|---|---|
 | `a-propos` | page | L'histoire de Madame Aiguille |
-| `livraison-retours` | page | Livraison et retours |
-| `cgv` | page | Conditions générales de vente |
-| `mentions-legales` | page | Mentions légales |
-| `confidentialite` | page | Politique de confidentialité |
+| `livraison-retours` | page | Livraison et retours — **contenu générique en place** (voir ci-dessous) |
+| `cgv` | page | Conditions générales de vente — **contenu générique en place** |
+| `mentions-legales` | page | Mentions légales — **contenu générique en place** |
+| `confidentialite` | page | Politique de confidentialité — **contenu générique en place** |
 | `nos-tissus` | page | galerie de motifs référencés pour préparer une demande par contact |
 | `header_announcement` | bloc | bandeau du header |
 | `product_reassurance` | bloc | quatre arguments sous le bouton d'achat de la fiche produit (expédition, paiement, transporteurs, emballage). À aligner sur les modes réels au lot 5 |
+
+### Pages juridiques — contenus génériques
+
+`Setup/Patch/Data/FillLegalPages` remplit les quatre pages juridiques (CGV, mentions légales, livraison et retours, confidentialité) à partir des décisions du call Céline : identité de l'entreprise, franchise de TVA, zone France / Belgique / Luxembourg, point relais Mondial Relay, franco à 60 €, expédition sous 4-5 jours, retrait sur rendez-vous payé sur place, rétractation de 14 jours.
+
+**Ce sont des brouillons, pas des documents validés.** Chaque page s'ouvre sur un bandeau `.cms-draft` qui le dit, et les valeurs encore inconnues sont laissées **entre crochets** : adresse e-mail de contact, coordonnées de l'hébergeur, médiateur de la consommation, prestataire d'envoi d'e-mails, date de mise en ligne. Un `grep` sur `[` dans ces pages liste ce qui reste à combler.
+
+Le patch suit le même principe que celui du lot 3 pour *À propos* : **il ne remplace que le placeholder exact** posé par `CreateStaticPages`. Dès que Céline a touché une page, le patch ne la regarde plus — y compris si on le rejoue. Pour reproposer un contenu générique après coup, il faut passer par l'admin, pas par un nouveau patch.
+
+Côté styles, `theme/page-cms.css` couvre désormais les listes (`ul`, `ol`), les listes de définitions (`dl`/`dt`/`dd`, en deux colonnes au-delà de 640 px) et le bandeau `.cms-draft` — ces balises sont partout dans un texte juridique et n'étaient pas stylées avant.
 
 ### Accueil — lot 3, étape 3
 
@@ -513,6 +523,7 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille/Th
 | 7 — Compte client | navigation restylée avec l'identité de la cliente, tableau de bord, commandes en cartes, détail avec frise, formulaires, retrait de l'assistance distante, dictionnaire `fr_FR.csv` | `b4c1f86` |
 | 7 — Emails | enveloppe commune header/footer aux couleurs de la marque, styles LESS email, notifications « paiement reçu » et « prête pour retrait » (observateur + envoi configurable), accusé de réception du contact réaligné | `635efa5` |
 | 7 — Styleguide et documentation | états du compte sur `/styleguide` via `ViewModel\Styleguide\OrderStates`, sections §21 et §22, mémo Céline complété | `8f33ac5` → `8f2c4c4` |
+| 5 — Préparation (09/10/2026) | contenus génériques des quatre pages juridiques par data patch non destructif, styles CMS des listes, définitions et bandeau de brouillon | `ecee065` |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
@@ -707,7 +718,7 @@ Les lots 3, 4 et 7 sont fonctionnellement terminés. Les éléments suivants dem
 | **Zone de vente** | **France, Belgique, Luxembourg** — pays francophones de l'UE desservis par Mondial Relay ; Monaco suit la France. **Site monolingue français.** **Aucune TVA facturée**, Céline étant en franchise de base — **à revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année**. La **Suisse** est écartée : hors UE, hors desserte Mondial Relay | Pierre, lot 5 |
 | **Rendez-vous de retrait** | Sélecteur de date et d'heure dans le tunnel, auto-confirmé, lieu unique paramétrable avec aperçu cartographique. **Composant Knockout** (le tunnel est en Luma), réservation réelle du créneau à prévoir. Lieu générique en attendant l'adresse de Céline | Pierre, lot 5 |
 | **Emballage cadeau** | Option payante à **2 €**, prix réglable en back-office. **Pas natif en Open Source** (le *Gift Wrapping* est réservé à Adobe Commerce) : option, ligne de total, report sur commande, facture et emails à construire | Pierre, lot 5 |
-| **Contenus juridiques** | CGV, mentions légales, *Livraison et retours*, confidentialité : contenus génériques à générer, **marqués comme brouillons à faire relire**. Médiateur de la consommation à choisir | Céline, avant ouverture des ventes |
+| **Contenus juridiques** | Brouillons génériques **en place** (§7). Restent à faire : relecture, remplacement des valeurs entre crochets (e-mail de contact, hébergeur, médiateur, date) et retrait du bandeau « Brouillon » | Céline, avant ouverture des ventes |
 | **Franco porté à 60 €** | Décision du 09/10/2026. Le seuil est encore à **49 €** à deux endroits qui doivent rester d'accord : *Madame Aiguille › Panier* et `carriers/freeshipping/free_shipping_subtotal` | Pierre, lot 5 |
 | **Réseaux sociaux** | Pinterest n'est pas utilisé : à retirer. **TikTok à ajouter** (champ de configuration, icône, pied de page) | Pierre, lot 5 |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
@@ -741,7 +752,8 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | `product_reassurance` | Quatre arguments sous le bouton d'achat de la fiche produit | §10 |
 | `cart_reassurance` | Deux lignes sous « Passer commande » dans le panier | §20 |
 | `contact_help`, `contact_locations` | Encarts de la page Contact | §18 |
-| Pages `a-propos`, `nos-tissus`, `livraison-retours`, `cgv`, `mentions-legales`, `confidentialite` | Pages éditoriales et juridiques | §7 |
+| Pages `a-propos`, `nos-tissus` | Pages éditoriales | §7 |
+| Pages `cgv`, `mentions-legales`, `livraison-retours`, `confidentialite` | **Pages juridiques, pré-remplies d'un brouillon.** Chacune commence par un encadré « Brouillon à faire relire » : le retirer une fois le texte validé. Les éléments **entre crochets** sont à compléter (e-mail de contact, hébergeur, médiateur de la consommation, date) | §7 |
 
 ### Réglages — *Boutiques › Configuration › Général › Madame Aiguille*
 

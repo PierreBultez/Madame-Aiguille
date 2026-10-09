@@ -46,6 +46,48 @@
         @apply my-10 border-l-0 bg-brand-blush px-6 py-8 text-center font-display text-display text-brand;
     }
 
+    /* Listes et définitions : indispensables aux pages juridiques (CGV, confidentialité). */
+    .cms-content :is(ul, ol) {
+        @apply my-5 flex flex-col gap-2 ps-6;
+    }
+
+    .cms-content ul {
+        list-style: disc;
+    }
+
+    .cms-content ol {
+        list-style: decimal;
+    }
+
+    .cms-content li::marker {
+        @apply text-brand-nude;
+    }
+
+    .cms-content dl {
+        @apply my-5 grid gap-x-6 gap-y-2 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)];
+    }
+
+    .cms-content dt {
+        @apply font-medium text-brand-dark;
+    }
+
+    .cms-content dd {
+        @apply mb-2 sm:mb-0;
+    }
+
+    .cms-content p + p {
+        @apply mt-4;
+    }
+
+    /* Bandeau des contenus génériques en attente de relecture. */
+    .cms-draft {
+        @apply mb-8 rounded-sm border border-brand-nude bg-brand-ivory px-5 py-4 text-caption text-brand-dark;
+    }
+
+    .cms-draft strong {
+        @apply font-medium;
+    }
+
     .cms-lead {
         @apply mb-8 text-center text-lead italic text-brand-dark;
     }
