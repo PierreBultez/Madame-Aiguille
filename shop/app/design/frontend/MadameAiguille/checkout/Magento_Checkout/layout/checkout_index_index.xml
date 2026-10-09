@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <link rel="preload" src="fonts/Sentient-Regular.woff2" src_type="font/woff2"
+              as="font" crossorigin="anonymous"/>
+    </head>
+    <body>
+        <referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_file" xsi:type="string">images/logo-rectangulaire.jpg</argument>
+                <argument name="logo_alt" xsi:type="string" translate="true">Madame Aiguille — Accueil</argument>
+                <argument name="logo_width" xsi:type="number">300</argument>
+                <argument name="logo_height" xsi:type="number">96</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceContainer name="checkout.header.wrapper">
+            <block class="Magento\Framework\View\Element\Template" name="madameaiguille.checkout.back"
+                   template="Magento_Checkout::header/back.phtml" after="logo"/>
+        </referenceContainer>
+        <referenceBlock name="copyright" template="Magento_Checkout::footer.phtml"/>
+    </body>
+</page>

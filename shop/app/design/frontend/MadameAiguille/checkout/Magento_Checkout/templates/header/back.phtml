@@ -1,0 +1,7 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<a class="madameaiguille-back" href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>">
+    <span aria-hidden="true">←</span> <?= $escaper->escapeHtml(__('Retour au panier')) ?>
+</a>

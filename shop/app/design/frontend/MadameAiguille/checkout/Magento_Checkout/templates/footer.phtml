@@ -1,0 +1,18 @@
+<?php
+/** @var \Magento\Theme\Block\Html\Footer $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<footer class="madameaiguille-checkout-footer">
+    <nav aria-label="<?= $escaper->escapeHtmlAttr(__('Informations de la boutique')) ?>">
+        <a href="<?= $escaper->escapeUrl($block->getUrl('cgv')) ?>" target="_blank" rel="noopener">
+            <?= $escaper->escapeHtml(__('Conditions générales de vente')) ?>
+        </a>
+        <a href="<?= $escaper->escapeUrl($block->getUrl('confidentialite')) ?>" target="_blank" rel="noopener">
+            <?= $escaper->escapeHtml(__('Politique de confidentialité')) ?>
+        </a>
+        <a href="<?= $escaper->escapeUrl($block->getUrl('contact')) ?>" target="_blank" rel="noopener">
+            <?= $escaper->escapeHtml(__('Contact')) ?>
+        </a>
+    </nav>
+    <small><?= $escaper->escapeHtml($block->getCopyright()) ?></small>
+</footer>

@@ -1,0 +1,70 @@
+& when (@media-common = true) {
+    .checkout-index-index {
+        .page-header {
+            background: @ma-paper;
+            border-bottom: 1px solid @ma-line;
+
+            .header.content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                padding: 16px 20px;
+
+                &::before, &::after { display: none; }
+            }
+
+            .logo {
+                float: none;
+                order: -1;
+                margin: 0;
+                max-width: 55%;
+
+                img { width: 300px; height: auto; }
+            }
+        }
+
+        .madameaiguille-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 48px;
+            font-size: 15px;
+        }
+
+        .page-main { padding: 0 20px; }
+        .checkout-container { margin: 24px 0 48px; }
+
+        button, .action.primary { min-height: 48px; }
+        input[type='checkbox'], input[type='radio'] { accent-color: @ma-brand; }
+
+        :focus-visible {
+            outline: 2px solid @ma-brand;
+            outline-offset: 4px;
+            box-shadow: none;
+        }
+
+        .opc-progress-bar-item._active {
+            &::before, > span::before { background: @ma-brand; }
+        }
+
+        .madameaiguille-checkout-footer {
+            padding: 20px;
+            border-top: 1px solid @ma-line;
+            background: @ma-paper;
+            text-align: center;
+            color: @ma-muted;
+
+            nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 24px; }
+            a { display: inline-flex; align-items: center; min-height: 48px; font-size: 13px; }
+            small { display: block; margin-top: 12px; font-size: 13px; }
+        }
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__l) {
+    .checkout-index-index {
+        .page-header .header.content { padding: 20px 80px; }
+        .page-main { padding: 0 80px; }
+    }
+}
