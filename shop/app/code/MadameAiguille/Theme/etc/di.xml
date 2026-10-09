@@ -37,12 +37,21 @@
         <plugin name="madameaiguille_free_relay_above_threshold" type="MadameAiguille\Theme\Plugin\Shipping\FreeRelayAboveThreshold" sortOrder="100"/>
     </type>
 
+    <!-- Lot 8a : proxy, car toutes les commandes sont construites à chaque bin/magento, setup:install compris -->
+    <type name="MadameAiguille\Theme\Console\Command\CheckEnvironment">
+        <arguments>
+            <argument name="checker" xsi:type="object">MadameAiguille\Theme\Model\Environment\EnvironmentChecker\Proxy</argument>
+        </arguments>
+    </type>
+
     <!-- Lot 5 : grille de frais de port rejouable, contrôle des poids avant mise en production -->
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="madameaiguille_catalog_check_weight" xsi:type="object">MadameAiguille\Theme\Console\Command\CheckWeight</item>
                 <item name="madameaiguille_shipping_import_rates" xsi:type="object">MadameAiguille\Theme\Console\Command\ImportTableRates</item>
+                <!-- Lot 8a : contrôle de l'environnement après chaque déploiement -->
+                <item name="madameaiguille_env_check" xsi:type="object">MadameAiguille\Theme\Console\Command\CheckEnvironment</item>
             </argument>
         </arguments>
     </type>
