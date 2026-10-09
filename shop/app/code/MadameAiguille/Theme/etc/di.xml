@@ -23,10 +23,11 @@
         <plugin name="madameaiguille_free_relay_above_threshold" type="MadameAiguille\Theme\Plugin\Shipping\FreeRelayAboveThreshold" sortOrder="100"/>
     </type>
 
-    <!-- Lot 5 : grille de frais de port au poids, rejouable en préproduction et en production -->
+    <!-- Lot 5 : grille de frais de port rejouable, contrôle des poids avant mise en production -->
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
+                <item name="madameaiguille_catalog_check_weight" xsi:type="object">MadameAiguille\Theme\Console\Command\CheckWeight</item>
                 <item name="madameaiguille_shipping_import_rates" xsi:type="object">MadameAiguille\Theme\Console\Command\ImportTableRates</item>
             </argument>
         </arguments>
