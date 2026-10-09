@@ -8,9 +8,9 @@
  * la section customer-data dans le mini-panier — jamais depuis un montant lu
  * dans le DOM (plan de développement, lot 4).
  *
- * Attention : ce seuil est un affichage. Tant que le lot 5 n'a pas activé une
- * règle de livraison gratuite correspondante, la promesse n'est pas honorée par
- * Magento au moment du checkout (écart consigné dans documentation-theme.md).
+ * Ce seuil est aussi celui qui rend le point relais gratuit au checkout
+ * (Plugin\Shipping\FreeRelayAboveThreshold, lot 5) : la barre et le tarif
+ * ne peuvent pas diverger.
  */
 
 declare(strict_types=1);

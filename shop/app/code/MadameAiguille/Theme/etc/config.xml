@@ -15,9 +15,9 @@
                 <scarcity_threshold>3</scarcity_threshold>
                 <price_note/>
             </catalog>
-            <!-- Décision de Pierre du 10/09/2026 : franco affiché dès la v1 au seuil des maquettes ; code promo masqué -->
+            <!-- Franco à 60 € (décision de Pierre du 09/10/2026), appliqué au point relais par Plugin\Shipping\FreeRelayAboveThreshold ; code promo masqué -->
             <cart>
-                <free_shipping_threshold>49</free_shipping_threshold>
+                <free_shipping_threshold>60</free_shipping_threshold>
                 <show_coupon>0</show_coupon>
             </cart>
         </madameaiguille>
