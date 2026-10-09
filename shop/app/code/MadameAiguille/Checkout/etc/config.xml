@@ -7,5 +7,18 @@
                 <brand_code>BDTEST</brand_code>
             </mondial_relay>
         </madameaiguille>
+        <carriers>
+            <madameaiguille_pickup>
+                <active>1</active>
+                <model>MadameAiguille\Checkout\Model\Carrier\Pickup</model>
+                <title>Retrait à l'atelier</title>
+                <name>Sur rendez-vous, payé sur place</name>
+                <sallowspecific>1</sallowspecific>
+                <specificcountry>FR</specificcountry>
+                <showmethod>0</showmethod>
+                <sort_order>20</sort_order>
+                <specificerrmsg>Le retrait à l'atelier n'est pas proposé pour cette adresse.</specificerrmsg>
+            </madameaiguille_pickup>
+        </carriers>
     </default>
 </config>

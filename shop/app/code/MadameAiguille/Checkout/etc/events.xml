@@ -3,4 +3,7 @@
     <event name="sales_model_service_quote_submit_before">
         <observer name="madameaiguille_require_relay_point" instance="MadameAiguille\Checkout\Observer\RequireRelayPoint"/>
     </event>
+    <event name="payment_method_is_active">
+        <observer name="madameaiguille_restrict_payment_to_delivery" instance="MadameAiguille\Checkout\Observer\RestrictPaymentToDelivery"/>
+    </event>
 </config>
