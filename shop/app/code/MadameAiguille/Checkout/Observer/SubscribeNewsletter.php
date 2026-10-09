@@ -33,8 +33,21 @@ class SubscribeNewsletter implements ObserverInterface
             return;
         }
 
+        $customerId = (int) $order->getCustomerId();
+        if (!$customerId && !$this->scopeConfig->isSetFlag(
+            'newsletter/subscription/allow_guest_subscribe',
+            ScopeInterface::SCOPE_STORE,
+            $order->getStoreId()
+        )) {
+            return;
+        }
+
         try {
-            $this->subscriptionManager->subscribe((string) $order->getCustomerEmail(), (int) $order->getStoreId());
+            if ($customerId) {
+                $this->subscriptionManager->subscribeCustomer($customerId, (int) $order->getStoreId());
+            } else {
+                $this->subscriptionManager->subscribe((string) $order->getCustomerEmail(), (int) $order->getStoreId());
+            }
         } catch (\Throwable $exception) {
             // Une panne email/newsletter ne doit jamais transformer une commande créée en erreur de paiement.
             $this->logger->error('Inscription newsletter du tunnel échouée.', [

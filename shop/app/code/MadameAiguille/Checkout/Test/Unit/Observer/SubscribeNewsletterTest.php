@@ -51,18 +51,37 @@ class SubscribeNewsletterTest extends TestCase
         $this->observer($manager, true, $logger)->execute($this->orderEvent(true));
     }
 
+    public function testGuestSubscriptionDisabledIsRespectedOnServer(): void
+    {
+        $manager = $this->createMock(SubscriptionManagerInterface::class);
+        $manager->expects(self::never())->method('subscribe');
+        $this->observer($manager, guestAllowed: false)->execute($this->orderEvent(true));
+    }
+
+    public function testCustomerOptInIsAttachedToCustomerAccount(): void
+    {
+        $manager = $this->createMock(SubscriptionManagerInterface::class);
+        $manager->expects(self::never())->method('subscribe');
+        $manager->expects(self::once())->method('subscribeCustomer')
+            ->with(42, 1)->willReturn($this->createStub(Subscriber::class));
+        $this->observer($manager, guestAllowed: false)->execute($this->orderEvent(true, 42));
+    }
+
     private function observer(
         SubscriptionManagerInterface $manager,
         bool $enabled = true,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        bool $guestAllowed = true
     ): SubscribeNewsletter {
         $config = $this->createStub(ScopeConfigInterface::class);
-        $config->method('isSetFlag')->willReturn($enabled);
+        $config->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => $path === 'newsletter/general/active' ? $enabled : $guestAllowed
+        );
 
         return new SubscribeNewsletter($manager, $config, $logger ?? $this->createStub(LoggerInterface::class));
     }
 
-    private function orderEvent(bool $consent): Observer
+    private function orderEvent(bool $consent, ?int $customerId = null): Observer
     {
         $payment = $this->createStub(Payment::class);
         $payment->method('getAdditionalInformation')->willReturn($consent);
@@ -70,6 +89,7 @@ class SubscribeNewsletterTest extends TestCase
         $order->method('getPayment')->willReturn($payment);
         $order->method('getCustomerEmail')->willReturn('recette@example.invalid');
         $order->method('getStoreId')->willReturn(1);
+        $order->method('getCustomerId')->willReturn($customerId);
 
         return new Observer(['event' => new Event(['order' => $order])]);
     }

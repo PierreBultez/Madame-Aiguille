@@ -6,13 +6,16 @@ declare(strict_types=1);
 namespace MadameAiguille\Checkout\Model\Newsletter;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
 class ConfigProvider implements ConfigProviderInterface
 {
-    public function __construct(private readonly ScopeConfigInterface $scopeConfig)
-    {
+    public function __construct(
+        private readonly ScopeConfigInterface $scopeConfig,
+        private readonly Session $customerSession
+    ) {
     }
 
     public function getConfig(): array
@@ -20,6 +23,9 @@ class ConfigProvider implements ConfigProviderInterface
         return ['madameaiguilleNewsletterEnabled' => $this->scopeConfig->isSetFlag(
             'newsletter/general/active',
             ScopeInterface::SCOPE_STORE
-        )];
+        ) && ($this->customerSession->isLoggedIn() || $this->scopeConfig->isSetFlag(
+            'newsletter/subscription/allow_guest_subscribe',
+            ScopeInterface::SCOPE_STORE
+        ))];
     }
 }
