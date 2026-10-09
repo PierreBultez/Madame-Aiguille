@@ -41,7 +41,7 @@ Dans `~/Documents/aiguille/docs/` :
 |---|---|
 | **`documentation-theme.md`** | **Commence par lui.** Arborescence, chaîne de build et ses pièges, tokens, composants, « où modifier quoi » pour header / footer / CMS. À **compléter à chaque écran livré** |
 | **`plan-de-developpement.md`** | Découpage en lots 2 → 8, décisions prises, décisions en attente. Le lot 2 y est détaillé |
-| `prompt-claude-code-lot1.md` | Le brief initial : règles non négociables (§4) et interdits (§7) toujours valables |
+| `prompt-lot1.md` | Le brief initial : règles non négociables (§4) et interdits (§7) toujours valables |
 | `cahier-des-charges-docs-developpement/specification-fonctionnelle.md` | Règles de gestion écran par écran — **prime sur les maquettes pour le comportement** |
 | `cahier-des-charges-docs-developpement/architecture-technique.md` | §4 : modélisation catalogue (`taille`, `serie_limitee`, `taille_serie`, `weight` obligatoire) |
 | `cahier-des-charges-docs-developpement/guide-bonnes-pratiques-hyva.md` | Conventions de code : ViewModels, escaping, layout, Alpine, Tailwind v4 |
@@ -55,7 +55,7 @@ En cas de contradiction : la spécification fonctionnelle l'emporte pour le comp
 
 ---
 
-# 3. Règles non négociables (rappel — détail dans `prompt-claude-code-lot1.md` §4 et §7)
+# 3. Règles non négociables (rappel — détail dans `prompt-lot1.md` §4 et §7)
 
 - WCAG 2.1 AA : jamais de texte sur `brand-rose` ni `brand-nude` ; texte courant sur fond blush en `brand-dark` (`.on-blush`) ; focus visible ; cibles 44 × 44 px ; chaque champ a un `<label>`.
 - Britney (`font-display`) : titres uniquement, **jamais sous 30 px** (`text-display` est le plancher), jamais `italic`. Sentient : 16 px plancher, 13 px pour les mentions.

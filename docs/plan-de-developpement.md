@@ -1,6 +1,16 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.3 (11/09/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5**, toujours suspendu au compte marchand Mollie et au brief livraison
+Document interne — v2.4 (09/10/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5**, recadré par le call Céline du 11/09/2026
+
+> **v2.4** — **Call Céline du 11/09/2026 dépouillé** (compte rendu complet : `docs/brief-call-celine-2026-09-11.md`). Le lot 5 est recadré et s'allège sur plusieurs points, mais s'alourdit sur trois autres.
+>
+> Tranché : **entreprise individuelle en franchise de TVA** (SIRET 940 760 911 00013, Saint-Épain 37800) ; **carte bancaire uniquement** en ligne, via Mollie dont le compte est créé ; **Mondial Relay point relais comme unique transporteur** ; **click & collect payé sur place** (TPE ou espèces), jeudi 9 h-18 h et vendredi 9 h-11 h 30.
+>
+> Tombe du périmètre : le virement SEPA et tout ce qui en découlait (cron d'expiration, relance à J-2, RIB dans l'email), Colissimo et Chronopost — et avec eux **le problème des grilles multiples** : un seul transporteur tient dans le carrier `tablerate` natif, les carriers maison envisagés en annexe du brief ne sont plus nécessaires.
+>
+> S'ajoute : **vente dans toute l'Europe** (périmètre à préciser, impact TVA et CGV à faire confirmer), **TikTok** au pied de page et **Pinterest** à retirer, **emballage cadeau et carte personnalisée** à chiffrer.
+>
+> Nouvelle dépendance dure : **Mollie ne valide le compte qu'avec un site en ligne et un paiement réel**. La mise en ligne d'une préproduction (lot **8a**) passe donc *avant* la fin du lot 5. Ordre retenu : **5 + 8a → 6b → 8**.
 
 > **v2.3** — Lot 7 fusionné dans `main` et poussé. Une correction du 11/09/2026 a suivi la recette dans l'administration : l'identifiant des deux gabarits d'email doit être le chemin de configuration avec des underscores, sinon toute la section *Emails de vente* est inaccessible. Le **rituel de fin de lot** est désormais écrit (`documentation-theme.md` §25, rappelé dans `AGENTS.md`) : recette écrans **et** administration, documentation, fusion, push, prompt du lot suivant. Relevé de configuration du 11/09 : `general/country/default` est passé à FR et la livraison gratuite à 49 € est réellement active ; `shipping/origin/country_id` et `tax/defaults/country` valent toujours US.
 
@@ -116,12 +126,12 @@ Livré (commits `d889482` → `8f33ac5` + documentation, détail dans `documenta
 | 2 | Catalogue : modèle de données, catégorie, fiche produit | 1 | **L** | faible |
 | 3 | Accueil, pages CMS, formulaire de contact | 2 | **L** | moyen (contenu) |
 | 4 | Panier et mini-panier | 2, config livraison du lot 5 | **M** | faible |
-| 5 | Livraison et paiements (table rates, Mondial Relay, **Mollie**, virement, main propre) — **en attente** | 2, 6a + compte Mollie + brief Céline | **XL** | **élevé** |
+| 5 | Livraison et paiements (Mondial Relay point relais, **Mollie CB**, click & collect) + **8a mise en ligne** | 2, 6a + identifiants Mondial Relay + domaine | **L** | moyen |
 | 6 | Checkout Luma fallback : installation (6a, livrée) puis habillage (6b) — **6b en attente** | 5 | **L** | moyen |
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
 
-Ordre retenu : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8** (révisé le 10/09/2026).
+Ordre retenu : **2 → 6a → 3 → 4 → 7 → 5 + 8a → 6b → 8** (révisé le 09/10/2026 : la validation du compte Mollie impose un site en ligne, donc une partie du lot 8 passe devant).
 
 Les lots 5 et 6b attendent deux éléments qui ne dépendent pas du code : le **compte marchand Mollie** et un **brief avec Céline sur les modes de livraison**. Plutôt que d'attendre, le lot 7 a été avancé et livré : les pages du compte client, les statuts de commande et l'habillage des emails ne demandaient ni transporteur configuré ni paiement actif. Seule leur **recette de bout en bout** — une commande réellement payée qui parcourt tous les statuts — reste à rejouer après les lots 5 et 6b.
 
@@ -198,34 +208,38 @@ Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement d
 
 ---
 
-## Lot 5 — Livraison et paiements — **en attente**
+## Lot 5 — Livraison et paiements — **recadré le 09/10/2026**
 
-> **Prochain lot.** Prompt de reprise : `docs/prompts/prompt-lot5.md`, qui porte l'état de configuration réel relevé le 11/09/2026.
+> **Prompt de reprise : `docs/prompts/prompt-lot5.md`.** Périmètre arrêté par le call Céline du 11/09/2026 — compte rendu et questions ouvertes dans `docs/brief-call-celine-2026-09-11.md`.
 
-> **Mis en attente le 10/09/2026.** Deux prérequis extérieurs au code : la création du **compte marchand Mollie** (clés API de test puis de production) et un **brief avec Céline sur les modes de livraison** (transporteurs retenus, paliers de poids, périmètre de la remise en main propre). Le développement se poursuit par le lot 7 en attendant.
+**Périmètre arrêté**
 
-C'est le lot le plus risqué du projet : il combine configuration métier à cadrer avec Céline, la **seule dépendance tierce structurante** (Mondial Relay) et les prestataires de paiement.
+- **Mondial Relay point relais, transporteur unique.** Une seule grille au poids → le carrier **`tablerate` natif suffit** (`Weight vs. Destination`, condition déjà réglée sur `package_weight`). Grille versionnée en CSV avec un script d'import rejouable. Flat Rate à couper.
+- **Sélecteur de point relais** : spike en tout début de lot, avec les identifiants **Offre Start** de Céline (compte à ouvrir ou transférer — il n'est pas pro aujourd'hui). Repli assumé si rien de compatible : point relais choisi par email après commande.
+- **Mollie en carte bancaire seule** : clés de test puis de production, les 38 méthodes exposées restreintes à la CB. `checkmo` à désactiver.
+- **Click & collect** : méthode à 0 €, **payée sur place** (TPE ou espèces) → un mode de paiement hors ligne restreint à ce mode de livraison. Créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30. C'est lui qui fait vivre le statut « Prête pour retrait » du lot 7.
+- **Franchise en base de TVA** : `tax/defaults/country` → FR, `shipping/origin` → Saint-Épain 37800, prix TTC = prix encaissés, mention « TVA non applicable, art. 293 B du CGI ».
+- **Statuts du lot 7 câblés sur le réel** : paiement capté → « Paiement reçu », expédition → « Expédiée ».
+- **Contrôle « poids renseigné »** : commande CLI ou requête SQL documentée, à passer avant chaque mise en production.
+- **Aligner l'affichage sur le réel** : `product_reassurance`, `cart_reassurance`, footer, page *Livraison et retours*, mention sous le prix.
 
-**Périmètre**
+**8a — Mise en ligne anticipée (nouvelle dépendance)**
 
-- **Frais de port au poids** : trois grilles *table rates* (`Weight vs. Destination`, France métropolitaine), une par transporteur — Colissimo, Mondial Relay, Chronopost — importées par CSV et **versionnées dans `docs/` ou dans le module** (script d'import pour rejouer en staging/prod). Paliers calés sur les grilles publiques + poids d'emballage.
-- Contrôle « poids renseigné » : commande CLI `madameaiguille:catalog:check-weight` (ou requête SQL documentée) listant les produits publiés sans poids — à passer avant chaque mise en prod (plan de tests §2).
-- **Remise en main propre** : méthode d'expédition à 0 € (natif *Free Shipping* ou table rate dédiée), restreinte par code postal si Céline le souhaite ; libellés et texte d'aide.
-- **Mondial Relay — sélecteur de point relais** : *spike* de 1 à 2 jours **en tout début de lot** : identifier les modules candidats, vérifier la compatibilité Hyvä **et** la compatibilité avec le checkout retenu (lot 6), tester en sandbox. Sortie du spike : module retenu ou décision de repli (sélection du point relais par email après commande, ou saisie libre du point relais dans un champ d'adresse).
-- **Paiements** : **Mollie** (`mollie/magento2` 3.1.3, déjà installé et activé avec `mollie/magento2-hyva-compatibility` et le bundle de thème Hyvä ; à ce jour `payment/mollie_general/enabled = 0` et mode `test`) — carte bancaire et virement SEPA par le même prestataire. Virement bancaire natif (`Magento_OfflinePayments` — RIB et référence affichés après validation et dans l'email, jamais sur une page indexable), remise en main propre = paiement hors ligne (*Cash on delivery* renommé, restreint au mode de retrait).
-- **TVA** : paramétrage selon le statut fiscal (franchise en base probable → prix TTC = HT, mention « TVA non applicable, art. 293 B du CGI » sur factures et footer).
-- **Expiration des commandes en attente de virement** : cron d'annulation + relibération du stock après N jours (à trancher), email de relance à J-2.
+Mollie ne valide le compte qu'avec un **site en ligne** et **un paiement réel**. Domaine, DNS, préproduction HTTPS et SMTP passent donc avant la fin du lot 5. Si la préproduction est protégée par une authentification HTTP, **exclure la route du webhook Mollie**, sinon les paiements ne remontent jamais.
 
-**Dépendances** : lot 2 (poids sur les produits) ; lot 6a (checkout Luma fallback installé) pour tester les modules dans le vrai tunnel. Critère de compatibilité des modules Mollie et Mondial Relay : le **checkout natif Magento (Knockout)** — le cas standard de l'écosystème, donc large choix. La compatibilité Hyvä ne compte que pour ce qui s'affiche hors tunnel (panier, mini-panier, fiche produit, compte).
+**Ce qui est sorti du périmètre**
 
-**Incertitudes (fortes)**
+Virement SEPA et tout ce qui en découlait (cron d'expiration, relance à J-2, RIB dans l'email de virement du lot 7), Colissimo, Chronopost, PayPal, paiement fractionné — et le besoin de carriers maison, puisqu'il ne reste qu'une grille.
 
-- Aucun module Mondial Relay compatible Hyvä n'est encore identifié. C'est le point à lever en premier.
-- ~~Stripe ou Mollie~~ → **tranché le 10/09/2026 : Mollie.** Le module `mollie/magento2` 3.1.3 est déjà installé et activé, avec `mollie/magento2-hyva-compatibility` et `hyva-themes/magento2-mollie-theme-bundle` ; Mollie couvre carte bancaire **et** virement SEPA. Stripe n'a jamais été installé et sort du périmètre. Reste à créer le compte marchand, saisir les clés de test puis de production, et activer `payment/mollie_general/enabled`.
-- Paliers de poids, franco, périmètre de la remise en main propre, délai d'expiration du virement : quatre décisions de Céline.
-- Statut fiscal de Céline : à connaître avant la première vente.
+**Ce qui s'y ajoute et reste à chiffrer**
 
-**Effort : XL.** Configuration lourde, deux intégrations tierces, beaucoup de recette (trois paniers de poids différents par transporteur, plan de tests §6).
+- **Vente dans toute l'Europe** : zones et grilles Mondial Relay par pays, impact sur la TVA (seuil de 10 000 € de ventes à distance intra-UE, puis guichet OSS — **à faire confirmer par un conseil**) et sur les CGV. Site monolingue français à confirmer.
+- **TikTok** au pied de page, **Pinterest** à retirer.
+- **Emballage cadeau et carte personnalisée** : le message cadeau natif de Magento est déjà affiché dans le détail de commande depuis le lot 7 ; l'option d'emballage reste à spécifier.
+
+**Décisions encore ouvertes** : périmètre européen exact, TVA en Europe, langue du site, franco 49 € ou 60 €, délai d'annulation d'un retrait non honoré, carte du lieu de retrait, prise de rendez-vous, délai d'expédition annoncé, emballage cadeau. Détail et impact dans le compte rendu du call.
+
+**Effort : L** (ramené de XL — un seul transporteur, un seul moyen de paiement), plus **8a**.
 
 ---
 

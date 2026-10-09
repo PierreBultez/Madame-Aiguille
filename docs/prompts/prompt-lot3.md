@@ -58,8 +58,8 @@ Dans `~/Documents/aiguille/docs/` :
 |---|---|
 | **`documentation-theme.md`** (v1.2) | **Commence par lui.** Arborescences, build, tokens, composants, « où modifier quoi » pour chaque écran livré, fraîcheur des caches, commandes. À compléter à chaque écran livré (une section par écran, tableau admin / code) |
 | **`plan-de-developpement.md`** (v1.2) | Lots 3 → 8, état après le lot 2, décisions, **points ouverts issus du lot 2** (page « Boutique » globale, WebP, champ « Me prévenir », `?product=` sur la page contact) |
-| `prompts/prompt-claude-code-lot1.md` §4 et §7 | Règles non négociables et interdits, toujours valables |
-| `prompts/prompt-claude-code-lot2.md` | Méthode de travail validée par Pierre (§5) |
+| `prompts/prompt-lot1.md` §4 et §7 | Règles non négociables et interdits, toujours valables |
+| `prompts/prompt-lot2.md` | Méthode de travail validée par Pierre (§5) |
 | `cahier-des-charges-docs-developpement/specification-fonctionnelle.md` | §1.1 accueil et règle du bloc Nouveautés, §1.4 newsletter et Instagram, §2.2 formulaire de contact et champ « produit concerné » — **prime sur les maquettes pour le comportement** |
 | `cahier-des-charges-docs-developpement/architecture-technique.md` | §5 modules envisagés, §6 sécurité (upload) |
 | `cahier-des-charges-docs-developpement/guide-bonnes-pratiques-hyva.md` | ViewModels, escaping, layout, Alpine, Tailwind v4, sécurité §8 |
