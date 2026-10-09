@@ -55,7 +55,7 @@
                                                         <item name="shipping" xsi:type="array">
                                                             <item name="config" xsi:type="array">
                                                                 <item name="notCalculatedMessage" xsi:type="string"
-                                                                      translate="true">Calculated after choosing delivery</item>
+                                                                      translate="true">Calculée après le choix de livraison</item>
                                                             </item>
                                                         </item>
                                                     </item>

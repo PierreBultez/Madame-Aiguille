@@ -93,7 +93,7 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
 ?>
 <div class="pb-24">
     <header class="pt-8 pb-10 border-b border-brand-line">
-        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 4 et 7')) ?></p>
+        <p class="<?= $escaper->escapeHtmlAttr($sectionKicker) ?> mb-3"><?= $escaper->escapeHtml(__('Page de contrôle · socle graphique · lots 1 à 7')) ?></p>
         <h1 class="font-display text-display-xl md:text-display-2xl text-brand mb-4"><?= $escaper->escapeHtml(__('Madame Aiguille')) ?></h1>
         <p class="font-body italic text-lead text-brand-ink max-w-2xl"><?= $escaper->escapeHtml(__('Délicate, élégante, attentionnée. Un écrin neutre ; la couleur vient des tissus.')) ?></p>
         <p class="<?= $escaper->escapeHtmlAttr($noteClass) ?> mt-4"><?= $escaper->escapeHtml(__('Cette page n’est servie qu’en mode developer / default. Utilisez Tab pour parcourir les états de focus.')) ?></p>
@@ -328,7 +328,7 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                 <div><p><?= $escaper->escapeHtml(__('Trousse Romantique ajoutée à votre panier.')) ?></p><p class="font-normal text-label text-success"><?= $escaper->escapeHtml(__('Il vous reste 8,00 € à ajouter pour bénéficier de la livraison offerte.')) ?></p></div>
             </div>
             <div class="message error" role="alert">
-                <div><p><?= $escaper->escapeHtml(__('Le paiement n’a pas abouti.')) ?></p><p class="font-normal text-label text-error"><?= $escaper->escapeHtml(__('Votre panier est conservé et aucun montant n’a été prélevé. Vous pouvez réessayer.')) ?></p></div>
+                <div><p><?= $escaper->escapeHtml(__('Le paiement n’a pas abouti.')) ?></p><p class="font-normal text-label text-error"><?= $escaper->escapeHtml(__('Vous pouvez revenir à votre panier pour vérifier votre commande et réessayer.')) ?></p></div>
             </div>
             <div class="message notice" role="status">
                 <div><p><?= $escaper->escapeHtml(__('Les frais de port sont calculés selon le poids de votre commande.')) ?></p><p class="font-normal text-label text-info"><?= $escaper->escapeHtml(__('Le montant exact s’affiche à l’étape de livraison, après saisie de votre code postal.')) ?></p></div>
@@ -823,6 +823,23 @@ $heart = '<svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor" ar
                     <span class="btn btn-primary btn-size-lg"><?= $escaper->escapeHtml(__('Découvrir la boutique')) ?></span>
                 </div>
             </div>
+        </div>
+    </section>
+    <section id="sg-checkout" class="mt-12">
+        <h2 class="text-2xl text-brand mb-4"><?= $escaper->escapeHtml(__('Tunnel et confirmation de commande')) ?></h2>
+        <p><?= $escaper->escapeHtml(__('Le tunnel Luma se contrôle avec un article au panier, à 1440 et 390 px. Les cartes ci-dessous utilisent le ViewModel et le gabarit réels sur des commandes de démonstration non enregistrées.')) ?></p>
+        <a class="inline-flex min-h-12 items-center underline" href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>">
+            <?= $escaper->escapeHtml(__('Ouvrir le tunnel de commande')) ?>
+        </a>
+        <?php foreach ($block->getData('confirmation_examples')->getDeliveries() as $delivery): ?>
+            <?= $block->getChildBlock('styleguide.confirmation.delivery')->setData('delivery', $delivery)->toHtml() ?>
+        <?php endforeach ?>
+        <div class="rounded-sm border border-brand-line bg-brand-paper p-6 my-6">
+            <h3 class="text-xl text-brand mb-3"><?= $escaper->escapeHtml(__('Le paiement n’a pas abouti')) ?></h3>
+            <p><?= $escaper->escapeHtml(__('Vous pouvez revenir à votre panier pour vérifier votre commande et réessayer.')) ?></p>
+            <a class="btn btn-primary inline-flex mt-6" href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>">
+                <?= $escaper->escapeHtml(__('Revenir à mon panier')) ?>
+            </a>
         </div>
     </section>
 </div>

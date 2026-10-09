@@ -1,0 +1,22 @@
+<?php
+/** Échec natif ; Mollie restaure le panier dans ses contrôleurs de retour. */
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Onepage\Failure;
+use Magento\Framework\Escaper;
+
+/** @var Failure $block */
+/** @var Escaper $escaper */
+?>
+<div class="max-w-3xl rounded-sm border border-brand-line bg-brand-paper p-6 md:p-8">
+    <p><?= $escaper->escapeHtml(__('Vous pouvez revenir à votre panier pour vérifier votre commande et réessayer.')) ?></p>
+    <?php if ($block->getRealOrderId()): ?>
+        <p><?= $escaper->escapeHtml(__('Référence : %1', $block->getRealOrderId())) ?></p>
+    <?php endif ?>
+    <?php if ($error = $block->getErrorMessage()): ?>
+        <p class="message error my-4"><?= $escaper->escapeHtml($error) ?></p>
+    <?php endif ?>
+    <a class="btn btn-primary inline-flex mt-6" href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>">
+        <?= $escaper->escapeHtml(__('Revenir à mon panier')) ?>
+    </a>
+</div>

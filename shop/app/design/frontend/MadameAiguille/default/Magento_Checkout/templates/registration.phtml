@@ -1,0 +1,17 @@
+<?php
+/** Lien natif vers la création de compte, dont le formulaire conserve le reCAPTCHA natif Hyvä. */
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Registration;
+use Magento\Framework\Escaper;
+
+/** @var Registration $block */
+/** @var Escaper $escaper */
+?>
+<section class="py-6 max-w-3xl">
+    <h2 class="text-xl text-brand mb-3"><?= $escaper->escapeHtml(__('Retrouvez vos commandes dans votre compte')) ?></h2>
+    <p><?= $escaper->escapeHtml(__('Créez votre compte avec l’adresse %1.', $block->getEmailAddress())) ?></p>
+    <a class="btn btn-secondary inline-flex mt-4" href="<?= $escaper->escapeUrl($block->getCreateAccountUrl()) ?>">
+        <?= $escaper->escapeHtml(__('Créer mon compte')) ?>
+    </a>
+</section>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head><title>Le paiement n’a pas abouti</title></head>
+    <body>
+        <referenceBlock name="page.main.title">
+            <action method="setPageTitle">
+                <argument name="title" xsi:type="string" translate="true">Le paiement n’a pas abouti</argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>

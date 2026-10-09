@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head><title>Merci pour votre commande</title></head>
+    <body>
+        <referenceBlock name="page.main.title">
+            <action method="setPageTitle">
+                <argument name="title" xsi:type="string" translate="true">Merci pour votre commande</argument>
+            </action>
+        </referenceBlock>
+        <referenceBlock name="checkout.success">
+            <arguments>
+                <argument name="confirmation" xsi:type="object">MadameAiguille\Checkout\ViewModel\Confirmation</argument>
+            </arguments>
+            <block name="madameaiguille.confirmation.delivery" template="Magento_Checkout::confirmation/delivery.phtml">
+                <arguments>
+                    <argument name="confirmation" xsi:type="object">MadameAiguille\Checkout\ViewModel\Confirmation</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

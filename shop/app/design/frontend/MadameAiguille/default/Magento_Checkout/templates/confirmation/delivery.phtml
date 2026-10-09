@@ -1,0 +1,37 @@
+<?php
+/** Même carte en confirmation et dans le styleguide ; les données viennent du ViewModel. */
+declare(strict_types=1);
+
+use MadameAiguille\Checkout\ViewModel\Confirmation;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var Confirmation $confirmation */
+$confirmation = $block->getData('confirmation');
+$delivery = $block->getData('delivery') ?? $confirmation->getDelivery();
+?>
+<?php if ($delivery): ?>
+    <section class="rounded-sm bg-brand-ivory p-6 my-6">
+        <?php if ($delivery['type'] === 'pickup'): ?>
+            <h2 class="text-xl text-brand mb-3"><?= $escaper->escapeHtml(__('Votre rendez-vous à l’atelier')) ?></h2>
+            <p class="font-medium"><?= $escaper->escapeHtml($delivery['pickup_slot']) ?></p>
+            <p><?= $escaper->escapeHtml($delivery['pickup_location_name']) ?></p>
+            <p class="whitespace-pre-line"><?= $escaper->escapeHtml($delivery['pickup_location_address']) ?></p>
+            <?php if ($delivery['pickup_directions_url']): ?>
+                <a class="inline-flex items-center min-h-12 underline" target="_blank" rel="noopener"
+                   href="<?= $escaper->escapeUrl($delivery['pickup_directions_url']) ?>">
+                    <?= $escaper->escapeHtml(__('Préparer mon itinéraire')) ?>
+                </a>
+            <?php endif ?>
+        <?php else: ?>
+            <h2 class="text-xl text-brand mb-3"><?= $escaper->escapeHtml(__('Votre point relais')) ?></h2>
+            <p class="font-medium"><?= $escaper->escapeHtml($delivery['name']) ?></p>
+            <?php foreach ($delivery['street'] as $line): ?>
+                <p><?= $escaper->escapeHtml($line) ?></p>
+            <?php endforeach ?>
+            <p><?= $escaper->escapeHtml($delivery['city']) ?></p>
+        <?php endif ?>
+    </section>
+<?php endif ?>

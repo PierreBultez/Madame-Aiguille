@@ -1,0 +1,28 @@
+<?php
+/** Confirmation native : numéro et informations supplémentaires conservés. */
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Onepage\Success;
+use Magento\Framework\Escaper;
+
+/** @var Success $block */
+/** @var Escaper $escaper */
+?>
+<div class="checkout-success max-w-3xl rounded-sm border border-brand-line bg-brand-paper p-6 md:p-8">
+    <?php if ($block->getOrderId()): ?>
+        <p class="text-xl text-brand mb-4">
+            <?= $escaper->escapeHtml(__('Votre commande n° %1 est enregistrée.', $block->getOrderId())) ?>
+        </p>
+        <?php if ($block->getCanViewOrder()): ?>
+            <a class="inline-flex items-center min-h-12 underline" href="<?= $escaper->escapeUrl($block->getViewOrderUrl()) ?>">
+                <?= $escaper->escapeHtml(__('Voir ma commande')) ?>
+            </a>
+        <?php endif ?>
+        <p><?= $escaper->escapeHtml(__('Un email vous est envoyé avec le récapitulatif de votre commande.')) ?></p>
+    <?php endif ?>
+    <?= $block->getChildHtml('madameaiguille.confirmation.delivery') ?>
+    <?= $block->getAdditionalInfoHtml() ?>
+    <a class="btn btn-primary inline-flex mt-6" href="<?= $escaper->escapeUrl($block->getContinueUrl()) ?>">
+        <?= $escaper->escapeHtml(__('Continuer mes découvertes')) ?>
+    </a>
+</div>

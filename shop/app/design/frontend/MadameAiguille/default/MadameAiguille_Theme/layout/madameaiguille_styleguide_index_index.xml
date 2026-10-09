@@ -20,7 +20,9 @@
                     <argument name="free_shipping" xsi:type="object">MadameAiguille\Theme\ViewModel\Cart\FreeShipping</argument>
                     <!-- Les états de commande sont produits par le vrai ViewModel Order\Progress sur des commandes d'exemple non enregistrées. -->
                     <argument name="order_states" xsi:type="object">MadameAiguille\Theme\ViewModel\Styleguide\OrderStates</argument>
+                    <argument name="confirmation_examples" xsi:type="object">MadameAiguille\Checkout\ViewModel\ConfirmationExamples</argument>
                 </arguments>
+                <block name="styleguide.confirmation.delivery" template="Magento_Checkout::confirmation/delivery.phtml"/>
             </block>
         </referenceContainer>
     </body>
