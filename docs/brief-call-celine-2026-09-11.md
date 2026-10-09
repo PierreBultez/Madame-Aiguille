@@ -37,19 +37,24 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 - **Compte Mondial Relay : celui de Céline n'est pas un compte pro.** Action : ouvrir ou transférer vers l'**Offre Start**, puis transmettre code enseigne et clé privée — sans eux, pas de carte de points relais sur le site.
 - **Délai d'expédition** : aujourd'hui 4 à 5 jours, **cible 48 h**.
 - **Livraison offerte** : 49 € maintenu pour l'instant, **60 € envisagé** — non tranché.
-- **Zone de vente : France et Europe, limitée aux pays desservis par Mondial Relay** (décision Pierre du 09/10/2026). À la grille actuelle : Belgique, Luxembourg, Pays-Bas, Allemagne, Autriche, Italie, Espagne, Portugal — **liste à confirmer sur l'offre pro au moment de l'implémentation**.
+- **Zone de vente : pays francophones de l'Union européenne** (stratégie révisée par Pierre le 09/10/2026, en remplacement de « tous les pays Mondial Relay »). Croisée avec la desserte Mondial Relay, la liste se réduit à **France, Belgique, Luxembourg** — Monaco étant traité comme la France (codes postaux 980xx, même territoire douanier et fiscal).
+  > ⚠️ **La Suisse, citée dans la décision, n'est pas dans l'Union européenne** et n'est pas desservie par Mondial Relay en point relais. Y vendre impliquerait une déclaration douanière à chaque colis, la TVA suisse à l'import à la charge de la cliente et des frais de dédouanement — à l'opposé du « au plus simple » retenu pour la TVA. **Laissée hors périmètre en attendant un arbitrage explicite.**
 - **Franco : 60 €** (décision Pierre du 09/10/2026), sur le point relais Mondial Relay. Le seuil affiché passe donc de 49 € à 60 € dans *Madame Aiguille › Panier* **et** dans la règle de livraison gratuite.
 
 ## Click & collect (§5.8 — répondu)
 
 - Retenu, avec **paiement sur place** (TPE ou espèces), pas en ligne.
 - **Créneaux fixes** : jeudi 9 h – 18 h, vendredi 9 h – 11 h 30.
-- Rendez-vous convenu à l'heure ; **une carte du lieu de retrait est envisagée** (à trancher).
-- **Annulation : au rendez-vous non honoré** (décision Pierre du 09/10/2026). Pas de délai en jours, donc **pas de cron** : c'est Céline qui annule la commande dans l'administration après un rendez-vous manqué, ce qui relibère le stock. À documenter dans le mémo Céline.
+- **Sélecteur de date et d'heure dans le tunnel** (décision Pierre du 09/10/2026) : la cliente choisit son créneau parmi les disponibilités de Céline, et **le rendez-vous est confirmé automatiquement** si le créneau est libre. Aucune validation manuelle.
+- **Un lieu de retrait unique**, avec un aperçu cartographique. Adresse et lieu **modifiables depuis le back-office** ; un lieu générique est posé en attendant celui de Céline.
+- **Annulation : au rendez-vous non honoré** (décision Pierre du 09/10/2026). Le créneau étant désormais choisi à la commande, chaque retrait a bien une date : le garde-fou craint plus haut tombe de lui-même. Pas de délai en jours, donc **pas de cron** : c'est Céline qui annule la commande dans l'administration après un rendez-vous manqué, ce qui relibère le stock. À documenter dans le mémo Céline.
 - Ces créneaux donnent enfin son contenu à l'email « Prête pour retrait » du lot 7.
 
 ## Catalogue et contenus (§7 et §8 — répondu)
 
+- **Délai d'expédition annoncé : 4 à 5 jours ouvrés** (décision Pierre du 09/10/2026) — la réalité d'aujourd'hui, pas la cible de 48 h.
+- **Emballage cadeau : option payante à 2 €**, prix modifiable depuis le back-office (décision Pierre du 09/10/2026).
+- **Pages juridiques** : contenu générique à générer en attendant les textes définitifs (décision Pierre du 09/10/2026).
 - **10 à 50 produits** au total au lancement.
 - **Pinterest : non utilisé** → à retirer du pied de page.
 - **TikTok à ajouter** → nouveau réseau à câbler dans la configuration et le pied de page.
@@ -59,16 +64,13 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 
 # QUESTIONS RESTÉES OUVERTES
 
-À trancher avant ou pendant le lot 5. **Quatre des dix ont été tranchées par Pierre le 09/10/2026** et sont remontées dans « Résultat du call ».
+**Neuf des dix questions ont été tranchées par Pierre le 09/10/2026** et sont remontées dans « Résultat du call ». Il reste ceci.
 
 | # | Question | Pourquoi ça bloque |
 |---|---|---|
-| 3 | **Site en français uniquement** alors qu'on vend en Europe ? Un site monolingue est acceptable, mais il faut le décider | Conditionne le périmètre du lot 8 |
-| 6 | **Carte du lieu de retrait** : simple adresse et plan statique, ou carte interactive ? | La seconde option demande du développement |
-| 7 | **Prise de rendez-vous** : la cliente choisit-elle son créneau à la commande, ou Céline confirme-t-elle l'heure ensuite par email ? **Devenue structurante** depuis que l'annulation est adossée au rendez-vous : s'il n'y a jamais de rendez-vous pris, il n'y a jamais de rendez-vous manqué, et le stock reste bloqué sans fin | Le premier cas demande un sélecteur dans le tunnel, le second se fait avec l'existant |
-| 8 | **Délai d'expédition annoncé** : on affiche la réalité d'aujourd'hui (4-5 jours) ou la cible (48 h) ? | Mieux vaut sous-promettre |
-| 9 | **Emballage cadeau et carte personnalisée** : option gratuite ou payante ? Dans quel lot ? Magento a un message cadeau natif, déjà affiché dans le détail de commande au lot 7 | Nouveau périmètre à chiffrer |
-| 10 | Rédaction des **CGV, mentions légales et page Livraison et retours**, choix d'un **médiateur de la consommation**, confirmation du **domaine** | Obligatoire avant la première vente, et avant la validation Mollie |
+| 1 | **Suisse : on y va ou pas ?** Hors UE et hors desserte Mondial Relay — il faudrait un second transporteur, des déclarations douanières et un traitement fiscal distinct. **Ma recommandation : non en v1** | Conditionne la zone de livraison, les CGV et le choix des transporteurs |
+| 2 | **Lieu de retrait réel** : adresse exacte de Céline pour le click & collect. Un lieu générique est posé en attendant | Le champ est prévu dans le back-office, seule la valeur manque |
+| 3 | Rédaction définitive des **CGV, mentions légales et page Livraison et retours** sur la base des contenus génériques, choix d'un **médiateur de la consommation**, confirmation du **domaine** | Obligatoire avant la première vente, et avant la validation Mollie |
 
 ---
 
@@ -80,7 +82,7 @@ Ce qui tombe du périmètre du lot 5 : le virement SEPA, le cron d'expiration de
 | 2 | Ouvrir ou transférer le compte **Mondial Relay Offre Start**, transmettre code enseigne et clé privée | Céline | ⬜ |
 | 3 | Peser l'emballage type et les créations | Céline | ⬜ |
 | 4 | Donner les tarifs Mondial Relay pro et la politique de prix | Céline | ⬜ |
-| 5 | Trancher les questions restantes (3, 6, 7, 8, 9) | Pierre / Céline | 🔸 4 tranchées le 09/10 |
+| 5 | Trancher les questions restantes | Pierre / Céline | 🔸 9 sur 10 tranchées le 09/10 |
 | 6 | Rédiger CGV, mentions légales, Livraison et retours · choisir un médiateur | Céline (+ relecture) | ⬜ |
 | 7 | Confirmer le domaine et son titulaire | Céline / Pierre | ⬜ |
 | 8 | **Mettre une préproduction en ligne sur le domaine** (lot 8a) | Pierre | ⬜ |

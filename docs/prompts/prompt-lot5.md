@@ -28,9 +28,13 @@ Crée la branche `codex/lot-5-livraison-paiements` depuis `main` à jour, avant 
 - **Mondial Relay point relais, transporteur unique.** Colissimo et Chronopost sont écartés. Une seule grille → **le carrier `tablerate` natif suffit**, pas de carriers maison.
 - **Click & collect payé sur place** (TPE ou espèces), créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30.
 - **Entreprise individuelle en franchise de TVA** : BULTEZ CELINE, nom commercial MADAME AIGUILLE, SIRET 940 760 911 00013, 35 Grande Rue 37800 Saint-Épain, non inscrite au RCS. Prix TTC = prix encaissés, **aucune TVA facturée nulle part, ventes européennes comprises**, mention « TVA non applicable, art. 293 B du CGI ».
-- **Zone de vente** : France plus les pays desservis par Mondial Relay — BE, LU, NL, DE, AT, IT, ES, PT à la grille actuelle, **à confirmer sur l'offre pro**. Pas de vente hors de cette liste.
+- **Zone de vente : France, Belgique, Luxembourg** — pays francophones de l'UE desservis par Mondial Relay. Monaco suit la France. **La Suisse est hors périmètre** : hors UE (donc douane et TVA à l'import) et hors desserte Mondial Relay. Ne pas l'ajouter sans arbitrage explicite de Pierre.
+- **Site monolingue français**, même pour la Belgique et le Luxembourg.
 - **Franco à 60 €** sur le point relais. Le seuil actuel est à 49 € : le porter à 60 € dans `madameaiguille/cart/free_shipping_threshold` **et** dans `carriers/freeshipping/free_shipping_subtotal`, les deux doivent rester d'accord.
-- **Annulation d'un retrait non honoré : au rendez-vous manqué**, pas après N jours. Donc **aucun cron à écrire** — Céline annule la commande dans l'administration, ce qui relibère le stock. La procédure va dans le mémo Céline (§24).
+- **Rendez-vous de retrait choisi par la cliente dans le tunnel**, parmi les disponibilités de Céline (jeudi 9 h-18 h, vendredi 9 h-11 h 30), **confirmé automatiquement** si le créneau est libre. Un **lieu de retrait unique**, adresse paramétrable en back-office, avec aperçu cartographique ; poser un lieu générique en attendant celui de Céline.
+- **Annulation d'un retrait non honoré : au rendez-vous manqué**, pas après N jours. **Aucun cron à écrire** — Céline annule la commande dans l'administration, ce qui relibère le stock. La procédure va dans le mémo Céline (§24).
+- **Emballage cadeau : option payante à 2 €**, prix réglable en back-office.
+- **Délai d'expédition annoncé : 4 à 5 jours ouvrés.**
 - **Checkout : Luma Fallback** (`hyva-themes/magento2-luma-checkout` 1.1.7). Toute la page du tunnel bascule sur Luma ; son habillage est le **lot 6b**, pas celui-ci.
 - Commande invité autorisée (`checkout/options/guest_checkout = 1`).
 - Franco de port **affiché à 49 €**, configurable dans *Madame Aiguille › Panier*.
@@ -71,19 +75,25 @@ Celles d'`AGENTS.md`, plus :
 
 2. **Grille de frais de port au poids** : carrier **`tablerate` natif**, `Weight vs. Destination`, sa condition est déjà `package_weight`. Grille versionnée en CSV avec un script d'import rejouable en préproduction et en production. Couper `carriers/flatrate`.
 
-3. **Click & collect** : méthode à 0 €, restreinte géographiquement si Céline le souhaite, **payée sur place** → prévoir un mode de paiement hors ligne réservé à ce mode de livraison. Afficher les créneaux (jeudi 9 h-18 h, vendredi 9 h-11 h 30).
+3. **Click & collect** : méthode à 0 €, restreinte géographiquement si Céline le souhaite, **payée sur place** → prévoir un mode de paiement hors ligne réservé à ce mode de livraison.
 
-4. **Mollie** : clés de test, restriction à la carte bancaire, désactivation de `checkmo`. Clés de production une fois le compte validé.
+4. **Sélecteur de rendez-vous de retrait — développement à part entière, à chiffrer avant de s'engager.** Il vit dans le **checkout Knockout** du fallback Luma, pas en Hyvä : c'est un composant Knockout, pas un composant Alpine. Il faut au minimum : des plages de disponibilité **configurables** (par défaut jeudi 9 h-18 h, vendredi 9 h-11 h 30), le calcul des créneaux libres, la **réservation effective** du créneau pour éviter que deux clientes prennent le même — « confirmé automatiquement si disponible » implique une vérification côté serveur au moment de la commande, pas seulement à l'affichage —, le stockage du créneau sur la commande, et sa restitution dans l'administration, le compte client et l'email « Prête pour retrait ». Prévoir aussi le lieu de retrait : adresse et coordonnées en configuration, aperçu cartographique (**une carte statique et un lien d'itinéraire suffisent pour un lieu unique** ; une carte interactive ajoute une dépendance et une question RGPD).
 
-5. **Cohérence avec le lot 7** : câbler les statuts sur les événements réels — paiement capté → « Paiement reçu », expédition → « Expédiée ». Vérifier que les deux notifications partent. **L'email de virement esquissé au lot 7 n'a plus d'objet : le retirer ou le neutraliser.**
+5. **Emballage cadeau payant à 2 €**, prix réglable en back-office. **Attention : ce n'est pas natif.** Le *Gift Wrapping* de Magento est réservé à Adobe Commerce ; en Open Source il faut le construire — option au panier ou au tunnel, ligne de total dédiée, report sur la commande, la facture et les emails. Le **message cadeau** natif, lui, existe déjà et s'affiche dans le détail de commande depuis le lot 7 : s'appuyer dessus pour la carte personnalisée.
 
-6. **TVA et mentions** : `tax/defaults/country` → FR, `shipping/origin` → Saint-Épain 37800 FR, prix TTC = HT, mention « TVA non applicable, art. 293 B du CGI » sur les factures et en pied de site.
+6. **Mollie** : clés de test, restriction à la carte bancaire, désactivation de `checkmo`. Clés de production une fois le compte validé.
 
-7. **Contrôle « poids renseigné »** : commande CLI `madameaiguille:catalog:check-weight` ou requête SQL documentée, listant les produits publiés sans poids.
+7. **Cohérence avec le lot 7** : câbler les statuts sur les événements réels — paiement capté → « Paiement reçu », expédition → « Expédiée ». Vérifier que les deux notifications partent. **L'email de virement esquissé au lot 7 n'a plus d'objet : le retirer ou le neutraliser.**
 
-8. **Aligner l'affichage sur le réel** : `product_reassurance`, `cart_reassurance`, le footer, la page *Livraison et retours* et la mention sous le prix ne doivent plus annoncer que ce qui existe.
+8. **TVA et mentions** : `tax/defaults/country` → FR, `shipping/origin` → Saint-Épain 37800 FR, prix TTC = HT, mention « TVA non applicable, art. 293 B du CGI » sur les factures et en pied de site.
 
-9. **Réseaux sociaux** : retirer Pinterest, ajouter **TikTok** (champ de configuration, icône, pied de page).
+9. **Contrôle « poids renseigné »** : commande CLI `madameaiguille:catalog:check-weight` ou requête SQL documentée, listant les produits publiés sans poids.
+
+10. **Aligner l'affichage sur le réel** : `product_reassurance`, `cart_reassurance`, le footer, la page *Livraison et retours* et la mention sous le prix ne doivent plus annoncer que ce qui existe.
+
+11. **Réseaux sociaux** : retirer Pinterest, ajouter **TikTok** (champ de configuration, icône, pied de page).
+
+12. **Contenus juridiques génériques** : CGV, mentions légales, page *Livraison et retours*, confidentialité. Les données d'identité sont connues (BULTEZ CELINE, EI, SIRET 940 760 911 00013, 35 Grande Rue 37800 Saint-Épain, non inscrite au RCS, franchise de TVA). **Marquer explicitement chaque page comme un brouillon à faire relire** — ce sont des documents juridiques, et le médiateur de la consommation reste à choisir.
 
 ## 8a — Mise en ligne anticipée, dans ce lot
 
@@ -98,13 +108,11 @@ Domaine, DNS, préproduction HTTPS, SMTP. Puis **un paiement réel** pour faire 
 
 ## Décisions à demander à Pierre avant de coder
 
-Quatre des dix questions du compte rendu ont été tranchées le 09/10/2026 et figurent ci-dessus. Restent, par ordre d'impact sur le code :
+Neuf des dix questions du compte rendu ont été tranchées le 09/10/2026 et figurent ci-dessus. Restent :
 
-1. **Prise de rendez-vous du retrait** : la cliente choisit-elle son créneau à la commande (sélecteur dans le tunnel, du développement) ou Céline confirme-t-elle l'heure ensuite par email (faisable avec l'existant) ? **C'est devenu structurant** : l'annulation est adossée au rendez-vous manqué, donc une commande dont le rendez-vous n'est jamais pris bloque le stock sans fin. Prévoir un garde-fou dans les deux cas.
-2. **Carte du lieu de retrait** : adresse et plan statique, ou carte interactive ?
-3. **Langue du site** : français seul alors qu'on vend dans huit pays ?
-4. **Délai d'expédition annoncé** : la réalité d'aujourd'hui (4-5 jours) ou la cible (48 h) ?
-5. **Emballage cadeau et carte personnalisée** : option gratuite ou payante, et dans quel lot ?
+1. **La Suisse** : hors UE et hors desserte Mondial Relay. L'y inclure demanderait un second transporteur, des déclarations douanières et un traitement fiscal distinct. **Recommandation : non en v1** — mais c'est à Pierre de trancher.
+2. **L'adresse réelle du lieu de retrait**, en attendant laquelle un lieu générique est posé.
+3. **Le chiffrage du sélecteur de rendez-vous et de l'emballage cadeau** avant de s'y engager : ce sont les deux postes qui ont fait repasser le lot de L à XL.
 
 ## Pièges connus sur ce projet
 

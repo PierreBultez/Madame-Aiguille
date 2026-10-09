@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.5 (09/10/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5 + 8a**, cadré par le call Céline et les arbitrages de Pierre du 09/10/2026
+Document interne — v2.6 (09/10/2026), lots 6a et 3 validés, lots 4 et 7 livrés et fusionnés ; **prochain lot : lot 5 + 8a**, cadré par le call Céline et les arbitrages de Pierre du 09/10/2026
+
+> **v2.6** — Les dernières questions du call sont tranchées. **Site monolingue français**, et **zone réduite aux pays francophones de l'UE** : croisée avec la desserte Mondial Relay, elle se limite à **France, Belgique, Luxembourg** — la Suisse, citée dans la décision, est hors UE et hors desserte Mondial Relay, donc laissée en question ouverte. **Délai d'expédition annoncé : 4 à 5 jours.** Deux vrais développements s'ajoutent au lot 5 : un **sélecteur de date et d'heure de retrait** dans le tunnel, auto-confirmé, avec lieu unique paramétrable et aperçu cartographique ; et une **option d'emballage cadeau payante à 2 €**, prix réglable en back-office. Tous deux vivent dans le checkout **Knockout** du fallback Luma, pas en Hyvä, et ne sont natifs ni l'un ni l'autre — l'effort du lot repasse de **L à XL**. Contenus juridiques génériques à générer en attendant les textes définitifs.
 
 > **v2.5** — Quatre arbitrages de Pierre closent les points les plus structurants du lot 5 : **zone de vente limitée aux pays desservis par Mondial Relay** (BE, LU, NL, DE, AT, IT, ES, PT — à confirmer sur l'offre pro) ; **aucune TVA facturée**, y compris en Europe, Céline étant en franchise de base — à revoir si les ventes à distance intra-UE dépassent 10 000 € sur l'année ; **franco à 60 €** sur le point relais ; **annulation d'un retrait au rendez-vous non honoré**, donc sans cron, par une action de Céline dans l'administration. Restent ouverts : langue du site, carte du lieu de retrait, prise de rendez-vous — devenue structurante puisqu'elle conditionne la règle d'annulation —, délai d'expédition annoncé et emballage cadeau.
 
@@ -128,7 +130,7 @@ Livré (commits `d889482` → `8f33ac5` + documentation, détail dans `documenta
 | 2 | Catalogue : modèle de données, catégorie, fiche produit | 1 | **L** | faible |
 | 3 | Accueil, pages CMS, formulaire de contact | 2 | **L** | moyen (contenu) |
 | 4 | Panier et mini-panier | 2, config livraison du lot 5 | **M** | faible |
-| 5 | Livraison et paiements (Mondial Relay point relais, **Mollie CB**, click & collect) + **8a mise en ligne** | 2, 6a + identifiants Mondial Relay + domaine | **L** | moyen |
+| 5 | Livraison et paiements (Mondial Relay point relais, **Mollie CB**, click & collect avec rendez-vous, emballage cadeau) + **8a mise en ligne** | 2, 6a + identifiants Mondial Relay + domaine | **XL** | moyen |
 | 6 | Checkout Luma fallback : installation (6a, livrée) puis habillage (6b) — **6b en attente** | 5 | **L** | moyen |
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
@@ -221,7 +223,7 @@ Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement d
 - **Mollie en carte bancaire seule** : clés de test puis de production, les 38 méthodes exposées restreintes à la CB. `checkmo` à désactiver.
 - **Click & collect** : méthode à 0 €, **payée sur place** (TPE ou espèces) → un mode de paiement hors ligne restreint à ce mode de livraison. Créneaux jeudi 9 h-18 h et vendredi 9 h-11 h 30. C'est lui qui fait vivre le statut « Prête pour retrait » du lot 7. **Annulation au rendez-vous non honoré** : pas de cron, Céline annule la commande dans l'administration et le stock se relibère — procédure à écrire dans le mémo Céline.
 - **Franchise en base de TVA** : `tax/defaults/country` → FR, `shipping/origin` → Saint-Épain 37800, prix TTC = prix encaissés, mention « TVA non applicable, art. 293 B du CGI ». **Aucune TVA facturée, y compris sur les ventes européennes** — à revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année.
-- **Zone de vente** : France plus les pays desservis par Mondial Relay (BE, LU, NL, DE, AT, IT, ES, PT, à confirmer). Une zone par grille tarifaire.
+- **Zone de vente** : **France, Belgique, Luxembourg** — pays francophones de l'UE desservis par Mondial Relay. Monaco suit la France. La Suisse reste hors périmètre tant qu'elle n'est pas arbitrée : hors UE, hors desserte Mondial Relay.
 - **Franco à 60 €** sur le point relais : seuil à porter de 49 € à 60 € dans *Madame Aiguille › Panier* **et** dans `carriers/freeshipping/free_shipping_subtotal`.
 - **Statuts du lot 7 câblés sur le réel** : paiement capté → « Paiement reçu », expédition → « Expédiée ».
 - **Contrôle « poids renseigné »** : commande CLI ou requête SQL documentée, à passer avant chaque mise en production.
@@ -237,13 +239,15 @@ Virement SEPA et tout ce qui en découlait (cron d'expiration, relance à J-2, R
 
 **Ce qui s'y ajoute et reste à chiffrer**
 
-- **Vente en Europe** : zones et grilles Mondial Relay par pays, mentions des CGV. Site monolingue français à confirmer.
+- **Vente en Belgique et au Luxembourg** : grilles Mondial Relay par pays, mentions des CGV. **Site monolingue français** — confirmé.
 - **TikTok** au pied de page, **Pinterest** à retirer.
-- **Emballage cadeau et carte personnalisée** : le message cadeau natif de Magento est déjà affiché dans le détail de commande depuis le lot 7 ; l'option d'emballage reste à spécifier.
+- **Sélecteur de rendez-vous de retrait** : créneaux issus des disponibilités de Céline (jeudi 9 h-18 h, vendredi 9 h-11 h 30), **confirmation automatique** si le créneau est libre, donc réservation réelle du créneau et gestion des collisions. Lieu de retrait unique, adresse **paramétrable en back-office**, aperçu cartographique. Le créneau choisi doit se retrouver sur la commande, dans l'administration, dans le compte client et dans l'email « Prête pour retrait ». **Composant du tunnel : à écrire en Knockout**, pas en Alpine.
+- **Emballage cadeau payant à 2 €**, prix réglable en back-office. **Pas natif en Magento Open Source** — le *Gift Wrapping* est réservé à Adobe Commerce. À construire : option au tunnel ou au panier, ligne de total dédiée, report sur la commande, la facture et les emails. Le message cadeau natif, lui, existe déjà et s'affiche dans le détail de commande depuis le lot 7.
+- **Contenus juridiques génériques** : CGV, mentions légales, page *Livraison et retours*, confidentialité — brouillons explicitement marqués comme tels, à faire relire avant la première vente.
 
-**Décisions encore ouvertes** : langue du site, carte du lieu de retrait, **prise de rendez-vous** (elle conditionne désormais la règle d'annulation du retrait), délai d'expédition annoncé, emballage cadeau. Détail et impact dans le compte rendu du call.
+**Décisions encore ouvertes** : la **Suisse** (recommandation : non en v1), l'adresse réelle du lieu de retrait, et la rédaction définitive des pages juridiques. Détail dans le compte rendu du call.
 
-**Effort : L** (ramené de XL — un seul transporteur, un seul moyen de paiement), plus **8a**.
+**Effort : XL.** Ramené à L par le transporteur et le moyen de paiement uniques, puis **remonté à XL** par le sélecteur de rendez-vous et l'emballage cadeau, qui sont deux développements dans le tunnel Knockout. Plus **8a**.
 
 ---
 
