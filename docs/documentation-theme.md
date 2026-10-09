@@ -543,6 +543,7 @@ bin/magento madameaiguille:catalog:check-weight                # produits activ�
 | 6b — Correctif de recette | chargement Leaflet unique, récapitulatif natif du paiement relais rétabli, contrôle console et captures | `f80ceaf` |
 | 6b — Recette et documentation | captures finales, administration, limites, mémo Céline et plan v2.8 | `92a96f6` |
 | 6b — Passage de relais | prompt de reprise 8a écrit après fusion et publication, avec état vérifiable et pièges du 6b | `docs/prompts/prompt-lot8a.md` (commit de passage de relais) |
+| Langue française (09/10/2026) | paquet `community-engineering/language-fr_fr`, clés Hyvä manquantes, lignes d'adresse du tunnel, sujets d'e-mails, titre de livraison de l'admin, §28 | `e6c8e3d` → documentation |
 | Correctif accueil (09/10/2026) | hero centré et plafonné à 1440 px dans le thème ; contrôles à 1440, 390 et 2560 px, CSS servi identique au build ; recette `docs/recettes/correction-hero.md` | `8316318` |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
@@ -738,7 +739,7 @@ Les lots 3, 4, 7, 5 et 6b sont livrés dans le périmètre local décrit par leu
 | **Contenus juridiques** | Brouillons en place, e-mail de contact rempli au lot 5. Restent entre crochets : hébergeur, médiateur de la consommation, prestataire d'envoi d'e-mails, date de mise en ligne, délai de réponse. Ajouter l'emballage cadeau à la CGV ; la confidentialité doit citer Mondial Relay et OpenStreetMap (chargés au choix du point relais) | Céline avec conseil, avant ouverture des ventes |
 | **reCAPTCHA création de compte** | Le lien après commande utilise le formulaire natif Hyvä et son mécanisme reCAPTCHA. `recaptcha_frontend/type_for/customer_create` est actuellement non configuré : fournir les clés, activer le type pour le domaine final et recetter le refus serveur / l’envoi normal | Pierre, 8a avant ouverture |
 | **Newsletter de bout en bout** | Case facultative décochée et service d’inscription natif livrés ; double confirmation activée en local. Tester inscription, réception et confirmation du mail avec SMTP sur le domaine final | Pierre, 8a |
-| **Langue reproductible** | Le paquet français installé localement vient de la branche distincte `traduction-fr`, laissée intacte. Ses commits Composer ne font pas partie de `main`. Le thème checkout possède son propre dictionnaire, mais la traduction globale sur un serveur neuf nécessite d’arbitrer puis intégrer cette branche. Harmoniser aussi les libellés d’adresse masqués « Adresse: Line 1/2 » encore présents dans l’arbre accessible local | Pierre, avant provisionnement 8a |
+| **Langue de l'administration** | Passer le compte `admin` et celui de Céline en *Français (France)* dans *Paramètres du compte* ; vérifier visuellement les écrans du quotidien. Le paquet français est intégré à `main` et se réinstalle avec `composer install` (§28) | Pierre, avant 8a |
 | **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées au 6b | Recette transversale du lot 8 |
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget, pour éviter sa seconde injection AMD ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
@@ -849,6 +850,13 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Badge « Nouveauté » | Dates *Définir le produit comme nouveau à partir de / jusqu'au*. Ces dates alimentent aussi le bloc Nouveautés de l'accueil et les suggestions du panier vide | §8, §19 |
 | Suggestions « Vous aimerez aussi » | Onglet *Produits liés*, section **Produits liés** | §10 |
 | Ordre du menu et des catégories | *Catégories*, par glisser-déposer ; case « Inclure dans le menu » | §5 |
+
+### Langue
+
+| Quoi | Où | Détail |
+|---|---|---|
+| Mettre l'administration en français | En haut à droite : *nom du compte › Paramètres du compte › Langue de l'interface* → *Français (France)*, puis enregistrer avec son mot de passe | §28 |
+| Corriger un texte du site | Demander à Pierre : les traductions vivent dans les dictionnaires du thème | §28 |
 
 ### Ce qu'il ne faut pas faire
 
@@ -1085,3 +1093,41 @@ Validation : **106 tests unitaires, 282 assertions**, aucune erreur PHPCS Magent
 - Après modification de layout/traduction : nettoyer `layout block_html translate`, puis une URL de recette différente si le HTML reste ancien. Le dictionnaire propre au thème évite de dépendre du paquet français pour ses clés ; les chaînes composées doivent utiliser la clé source exacte (ex. `%1: Line %2`).
 - Les WOFF2 Sentient ne sont **pas** distribués dans Git. Provisionner les originaux Fontshare dans les deux thèmes avant compilation (README). La branche séparée `traduction-fr` n’a pas été intégrée implicitement.
 - Dans la recette navigateur, une simple affectation de champ peut ne pas déclencher les événements Knockout : saisir au clavier et quitter le champ avant validation. Les tests utilisent des données fictives et annulent les commandes dans l’administration.
+
+## 28. Langue française
+
+Fait le 09/10/2026 sur la branche `traduction-fr`, à la demande de Pierre, après le lot 6b.
+
+### D'où viennent les traductions
+
+Le paquet officiel `magento/language-fr_fr` (100.4.1) installé avec Magento est **vide** : il ne contient que `language.xml` et `registration.php`. La boutique s'appuie donc sur ces dictionnaires :
+
+| Source | Contenu | Où modifier |
+|---|---|---|
+| `community-engineering/language-fr_fr` (0.0.64, OSL-3.0 / AFL-3.0) | Paquet du programme de traduction communautaire de Magento, généré depuis Crowdin : **11 168 chaînes** de tous les modules, vitrine et administration | Jamais dans `vendor/` : surcharger la clé dans un dictionnaire ci-dessous |
+| `app/design/frontend/MadameAiguille/default/i18n/fr_FR.csv` | Vitrine Hyvä : textes des lots précédents, plus ~160 clés propres à Hyvä absentes du paquet (libellés d'accessibilité de l'en-tête, messages de validation des formulaires, pagination, filtres, recherche, compte), et les sujets d'e-mails à apostrophe | Ici pour tout texte de la vitrine **et pour les chaînes rendues côté serveur dans le tunnel** (voir ci-dessous) |
+| `app/design/frontend/MadameAiguille/checkout/i18n/fr_FR.csv` | Tunnel Luma : chaînes **JavaScript et Knockout** (`js-translation.json` du thème) | Ici pour les gabarits Knockout du tunnel |
+| `app/code/MadameAiguille/*/i18n/fr_FR.csv` | Chaînes des modules maison, valables aussi dans l'administration | Avec le module concerné |
+
+Ordre de priorité : module < paquet de langue < thème. Une clé du thème l'emporte toujours sur le paquet ; une clé de module ne l'emporte **pas** sur le paquet (en admin, « Gift wrapping » sort donc « Emballage-cadeau », traduction du paquet).
+
+### Pièges
+
+- **Chaînes PHP du tunnel** (libellés construits côté serveur, comme `"%1: Line %2"` des lignes d'adresse dans `AttributeMerger`) : la traduction est chargée avec le thème Hyvä **avant** que le fallback ne bascule la page vers le thème `checkout`. Elles se traduisent donc dans le dictionnaire du thème `default`, pas dans celui du tunnel.
+- **Sujets d'e-mails** : `{{trans}}` échappe le texte ; une traduction avec apostrophe droite donne `&#039;` dans l'objet du message. Les sujets concernés sont retraduits avec l'apostrophe typographique `’`, comme le reste du site. Le corps des e-mails n'est pas touché par ce défaut.
+- **Langue de l'administration** : elle se règle **par utilisateur** (*Paramètres du compte › Langue de l'interface*). Le compte `admin` local est en `en_US`.
+- Les dictionnaires JS se régénèrent en supprimant `pub/static/frontend/*/*/fr_FR/js-translation.json` et `pub/static/deployed_version.txt`, puis `mage-translation-storage` dans le `localStorage` (§26).
+
+### Recette du 09/10/2026
+
+- Vitrine : texte visible et attributs `aria-label`, `placeholder`, `title` relevés sur 13 pages (accueil, catégorie, fiche, recherche avec et sans résultat, contact, connexion, création de compte, mot de passe oublié, 404, panier, pages CMS) : tout est en français, y compris l'en-tête (« Ouvrir le menu », « Ouvrir ou fermer le mini-panier »).
+- Relevé statique : plus aucune clé anglaise sans traduction dans les gabarits de `MadameAiguille/default`, `hyva-themes/magento2-default-theme`, `magento2-theme-module`, `magento2-email-module`, `magento2-mollie-theme-bundle` et `mollie/magento2-hyva-compatibility`.
+- Tunnel réel, étapes Livraison (retrait) et Paiement : tout en français, « Adresse : ligne 1 / 2 » compris.
+- E-mails rendus sans envoi, commande de test `000000018` : confirmation (cliente et invitée), facture, expédition, mise à jour, avoir, bienvenue, mot de passe oublié et modifié, changement d'e-mail, newsletter — corps et sujets en français.
+- Confirmations et compte : états réels du `/styleguide` en français.
+- Administration (par script, faute de session) : ventes, commandes, facture, expédition, avoir, produits, contenu, configuration, nos réglages ; « Shipping & Handling Information » ajouté au dictionnaire de `MadameAiguille_Checkout` (« Informations de livraison »).
+
+### Limites
+
+- Le paquet communautaire évolue : une mise à jour peut changer quelques formulations ; nos clés de thème restent prioritaires.
+- Les écrans d'administration n'ont pas été vus par l'agent ; contrôle visuel par Pierre après passage de son compte en français.
