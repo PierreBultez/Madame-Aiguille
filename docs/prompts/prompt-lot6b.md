@@ -18,7 +18,7 @@ Commence par `git status`, `git log --oneline --decorate -n 20` et la lecture de
 5. `docs/brief-call-celine-2026-09-11.md` §6 (questions checkout posées à Céline) ;
 6. les maquettes du tunnel dans `docs/maquettes-direction-artistique/`.
 
-Crée la branche `codex/lot-6b-habillage-tunnel` depuis `main` à jour, avant toute modification.
+Crée la branche `lot-6b-habillage-tunnel` (jamais de préfixe `codex/`) depuis `main` à jour, avant toute modification.
 
 ## Ce qui est déjà tranché
 
