@@ -17,4 +17,13 @@
     <type name="Magento\Checkout\CustomerData\Cart">
         <plugin name="madameaiguille_add_cart_data" type="MadameAiguille\Theme\Plugin\Checkout\CustomerData\AddCartData" sortOrder="100"/>
     </type>
+
+    <!-- Lot 5 : grille de frais de port au poids, rejouable en préproduction et en production -->
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="madameaiguille_shipping_import_rates" xsi:type="object">MadameAiguille\Theme\Console\Command\ImportTableRates</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
