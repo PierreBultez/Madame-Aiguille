@@ -95,4 +95,5 @@ Captures admin : `admin-cgv.jpg`, `admin-newsletter.jpg`, `admin-abonnes.jpg`, `
 - `342bc19` — respect des réglages newsletter invités / comptes.
 - `2f82598` — précision des montants estimatifs et présentation finale.
 - `f80ceaf` — chargement Leaflet unique, adresse et mode de livraison rétablis au paiement relais, aucune nouvelle erreur AMD sur la recette finale.
-- Clôture : documentation, captures finales, recette, mémo et prompt `docs/prompts/prompt-lot8a.md`, puis fusion en avance rapide et publication des deux branches conformément au §25.
+- `92a96f6` — documentation, captures finales, recette et mémo, fusion en avance rapide dans `main` puis publication des deux branches.
+- Passage de relais : prompt `docs/prompts/prompt-lot8a.md` écrit après cette publication, puis versionné et publié sur les deux branches conformément au §25.

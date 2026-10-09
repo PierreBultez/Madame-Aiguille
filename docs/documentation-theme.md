@@ -541,7 +541,8 @@ bin/magento madameaiguille:catalog:check-weight                # produits activ�
 | 6b — Newsletter | respect du réglage d’inscription invitée, rattachement au compte des clientes connectées, tests ciblés | `342bc19` |
 | 6b — Récapitulatif final | mention des montants estimatifs, espacement, dernières clés de traduction | `2f82598` |
 | 6b — Correctif de recette | chargement Leaflet unique, récapitulatif natif du paiement relais rétabli, contrôle console et captures | `f80ceaf` |
-| 6b — Recette et documentation | captures finales, administration, limites, mémo Céline, plan v2.8 et prompt 8a | commit de clôture sur `lot-6b-habillage-tunnel` |
+| 6b — Recette et documentation | captures finales, administration, limites, mémo Céline et plan v2.8 | `92a96f6` |
+| 6b — Passage de relais | prompt de reprise 8a écrit après fusion et publication, avec état vérifiable et pièges du 6b | `docs/prompts/prompt-lot8a.md` (commit de passage de relais) |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
