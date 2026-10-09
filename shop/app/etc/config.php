@@ -372,6 +372,7 @@ return [
         'Hyva_LumaCheckout' => 1,
         'MadameAiguille_Theme' => 1,
         'MadameAiguille_Contact' => 1,
+        'MadameAiguille_Checkout' => 1,
         'Magewirephp_Magewire' => 1,
         'Mollie_Payment' => 1,
         'Mollie_HyvaCompatibility' => 1,

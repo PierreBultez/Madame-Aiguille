@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Point relais Mondial Relay choisi pour une livraison (ex. « FR-087807 »).
+ * L'adresse du point remplace l'adresse de livraison ; l'identifiant est gardé à part pour les contrôles.
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="quote_address">
+        <column xsi:type="varchar" name="madameaiguille_relay_point_id" nullable="true" length="16" comment="Mondial Relay point ID"/>
+    </table>
+    <table name="sales_order_address">
+        <column xsi:type="varchar" name="madameaiguille_relay_point_id" nullable="true" length="16" comment="Mondial Relay point ID"/>
+    </table>
+</schema>

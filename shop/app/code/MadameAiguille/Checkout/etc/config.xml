@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <madameaiguille>
+            <!-- Code de démonstration Mondial Relay, à remplacer par le code enseigne de l'Offre Start de Céline -->
+            <mondial_relay>
+                <brand_code>BDTEST</brand_code>
+            </mondial_relay>
+        </madameaiguille>
+    </default>
+</config>

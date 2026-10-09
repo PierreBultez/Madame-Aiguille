@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="MadameAiguille\Checkout\Api\Data\RelayPointInterface" type="MadameAiguille\Checkout\Model\RelayPoint"/>
+
+    <!-- Point relais : contrôle et adresse du point, pour le tunnel comme pour l'API -->
+    <type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
+        <plugin name="madameaiguille_assign_relay_point" type="MadameAiguille\Checkout\Plugin\Checkout\AssignRelayPoint" sortOrder="10"/>
+    </type>
+</config>

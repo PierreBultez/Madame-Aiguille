@@ -1,0 +1,15 @@
+{
+    "name": "madameaiguille/module-checkout",
+    "description": "Tunnel de commande Madame Aiguille : point relais, retrait sur rendez-vous, paiement sur place, emballage cadeau",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MadameAiguille\\Checkout\\": ""
+        }
+    }
+}

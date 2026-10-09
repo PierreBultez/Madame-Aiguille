@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Widget Mondial Relay du tunnel (CSP bloquante sur checkout_index_index depuis Magento 2.4.7) :
+ * script et recherche chez Mondial Relay, carte Leaflet servie par unpkg, tuiles OpenStreetMap.
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="madameaiguille_mondialrelay_widget" type="host">https://widget.mondialrelay.com</value>
+                <value id="madameaiguille_unpkg" type="host">https://unpkg.com</value>
+                <!-- Libellés du gabarit HTML du widget : « var MondialRelayLanguage = {Horaires, Photo} ».
+                     Si Mondial Relay change ce texte, le script est bloqué mais le composant définit déjà la variable. -->
+                <value id="madameaiguille_mondialrelay_language" type="hash" algorithm="sha256">pXWtiZFsk8zVdfjcBbViyhggQtQnVvaWfHE11BTosP0=</value>
+                <!-- Gestionnaires onclick statiques du gabarit (la politique du tunnel accepte 'unsafe-hashes') :
+                     dépliage de la liste sur mobile, fermeture du détail d'un point, fermeture de la fenêtre locker -->
+                <value id="madameaiguille_mondialrelay_list_toggle" type="hash" algorithm="sha256">4Dteue3hT7KEEYNRoqyeo/bCPlv7wyNyLF76xTGF0OA=</value>
+                <value id="madameaiguille_mondialrelay_clear_selection" type="hash" algorithm="sha256">PchMPvAiW3nU8El51lO0m3PkF3lTWhTB8FMsSq0/RvY=</value>
+                <value id="madameaiguille_mondialrelay_close_locker" type="hash" algorithm="sha256">q1VYTiRGVSdY4SzMuab+AnZSA9sy/2lI/RQObR7WADI=</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="madameaiguille_mondialrelay_widget" type="host">https://widget.mondialrelay.com</value>
+                <value id="madameaiguille_mondialrelay" type="host">https://www.mondialrelay.com</value>
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <value id="madameaiguille_unpkg" type="host">https://unpkg.com</value>
+                <value id="madameaiguille_mondialrelay_widget" type="host">https://widget.mondialrelay.com</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="madameaiguille_osm_tiles" type="host">https://*.tile.openstreetmap.org</value>
+                <value id="madameaiguille_unpkg" type="host">https://unpkg.com</value>
+                <value id="madameaiguille_mondialrelay_widget" type="host">https://widget.mondialrelay.com</value>
+                <value id="madameaiguille_mondialrelay" type="host">https://www.mondialrelay.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

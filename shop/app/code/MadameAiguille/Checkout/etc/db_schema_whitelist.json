@@ -1,0 +1,12 @@
+{
+    "quote_address": {
+        "column": {
+            "madameaiguille_relay_point_id": true
+        }
+    },
+    "sales_order_address": {
+        "column": {
+            "madameaiguille_relay_point_id": true
+        }
+    }
+}

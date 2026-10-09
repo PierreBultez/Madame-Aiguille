@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="madameaiguille">
+            <group id="mondial_relay" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Mondial Relay</label>
+                <comment>Carte de sélection du point relais dans le tunnel de commande. Les tarifs se règlent dans la grille au poids (Ventes › Méthodes de livraison › Mondial Relay).</comment>
+                <field id="brand_code" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Code enseigne</label>
+                    <comment>Fourni avec le compte pro Mondial Relay (Offre Start). « BDTEST » est le code de démonstration : la carte affiche alors un avertissement.</comment>
+                    <validate>required-entry validate-alphanum</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
