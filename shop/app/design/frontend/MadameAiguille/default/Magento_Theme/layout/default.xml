@@ -78,13 +78,11 @@
                 <arguments>
                     <argument name="payment_methods" xsi:type="array">
                         <item name="card" xsi:type="string" translate="true">Carte bancaire</item>
-                        <item name="transfer" xsi:type="string" translate="true">Virement</item>
-                        <item name="hand" xsi:type="string" translate="true">En main propre</item>
+                        <item name="on_site" xsi:type="string" translate="true">Sur place au retrait</item>
                     </argument>
                     <argument name="shipping_methods" xsi:type="array">
-                        <item name="colissimo" xsi:type="string">Colissimo</item>
                         <item name="mondialrelay" xsi:type="string">Mondial Relay</item>
-                        <item name="chronopost" xsi:type="string">Chronopost</item>
+                        <item name="pickup" xsi:type="string" translate="true">Retrait à l'atelier</item>
                     </argument>
                 </arguments>
             </block>

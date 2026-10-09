@@ -24,7 +24,7 @@ class SocialLinks implements ArgumentInterface
     private const NETWORKS = [
         'instagram' => ['Instagram', 'instagram'],
         'facebook' => ['Facebook', 'facebook'],
-        'pinterest' => ['Pinterest', 'pinterest'],
+        'tiktok' => ['TikTok', 'tiktok'],
     ];
 
     public function __construct(

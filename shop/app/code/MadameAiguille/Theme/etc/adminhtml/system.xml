@@ -16,9 +16,16 @@
                     <label>Facebook</label>
                     <validate>validate-url</validate>
                 </field>
-                <field id="pinterest_url" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Pinterest</label>
+                <field id="tiktok_url" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>TikTok</label>
                     <validate>validate-url</validate>
+                </field>
+            </group>
+            <group id="legal" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Mentions légales</label>
+                <field id="vat_mention" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Mention de TVA</label>
+                    <comment>Imprimée sur les factures PDF et en pied de tous les e-mails. Franchise en base : « TVA non applicable, art. 293 B du CGI. » À revoir avec un conseil si le régime change.</comment>
                 </field>
             </group>
             <group id="catalog" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">

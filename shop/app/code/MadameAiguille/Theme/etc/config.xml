@@ -9,8 +9,11 @@
             <social>
                 <instagram_url/>
                 <facebook_url/>
-                <pinterest_url/>
+                <tiktok_url/>
             </social>
+            <legal>
+                <vat_mention>TVA non applicable, art. 293 B du CGI.</vat_mention>
+            </legal>
             <catalog>
                 <scarcity_threshold>3</scarcity_threshold>
                 <price_note/>
