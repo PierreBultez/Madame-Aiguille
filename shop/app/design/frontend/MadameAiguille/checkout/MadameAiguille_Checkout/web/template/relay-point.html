@@ -1,0 +1,15 @@
+<div class="madameaiguille-relay" data-bind="visible: isVisible">
+    <p class="madameaiguille-relay__intro" translate="'Choose the relay point where your parcel will be delivered.'"></p>
+    <div class="madameaiguille-relay__widget" data-bind="attr: {id: widgetId}, afterRender: setWidgetElement"></div>
+    <input type="hidden" data-bind="attr: {id: targetId}"/>
+    <div class="madameaiguille-relay__selected" role="status" aria-live="polite">
+        <!-- ko if: selected() -->
+        <strong translate="'Your relay point'"></strong>
+        <address>
+            <span text="selected().name"></span><br/>
+            <!-- ko foreach: selected().street --><span text="$data"></span><br/><!-- /ko -->
+            <span text="selected().postcode"></span> <span text="selected().city"></span>
+        </address>
+        <!-- /ko -->
+    </div>
+</div>

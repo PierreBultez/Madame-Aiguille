@@ -1,0 +1,10 @@
+<!-- ko if: config.enabled -->
+<div class="madameaiguille-gift-wrap">
+    <label class="madameaiguille-gift-wrap__choice">
+        <input type="checkbox" name="madameaiguille-gift-wrap" aria-describedby="madameaiguille-gift-wrap-description" data-bind="checked: requested"/>
+        <span text="config.label"></span>
+        <span class="madameaiguille-gift-wrap__price">+ <span text="config.price"></span></span>
+    </label>
+    <p id="madameaiguille-gift-wrap-description" class="madameaiguille-gift-wrap__description" if="config.description" text="config.description"></p>
+</div>
+<!-- /ko -->

@@ -1,0 +1,51 @@
+<div class="madameaiguille-pickup" data-bind="visible: isVisible">
+    <h3 translate="'Choose your appointment'"></h3>
+    <div class="madameaiguille-pickup__location">
+        <strong text="location.name"></strong>
+        <p class="madameaiguille-pickup__address">
+            <!-- ko foreach: addressLines --><span text="$data"></span><br/><!-- /ko -->
+        </p>
+        <!-- ko if: location.mapImageUrl -->
+        <img class="madameaiguille-pickup__map" data-bind="attr: {src: location.mapImageUrl}" alt="" loading="lazy"/>
+        <!-- /ko -->
+        <!-- ko if: location.directionsUrl -->
+        <a class="madameaiguille-pickup__directions" target="_blank" rel="noopener"
+           data-bind="attr: {href: location.directionsUrl}" translate="'Get directions'"></a>
+        <!-- /ko -->
+    </div>
+
+    <p if="loading()" translate="'Loading available times…'"></p>
+
+    <!-- ko if: loaded() && !days().length -->
+    <p class="message notice" translate="'No pickup time is available at the moment. Please choose relay point delivery or contact me.'"></p>
+    <!-- /ko -->
+
+    <!-- ko if: days().length -->
+    <fieldset class="madameaiguille-pickup__days">
+        <legend translate="'Pickup day'"></legend>
+        <!-- ko foreach: days -->
+        <label class="madameaiguille-pickup__choice">
+            <input type="radio" name="madameaiguille-pickup-day" data-bind="value: value, checked: $parent.selectedDay"/>
+            <span text="label"></span>
+        </label>
+        <!-- /ko -->
+    </fieldset>
+
+    <fieldset class="madameaiguille-pickup__times" if="times().length">
+        <legend translate="'Pickup time'"></legend>
+        <!-- ko foreach: times -->
+        <label class="madameaiguille-pickup__choice">
+            <input type="radio" name="madameaiguille-pickup-time" data-bind="value: value, checked: $parent.selected"/>
+            <span text="label"></span>
+        </label>
+        <!-- /ko -->
+    </fieldset>
+    <!-- /ko -->
+
+    <div class="madameaiguille-pickup__selected" role="status" aria-live="polite">
+        <!-- ko if: selected() -->
+        <strong translate="'Your appointment'"></strong>
+        <span text="fullLabel(selected())"></span>
+        <!-- /ko -->
+    </div>
+</div>

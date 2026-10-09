@@ -1,0 +1,11 @@
+<ol class="opc-progress-bar" data-bind="attr: {'aria-label': $t('Checkout steps')}">
+    <!-- ko foreach: {data: steps().sort(sortItems), as: 'item'} -->
+    <li class="opc-progress-bar-item"
+        data-bind="css: item.isVisible() ? '_active' : ($parent.isProcessed(item) ? '_complete' : '')">
+        <button type="button" class="madameaiguille-step"
+                data-bind="i18n: item.title, click: $parent.navigateTo,
+                    attr: {'data-step': $index() + 1, 'aria-current': item.isVisible() ? 'step' : null},
+                    disable: !item.isVisible() && !$parent.isProcessed(item)"></button>
+    </li>
+    <!-- /ko -->
+</ol>
