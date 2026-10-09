@@ -327,17 +327,19 @@ Vente en ligne à des particuliers = **droit de rétractation de 14 jours obliga
 
 ---
 
-## 6. Checkout — ce dont j'ai besoin pour le lot 6b (5 min)
+## 6. Checkout — décisions du lot 6b
+
+**Complément de Pierre du 09/10/2026** (ne vaut pas nouvelle validation des moyens Mollie par Céline) : récapitulatif des maquettes inclus, téléphone obligatoire, CGV obligatoires, newsletter non pré-cochée. Méthodes Mollie actuellement activées jugées pertinentes par Pierre, **à valider avec Céline**. Aucun arbitrage reçu sur un nouveau champ message : le lot conserve uniquement le message cadeau natif du panier. Le lot 6b est livré ; recette dans `docs/recettes/lot-6b.md`.
 
 | Question | Reco | Réponse |
 |---|---|---|
-| OK pour un tunnel **aux couleurs et typos** de la marque, mais de structure standard Magento ? | Oui (gratuit, fiable, sans maintenance lourde) | |
-| Tunnel en **2 étapes** natives (Livraison → Paiement et récapitulatif) au lieu des 3 prévues dans la spec ? | Garder 2 : plus court | |
-| Achat sans compte (invité) : déjà activé, création de compte proposée après la commande | Oui | |
-| Téléphone obligatoire ? (utile aux SMS des transporteurs) | Oui | |
-| Case « J'accepte les CGV » obligatoire → **il faut les CGV** | Oui | |
-| Case d'inscription à la newsletter dans le tunnel (non pré-cochée) ? | Oui | |
-| Un champ « Message pour Céline » (cadeau, précision) ? | v2 — pas prévu nativement, demande du développement | |
+| OK pour un tunnel **aux couleurs et typos** de la marque, mais de structure standard Magento ? | Oui (gratuit, fiable, sans maintenance lourde) | Oui, y compris la mise en page du récapitulatif (Pierre) |
+| Tunnel en **2 étapes** natives (Livraison → Paiement et récapitulatif) au lieu des 3 prévues dans la spec ? | Garder 2 : plus court | Deux étapes natives conservées |
+| Achat sans compte (invité) : déjà activé, création de compte proposée après la commande | Oui | Confirmé par Pierre / appliqué au lot 6b |
+| Téléphone obligatoire ? (utile aux SMS des transporteurs) | Oui | Confirmé par Pierre / appliqué au lot 6b |
+| Case « J'accepte les CGV » obligatoire → **il faut les CGV** | Oui | Confirmé par Pierre / appliqué au lot 6b |
+| Case d'inscription à la newsletter dans le tunnel (non pré-cochée) ? | Oui | Facultative, non cochée par défaut (Pierre) |
+| Un champ « Message pour Céline » (cadeau, précision) ? | v2 — pas prévu nativement, demande du développement | Pas de décision nouvelle ; message cadeau natif conservé |
 | Textes des pages de confirmation (paiement accepté, virement en attente, retrait) : elle les relit ? | Je propose, elle valide | |
 
 ---

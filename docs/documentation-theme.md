@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.7 (09/10/2026), lots 6a, 3, 4, 7 et **5** livrés (le 5 hors mise en ligne 8a) ; identité visuelle officielle intégrée. Prochain lot : **6b**, habillage du tunnel. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v2.8 (09/10/2026), lots 6a, 3, 4, 7, 5 et **6b** livrés (hors dépendances de production 8a). Prochain lot : **8a**, préproduction HTTPS, emails et recette Mollie. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -17,7 +17,7 @@ Ce document décrit ce qui a été construit, où se trouve chaque chose, et **o
 
 Parent : `Hyva/default` 1.5.2 (`vendor/hyva-themes/magento2-default-theme`). **On ne modifie jamais `vendor/`.** Un template du parent se surcharge en le copiant au même chemin relatif dans le thème enfant (`Magento_Theme/templates/html/header.phtml`, par exemple).
 
-**Règle d'architecture visuelle** : toute surcharge de rendu frontend vit dans le thème enfant, même lorsqu'un module dédié porte la logique métier. Le module expose ses blocs, ViewModels, contrôleurs, validations et configurations ; le thème enfant surcharge ses layouts, `.phtml`, CSS, assets et templates JavaScript. Exemple : le traitement sécurisé de Contact reste dans `app/code/MadameAiguille/Contact`, mais son formulaire est rendu par `app/design/frontend/MadameAiguille/default/MadameAiguille_Contact/templates/form.phtml`. Le checkout Luma du fallback suivra la même règle dans son propre thème enfant Luma au lot 6b. **Exception assumée du lot 5** : les composants Knockout du tunnel (point relais, rendez-vous, emballage) sont livrés par `MadameAiguille_Checkout`, faute de thème Luma enfant ; ils restent bruts, et le 6b les habillera en les surchargeant dans ce thème (§26).
+**Règle d'architecture visuelle** : toute surcharge de rendu frontend vit dans le thème enfant, même lorsqu'un module dédié porte la logique métier. Le module expose ses blocs, ViewModels, contrôleurs, validations et configurations ; le thème enfant surcharge ses layouts, `.phtml`, CSS, assets et templates JavaScript. Exemple : le traitement sécurisé de Contact reste dans `app/code/MadameAiguille/Contact`, mais son formulaire est rendu par `app/design/frontend/MadameAiguille/default/MadameAiguille_Contact/templates/form.phtml`. Le checkout Luma applique cette règle dans `MadameAiguille/checkout` (§27). Les composants fonctionnels du lot 5 restent fournis par `MadameAiguille_Checkout` ; leurs gabarits habillés sont surchargés dans ce thème Luma enfant, sans modifier leurs validations ni leurs calculs (§26).
 
 Le thème est activé pour la vue *Default Store View* (`design/theme/theme_id = 5`, admin *Contenu › Design › Configuration*).
 
@@ -454,18 +454,18 @@ L'accès au Packagist Hyvä utilise la configuration Composer globale non versio
 | Quoi | Où | Valeur / fonctionnement |
 |---|---|---|
 | Activer le fallback | Admin › *Stores › Configuration › Hyva Themes › Theme Fallback › General Settings › Enable* | `hyva_theme_fallback/general/enable = 1` |
-| Thème du checkout | même écran, *Theme full path* | `hyva_theme_fallback/general/theme_full_path = frontend/Magento/luma` |
+| Thème du checkout | même écran, *Theme full path* | `hyva_theme_fallback/general/theme_full_path = frontend/MadameAiguille/checkout` depuis le lot 6b |
 | Routes concernées | même écran, *Apply fallback to requests containing* | `hyva_theme_fallback/general/list_part_of_url` : conserver les valeurs système décrites ci-dessous |
 | Commande invité | Admin › *Stores › Configuration › Sales › Checkout › Checkout Options › Allow Guest Checkout* | `checkout/options/guest_checkout = 1`, valeur effective vérifiée pour la vue `default` |
 | Valeurs structurelles | `vendor/hyva-themes/magento2-luma-checkout/src/etc/config.xml` (lecture seule) | Les valeurs natives suffisent ; aucune surcharge en base ajoutée. Une future valeur propre au projet ira dans `MadameAiguille_Theme/etc/config.xml` |
 
 Les routes système de la version 1.1.7 sont `/checkout/index`, `paypal/express/review`, `paypal/express/saveShippingMethod`, `paypal/transparent/redirect`, `paypal/transparent/response` et `customer/ajax/login`. Les routes PayPal sont fournies par le paquet : leur présence **n'active pas un paiement**. Le matching porte notamment sur la route Magento résolue : `/checkout/` correspond à `checkout/index/index`. Ne pas élargir la règle à tout `checkout`, sinon le panier et les pages de résultat basculeraient aussi vers Luma. Après modification : `cache:flush`.
 
-### Où préparer les surcharges du lot 6b
+### Surcharges du lot 6b
 
-Créer au lot 6b un **second thème enfant de `Magento/luma`**, par exemple `shop/app/design/frontend/MadameAiguille/checkout/`, puis configurer `frontend/MadameAiguille/checkout` comme thème fallback. Ce répertoire n'est pas encore créé. Les fichiers du thème Hyvä `MadameAiguille/default` ne sont pas hérités par Luma.
+Le lot 6b a créé `shop/app/design/frontend/MadameAiguille/checkout/`, **second thème enfant de `Magento/luma`**, et versionné son chemin dans `MadameAiguille_Theme/etc/config.xml`. Les fichiers du thème Hyvä `MadameAiguille/default` ne sont pas hérités par Luma. Les pages de succès et d'échec restent Hyvä ; elles sont les seules pages de commande habillées dans `default`. Détail des fichiers effectivement livrés : §27.
 
-| Besoin | Emplacement futur dans le thème Luma enfant |
+| Besoin | Emplacement dans le thème Luma enfant |
 |---|---|
 | Déclaration | `theme.xml` avec parent `Magento/luma`, `registration.php` |
 | Structure, arguments `jsLayout`, logo du tunnel | `Magento_Checkout/layout/checkout_index_index.xml` ; fusion ciblée avec le layout natif |
@@ -478,7 +478,7 @@ Références en lecture seule : `vendor/magento/module-checkout/view/frontend/we
 
 ### Composants ajoutés au lot 5
 
-Sous la liste des modes de livraison (région native `shippingAdditional`) : carte Mondial Relay, rendez-vous de retrait, case « Emballage cadeau » ; dans le récapitulatif, la ligne d'emballage. Livrés par `MadameAiguille_Checkout`, gabarits bruts, détail au §26. Le 6b les surchargera au même chemin relatif dans le thème Luma enfant (`MadameAiguille_Checkout/web/template/{relay-point,pickup-slot,gift-wrap}.html`, `summary/gift-wrap.html`) et pourra s'appuyer sur leurs classes `madameaiguille-*`.
+Sous la liste des modes de livraison (région native `shippingAdditional`) : carte Mondial Relay, rendez-vous de retrait, case « Emballage cadeau » ; dans le récapitulatif, la ligne d'emballage. Livrés fonctionnellement par `MadameAiguille_Checkout` (§26), puis habillés au 6b par les surcharges `MadameAiguille_Checkout/web/template/{relay-point,pickup-slot,gift-wrap}.html` et `summary/gift-wrap.html` du thème checkout (§27).
 
 ### Recette technique du 10/09/2026
 
@@ -535,6 +535,13 @@ bin/magento madameaiguille:catalog:check-weight                # produits activ�
 | 5 — Livraison | grille au poids versionnée et commande d'import, franco à 60 € depuis le seul seuil du panier, contrôle des poids | `0171883` → `871c67d` |
 | 5 — Tunnel | module `MadameAiguille_Checkout` : point relais Mondial Relay, retrait payé sur place, statuts câblés sur Mollie et l'expédition, rendez-vous de retrait avec réservation, emballage cadeau | `94d5aca` → `cede240` |
 | 5 — Affichage et recette | rassurance, pied de page, bandeau, mention de TVA (PDF, emails, prix), TikTok, lignes longues | `acf530c`, `f1201b7`, `c236760` + documentation |
+| 6b — Socle (09/10/2026) | thème Luma enfant, fontes et licences, logo, tokens LESS, fallback, captures avant / socle | `3416d43` |
+| 6b — Tunnel et consentements | étapes et récapitulatif, composants du lot 5, clavier du relais, traductions, accord CGV natif, newsletter native facultative et tests | `2a1db4f` |
+| 6b — Confirmations | succès retrait / relais, échec, inscription native après commande, vrais ViewModels dans le styleguide | `670dfdf` |
+| 6b — Newsletter | respect du réglage d’inscription invitée, rattachement au compte des clientes connectées, tests ciblés | `342bc19` |
+| 6b — Récapitulatif final | mention des montants estimatifs, espacement, dernières clés de traduction | `2f82598` |
+| 6b — Correctif de recette | chargement Leaflet unique, récapitulatif natif du paiement relais rétabli, contrôle console et captures | `f80ceaf` |
+| 6b — Recette et documentation | captures finales, administration, limites, mémo Céline, plan v2.8 et prompt 8a | commit de clôture sur `lot-6b-habillage-tunnel` |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
@@ -712,22 +719,26 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 - **Délivrabilité et SMTP** (SPF, DKIM, DMARC) : dépendent du domaine, **lot 8**. Tant que le SMTP de production n'est pas en place, un email peut partir sans arriver.
 - **Recette de bout en bout** d'une commande réellement payée par Mollie : statuts câblés au lot 5, paiement de test à finir par Pierre (§23).
 
-## 23. Après le lot 5 : ce qui reste à faire
+## 23. Après le lot 6b : ce qui reste à faire
 
-Les lots 3, 4, 7 et 5 sont fonctionnellement terminés. Les éléments suivants demandent du contenu réel, une configuration de production, une action de Pierre ou de Céline, ou appartiennent aux lots suivants. Ordre restant : **8a → 6b → 8** (8a peut avancer en parallèle du 6b).
+Les lots 3, 4, 7, 5 et 6b sont livrés dans le périmètre local décrit par leur recette. Les éléments suivants demandent du contenu réel, une configuration de production, une action de Pierre ou de Céline, ou appartiennent aux lots suivants. Ordre restant : **8a → 8**.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
 | **Mise en ligne anticipée (8a)** | Domaine, DNS, préproduction HTTPS, SMTP ; `payment/mollie_general/use_webhooks` à réactiver ; si authentification HTTP, **exclure la route du webhook Mollie** ; rejouer `madameaiguille:shipping:import-rates` et `madameaiguille:catalog:check-weight`. Puis **un paiement réel** pour faire valider le compte Mollie, et les clés de production | Pierre, dès que domaine et serveur sont disponibles — différé le 09/10/2026 |
-| **Paiement Mollie de bout en bout** | Finir le paiement de test de la commande `000000005` (carte de test Mollie, les champs carte refusent la saisie simulée de l'agent) ; vérifier le passage en « Paiement reçu » et l'email | Pierre, avant 8a |
-| **Recette visuelle de l'administration** | Ouvrir *Madame Aiguille* (Mondial Relay, Retrait à l'atelier, Emballage cadeau, Mentions légales), *Méthodes de livraison* (Retrait à l'atelier, Mondial Relay), *Moyens de paiement*, une commande de retrait, une facture et un avoir avec emballage. L'agent n'a pas de session : structure et grille contrôlées par script seulement | Pierre, avant la fusion du 6b |
-| **Commandes et stocks de test** | Les commandes de recette `000000005` à `000000018` réservent du stock (le sac Verveine n'est plus vendable) et une place de rendez-vous : les **annuler dans l'administration** (jamais par script) | Pierre |
+| **Paiement Mollie de bout en bout** | Rejouer un paiement test, le retour succès avec point relais, une annulation/erreur et la restauration du panier. Le lot 6b a contrôlé les moyens affichés et le gabarit natif d’échec directement, sans retour Mollie complet. La commande `000000005` est désormais annulée ; plusieurs anciennes commandes sont déjà en « Paiement reçu », sans preuve de réception des emails | Pierre / recette 8a |
+| **Facture / avoir avec emballage** | Écrans de configuration, commandes de retrait, grille et détail d’une facture contrôlés au 6b dans la session admin fournie par Pierre. La grille des avoirs est vide : détail d’un avoir et facture avec emballage à recetter sur une commande de test dédiée, sans rembourser une commande existante pour ce contrôle | Pierre / recette 8a |
+| **Commandes et stocks de test** | Trier les anciennes commandes : certaines sont payées/livrées, d’autres restent en attente. Annuler seulement celles identifiées comme jetables dans l’administration. Les deux commandes créées au 6b (`000000021`, `000000022`) sont annulées, consentement newsletter `false`, aucune réservation de créneau restante | Pierre pour les anciennes commandes |
 | **Code enseigne Mondial Relay** | Ouvrir ou transférer le compte **Offre Start**, puis saisir le code dans *Madame Aiguille › Mondial Relay*. Tant que `BDTEST` est en place, la carte affiche « compte de démonstration » | Céline, avant 8a |
 | **Tarifs Mondial Relay** | Remplacer les tarifs provisoires de `Theme/data/tablerates-mondial-relay.csv` (FR, MC, BE, LU) par la politique de prix de Céline, puis rejouer l'import ; peser l'emballage type | Céline (tarifs), Pierre (CSV) |
 | **Lieu de retrait réel** | Adresse, coordonnées et, si souhaité, image de plan dans *Madame Aiguille › Retrait à l'atelier*. Un lieu générique « Saint-Épain (37800) » est en place | Céline |
-| **Moyens de paiement Mollie** | Pierre a réactivé Apple Pay, Google Pay, Bancontact, iDEAL, Wero et **Klarna** après le patch « carte seule », et souhaite garder cette configuration. **Écart avec le call** (CB uniquement, pas de paiement fractionné) et avec la **CGV**, qui ne cite que la carte bancaire : trancher, puis aligner la CGV ou l'admin | Pierre / Céline, avant 8a |
+| **Moyens de paiement Mollie** | Pierre a réactivé Apple Pay, Google Pay, Bancontact, iDEAL, Wero et **Klarna** après le patch « carte seule », et les considère pertinents, **à valider avec Céline** (réponse du 09/10/2026). **Écart avec le call** (CB uniquement, pas de paiement fractionné) et avec la **CGV**, qui ne cite que la carte bancaire : trancher, puis aligner la CGV ou l'admin | Pierre / Céline, avant 8a |
 | **Contenus juridiques** | Brouillons en place, e-mail de contact rempli au lot 5. Restent entre crochets : hébergeur, médiateur de la consommation, prestataire d'envoi d'e-mails, date de mise en ligne, délai de réponse. Ajouter l'emballage cadeau à la CGV ; la confidentialité doit citer Mondial Relay et OpenStreetMap (chargés au choix du point relais) | Céline avec conseil, avant ouverture des ventes |
-| **Habillage du tunnel (6b)** | Thème Luma enfant ; habiller les composants du lot 5 (bruts) ; la page de succès et plusieurs libellés du tunnel sont encore en anglais (« Next », « Shipping Methods », « Thank you for your purchase! ») | Lot 6b |
+| **reCAPTCHA création de compte** | Le lien après commande utilise le formulaire natif Hyvä et son mécanisme reCAPTCHA. `recaptcha_frontend/type_for/customer_create` est actuellement non configuré : fournir les clés, activer le type pour le domaine final et recetter le refus serveur / l’envoi normal | Pierre, 8a avant ouverture |
+| **Newsletter de bout en bout** | Case facultative décochée et service d’inscription natif livrés ; double confirmation activée en local. Tester inscription, réception et confirmation du mail avec SMTP sur le domaine final | Pierre, 8a |
+| **Langue reproductible** | Le paquet français installé localement vient de la branche distincte `traduction-fr`, laissée intacte. Ses commits Composer ne font pas partie de `main`. Le thème checkout possède son propre dictionnaire, mais la traduction globale sur un serveur neuf nécessite d’arbitrer puis intégrer cette branche. Harmoniser aussi les libellés d’adresse masqués « Adresse: Line 1/2 » encore présents dans l’arbre accessible local | Pierre, avant provisionnement 8a |
+| **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées au 6b | Recette transversale du lot 8 |
+| **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget, pour éviter sa seconde injection AMD ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Colis de plus de 5 kg** | `tablerate` n'a pas de borne haute : un colis lourd prend le tarif du dernier palier | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
@@ -746,7 +757,7 @@ Les lots 3, 4, 7 et 5 sont fonctionnellement terminés. Les éléments suivants 
 | Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
 | Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px | Prochaine recette locale |
 
-Soldé au lot 5 : zone de vente, origine d'expédition et TVA, franco à 60 € réellement appliqué, grille au poids, point relais, retrait et rendez-vous, emballage cadeau, paiement sur place, chèque coupé, statuts câblés, email de virement (sans objet), rassurance et pied de page, bandeau, mention de TVA, TikTok, contrôle des poids. Détail au §26. Le prompt du lot suivant est `docs/prompts/prompt-lot6b.md`.
+Soldé au lot 5 : zone de vente, origine d'expédition et TVA, franco à 60 € réellement appliqué, grille au poids, point relais, retrait et rendez-vous, emballage cadeau, paiement sur place, chèque coupé, statuts câblés, email de virement (sans objet), rassurance et pied de page, bandeau, mention de TVA, TikTok, contrôle des poids. Détail au §26. Soldé au lot 6b : thème Luma enfant, formulaires, récapitulatif, composants visuels, CGV natives, newsletter facultative, confirmations et styleguide. Recette : `docs/recettes/lot-6b.md`. Le prompt du lot suivant est `docs/prompts/prompt-lot8a.md`.
 
 ## 24. Mémo Céline — tout ce qui se règle depuis le back-office
 
@@ -785,6 +796,19 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 |---|---|---|
 | Retrait à l'atelier (Madame Aiguille) | Activer ou couper le retrait ; libellés ; **pays où il est proposé** (France par défaut) | §26 |
 | Mondial Relay (*Table Rates*) | Activation et libellés. **Les tarifs ne se saisissent pas ici** : envoyer la grille à Pierre, qui met à jour le fichier versionné et le réimporte | §26 |
+
+### Tunnel, CGV et newsletter — lot 6b
+
+| Quoi | Où / effet | Détail |
+|---|---|---|
+| Texte des CGV | *Contenu › Pages › cgv*. Le lien du tunnel ouvre cette page ; la case d’acceptation ne remplace pas sa relecture juridique | §7, §27 |
+| Case obligatoire des CGV | *Magasins › Paramètres › Conditions générales de ventes*. Accord « Conditions générales de vente », actif, application **manuelle**, toutes les vues. Modifier son texte ici ; conserver son activation et le mode manuel | §27 |
+| Activation des accords | *Magasins › Configuration › Ventes › Commander › Options de commande › Activer les conditions générales* = Oui | §27 |
+| Téléphone obligatoire | *Magasins › Configuration › Clients › Configuration client › Options de nom et d’adresse › Afficher le téléphone* = Obligatoire | §27 |
+| Newsletter | *Magasins › Configuration › Clients › Newsletter* : activation, inscriptions invitées, email de confirmation et expéditeur. Garder **la confirmation** activée. La case du tunnel reste facultative et décochée | §27 |
+| Abonnés | *Marketing › Communications › Abonnés à la newsletter*. Ne pas confondre inscription non confirmée et abonnement actif ; aucune inscription n’est faite si la case est laissée vide | §27 |
+| Lieu de la confirmation de retrait | Les mêmes réglages *Madame Aiguille › Retrait à l’atelier* alimentent le tunnel, les emails et la page de succès | §26, §27 |
+| Protection de création de compte | *Magasins › Configuration › Sécurité › Google reCAPTCHA Storefront*. Pierre configure les clés et le domaine ; le formulaire natif est conservé | §27 |
 
 ### Emails — *Boutiques › Configuration › Ventes › Emails de vente*
 
@@ -870,7 +894,7 @@ Lot livré le 09/10/2026 sur `codex/lot-5-livraison-paiements`, **hors 8a** (mis
 
 ### Où se trouve quoi
 
-La logique du tunnel vit dans un **nouveau module `MadameAiguille_Checkout`**. Ses composants Knockout (`view/frontend/web/`) sont livrés par le module, et non par le thème enfant : le tunnel tourne dans le thème **Luma** du fallback, qui n'hérite de rien du thème Hyvä, et le thème Luma enfant n'existe pas encore (lot 6b). Les gabarits sont donc volontairement **bruts** ; leur habillage se fera au 6b, en les surchargeant dans `MadameAiguille/checkout` au même chemin relatif.
+La logique du tunnel vit dans `MadameAiguille_Checkout`. Au lot 5, ses composants Knockout (`view/frontend/web/`) étaient livrés bruts par le module, en attendant le thème Luma enfant. Le lot 6b a créé `MadameAiguille/checkout` et y surcharge les gabarits au même chemin relatif (§27). Les originaux et leur logique métier restent dans le module ; Luma n’hérite toujours pas du thème Hyvä.
 
 | Mécanisme | Fichiers |
 |---|---|
@@ -992,3 +1016,70 @@ Un statut posé à la main par Céline n'est jamais réécrit. L'email de vireme
 - Tests unitaires : **85 tests, 228 assertions**. `phpcs --standard=Magento2` : 0 erreur ; avertissements de docblocks absents, comme le reste du projet.
 - `/styleguide` : **aucun état ajouté**. Les composants du lot vivent dans le tunnel Luma, que la page Hyvä ne sait pas rendre ; leur démonstration se fait dans le tunnel lui-même. Les textes alignés (rassurance, mention sous le prix) apparaissent dans les vrais blocs de la fiche et du panier.
 - Paiement Mollie de bout en bout **non bouclé par l'agent** : les champs carte de la page de test Mollie sont des iframes qui refusent la saisie simulée. La commande `000000005` attend son paiement de test.
+
+
+## 27. Habillage du tunnel et confirmations (lot 6b)
+
+Livré le 09/10/2026 sur `lot-6b-habillage-tunnel`, depuis `main` (`8ee229c`). Pierre a demandé de reprendre aussi la mise en page du récapitulatif des maquettes, confirmé téléphone et CGV obligatoires, newsletter facultative décochée. Les méthodes Mollie sont provisoires à valider avec Céline. Pas de nouveau champ « Message pour Céline » en l’absence d’arbitrage : le message cadeau natif du panier reste disponible.
+
+### Thème, identité et en-tête / pied
+
+Tous les chemins suivants partent de `shop/app/design/frontend/MadameAiguille/checkout/` :
+
+| Mécanisme / écran | Fichiers réels |
+|---|---|
+| Déclaration Luma enfant | `registration.php`, `theme.xml`, `composer.json` (parent `Magento/luma`) |
+| Palette et fontes | `web/css/source/_tokens.less`, `_theme.less`, `_typography.less` ; WOFF2 originaux dans `web/fonts/`, ignorés par Git, licences versionnées |
+| Règles du tunnel | `web/css/source/_extend.less`, `_checkout.less` ; pas de Tailwind |
+| Logo et favicon | `web/images/logo-rectangulaire.jpg`, `Magento_Theme/web/favicon.ico` |
+| Structure et récapitulatif | `Magento_Checkout/layout/checkout_index_index.xml`, `Magento_Checkout/web/template/summary.html` |
+| Retour au panier et pied minimal | `Magento_Checkout/templates/header/back.phtml`, `footer.phtml` |
+| Étapes / récapitulatif mobile | `Magento_Checkout/web/template/progress-bar.html`, `estimation.html` |
+| Relais, rendez-vous et cadeau | `MadameAiguille_Checkout/web/template/relay-point.html`, `pickup-slot.html`, `gift-wrap.html`, `summary/gift-wrap.html` |
+| Traductions propres au tunnel | `i18n/fr_FR.csv` |
+
+`MadameAiguille_Theme/etc/config.xml` porte la valeur par défaut du fallback : `frontend/MadameAiguille/checkout`. Le layout natif, les champs UI et les renderers de paiement restent en place. Les actions et champs ont une hauteur de 48 px, les cibles des étapes et de la carte au moins 44 px ; focus visible, messages contrastés et palette centralisée. Le widget garde ses logos tiers et son avertissement `BDTEST` visible.
+
+**Synchronisation manuelle des tokens** : reporter toute évolution de `default/web/tailwind/hyva.config.json` dans `_tokens.less`, comme pour les variables d’email. Ne pas changer une couleur en dur dans une règle. Conserver les variables structurelles de Luma, dont `@total-columns: 24` : les remplacer implicitement par les valeurs Blank fait déborder la colonne native.
+
+### Livraison, paiement et récapitulatif
+
+`requirejs-config.js` active des mixins de présentation du thème : `web/js/summary/full-mode.js` montre les totaux natifs dès la livraison, `expanded-items.js` garde les articles ouverts, `view/payment-title.js` traduit notamment le titre Klarna, `view/agreements-link.js` fournit l’URL de la page CGV. Aucun calcul de tarif n’est déplacé dans le thème. Les montants pendant la livraison sont **estimatifs**, une mention le précise ; le calcul final, cadeau et port compris, arrive avec l’enregistrement natif de l’adresse au passage au paiement. Le tiroir de récapitulatif mobile reste celui de Magento.
+
+`web/js/view/relay-accessibility.js` donne aux résultats natifs du widget un rôle de bouton et un accès clavier : Entrée / Espace déclenchent le même clic, pris en charge par l’adaptateur CSP du lot 5. Il ne remplace ni la recherche ni la validation du point. La feuille tierce imposant Montserrat avec `!important`, le thème impose Sentient sur le widget avec la même priorité. Aucune règle ne masque le mode démonstration. Les onglets Horaires / Photo restent la limite CSP du lot 5.
+
+**Correctif de recette RequireJS** : le widget recharge Leaflet dans son `init`, même si `window.L` existe. Sa déduplication compare seulement le `src` exact. Le chargement versionné `leaflet@1.9.4` du lot 5 était donc suivi de `leaflet/dist/leaflet.js`, enregistré comme module AMD anonyme ; le rendu natif des coordonnées au paiement échouait. `Checkout/view/frontend/requirejs-config.js` utilise désormais la même URL que le widget, chargée une seule fois par RequireJS. Cela rétablit le récapitulatif sans modifier sélection, validation ou calculs. Conséquence assumée : Leaflet suit l’URL distante de l’éditeur, comme le widget ; recetter ces dépendances lors des mises à jour.
+
+### CGV obligatoires et newsletter facultative
+
+Le data patch `Checkout/Setup/Patch/Data/EnableCheckoutAgreement.php` crée un **accord Magento natif actif et manuel**, toutes vues, et active `checkout/options/enable_agreements`. Il ne réécrit pas un accord déjà créé sous le même nom. Le texte complet reste dans la page CMS `cgv`, accessible sous la case ; son brouillon doit être validé avant ouverture. La validation cliente et `AgreementsValidatorInterface` refusent une commande sans l’identifiant de l’accord. Le bouton traduit indique « Commander avec obligation de paiement ».
+
+La newsletter est rendue par `checkout/web/js/view/newsletter.js` et `checkout/Magento_Checkout/web/template/newsletter.html`, dans la région native `beforeMethods`. Sa valeur initiale est toujours `false`. Le hook Magento de placement de commande ajoute uniquement le booléen `madameaiguille_newsletter` dans `paymentMethod.additional_data`.
+
+La logique est dans `MadameAiguille_Checkout` : `Model/Newsletter/ConfigProvider.php` respecte l’activation de la newsletter et l’autorisation des inscriptions invitées ; `Plugin/Checkout/CaptureNewsletterConsent.php` normalise et conserve le consentement dans les informations de paiement ; `Observer/SubscribeNewsletter.php`, sur `sales_model_service_quote_submit_success`, appelle le `SubscriptionManagerInterface` natif avec l’email et le store de la commande invitée, ou `subscribeCustomer` pour rattacher l’abonnement au compte connecté. Le refus des inscriptions invitées est aussi vérifié côté serveur. Une case vide ne désinscrit jamais un abonnement existant. Une erreur newsletter est journalisée sans faire échouer une commande déjà créée. Le service natif applique la confirmation email, activée en local. Réception et clic de confirmation restent à recetter avec SMTP au 8a.
+
+### Succès, échec et création de compte — thème Hyvä
+
+Les surcharges restent dans `default/Magento_Checkout/` : layouts `checkout_onepage_success.xml` / `checkout_onepage_failure.xml`, `templates/success.phtml`, `onepage/failure.phtml`, `registration.phtml` et `confirmation/delivery.phtml`. Titres de page et contenus sont français, avec les blocs et URL natives. L’échec invite à vérifier et réessayer, sans affirmer qu’aucun débit n’a eu lieu. La restauration du panier demeure à la charge du retour Mollie natif ; le thème ne supprime ni ne recrée de panier.
+
+`Checkout/ViewModel/Confirmation.php` lit uniquement la **dernière commande de la session**, jamais un identifiant fourni dans l’URL. Pour le retrait, il réutilise `Model/Pickup/EmailVariables` (rendez-vous français, lieu, itinéraire). Pour le relais, il prend l’adresse de livraison de la commande, déjà transformée au lot 5. Les `.phtml` se limitent à l’affichage échappé. Une adresse sans données métier ne produit pas de faux détail de livraison.
+
+Le lien « Créer mon compte » après commande conserve `getCreateAccountUrl()` et la délégation Magento vers le formulaire Hyvä natif, prérempli. Ce formulaire possède le mécanisme reCAPTCHA natif ; **il n’est pas activé en local**, faute de configuration du type et de clés validées pour le domaine final. Aucun CAPTCHA factice n’a été ajouté. Activation et contrôle serveur : 8a.
+
+### Styleguide, recette et limites
+
+`/styleguide#sg-checkout` montre les deux vraies cartes de livraison via `ViewModel/ConfirmationExamples` : commandes non persistées, même ViewModel et même gabarit que le succès réel. L’état d’échec est également présenté. Le tunnel Knockout se recettera toujours dans sa vraie page Luma avec un panier.
+
+Recette détaillée et captures : `docs/recettes/lot-6b.md`, dossier `docs/recettes/lot-6b/`. Livraison et paiement contrôlés à **1440 / 390 px**, relais sélectionné au clavier et au clic, retrait avec cadeau, erreurs de champs/créneau/CGV, totaux 20 € en retrait et 24,90 € en relais. Deux commandes locales invitées `000000021` et `000000022`, toutes deux **annulées dans l’admin** ; aucune réservation de créneau restante. Succès réel retrait aux deux tailles, gabarit d’échec natif aux deux tailles. Succès relais alimenté par le vrai ViewModel dans le styleguide et tests, sans paiement en ligne complet. Compte et panier restent Hyvä, sans RequireJS / Knockout.
+
+Administration ouverte dans la session fournie par Pierre : Theme Fallback, accord et options CGV, newsletter et abonnés, reCAPTCHA Storefront, sections Madame Aiguille, transporteurs, moyens de paiement, retrait créé puis annulé, facture existante. La grille d’avoirs est vide ; facture / avoir avec emballage restent en recette 8a. Paiement complet, annulation Mollie avec restauration, emails reçus, reCAPTCHA actif et connexion / session expirée sont consignés au §23, sans être déclarés validés.
+
+Validation : **106 tests unitaires, 282 assertions**, aucune erreur PHPCS Magento2 sur les 18 fichiers PHP/PHTML touchés (avertissements de docblocks et de longueur, dont le styleguide existant). `setup:upgrade --keep-generated`, `setup:di:compile`, déploiement statique du thème et build Hyvä réussis. CSS Hyvä servi et compilé **identiques : 205 564 octets**. CSS Luma générés et servis également identiques : mobile **748 490 octets**, ordinateur **158 330 octets**.
+
+### Builds, cache et provisionnement
+
+- **Deux builds séparés** : Tailwind pour `default`, `setup:static-content:deploy -f --theme MadameAiguille/checkout fr_FR` pour Luma. Annoncer les commandes Magento avant exécution. Pierre a autorisé leur génération de fichiers dans `pub/static` ; cela n’autorise aucune édition manuelle de ces fichiers.
+- Un déploiement statique réussi peut conserver un ancien CSS. Pour repartir proprement, utiliser le service Magento `DeployStaticFile::deleteFile("frontend/MadameAiguille/checkout")` et le filesystem Magento pour son cache `var/view_preprocessed/pub/static/frontend/MadameAiguille/checkout`, puis régénérer. Contrôler la taille ou le contenu effectivement servi et le numéro de version des URLs.
+- Après modification de layout/traduction : nettoyer `layout block_html translate`, puis une URL de recette différente si le HTML reste ancien. Le dictionnaire propre au thème évite de dépendre du paquet français pour ses clés ; les chaînes composées doivent utiliser la clé source exacte (ex. `%1: Line %2`).
+- Les WOFF2 Sentient ne sont **pas** distribués dans Git. Provisionner les originaux Fontshare dans les deux thèmes avant compilation (README). La branche séparée `traduction-fr` n’a pas été intégrée implicitement.
+- Dans la recette navigateur, une simple affectation de champ peut ne pas déclencher les événements Knockout : saisir au clavier et quitter le champ avant validation. Les tests utilisent des données fictives et annulent les commandes dans l’administration.
