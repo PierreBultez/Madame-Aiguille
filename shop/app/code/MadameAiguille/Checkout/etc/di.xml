@@ -6,4 +6,14 @@
     <type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
         <plugin name="madameaiguille_assign_relay_point" type="MadameAiguille\Checkout\Plugin\Checkout\AssignRelayPoint" sortOrder="10"/>
     </type>
+
+    <!-- Identifiant du point relais : du panier à la commande -->
+    <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
+        <plugin name="madameaiguille_copy_relay_point_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyRelayPointToOrder" sortOrder="10"/>
+    </type>
+
+    <!-- Expédition : « Expédiée » ou « Livrée » (retrait) au lieu du statut natif « complete » -->
+    <type name="Magento\Sales\Model\ResourceModel\Order\Handler\State">
+        <plugin name="madameaiguille_status_on_completion" type="MadameAiguille\Checkout\Plugin\Sales\StatusOnCompletion" sortOrder="10"/>
+    </type>
 </config>
