@@ -1,4 +1,5 @@
-# Construit la boutique dans GitHub Actions, puis (sur demande) la publie en nouvelle version sur le VPS.
+# Construit la boutique dans GitHub Actions, puis (case « Publier ») la publie en nouvelle version sur le VPS.
+# Lancement manuel uniquement : Actions › Déploiement › Run workflow (sans la case : build seul, rien n'est publié).
 #
 # Build sans base de données : config.php porte les sites, boutiques et thèmes (app:config:dump scopes themes).
 # Sur le serveur : releases/<version>, shared/ (env.php, var, pub/media), lien current → bascule (deploy/bascule.sh).
@@ -14,9 +15,6 @@ on:
         description: Publier la version sur le serveur après le build
         type: boolean
         default: false
-  push:
-    # Build seul, pour valider la chaîne sans rien publier
-    branches: [lot-8a-preproduction]
 
 concurrency:
   group: deploiement
@@ -35,7 +33,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -45,7 +43,7 @@ jobs:
           coverage: none
 
       - name: Cache Composer
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/composer
           key: composer-${{ hashFiles('shop/composer.lock') }}
@@ -59,7 +57,7 @@ jobs:
       - name: Fontes originales (Fontshare, empreintes vérifiées)
         run: deploy/fontes.sh
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: shop/app/design/frontend/MadameAiguille/default/web/tailwind/.nvmrc
           cache: npm

@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v2.9 (09/10/2026), lots 6a, 3, 4, 7, 5 et **6b** livrés (hors dépendances de production 8a) ; **boutique entièrement en français** (§28). Prochain lot : **8a**, préproduction HTTPS, emails et recette Mollie. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v3.0 (10/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne sur `https://madame-aiguille.fr`**, non indexée, installation neuve (§29). Prochain lot : **8**, recette de production, exploitation et ouverture des ventes. **À compléter à chaque lot** (une section par écran livré).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -501,7 +501,10 @@ bin/magento cron:run --group=default         # exécuter les crons (dont le badg
 vendor/bin/phpunit --no-extensions -c dev/tests/unit/phpunit.xml.dist app/code/MadameAiguille   # tests des modules
 bin/magento madameaiguille:shipping:import-rates [--dry-run]   # grille de frais de port au poids (§26)
 bin/magento madameaiguille:catalog:check-weight                # produits activés sans poids : à passer avant chaque mise en production
+bin/magento madameaiguille:env:check [--serveur] [--noindex]    # configuration effective de l'environnement (§29)
 ```
+
+Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento …` (§29).
 
 ## 16. Conventions rappelées
 
@@ -544,6 +547,13 @@ bin/magento madameaiguille:catalog:check-weight                # produits activ�
 | 6b — Recette et documentation | captures finales, administration, limites, mémo Céline et plan v2.8 | `92a96f6` |
 | 6b — Passage de relais | prompt de reprise 8a écrit après fusion et publication, avec état vérifiable et pièges du 6b | `docs/prompts/prompt-lot8a.md` (commit de passage de relais) |
 | Langue française (09/10/2026) | paquet `community-engineering/language-fr_fr`, clés Hyvä manquantes, lignes d'adresse du tunnel, sujets d'e-mails, titre de livraison de l'admin, §28 | `e6c8e3d` → documentation |
+| 8a — Contrôle d'environnement (09/10/2026) | commande `madameaiguille:env:check`, lecture de la configuration effective, profils local / serveur / non indexé, tests | `276f162` |
+| 8a — Provisionnement (10/10/2026) | scripts `deploy/serveur/` 10 à 60 : dépôts, MariaDB 12.3, PHP 8.5, OpenSearch 3, Varnish 7, Valkey à la place de Redis | `fd1e19b` |
+| 8a — Installation neuve | patches d'identité de la boutique et des moyens Mollie provisoires, sites / boutiques / thèmes figés dans `config.php` | `74bcfb9` |
+| 8a — Build et bascule | workflow GitHub *Déploiement*, fontes Fontshare vérifiées, `deploy/bascule.sh`, hébergement (70), installation (80), double authentification | `04fd144` |
+| 8a — Mise en ligne | installation du 10/10/2026 sur `madame-aiguille.fr`, SMTP Brevo, clés Mollie, recette écrans, `docs/recettes/lot-8a.md` | `090e1ba` + documentation |
+| 8a — Accès à l'administration | IP autorisées ou mot de passe HTTP après l'alerte Chrome « Site dangereux » | `dbb251f` |
+| 8a — Clôture | workflow manuel seul, actions sur Node 24, documentation, plan v3.0, prompt du lot 8 | commit de clôture |
 | Correctif accueil (09/10/2026) | hero centré et plafonné à 1440 px dans le thème ; contrôles à 1440, 390 et 2560 px, CSS servi identique au build ; recette `docs/recettes/correction-hero.md` | `8316318` |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
@@ -722,45 +732,46 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 - **Délivrabilité et SMTP** (SPF, DKIM, DMARC) : dépendent du domaine, **lot 8**. Tant que le SMTP de production n'est pas en place, un email peut partir sans arriver.
 - **Recette de bout en bout** d'une commande réellement payée par Mollie : statuts câblés au lot 5, paiement de test à finir par Pierre (§23).
 
-## 23. Après le lot 6b : ce qui reste à faire
+## 23. Après le lot 8a : ce qui reste à faire
 
-Les lots 3, 4, 7, 5 et 6b sont livrés dans le périmètre local décrit par leur recette. Les éléments suivants demandent du contenu réel, une configuration de production, une action de Pierre ou de Céline, ou appartiennent aux lots suivants. Ordre restant : **8a → 8**.
+Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, non indexée, administration réservée (§29). Les éléments suivants demandent du contenu réel, une action de Pierre ou de Céline, ou appartiennent au lot 8. La **recette fonctionnelle de production** (paiement, emails, newsletter, reCAPTCHA, pièces de vente) attend un catalogue réel et ouvre le lot 8.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
-| **Mise en ligne anticipée (8a)** | Domaine, DNS, préproduction HTTPS, SMTP ; `payment/mollie_general/use_webhooks` à réactiver ; si authentification HTTP, **exclure la route du webhook Mollie** ; rejouer `madameaiguille:shipping:import-rates` et `madameaiguille:catalog:check-weight`. Puis **un paiement réel** pour faire valider le compte Mollie, et les clés de production | Pierre, dès que domaine et serveur sont disponibles — différé le 09/10/2026 |
-| **Paiement Mollie de bout en bout** | Rejouer un paiement test, le retour succès avec point relais, une annulation/erreur et la restauration du panier. Le lot 6b a contrôlé les moyens affichés et le gabarit natif d’échec directement, sans retour Mollie complet. La commande `000000005` est désormais annulée ; plusieurs anciennes commandes sont déjà en « Paiement reçu », sans preuve de réception des emails | Pierre / recette 8a |
-| **Facture / avoir avec emballage** | Écrans de configuration, commandes de retrait, grille et détail d’une facture contrôlés au 6b dans la session admin fournie par Pierre. La grille des avoirs est vide : détail d’un avoir et facture avec emballage à recetter sur une commande de test dédiée, sans rembourser une commande existante pour ce contrôle | Pierre / recette 8a |
-| **Commandes et stocks de test** | Trier les anciennes commandes : certaines sont payées/livrées, d’autres restent en attente. Annuler seulement celles identifiées comme jetables dans l’administration. Les deux commandes créées au 6b (`000000021`, `000000022`) sont annulées, consentement newsletter `false`, aucune réservation de créneau restante | Pierre pour les anciennes commandes |
-| **Code enseigne Mondial Relay** | Ouvrir ou transférer le compte **Offre Start**, puis saisir le code dans *Madame Aiguille › Mondial Relay*. Tant que `BDTEST` est en place, la carte affiche « compte de démonstration » | Céline, avant 8a |
-| **Tarifs Mondial Relay** | Remplacer les tarifs provisoires de `Theme/data/tablerates-mondial-relay.csv` (FR, MC, BE, LU) par la politique de prix de Céline, puis rejouer l'import ; peser l'emballage type | Céline (tarifs), Pierre (CSV) |
+| **Clés reCAPTCHA v2 invisible** | Créer les clés pour `madame-aiguille.fr` dans la console Google, les saisir dans *Sécurité › Google reCAPTCHA Storefront* ; **ensuite seulement** activer le type sur création de compte, contact, newsletter et mot de passe oublié (sans clés, ces formulaires refuseraient tout envoi). Recetter refus serveur et envoi normal | Pierre (clés), lot 8 (activation, recette) |
+| **Catalogue réel** | Catégories et 2 à 3 premières créations saisies avec Céline dans l'administration (set « Création », poids obligatoire, photos 4:5), puis `madameaiguille:catalog:check-weight` | Pierre et Céline, avant la demande de validation Mollie |
+| **Recette de production** | Sur le vrai site et un catalogue réel : paiement Mollie test relais + cadeau + CGV jusqu'au webhook et « Paiement reçu » ; annulation / échec et **restauration native du panier** ; retrait payé sur place ; **facture et avoir avec emballage** sur une commande dédiée (avoir déclenché par Pierre) ; emails **reçus** (confirmation, paiement reçu, prêt pour retrait, expédition, création de compte, contact avec JPG / PNG) ; newsletter invitée et connectée avec clic de confirmation, aucune inscription sans la case ; écrans du tunnel, des confirmations et du compte à 1440 / 390 px. Commandes de test annulées dans l'administration | Pierre et agent, début du lot 8 |
+| **Validation du compte Mollie** | Demander la vérification du site dans le tableau de bord Mollie une fois catalogue et pages juridiques réels ; puis **un paiement réel** par Pierre (mode live, petit montant, remboursé) ; décider du mode (test ou live) jusqu'à l'ouverture | Pierre, après le catalogue |
+| **Alerte Chrome « Site dangereux »** | Le formulaire de connexion de l'administration a été signalé à tort comme hameçonnage le 10/10/2026. Administration réservée aux IP connues ou au mot de passe HTTP, signalement envoyé à Google, propriété Search Console créée (aucun problème de sécurité affiché). Vérifier la levée de l'alerte ; surveiller *Problèmes de sécurité* | Pierre, sous quelques jours |
+| **IP de Céline** | L'ajouter à la liste de l'administration (`deploy/serveur/90-acces-admin.sh <ip-pierre> <ip-céline>`) ; en attendant, identifiant et mot de passe HTTP | Pierre, quand elle sera connue |
+| **Sauvegardes** | Aucune sauvegarde automatique de la base et des médias, hormis le dump pris par chaque bascule qui modifie la base. Planifier dump quotidien + médias, rétention, copie hors du VPS, **test de restauration** | Lot 8, **avant la première vraie commande** |
+| **Code enseigne Mondial Relay** | Ouvrir ou transférer le compte **Offre Start**, puis saisir le code dans *Madame Aiguille › Mondial Relay*. Tant que `BDTEST` est en place, la carte affiche « compte de démonstration » | Céline |
+| **Tarifs Mondial Relay** | Remplacer les tarifs provisoires de `Theme/data/tablerates-mondial-relay.csv` (FR, MC, BE, LU) par la politique de prix de Céline, puis rejouer l'import ; peser l'emballage type | Céline (tarifs), Pierre (CSV, déploiement) |
 | **Lieu de retrait réel** | Adresse, coordonnées et, si souhaité, image de plan dans *Madame Aiguille › Retrait à l'atelier*. Un lieu générique « Saint-Épain (37800) » est en place | Céline |
-| **Moyens de paiement Mollie** | Pierre a réactivé Apple Pay, Google Pay, Bancontact, iDEAL, Wero et **Klarna** après le patch « carte seule », et les considère pertinents, **à valider avec Céline** (réponse du 09/10/2026). **Écart avec le call** (CB uniquement, pas de paiement fractionné) et avec la **CGV**, qui ne cite que la carte bancaire : trancher, puis aligner la CGV ou l'admin | Pierre / Céline, avant 8a |
-| **Contenus juridiques** | Brouillons en place, e-mail de contact rempli au lot 5. Restent entre crochets : hébergeur, médiateur de la consommation, prestataire d'envoi d'e-mails, date de mise en ligne, délai de réponse. Ajouter l'emballage cadeau à la CGV ; la confidentialité doit citer Mondial Relay et OpenStreetMap (chargés au choix du point relais) | Céline avec conseil, avant ouverture des ventes |
-| **reCAPTCHA création de compte** | Le lien après commande utilise le formulaire natif Hyvä et son mécanisme reCAPTCHA. `recaptcha_frontend/type_for/customer_create` est actuellement non configuré : fournir les clés, activer le type pour le domaine final et recetter le refus serveur / l’envoi normal | Pierre, 8a avant ouverture |
-| **Newsletter de bout en bout** | Case facultative décochée et service d’inscription natif livrés ; double confirmation activée en local. Tester inscription, réception et confirmation du mail avec SMTP sur le domaine final | Pierre, 8a |
-| **Langue de l'administration** | Passer le compte `admin` et celui de Céline en *Français (France)* dans *Paramètres du compte* ; vérifier visuellement les écrans du quotidien. Le paquet français est intégré à `main` et se réinstalle avec `composer install` (§28) | Pierre, avant 8a |
-| **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées au 6b | Recette transversale du lot 8 |
-| **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget, pour éviter sa seconde injection AMD ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
+| **Moyens de paiement Mollie** | Apple Pay, Google Pay, Bancontact, iDEAL, Wero et **Klarna** actifs à côté de la carte (choix provisoire de Pierre, reproduit sur le serveur par `KeepProvisionalMollieMethods`), **à valider avec Céline**. Écart avec le call (CB uniquement) et avec la CGV : trancher, puis aligner la CGV ou l'admin | Pierre / Céline, avant la validation Mollie |
+| **Contenus juridiques** | Brouillons en place sur le serveur. Compléter : hébergeur (OVH), médiateur de la consommation, date de mise en ligne, délai de réponse ; citer **Brevo** (emails), **Google reCAPTCHA**, **Mondial Relay** et **OpenStreetMap** dans la confidentialité ; ajouter l'emballage cadeau à la CGV ; retirer les encadrés « Brouillon » | Céline avec conseil, avant la validation Mollie |
+| **Contenus génériques** | Remplacer `home_story`, `home_actualities`, `a-propos`, `nos-tissus`, `contact_help`, `contact_locations` ; choisir la destination du CTA « Voir toutes les nouveautés » | Céline, avant la validation Mollie |
+| **Téléphone de la boutique** | *Général › Informations sur le magasin* (non versionné, dépôt public) | Pierre / Céline |
+| **Langue de l'administration** | Passer chaque compte en *Français (France)* dans *Paramètres du compte* (réglage par utilisateur, §28) | Pierre ; Céline à la création de son compte |
+| **Compte et rôle de Céline** | Rôle ACL restreint et compte administrateur à son nom, double authentification ; guide du back-office | Lot 8 |
+| **Ouverture des ventes** | Retirer `X-Robots-Tag` (`deploy/serveur/nginx/madame-aiguille.conf`, puis nginx rechargé) **et** passer *robots* à `INDEX,FOLLOW` ; `env:check --serveur` sans `--noindex` ; sitemap | Lot 8 |
+| **Domaine secondaire** | `madameaiguille.fr` ne résout pas : le réserver et le rediriger en 301 | Pierre, lot 8 |
+| **Délivrabilité** | DKIM Brevo et DMARC `p=none` en place ; SPF limité à OVH (alignement DMARC par DKIM). Vérifier la réception Gmail / Outlook / webmail français, durcir DMARC après observation | Lot 8 |
+| **Hygiène du serveur** | Supprimer le compte RabbitMQ `guest` ; envisager de désactiver Magento Analytics et l'export Commerce (intégration « Magento Analytics user » créée par le cron, journaux d'export) ; `<title>` vide de l'accueil (aussi en local) ; espace avant le point dans « sans créer de compte . » (connexion) | Lot 8 |
+| **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées | Recette transversale du lot 8 |
+| **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Colis de plus de 5 kg** | `tablerate` n'a pas de borne haute : un colis lourd prend le tarif du dernier palier | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
-| Histoire et présentation | Remplacer les textes génériques de `a-propos`, `home_story` et `contact_help` depuis *Contenu › Pages / Blocs* | Céline, avant publication |
-| Marchés, congés et annonces | Renseigner `home_actualities` et `contact_locations` ; ne publier que des dates confirmées. Les jours sans retrait se saisissent dans *Retrait à l'atelier* | Céline, au fil de l'activité |
-| Tissus et photos | Remplacer les références et visuels génériques de `nos-tissus`, puis fournir les photos catalogue finales au ratio 4:5 | Céline, avant mise en production |
-| CTA « Voir toutes les nouveautés » | Choisir sa destination définitive ; l'accueil ne possède pas de catégorie globale « Boutique » | Pierre / Céline, avant publication |
-| Contact | Renseigner l'identité d'expéditeur et le destinataire du module Contact, activer les clés reCAPTCHA, confirmer ou ajuster la conservation par défaut de 30 jours, puis faire un essai d'email avec JPG et PNG | Lot 8 / recette de production |
-| Email et domaine | Configurer SMTP ainsi que SPF, DKIM et DMARC ; recetter tous les emails sur le domaine final. **Sans SMTP de production, un email peut partir sans arriver** | 8a |
 | **Seuil de TVA intra-UE** | Aucune TVA facturée, Céline étant en franchise de base. **À revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année** (guichet OSS) ; la mention se change dans *Mentions légales* | Céline avec conseil |
 | Alerte ciblée « Me prévenir » | Décider si une alerte de retour d'une création précise est utile. L'inscription newsletter actuelle n'est pas une alerte de stock | Décision produit ultérieure |
 | **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié | Décision Pierre |
 | **Code promo du panier** | Activer le champ le jour où une règle de panier existe | Céline |
-| **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* ; l'enveloppe de marque s'applique automatiquement | Céline, avant publication |
-| **Expéditeur des emails** | Les identités d'expéditeur valent `contact@madame-aiguille.fr` ; à confirmer avec le domaine | Céline / Pierre, 8a |
-| Production | Vérifier le cron Magento, la purge des pièces jointes et des badges Nouveauté, puis étudier le WebP et les performances | Lot 8 |
-| Logo et favicon | Rejouer le contrôle visuel à 1440 et 390 px et vérifier le favicon à 16/32 px | Prochaine recette locale |
+| **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* | Céline, avant ouverture |
+| Production | Contrôler la purge des pièces jointes et des badges Nouveauté sur le serveur ; WebP et performances (Lighthouse) | Lot 8 |
+| Logo et favicon | Vérifier le favicon à 16 / 32 px | Lot 8 |
 
-Soldé au lot 5 : zone de vente, origine d'expédition et TVA, franco à 60 € réellement appliqué, grille au poids, point relais, retrait et rendez-vous, emballage cadeau, paiement sur place, chèque coupé, statuts câblés, email de virement (sans objet), rassurance et pied de page, bandeau, mention de TVA, TikTok, contrôle des poids. Détail au §26. Soldé au lot 6b : thème Luma enfant, formulaires, récapitulatif, composants visuels, CGV natives, newsletter facultative, confirmations et styleguide. Recette : `docs/recettes/lot-6b.md`. Le prompt du lot suivant est `docs/prompts/prompt-lot8a.md`.
+Soldé au lot 8a : domaine, DNS, HTTPS (certificat `madame-aiguille.fr` + `www`), serveur aligné (Ubuntu 26.04, PHP 8.5.4, MariaDB 12.3.3, OpenSearch 3.9, Valkey 9.0.4, Varnish 7.7), SMTP Brevo opérationnel, webhook Mollie actif et joignable, clés Mollie saisies, double authentification, langue reproductible (paquet dans `composer.lock`), fontes provisionnées par le build, déploiement versionné et retour arrière, contrôle d'environnement. Détail : §29 et `docs/recettes/lot-8a.md`. Le prompt du lot suivant est `docs/prompts/prompt-lot8.md`.
 
 ## 24. Mémo Céline — tout ce qui se règle depuis le back-office
 
@@ -813,6 +824,18 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Lieu de la confirmation de retrait | Les mêmes réglages *Madame Aiguille › Retrait à l’atelier* alimentent le tunnel, les emails et la page de succès | §26, §27 |
 | Protection de création de compte | *Magasins › Configuration › Sécurité › Google reCAPTCHA Storefront*. Pierre configure les clés et le domaine ; le formulaire natif est conservé | §27 |
 
+### Se connecter à l'administration et réglages du site en ligne — lot 8a
+
+| Quoi | Où / effet | Détail |
+|---|---|---|
+| Ouvrir l'administration | Adresse privée transmise par Pierre (à garder dans un gestionnaire de mots de passe). Depuis une IP enregistrée, la page s'ouvre ; ailleurs (smartphone, déplacement), le navigateur demande d'abord un identifiant et un mot de passe communs, transmis par Pierre, puis Magento demande votre compte | §29, `deploy/serveur/README.md` |
+| Double authentification | À la première connexion, Magento envoie un lien par email pour associer **Google Authenticator** ; ensuite, un code à six chiffres à chaque connexion. Téléphone perdu : demander à Pierre de réinitialiser | §29 |
+| Envoi des emails | *Magasins › Configuration › Avancé › Système › Paramètres d'envoi des e-mails* : SMTP Brevo, **ne pas modifier** sans Pierre (un mauvais réglage coupe tous les emails de commande) | §29 |
+| Clés Mollie et moyens de paiement | *Magasins › Configuration › Ventes › Moyens de paiement › Mollie* : mode test / live, clés, activation de chaque moyen ; bouton d'autotest du webhook | §26, §29 |
+| Clés reCAPTCHA | *Magasins › Configuration › Sécurité › Google reCAPTCHA Storefront* : les clés d'abord, le type par formulaire ensuite | §23, §27 |
+| Téléphone et adresse de la boutique | *Magasins › Configuration › Général › Général › Informations sur le magasin* | §29 |
+| Ouverture des ventes | Indexation par les moteurs et retrait de l'en-tête serveur : Pierre, au lot 8 | §23 |
+
 ### Emails — *Boutiques › Configuration › Ventes › Emails de vente*
 
 | Réglage | Effet | Détail |
@@ -859,6 +882,9 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Corriger un texte du site | Demander à Pierre : les traductions vivent dans les dictionnaires du thème | §28 |
 
 ### Ce qu'il ne faut pas faire
+
+- **Ne pas désactiver la double authentification** ni partager l'identifiant et le mot de passe HTTP en dehors de Pierre et Céline.
+- **Ne pas passer Mollie en mode live** ni modifier les webhooks sans Pierre : une commande payée resterait « En attente de paiement ».
 
 - **Ne pas décocher « Gérer le stock »** sur une création : les badges et le plafond de quantité du panier en dépendent.
 - **Ne pas supprimer une catégorie contenant des produits** sans les avoir déplacés d'abord.
@@ -1160,7 +1186,7 @@ Ubuntu 26.04 LTS, alignée sur le poste de développement : PHP 8.5.4, MariaDB 1
 2. Sur demande (*Actions › Déploiement › Run workflow*, case « Publier ») : rsync en liens physiques vers `releases/<date>-<commit>/`, puis `deploy/bascule.sh`.
 3. La bascule branche `env.php`, `var/` et `pub/media/` partagés ; **seulement si la base ou la configuration importée doivent évoluer**, maintenance, dump de la base dans `shared/sauvegardes/` et `setup:upgrade --keep-generated` ; puis lien `current` atomique, rechargement de PHP-FPM (OPcache figé entre deux versions) et nginx, caches vidés, `env:check`. Cinq versions conservées.
 
-Retour arrière : `ssh <vps> 'bash -s -- <version>' < deploy/bascule.sh`, plus la restauration du dump si la version récente avait modifié la base. Chaque push de `lot-8a-preproduction` lance le build seul ; ce déclencheur est à retirer en fin de lot.
+Retour arrière : `ssh <vps> 'bash -s -- <version>' < deploy/bascule.sh`, plus la restauration du dump si la version récente avait modifié la base. Le workflow ne se lance qu'à la main ; sans la case « Publier », il construit seulement, ce qui valide une branche sans rien mettre en ligne. Actions GitHub en versions Node 24 (`checkout@v7`, `cache@v6`, `setup-node@v7`).
 
 Secrets du dépôt GitHub (jamais dans le code) : `COMPOSER_AUTH`, `SSH_PRIVATE_KEY` (clé personnelle de Pierre, à sa demande), `SSH_KNOWN_HOSTS` (clés d'hôte vérifiées), `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USER`.
 
@@ -1188,3 +1214,22 @@ Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans affic
 - **`setup:install` n'a pas `--keep-generated`** : il peut vider le code généré par le build ; le script d'installation le détecte et le reconstruit pour cette seule fois.
 - **Magento vérifie que `app/etc` est inscriptible** avant d'écrire `env.php` : la bascule l'ouvre au groupe pour chaque version.
 - Le garde-fou de l'agent refuse les modifications des ressources partagées du VPS (nginx et PHP des autres sites, certificats) : ces étapes sont livrées en scripts relus et lancés par Pierre.
+
+### Installation du 10/10/2026 et réglages faits à la main
+
+- Version en ligne `20261010-073014-090e1ba` (build de `090e1ba`), installée par le script 80 ; compte administrateur créé par Pierre (`admin:user:create`), double authentification associée.
+- **SMTP** : réglages non secrets posés par `config:set` (Brevo, 587, LOGIN, TLS, identifiant) ; le mot de passe, champ non « sensible » pour Magento, a été saisi par Pierre en ligne de commande, saisie masquée (`read -rsp` puis `config:set`, qui le chiffre). L'administration était inaccessible avant : la double authentification attend un email.
+- **Mollie** : clés et profil saisis par Pierre dans l'administration ; mode test, webhooks actifs, point d'entrée `POST /mollie/checkout/webhook/` joignable (200).
+- Restent : clés reCAPTCHA, catalogue réel, téléphone de la boutique (§23).
+
+### Accès à l'administration et alerte Chrome
+
+Le 10/10/2026, Chrome a affiché « Site dangereux » sur l'administration : sa protection en temps réel a pris pour de l'hameçonnage le formulaire de connexion standard de Magento (titre « Admin Magento », logo Adobe, champ mot de passe) servi sur un domaine neuf à la vitrine encore vide. Audit en lecture seule : aucune injection dans la configuration ni le CMS, aucun PHP dans les médias, un seul administrateur, aucun fichier modifié hors `setup:install` ; l'intégration « Magento Analytics user » vient du cron natif. Le rapport de transparence Safe Browsing n'avait aucune donnée sur le domaine.
+
+Réponse : `deploy/serveur/90-acces-admin.sh` génère `/etc/nginx/snippets/madame-aiguille-admin.conf` (hors dépôt, contient le chemin de l'administration) inclus par la configuration versionnée : `satisfy any` — une IP de la liste passe, toute autre doit fournir l'identifiant et le mot de passe HTTP (hachage SHA-512 dans `/etc/nginx/madame-aiguille-admin.htpasswd`, choisi par Pierre). Vitrine, tunnel et webhook restent publics ; le robot de Google reçoit un 401 et ne voit plus le formulaire. Signalement envoyé à Google Safe Browsing ; propriété Search Console créée (aucun problème de sécurité). Ajouter l'IP de Céline en relançant le script avec les deux adresses.
+
+### Recette du 10/10/2026
+
+Écrans de production capturés à 1440 et 390 px (`docs/recettes/lot-8a/`) : accueil, contact, CGV (brouillon visible), panier vide, connexion, 404 ; dimensions lues dans le DOM (390 : aucun défilement horizontal ; 1440 : 1425 utiles hors barre de défilement), quatre fontes chargées, aucune ressource en erreur. CSS servies identiques aux construites. Redirections HTTP et `www` en 301, `X-Robots-Tag` et robots `NOINDEX,NOFOLLOW`, Varnish MISS puis HIT et purge par Magento, cron, 14 indexeurs planifiés, `env:check --serveur --noindex` à 0 erreur, administration à 401 hors liste. Les cinq autres sites du VPS à 200 après chaque étape.
+
+Non recetté faute de catalogue réel et de clés reCAPTCHA : paiement et retour Mollie, emails reçus, newsletter, reCAPTCHA, pièces de vente avec emballage, tunnel et compte à 1440 / 390 sur le serveur, sections d'administration (inaccessibles à l'agent : liste d'IP et double authentification). Reporté au début du lot 8 (§23).

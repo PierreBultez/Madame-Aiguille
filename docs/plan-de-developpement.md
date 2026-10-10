@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v2.8 (09/10/2026), lots 6a, 3, 4, 7, 5 et **6b livrés** ; prochain lot : **8a**, dès que domaine et serveur sont disponibles
+Document interne — v3.0 (10/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a livrés** ; boutique en ligne sur `https://madame-aiguille.fr`, non indexée ; prochain lot : **8**, recette de production, exploitation et ouverture
+
+> **v3.0** — **Lot 8a livré** sur `lot-8a-preproduction` (`276f162` → clôture). Sur décision de Pierre, la boutique s'installe **directement sur le domaine principal**, sans sous-domaine, en **installation neuve**, non indexée, pour que Mollie puisse vérifier le site. VPS OVH partagé avec ses autres sites, **aligné sur le poste** : Ubuntu 26.04 LTS (mise à niveau par Pierre), PHP 8.5.4, MariaDB 12.3.3, OpenSearch 3.9 (Elasticsearch 9 inutilisé supprimé), Valkey 9.0.4 (remplace Redis, y compris pour les sites Laravel), Varnish 7.7 ; provisionnement en scripts versionnés `deploy/serveur/`. **Build dans GitHub Actions** sans base de données, publication par **versions successives** et lien `current`, retour arrière par le même script ; PHP-FPM, cron et commandes sous un utilisateur système dédié. Certificat unique `madame-aiguille.fr` + `www`, `www` et HTTP en 301, double authentification, SMTP Brevo opérationnel, webhook Mollie actif, clés Mollie saisies. Contrôle `madameaiguille:env:check`. **Alerte Chrome « Site dangereux »** sur la connexion de l'administration (faux positif d'hameçonnage) : administration réservée aux IP connues ou au mot de passe HTTP, signalement envoyé à Google. **Reportés au lot 8**, faute de catalogue réel et de clés reCAPTCHA : paiement Mollie de bout en bout, emails reçus, newsletter, reCAPTCHA, facture / avoir avec emballage, validation du compte Mollie. Recette : `docs/recettes/lot-8a.md`. Prochain prompt : `docs/prompts/prompt-lot8.md`.
 
 > **v2.9** — **Langue française complète** (branche `traduction-fr`, fusionnée) : le paquet officiel `magento/language-fr_fr` étant vide, installation de `community-engineering/language-fr_fr` (11 168 chaînes, accord de Pierre), clés Hyvä manquantes, chaînes du tunnel et sujets d'e-mails corrigés. Vitrine, tunnel, e-mails et administration recettés en français ; reste à passer les comptes admin en français. Détail : `documentation-theme.md` §28.
 
@@ -146,6 +148,12 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 - Domaine, serveur et SMTP restent à fournir pour **8a**, ainsi que les clés reCAPTCHA et le code enseigne Mondial Relay de production. Le choix Mollie doit être validé avec Céline.
 - La branche distincte `traduction-fr` n’est pas intégrée à ce lot ; prévoir son arbitrage avant un provisionnement neuf. Les WOFF2 originaux sont à provisionner dans les deux thèmes (README).
 
+## État après le lot 8a (10/10/2026)
+
+- **La boutique est en ligne** : `https://madame-aiguille.fr`, mode production, installation neuve, catalogue vide, robots et en-tête `noindex`. Administration réservée (IP ou mot de passe HTTP) avec double authentification.
+- **Incertitudes levées** : hébergement natif sur le VPS (pas de Docker), pas d'environnement de staging séparé, déploiement par versions et lien symbolique avec bascule de quelques secondes, build dans GitHub Actions déclenché à la main.
+- **Ce qui bloque l'ouverture** : catalogue et contenus réels, pages juridiques, clés reCAPTCHA, recette de production (paiement, emails, newsletter, pièces de vente), validation Mollie et paiement réel, sauvegardes automatiques, décisions de Céline (Mondial Relay, retrait, moyens Mollie). Détail : `documentation-theme.md` §23.
+
 ## Vue d'ensemble
 
 | Lot | Titre | Dépend de | Effort | Risque |
@@ -158,7 +166,7 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
 
-Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b**. Ordre restant : **8a → 8** ; la validation Mollie impose domaine, HTTPS et paiement réel. 8a a été différé faute d’accès au domaine et au serveur.
+Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a**. Ordre restant : **8**, qui commence par la recette de production reportée du 8a puis la validation Mollie, et se termine par l'ouverture des ventes.
 
 Les lots 5 et 6b ont été livrés après le brief. La recette de bout en bout — paiement confirmé, tous les statuts et emails reçus — reste à rejouer sur la préproduction HTTPS du 8a. Le lot 7 avait été avancé pendant l’attente du brief.
 
@@ -252,7 +260,7 @@ Le lot 4 a construit le panier et l'estimateur avec les méthodes actuellement d
 - **Contrôle « poids renseigné »** : commande CLI ou requête SQL documentée, à passer avant chaque mise en production.
 - **Aligner l'affichage sur le réel** : `product_reassurance`, `cart_reassurance`, footer, page *Livraison et retours*, mention sous le prix.
 
-**8a — Mise en ligne anticipée (nouvelle dépendance)**
+**8a — Mise en ligne anticipée — livrée le 10/10/2026** (infrastructure ; recette de production et validation Mollie au lot 8, voir « État après le lot 8a »)
 
 Mollie ne valide le compte qu'avec un **site en ligne** et **un paiement réel**. Domaine, DNS, préproduction HTTPS et SMTP passent donc avant la fin du lot 5. Si la préproduction est protégée par une authentification HTTP, **exclure la route du webhook Mollie**, sinon les paiements ne remontent jamais.
 
@@ -341,8 +349,9 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - Rôle ACL « Céline » : catalogue, ventes, clients (lecture), CMS (pages, blocs) — sans configuration, modules, thèmes, utilisateurs.
 - Alerte email de stock bas (native), seuil par produit ou global.
 - Guide utilisateur illustré (`docs/guide-back-office.md`) : ajouter un produit (poids !), gérer un stock, traiter une commande, encaisser un virement, modifier le bandeau / les blocs d'accueil / les visuels Instagram, changer les liens réseaux sociaux.
-- CI/CD GitHub Actions : `composer install`, `npm ci && npm run build` dans `web/tailwind`, `setup:upgrade`, `setup:static-content:deploy fr_FR`, `cache:flush` ; environnement de staging (`staging.madame-aiguille.fr`, auth HTTP).
-- Production : mode `production`, Varnish/Valkey, HTTPS, sitemap, robots, redirection `madameaiguille.fr` → `madame-aiguille.fr`, sauvegardes BDD + médias.
+- ~~CI/CD GitHub Actions, mode production, Varnish / Valkey, HTTPS~~ : **livrés au 8a** (§29 de la documentation). Pas de staging séparé : décision de Pierre du 09/10/2026.
+- **Recette de production reportée du 8a** : paiement Mollie de bout en bout, restauration du panier, retrait, facture / avoir avec emballage, emails reçus, newsletter, reCAPTCHA ; puis validation Mollie et paiement réel.
+- Ouverture : sitemap, robots et `X-Robots-Tag`, redirection `madameaiguille.fr` → `madame-aiguille.fr`, **sauvegardes BDD + médias avec test de restauration**.
 - Recette complète (plan de tests §3 à §10), audit Lighthouse (accueil, catégorie, fiche), contrôle poids sur tout le catalogue, paiement réel de test.
 - Logo SVG (brief `prompts/prompt-logos-svg.md`) intégré à la place du PNG provisoire, favicon.
 
@@ -350,7 +359,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 
 **Incertitudes**
 
-- Docker ou installation native pour le staging ? Stratégie de déploiement (zero-downtime ou fenêtre de maintenance) ?
+- ~~Docker ou installation native, stratégie de déploiement~~ : installation native, versions successives avec bascule atomique, maintenance seulement si la base évolue (8a).
 - Rythme de mise à jour mensuel de Céline face aux séries qui s'épuisent : l'alerte de stock bas est la réponse minimale ; à rediscuter après un mois d'exploitation.
 
 **Effort : M** (hors rédaction du guide, qui dépend de la maturité de l'admin).
@@ -380,4 +389,5 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 4. ~~Formulaire de contact~~ — module dédié `MadameAiguille_Contact`; logique dans le module, surcharge visuelle dans le thème enfant.
 5. ~~Catégories de test « Sneakers » et « T-Shirts » à supprimer~~ — fait au lot 2.
 6. **WebP** : reporté au lot 8 ou module tiers gratuit (compatibilité Hyvä à vérifier avant installation).
-7. Fraîcheur des caches : valider en conditions réelles au lot 4 ; s'assurer que le cron Magento tourne (lot 8).
+7. Fraîcheur des caches : valider en conditions réelles ; ~~s'assurer que le cron Magento tourne~~ (cron du serveur en place au 8a).
+8. ~~Hébergement et déploiement~~ — **tranché au 8a** : VPS OVH, build GitHub Actions, versions successives, utilisateur système dédié, administration réservée.

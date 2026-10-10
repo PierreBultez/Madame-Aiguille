@@ -52,6 +52,10 @@ npm run build   # production
 
 `web/css/styles.css` est généré et n'est pas versionné : il se régénère à chaque build. Le thème Luma `checkout` possède un build LESS distinct, par la commande Magento `setup:static-content:deploy -f --theme MadameAiguille/checkout fr_FR` ; détails et pièges de cache au §27 de la documentation du thème.
 
+## Déploiement
+
+Build dans GitHub Actions (*Actions › Déploiement › Run workflow*), publication par versions successives sur le VPS, provisionnement en scripts : voir [`deploy/serveur/README.md`](deploy/serveur/README.md) et le §29 de la documentation du thème. Les fontes sont téléchargées par le build depuis Fontshare et vérifiées (`deploy/fontes.sh`).
+
 ## Commandes Magento utiles
 
 ```bash
@@ -73,8 +77,8 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --no-extensions app/code/M
 | 7 | Compte client, emails, statuts de commande | Livré |
 | 5 | Livraison et paiements (Mollie, table rates) | Livré hors préproduction et validation Mollie |
 | 6b | Checkout — habillage et confirmations | Livré ; recette et limites dans `docs/recettes/lot-6b.md` |
-| 8a | Domaine, HTTPS, SMTP et recette Mollie | Prochain lot — domaine et serveur à fournir |
-| 8 | Back-office, exploitation, mise en production | À faire |
+| 8a | Domaine, HTTPS, SMTP, serveur et déploiement | Livré : en ligne sur `madame-aiguille.fr`, non indexé ; recette de production au lot 8 |
+| 8 | Recette de production, back-office, exploitation, ouverture des ventes | Prochain lot |
 
 Le détail de chaque lot, les décisions prises et les points ouverts sont dans [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
 
