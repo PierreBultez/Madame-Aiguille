@@ -504,7 +504,7 @@ bin/magento madameaiguille:catalog:check-weight                # produits activ�
 bin/magento madameaiguille:env:check [--serveur] [--noindex]    # configuration effective de l'environnement (§29)
 ```
 
-Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento …` (§29).
+Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento …` (§29). Inventaire complet des commandes maison, scripts et déploiement : `docs/commandes-et-deploiement.md`.
 
 ## 16. Conventions rappelées
 

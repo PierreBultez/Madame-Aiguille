@@ -20,6 +20,7 @@ Boutique en ligne d'une créatrice d'accessoires textiles cousus main, en série
 ## Documentation
 
 - **[`docs/documentation-theme.md`](docs/documentation-theme.md)** — où modifier quoi, dans le code comme dans le back-office. Le **§24 « Mémo Céline »** récapitule tout ce qui se règle sans toucher au code.
+- **[`docs/commandes-et-deploiement.md`](docs/commandes-et-deploiement.md)** — commandes `bin/magento` maison, scripts, déploiement par versions et retour arrière : l'aide-mémoire de Pierre.
 - **[`docs/plan-de-developpement.md`](docs/plan-de-developpement.md)** — découpage en lots, décisions prises, ce qui reste.
 - **[`docs/cahier-des-charges-docs-developpement/`](docs/cahier-des-charges-docs-developpement/)** — cahier des charges, spécification fonctionnelle, architecture, charte graphique, guide de bonnes pratiques Hyvä, plan de tests.
 
