@@ -1,0 +1,125 @@
+# Construit la boutique dans GitHub Actions, puis (sur demande) la publie en nouvelle version sur le VPS.
+#
+# Build sans base de données : config.php porte les sites, boutiques et thèmes (app:config:dump scopes themes).
+# Sur le serveur : releases/<version>, shared/ (env.php, var, pub/media), lien current → bascule (deploy/bascule.sh).
+#
+# Secrets du dépôt : COMPOSER_AUTH (auth.json Hyvä + Magento), SSH_PRIVATE_KEY, SSH_KNOWN_HOSTS,
+# DEPLOY_HOST, DEPLOY_PORT, DEPLOY_USER. Aucun n'est écrit dans le dépôt ni affiché dans les journaux.
+name: Déploiement
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployer:
+        description: Publier la version sur le serveur après le build
+        type: boolean
+        default: false
+  push:
+    # Build seul, pour valider la chaîne sans rien publier
+    branches: [lot-8a-preproduction]
+
+concurrency:
+  group: deploiement
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PHP_VERSION: '8.5'
+  BASE_DIR: /var/www/madame-aiguille
+
+jobs:
+  build:
+    name: Build et publication
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: bcmath, ctype, curl, dom, fileinfo, ftp, gd, hash, iconv, intl, mbstring, openssl, pdo_mysql, simplexml, soap, sockets, sodium, xsl, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ hashFiles('shop/composer.lock') }}
+
+      - name: Dépendances PHP
+        working-directory: shop
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress
+
+      - name: Fontes originales (Fontshare, empreintes vérifiées)
+        run: deploy/fontes.sh
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: shop/app/design/frontend/MadameAiguille/default/web/tailwind/.nvmrc
+          cache: npm
+          cache-dependency-path: shop/app/design/frontend/MadameAiguille/default/web/tailwind/package-lock.json
+
+      - name: Feuille Tailwind du thème Hyvä
+        working-directory: shop/app/design/frontend/MadameAiguille/default/web/tailwind
+        run: npm ci && npm run build
+
+      - name: Compilation DI
+        working-directory: shop
+        run: php bin/magento setup:di:compile --no-ansi
+
+      - name: Fichiers statiques (vitrine Hyvä, tunnel Luma, administration)
+        working-directory: shop
+        run: |
+          php bin/magento setup:static-content:deploy -f --no-ansi --jobs 4 \
+            --area frontend --theme MadameAiguille/default --theme MadameAiguille/checkout fr_FR
+          php bin/magento setup:static-content:deploy -f --no-ansi --jobs 4 \
+            --area adminhtml --theme Magento/backend fr_FR en_US
+
+      - name: Contrôle du build
+        working-directory: shop
+        run: |
+          test -s app/design/frontend/MadameAiguille/default/web/css/styles.css
+          test -d generated/code && test -d generated/metadata
+          for theme in default checkout; do
+            ls pub/static/frontend/MadameAiguille/$theme/fr_FR/fonts/*.woff2 >/dev/null
+          done
+          echo "Version : $(date -u +%Y%m%d-%H%M%S)-${GITHUB_SHA::7}" | tee -a "$GITHUB_STEP_SUMMARY"
+          du -sh vendor generated pub/static | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Accès SSH au serveur
+        if: inputs.deployer
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploiement && chmod 600 ~/.ssh/deploiement
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf 'Host serveur\n  HostName %s\n  Port %s\n  User %s\n  IdentityFile ~/.ssh/deploiement\n  IdentitiesOnly yes\n' \
+            "$DEPLOY_HOST" "$DEPLOY_PORT" "$DEPLOY_USER" > ~/.ssh/config
+
+      - name: Envoi de la version
+        if: inputs.deployer
+        run: |
+          RELEASE="$(date -u +%Y%m%d-%H%M%S)-${GITHUB_SHA::7}"
+          echo "RELEASE=$RELEASE" >> "$GITHUB_ENV"
+          ssh serveur "test -d $BASE_DIR/releases"
+          # Liens physiques vers la version courante : seuls les fichiers modifiés transitent
+          # Code lisible par le pool PHP (groupe madame-aiguille), jamais modifiable par lui
+          rsync -az --delete --chown=:madame-aiguille --chmod=D2750,F640 --link-dest="$BASE_DIR/current/" \
+            --exclude=/var/ --exclude=/pub/media/ --exclude=/app/etc/env.php \
+            --exclude=node_modules/ --exclude=/dev/tests/ \
+            shop/ "serveur:$BASE_DIR/releases/$RELEASE/"
+
+      - name: Bascule
+        if: inputs.deployer
+        run: ssh serveur "bash -s -- $RELEASE" < deploy/bascule.sh
