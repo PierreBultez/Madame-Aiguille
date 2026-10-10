@@ -1131,3 +1131,60 @@ Ordre de priorité : module < paquet de langue < thème. Une clé du thème l'em
 
 - Le paquet communautaire évolue : une mise à jour peut changer quelques formulations ; nos clés de thème restent prioritaires.
 - Les écrans d'administration n'ont pas été vus par l'agent ; contrôle visuel par Pierre après passage de son compte en français.
+
+## 29. Serveur, déploiement et contrôle d'environnement (lot 8a)
+
+Mis en place les 09 et 10/10/2026 sur `lot-8a-preproduction`. La boutique s'installe **directement sur le domaine principal** `madame-aiguille.fr`, non indexée tant que les ventes ne sont pas ouvertes, sur le VPS OVH qui héberge d'autres sites de Pierre. Journal détaillé : `docs/recettes/lot-8a.md`.
+
+### Pile du serveur
+
+Ubuntu 26.04 LTS, alignée sur le poste de développement : PHP 8.5.4, MariaDB 12.3.3, OpenSearch 3.9, Valkey 9.0.4, RabbitMQ 4.3, nginx 1.28. Varnish 7.7, version de référence de Magento 2.4.9 (le poste a 9.1). Tout est provisionné par les scripts versionnés de `deploy/serveur/`, rejouables et sans secret ; leur mode d'emploi et leur état sont dans `deploy/serveur/README.md`.
+
+| Service | Rôle | Écoute |
+|---|---|---|
+| nginx 443 | TLS (certificat unique `madame-aiguille.fr` + `www`), `www` et HTTP en 301, `X-Robots-Tag: noindex, nofollow` avant l'ouverture | public |
+| Varnish | cache de pages, VCL généré par Magento | 127.0.0.1:6081 |
+| nginx 8080 | backend de Varnish, `nginx.conf.sample` de la version en ligne | 127.0.0.1 |
+| PHP-FPM, pool `madame-aiguille` | utilisateur système dédié sans connexion, socket lu par nginx | socket |
+| Valkey | 6379 : sites Laravel (ex-Redis) ; 6380 : cache Magento (LRU) ; 6381 : sessions (persistées) | 127.0.0.1 |
+| OpenSearch | recherche, nœud unique, 2 Go | 127.0.0.1:9200 |
+| MariaDB, RabbitMQ | base `madame_aiguille`, vhost `/madame-aiguille` | 127.0.0.1 |
+
+**Isolation** : PHP-FPM, le cron et toutes les commandes Magento tournent sous `madame-aiguille`. Le code appartient à Pierre et n'est que lisible par ce groupe ; `env.php` (0600) et `var/` (0700) ne sont lisibles que par lui. Une faille d'un autre site (`www-data`) n'atteint pas les secrets de la boutique, et une faille de Magento n'atteint pas le compte de Pierre, qui a sudo.
+
+### Construire et publier
+
+`.github/workflows/deploiement.yml`, construit **sans base de données** : `config.php` porte les sites, boutiques et thèmes (`app:config:dump scopes themes`, accord de Pierre). Conséquence : la structure *Magasins › Tous les magasins* ne se modifie plus dans l'administration, sans gêne pour une boutique à vue unique.
+
+1. Composer (`COMPOSER_AUTH` : accès Hyvä et Magento), fontes originales téléchargées chez Fontshare et vérifiées par SHA-256 (`deploy/fontes.sh`, `deploy/fontes.sha256` : jamais versionnées, licence ITF), Tailwind, compilation DI, statiques `fr_FR` (vitrine et tunnel) et `fr_FR` + `en_US` (administration).
+2. Sur demande (*Actions › Déploiement › Run workflow*, case « Publier ») : rsync en liens physiques vers `releases/<date>-<commit>/`, puis `deploy/bascule.sh`.
+3. La bascule branche `env.php`, `var/` et `pub/media/` partagés ; **seulement si la base ou la configuration importée doivent évoluer**, maintenance, dump de la base dans `shared/sauvegardes/` et `setup:upgrade --keep-generated` ; puis lien `current` atomique, rechargement de PHP-FPM (OPcache figé entre deux versions) et nginx, caches vidés, `env:check`. Cinq versions conservées.
+
+Retour arrière : `ssh <vps> 'bash -s -- <version>' < deploy/bascule.sh`, plus la restauration du dump si la version récente avait modifié la base. Chaque push de `lot-8a-preproduction` lance le build seul ; ce déclencheur est à retirer en fin de lot.
+
+Secrets du dépôt GitHub (jamais dans le code) : `COMPOSER_AUTH`, `SSH_PRIVATE_KEY` (clé personnelle de Pierre, à sa demande), `SSH_KNOWN_HOSTS` (clés d'hôte vérifiées), `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USER`.
+
+### Installation neuve
+
+`deploy/serveur/80-installer-magento.sh <version>`, une seule fois : base et compte RabbitMQ dédiés, mots de passe et chemin d'administration **générés sur le serveur** et confinés à `env.php`, `setup:install` (Valkey, OpenSearch, RabbitMQ, Varnish), mode production, robots `NOINDEX,NOFOLLOW`, webhooks Mollie actifs en mode test, double authentification par Google Authenticator, indexeurs « planifiés », grille Mondial Relay importée, VCL, cron, mise en ligne. Aucun compte administrateur n'est créé par le script : Pierre le crée lui-même.
+
+Deux patches reproduisent la boutique locale sans jamais réécrire une valeur saisie : `Theme/Setup/Patch/Data/ConfigureStoreIdentity.php` (langue, fuseau, devise, informations de la boutique, expéditeurs `contact@madame-aiguille.fr`, thème Hyvä de la vue, logo, copyright avec mention de TVA, réseaux, URLs propres, télémétrie Adobe coupée) et `Checkout/Setup/Patch/Data/KeepProvisionalMollieMethods.php` (les sept moyens réactivés par Pierre, provisoires). Le téléphone de la boutique n'est pas versionné (dépôt public) : il se saisit dans l'administration.
+
+### Contrôle d'environnement
+
+```bash
+bin/magento madameaiguille:env:check                      # poste local
+bin/magento madameaiguille:env:check --serveur --noindex  # serveur avant l'ouverture des ventes
+```
+
+Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation, caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, clé du mode Mollie et webhooks, reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
+
+### Pièges rencontrés
+
+- **Mollie 3.1.3 ne traite un paiement que par le webhook** : le retour navigateur affiche le succès sans facturer ni changer le statut. En local (webhook coupé), une commande payée reste « En attente de paiement ».
+- **La mise à niveau Ubuntu 25.10 → 26.04 retire PHP 8.4 sans installer 8.5** : les sites PHP tombent en 502 jusqu'à l'installation de PHP 8.5 et la bascule des sockets nginx. Elle désactive aussi les dépôts externes (`*.list.disabled`), remis au format deb822.
+- **Elasticsearch 9 dimensionne son tas sur la moitié de la RAM** par défaut ; Magento 2.4.9 embarque un client Elasticsearch 8 : OpenSearch 3 retenu.
+- **OpenSearch 3 à l'installation** exige un mot de passe administrateur et dépose des certificats de démonstration aux clés publiques : mot de passe aléatoire non conservé, sécurité désactivée en écoute locale, certificats supprimés.
+- **`setup:install` n'a pas `--keep-generated`** : il peut vider le code généré par le build ; le script d'installation le détecte et le reconstruit pour cette seule fois.
+- **Magento vérifie que `app/etc` est inscriptible** avant d'écrire `env.php` : la bascule l'ouvre au groupe pour chaque version.
+- Le garde-fou de l'agent refuse les modifications des ressources partagées du VPS (nginx et PHP des autres sites, certificats) : ces étapes sont livrées en scripts relus et lancés par Pierre.
