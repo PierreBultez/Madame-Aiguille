@@ -15,7 +15,7 @@ Commence par `git status`, `git log --oneline --decorate -n 20`, les référence
 
 1. `AGENTS.md` et `docs/documentation-theme.md` **§25**, rituel de fin de lot ;
 2. cette documentation : **§23** (ce qui reste, responsables), §24 (mémo Céline), §26 (livraison / paiement), §27 (tunnel), §28 (langue), **§29** (serveur, déploiement, accès, pièges) ;
-3. `deploy/serveur/README.md` (scripts, arborescence, retour arrière, accès à l’administration) ;
+3. `docs/commandes-et-deploiement.md` (commandes maison, scripts, déploiement par versions) et `deploy/serveur/README.md` (scripts, arborescence, retour arrière, accès à l’administration) ;
 4. `docs/plan-de-developpement.md` v3.0, état après le 8a et lot 8 ;
 5. `docs/recettes/lot-8a.md`, `docs/cahier-des-charges-docs-developpement/plan-de-tests.md` (§3 à §10, critères de mise en production).
 
