@@ -26,7 +26,25 @@ tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/s
 | `50-varnish.sh` | Varnish 7 local devant Magento, 1 Go | appliqué le 09/10/2026 |
 | `60-valkey.sh` | Valkey à la place de Redis (sites Laravel, 6379) + cache (6380) et sessions (6381) Magento | appliqué le 10/10/2026 |
 | `70-hebergement.sh` | Utilisateur `madame-aiguille`, arborescence, pool PHP-FPM, réglages MariaDB, certificat `madame-aiguille.fr` + `www`, rotation des journaux | à jouer |
-| `80-installer-magento.sh <version>` | Installation neuve dans une version envoyée par GitHub Actions, réglages du serveur, VCL, cron, mise en ligne, activation nginx | à jouer une fois |
+| `80-installer-magento.sh <version>` | Installation neuve dans une version envoyée par GitHub Actions, réglages du serveur, VCL, cron, mise en ligne, activation nginx | appliqué le 10/10/2026 |
+| `90-acces-admin.sh <ip> [<ip>…]` | Administration : IP autorisées ou mot de passe HTTP (`satisfy any`) ; rejouable pour changer la liste | à jouer, après le mot de passe |
+
+### Accès à l'administration
+
+Le formulaire de connexion de Magento, sur un domaine neuf, a été signalé à tort comme hameçonnage par Chrome
+(10/10/2026). Depuis, il n'est servi qu'aux IP autorisées ; ailleurs, nginx demande d'abord un identifiant et un mot de
+passe HTTP communs à Pierre et Céline (hors dépôt), puis Magento demande son propre compte et la double
+authentification. Le mot de passe HTTP se crée ou se change ainsi (saisie masquée, seul le hachage est stocké) :
+
+```bash
+ssh -t <vps> 'read -rp "Identifiant HTTP : " U; read -rsp "Mot de passe HTTP : " P; echo; read -rsp "Confirmation : " C; echo; [ -n "$U" ] && [ -n "$P" ] && [ "$P" = "$C" ] || { echo "Identifiant vide ou mots de passe différents"; exit 1; }; printf "%s:%s\n" "$U" "$(printf %s "$P" | openssl passwd -6 -stdin)" | sudo tee /etc/nginx/madame-aiguille-admin.htpasswd >/dev/null && sudo chown root:www-data /etc/nginx/madame-aiguille-admin.htpasswd && sudo chmod 0640 /etc/nginx/madame-aiguille-admin.htpasswd && echo "Mot de passe enregistré"; unset U P C'
+```
+
+Puis la liste d'IP (celle de la box de Pierre aujourd'hui ; ajouter celle de Céline quand elle sera connue) :
+
+```bash
+tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/serveur/90-acces-admin.sh" <ip> [<ip>…]; rm -rf "$D"'
+```
 
 Ports locaux : MariaDB 3306, OpenSearch 9200, Valkey 6379 / 6380 / 6381, Varnish 6081 (admin 6082), nginx backend 8080,
 RabbitMQ 5672. Aucun n'est ouvert par le pare-feu, qui n'autorise que SSH, 80, 443 et les services des autres sites.
