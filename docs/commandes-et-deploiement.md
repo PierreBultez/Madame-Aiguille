@@ -251,6 +251,38 @@ ssh -t <vps> 'sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/m
 ssh <vps> 'sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento security:tfa:reset <identifiant> google'
 ```
 
+### Si reCAPTCHA (Google) ne répond plus
+
+reCAPTCHA v2 invisible protège la connexion et le mot de passe oublié de **l'administration**, et sept formulaires de la
+vitrine. Si Google est injoignable ou si une clé est révoquée, la connexion à l'administration échoue avec « Quelque-chose
+d'inattendu s'est produit avec reCAPTCHA ». Les commandes ci-dessous rétablissent l'accès sans passer par
+l'administration ; elles ne coupent que reCAPTCHA, l'accès réservé (IP ou mot de passe HTTP) et la double
+authentification restent en place.
+
+```bash
+# Administration : couper reCAPTCHA sur la connexion, puis sur le mot de passe oublié si besoin
+ssh <vps> 'sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento security:recaptcha:disable-for-user-login'
+ssh <vps> 'sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento security:recaptcha:disable-for-user-forgot-password'
+
+# Vitrine : couper un formulaire (contact, customer_create, customer_login, customer_forgot_password, newsletter,
+# product_review, sendfriend) en vidant son type
+mage config:set recaptcha_frontend/type_for/contact ''
+mage cache:clean config
+```
+
+Une fois Google revenu, réactiver dans *Magasins › Configuration › Sécurité › Google reCAPTCHA Admin Panel* (et
+*Storefront*), type « reCAPTCHA v2 invisible », ou en ligne de commande :
+
+```bash
+mage config:set recaptcha_backend/type_for/user_login invisible
+mage config:set recaptcha_backend/type_for/user_forgot_password invisible
+mage config:set recaptcha_frontend/type_for/contact invisible
+mage cache:clean config
+```
+
+Le CAPTCHA image natif de Magento (`customer/captcha/enable`) est **coupé** : reCAPTCHA le remplace. Ne pas
+réactiver les deux en même temps.
+
 ### Secrets saisis en ligne de commande
 
 ```bash

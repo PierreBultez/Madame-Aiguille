@@ -99,3 +99,9 @@ Captures dans `docs/recettes/lot-8a/`, prises par Chrome sans interface sur le v
 - `090e1ba` — documentation intermédiaire ; `main` avancé pour le premier déploiement.
 - `dbb251f` — administration réservée aux IP connues ou au mot de passe HTTP (90).
 - Clôture — workflow manuel seul et actions Node 24, documentation, plan v3.0, captures, prompt du lot 8.
+
+## Suivi du 11/10/2026
+
+- Search Console : domaine classé « pages trompeuses » après l'analyse du formulaire d'administration par deux robots Google (10/10, 17:45 et 17:49), avant sa fermeture. Administration à 401 par toutes ses entrées ; réexamen demandé.
+- reCAPTCHA activé par Pierre (vitrine et administration). Recette serveur : envoi du formulaire « mot de passe oublié » **sans jeton** (adresse `example.invalid`, aucune création, aucun email) refusé et journalisé ; connexions administrateur acceptées avec jeton. Envoi réel avec jeton : au lot 8.
+- CAPTCHA image natif découvert actif (défaut Magento) et coupé par Pierre ; patch `DisableNativeStorefrontCaptcha` pour les installations neuves.
