@@ -4,7 +4,7 @@
  * (Theme ConfigureSalesFoundations), Pierre a réactivé dans l'administration Apple Pay, Google Pay, Bancontact,
  * iDEAL, Wero et Klarna le 09/10/2026, à valider avec Céline. Ce patch reproduit ce choix sur une installation neuve.
  *
- * Il ne désactive rien : quand Céline aura tranché, l'activation se règle dans l'administration.
+ * Il ne désactive rien. Choix définitif du lot 8 : ApplyFinalMollieMethods, qui passe après lui.
  */
 
 declare(strict_types=1);
