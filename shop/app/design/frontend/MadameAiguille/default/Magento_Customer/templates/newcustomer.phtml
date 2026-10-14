@@ -26,9 +26,9 @@ use Magento\Framework\Escaper;
         </div>
         <p class="account-guest-note">
             <?= $escaper->escapeHtml(__('You can also')) ?>
-            <a href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>">
-                <?= $escaper->escapeHtml(__('checkout without creating an account')) ?>
-            </a>.
+            <a href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>"><?=
+                $escaper->escapeHtml(__('checkout without creating an account'))
+            ?></a>.
         </p>
     </section>
 <?php endif; ?>

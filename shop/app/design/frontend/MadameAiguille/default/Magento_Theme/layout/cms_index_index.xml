@@ -5,9 +5,10 @@
         <referenceBlock name="hero" remove="true"/>
         <referenceBlock name="slider-1" remove="true"/>
         <referenceBlock name="slider-2" remove="true"/>
-        <referenceBlock name="cms_page" remove="true"/>
-        <!-- Le handle cms_page_view est également fusionné sur la page d'accueil. -->
-        <referenceBlock name="cms.page.frame" remove="true"/>
+        <!-- Le handle cms_page_view est également fusionné sur la page d'accueil : il déplace cms_page dans
+             cms.page.frame. Les deux sont gardés mais non affichés, car le _prepareLayout de cms_page pose le
+             titre et les métas de la page CMS « home » (un retrait laissait <title> vide). -->
+        <referenceBlock name="cms.page.frame" display="false"/>
         <referenceBlock name="page.main.title" remove="true"/>
         <referenceContainer name="content">
             <container name="home.sections" htmlTag="div" htmlClass="home-sections">
