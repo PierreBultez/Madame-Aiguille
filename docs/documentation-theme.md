@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v3.0 (10/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne sur `https://madame-aiguille.fr`**, non indexée, installation neuve (§29). Prochain lot : **8**, recette de production, exploitation et ouverture des ventes. **À compléter à chaque lot** (une section par écran livré).
+Document interne — v3.1 (23/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne sur `https://madame-aiguille.fr`**, non indexée, installation neuve (§29). **Lot 8 en cours** : paiement en ligne passé de Mollie à Stripe (§26), recette de production à suivre (§23).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -555,6 +555,10 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8a — Accès à l'administration | IP autorisées ou mot de passe HTTP après l'alerte Chrome « Site dangereux » | `dbb251f` |
 | 8a — Clôture | workflow manuel seul, actions sur Node 24, documentation, plan v3.0, prompt du lot 8 | commit de clôture |
 | Correctif accueil (09/10/2026) | hero centré et plafonné à 1440 px dans le thème ; contrôles à 1440, 390 et 2560 px, CSS servi identique au build ; recette `docs/recettes/correction-hero.md` | `8316318` |
+| 8 — Hygiène (14/10/2026) | moyens Mollie restreints, `<title>` de l'accueil, espace de la connexion, script du compte RabbitMQ `guest`, Magento Analytics / export Commerce / Payment Services coupés | `f1be549`, `67be41f`, `8f953ab`, `1d7dd31` |
+| 8 — Mondial Relay (23/10/2026) | code enseigne du compte pro saisi en configuration (non versionné), identifiants API consignés pour une automatisation future | `b7fe66f`, `33c3b19` |
+| 8 — Mollie retiré (23/10/2026) | paquets en `replace`, ligne cadeau, patches et contrôle Mollie supprimés ; anciennes commandes lisibles par substitution native | `f59e89f` |
+| 8 — Stripe (23/10/2026) | `stripe/module-payments` 4.7.1 sans Tax, défauts du module Checkout, retraits Hyvä, statuts par défaut, pages juridiques, `env:check` ; paiement recetté en local | `bba5407` + documentation |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
@@ -730,7 +734,7 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 - ~~**Modalités de retrait**~~ : depuis le lot 5, l'email « Prête pour retrait » reçoit aussi `pickup_slot`, `pickup_location_name`, `pickup_location_address` et `pickup_directions_url` (§26). Le commentaire visible reste repris en complément.
 - **Mention de TVA** : en pied de tous les emails depuis le lot 5, via `{{config path="madameaiguille/legal/vat_mention"}}`.
 - **Délivrabilité et SMTP** (SPF, DKIM, DMARC) : dépendent du domaine, **lot 8**. Tant que le SMTP de production n'est pas en place, un email peut partir sans arriver.
-- **Recette de bout en bout** d'une commande réellement payée par Mollie : statuts câblés au lot 5, paiement de test à finir par Pierre (§23).
+- **Recette de bout en bout** d'une commande payée en ligne : statuts câblés au lot 5 sur Mollie, rebranchés sur Stripe au lot 8 ; paiement local recetté (§26), recette serveur au §23.
 
 ## 23. Après le lot 8a : ce qui reste à faire
 
@@ -738,26 +742,26 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
-| **Clés reCAPTCHA v2 invisible** | Créer les clés pour `madame-aiguille.fr` dans la console Google, les saisir dans *Sécurité › Google reCAPTCHA Storefront* ; **ensuite seulement** activer le type sur création de compte, contact, newsletter et mot de passe oublié (sans clés, ces formulaires refuseraient tout envoi). Recetter refus serveur et envoi normal | Pierre (clés), lot 8 (activation, recette) |
-| **Catalogue réel** | Catégories et 2 à 3 premières créations saisies avec Céline dans l'administration (set « Création », poids obligatoire, photos 4:5), puis `madameaiguille:catalog:check-weight` | Pierre et Céline, avant la demande de validation Mollie |
-| **Recette de production** | Sur le vrai site et un catalogue réel : paiement Mollie test relais + cadeau + CGV jusqu'au webhook et « Paiement reçu » ; annulation / échec et **restauration native du panier** ; retrait payé sur place ; **facture et avoir avec emballage** sur une commande dédiée (avoir déclenché par Pierre) ; emails **reçus** (confirmation, paiement reçu, prêt pour retrait, expédition, création de compte, contact avec JPG / PNG) ; newsletter invitée et connectée avec clic de confirmation, aucune inscription sans la case ; écrans du tunnel, des confirmations et du compte à 1440 / 390 px. Commandes de test annulées dans l'administration | Pierre et agent, début du lot 8 |
-| **Validation du compte Mollie** | Demander la vérification du site dans le tableau de bord Mollie une fois catalogue et pages juridiques réels ; puis **un paiement réel** par Pierre (mode live, petit montant, remboursé) ; décider du mode (test ou live) jusqu'à l'ouverture | Pierre, après le catalogue |
-| **Alerte Google Safe Browsing** | Le formulaire de connexion de l'administration, analysé par deux robots Google le 10/10/2026 avant sa fermeture, a fait classer `madame-aiguille.fr` en « pages trompeuses » (Search Console, 11/10/2026 ; `www` reste sain). Administration fermée au public (401 par toutes ses entrées), réexamen demandé dans Search Console. Vérifier la levée ; surveiller *Problèmes de sécurité* | Pierre, sous quelques jours ; **à lever avant la demande de validation Mollie** |
+| **Clés reCAPTCHA v2 invisible** | Créer les clés pour `madame-aiguille.fr` dans la console Google, les saisir dans *Sécurité › Google reCAPTCHA Storefront* ; **ensuite seulement** activer le type sur création de compte, contact, newsletter et mot de passe oublié (sans clés, ces formulaires refuseraient tout envoi). Recetter refus serveur et envoi normal. **Constat du 23/10/2026** : clés saisies et quatre types actifs sur le serveur (`env:check`) ; reste la recette. | Pierre (clés), lot 8 (activation, recette) |
+| **Catalogue réel** | Catégories et 2 à 3 premières créations saisies avec Céline dans l'administration (set « Création », poids obligatoire, photos 4:5), puis `madameaiguille:catalog:check-weight` | Pierre et Céline, avant l'activation Stripe en live |
+| **Recette de production** | Sur le vrai site et un catalogue réel, **Stripe en mode test** : relais + cadeau + CGV → « Paiement reçu », facture, webhooks reçus (endpoint créé automatiquement) ; carte refusée et 3-D Secure (cartes de test Stripe) ; Apple Pay / Google Pay une fois le domaine déclaré ; retrait payé sur place ; **facture et avoir avec emballage** sur une commande dédiée, remboursement en ligne déclenché par Pierre ; emails **reçus** (confirmation, paiement reçu, prêt pour retrait, expédition, création de compte, contact avec JPG / PNG) ; newsletter invitée et connectée avec clic de confirmation, aucune inscription sans la case ; écrans du tunnel, des confirmations et du compte à 1440 / 390 px. Commandes de test annulées dans l'administration. Paiement local déjà recetté (§26) | Pierre et agent, lot 8 |
+| **Activation du compte Stripe** | Compléter l'activation du compte (identité, IBAN) dans le tableau de bord ; activer carte, Apple Pay, Google Pay (Link à trancher) ; déclarer `madame-aiguille.fr` dans les domaines de paiement (Apple Pay) ; puis **un paiement réel** par Pierre en mode live (petit montant, remboursé) et décider du mode jusqu'à l'ouverture. La commande Mollie de 2 € du serveur se solde par un **avoir hors ligne** (pas de suppression : numérotation des factures) | Pierre, après la recette en mode test |
+| **Alerte Google Safe Browsing** | Le formulaire de connexion de l'administration, analysé par deux robots Google le 10/10/2026 avant sa fermeture, a fait classer `madame-aiguille.fr` en « pages trompeuses » (Search Console, 11/10/2026 ; `www` reste sain). Administration fermée au public (401 par toutes ses entrées), réexamen demandé dans Search Console. Vérifier la levée ; surveiller *Problèmes de sécurité* | Pierre, sous quelques jours ; **à lever avant l'activation Stripe en live** |
 | **IP de Céline** | L'ajouter à la liste de l'administration (`deploy/serveur/90-acces-admin.sh <ip-pierre> <ip-céline>`) ; en attendant, identifiant et mot de passe HTTP | Pierre, quand elle sera connue |
 | **Sauvegardes** | Aucune sauvegarde automatique de la base et des médias, hormis le dump pris par chaque bascule qui modifie la base. Planifier dump quotidien + médias, rétention, copie hors du VPS, **test de restauration** | Lot 8, **avant la première vraie commande** |
 | **Tarifs Mondial Relay** | Le compte pro est ouvert et son code enseigne posé (lot 8, 23/10/2026). Remplacer les tarifs provisoires de `Theme/data/tablerates-mondial-relay.csv` (FR, MC, BE, LU) par la politique de prix de Céline, puis rejouer l'import ; peser l'emballage type | Céline (tarifs), Pierre (CSV, déploiement) |
 | **Automatisation Mondial Relay** | Le compte pro fournit aussi une **clé privée** et un **code marque** pour l'API Web Services (appels serveur signés) : création des expéditions et étiquettes depuis Magento, numéro de suivi ajouté automatiquement à l'expédition, contrôle serveur du point choisi. Non utilisés : le widget ne demande que le code enseigne, et Céline crée ses étiquettes dans l'espace pro. La clé privée est un secret : configuration chiffrée de l'administration, jamais le dépôt | Décision après l'ouverture, selon le volume de commandes |
 | **Lieu de retrait réel** | Adresse, coordonnées et, si souhaité, image de plan dans *Madame Aiguille › Retrait à l'atelier*. Un lieu générique « Saint-Épain (37800) » est en place | Céline |
-| **Moyens de paiement Mollie** | Apple Pay, Google Pay, Bancontact, iDEAL, Wero et **Klarna** actifs à côté de la carte (choix provisoire de Pierre, reproduit sur le serveur par `KeepProvisionalMollieMethods`), **à valider avec Céline**. Écart avec le call (CB uniquement) et avec la CGV : trancher, puis aligner la CGV ou l'admin | Pierre / Céline, avant la validation Mollie |
-| **Contenus juridiques** | Brouillons en place sur le serveur. Compléter : hébergeur (OVH), médiateur de la consommation, date de mise en ligne, délai de réponse ; citer **Brevo** (emails), **Google reCAPTCHA**, **Mondial Relay** et **OpenStreetMap** dans la confidentialité ; ajouter l'emballage cadeau à la CGV ; retirer les encadrés « Brouillon » | Céline avec conseil, avant la validation Mollie |
-| **Contenus génériques** | Remplacer `home_story`, `home_actualities`, `a-propos`, `nos-tissus`, `contact_help`, `contact_locations` ; choisir la destination du CTA « Voir toutes les nouveautés » | Céline, avant la validation Mollie |
+| **Moyens de paiement** | Carte bancaire, Apple Pay et Google Pay (décision de Pierre et Céline du 14/10/2026), proposés par Stripe dans un seul formulaire « Carte bancaire ». Bancontact, iDEAL, Wero, Klarna ne sont plus proposés. Aligner la CGV si elle ne cite que la carte | Pierre / Céline |
+| **Contenus juridiques** | Brouillons en place sur le serveur. Compléter : hébergeur (OVH), médiateur de la consommation, date de mise en ligne, délai de réponse ; citer **Brevo** (emails), **Google reCAPTCHA**, **Mondial Relay**, **OpenStreetMap** et **Stripe** dans la confidentialité — Stripe peut transférer des données hors de l'UE : à faire mentionner par le conseil ; ajouter l'emballage cadeau à la CGV ; retirer les encadrés « Brouillon ». Le nom du prestataire (Mollie → Stripe) est corrigé par `NameStripeInLegalPages` | Céline avec conseil, avant l'activation Stripe en live |
+| **Contenus génériques** | Remplacer `home_story`, `home_actualities`, `a-propos`, `nos-tissus`, `contact_help`, `contact_locations` ; choisir la destination du CTA « Voir toutes les nouveautés » | Céline, avant l'activation Stripe en live |
 | **Téléphone de la boutique** | *Général › Informations sur le magasin* (non versionné, dépôt public) | Pierre / Céline |
 | **Langue de l'administration** | Passer chaque compte en *Français (France)* dans *Paramètres du compte* (réglage par utilisateur, §28) | Pierre ; Céline à la création de son compte |
 | **Compte et rôle de Céline** | Rôle ACL restreint et compte administrateur à son nom, double authentification ; guide du back-office | Lot 8 |
 | **Ouverture des ventes** | Retirer `X-Robots-Tag` (`deploy/serveur/nginx/madame-aiguille.conf`, puis nginx rechargé) **et** passer *robots* à `INDEX,FOLLOW` ; `env:check --serveur` sans `--noindex` ; sitemap | Lot 8 |
 | **Domaine secondaire** | `madameaiguille.fr` ne résout pas : le réserver et le rediriger en 301 | Pierre, lot 8 |
 | **Délivrabilité** | DKIM Brevo et DMARC `p=none` en place ; SPF limité à OVH (alignement DMARC par DKIM). Vérifier la réception Gmail / Outlook / webmail français, durcir DMARC après observation | Lot 8 |
-| **Hygiène du serveur** | Supprimer le compte RabbitMQ `guest` ; envisager de désactiver Magento Analytics et l'export Commerce (intégration « Magento Analytics user » créée par le cron, journaux d'export) ; `<title>` vide de l'accueil (aussi en local) ; espace avant le point dans « sans créer de compte . » (connexion) | Lot 8 |
+| **Hygiène du serveur** | Traité au lot 8 : `<title>` de l'accueil et espace de la connexion (`67be41f`), Magento Analytics, export Commerce et Payment Services désactivés (`1d7dd31`), script de suppression du compte RabbitMQ `guest` (`8f953ab`) — vérifier qu'il a été lancé sur le serveur | Pierre (script RabbitMQ) |
 | **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées | Recette transversale du lot 8 |
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
@@ -771,7 +775,7 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 | Production | Contrôler la purge des pièces jointes et des badges Nouveauté sur le serveur ; WebP et performances (Lighthouse) | Lot 8 |
 | Logo et favicon | Vérifier le favicon à 16 / 32 px | Lot 8 |
 
-Soldé au lot 8 : code enseigne Mondial Relay du compte pro, saisi le 23/10/2026 en local et sur le serveur ; `env:check` le contrôle, la carte ne montre plus l'avertissement de démonstration et la sélection d'un point fonctionne.
+Soldé au lot 8 : **Mollie remplacé par Stripe** (23/10/2026, §26 « Paiement en ligne : Stripe »), recetté en local ; code enseigne Mondial Relay du compte pro, saisi le 23/10/2026 en local et sur le serveur ; `env:check` le contrôle, la carte ne montre plus l'avertissement de démonstration et la sélection d'un point fonctionne.
 
 Soldé au lot 8a : domaine, DNS, HTTPS (certificat `madame-aiguille.fr` + `www`), serveur aligné (Ubuntu 26.04, PHP 8.5.4, MariaDB 12.3.3, OpenSearch 3.9, Valkey 9.0.4, Varnish 7.7), SMTP Brevo opérationnel, webhook Mollie actif et joignable, clés Mollie saisies, double authentification, langue reproductible (paquet dans `composer.lock`), fontes provisionnées par le build, déploiement versionné et retour arrière, contrôle d'environnement. Détail : §29 et `docs/recettes/lot-8a.md`. Le prompt du lot suivant est `docs/prompts/prompt-lot8.md`.
 
@@ -833,7 +837,7 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Ouvrir l'administration | Adresse privée transmise par Pierre (à garder dans un gestionnaire de mots de passe). Depuis une IP enregistrée, la page s'ouvre ; ailleurs (smartphone, déplacement), le navigateur demande d'abord un identifiant et un mot de passe communs, transmis par Pierre, puis Magento demande votre compte | §29, `deploy/serveur/README.md` |
 | Double authentification | À la première connexion, Magento envoie un lien par email pour associer **Google Authenticator** ; ensuite, un code à six chiffres à chaque connexion. Téléphone perdu : demander à Pierre de réinitialiser | §29 |
 | Envoi des emails | *Magasins › Configuration › Avancé › Système › Paramètres d'envoi des e-mails* : SMTP Brevo, **ne pas modifier** sans Pierre (un mauvais réglage coupe tous les emails de commande) | §29 |
-| Clés Mollie et moyens de paiement | *Magasins › Configuration › Ventes › Moyens de paiement › Mollie* : mode test / live, clés, activation de chaque moyen ; bouton d'autotest du webhook | §26, §29 |
+| Paiement en ligne Stripe | *Magasins › Configuration › Ventes › Moyens de paiement › Stripe* : mode test / live et clés (Pierre). Les moyens proposés (carte, Apple Pay, Google Pay) se règlent dans le **tableau de bord Stripe**, les remboursements se font par un **avoir en ligne** depuis la facture | §26 |
 | Clés reCAPTCHA | *Magasins › Configuration › Sécurité › Google reCAPTCHA Storefront* : les clés d'abord, le type par formulaire ensuite | §23, §27 |
 | Téléphone et adresse de la boutique | *Magasins › Configuration › Général › Général › Informations sur le magasin* | §29 |
 | Ouverture des ventes | Indexation par les moteurs et retrait de l'en-tête serveur : Pierre, au lot 8 | §23 |
@@ -886,7 +890,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 ### Ce qu'il ne faut pas faire
 
 - **Ne pas désactiver la double authentification** ni partager l'identifiant et le mot de passe HTTP en dehors de Pierre et Céline.
-- **Ne pas passer Mollie en mode live** ni modifier les webhooks sans Pierre : une commande payée resterait « En attente de paiement ».
+- **Ne pas changer le mode ou les clés Stripe**, ni réactiver les boutons express, sans Pierre : les boutons express contourneraient le point relais et le créneau de retrait.
 
 - **Ne pas décocher « Gérer le stock »** sur une création : les badges et le plafond de quantité du panier en dépendent.
 - **Ne pas supprimer une catégorie contenant des produits** sans les avoir déplacés d'abord.
@@ -943,8 +947,9 @@ La logique du tunnel vit dans `MadameAiguille_Checkout`. Au lot 5, ses composant
 | Point relais | `Checkout/Model/RelayPoint/*`, `Checkout/Plugin/Checkout/AssignRelayPoint.php`, `Checkout/Observer/ApplyRelayPoint.php`, `view/frontend/web/js/{view,model}/relay-point.js`, `template/relay-point.html`, `etc/csp_whitelist.xml` |
 | Retrait à l'atelier et paiement sur place | `Checkout/Model/Carrier/Pickup.php`, `Checkout/Observer/RestrictPaymentToDelivery.php`, `Checkout/Setup/Patch/Data/EnablePayOnSite.php` |
 | Rendez-vous de retrait | `Checkout/Model/Pickup/*`, `Checkout/Plugin/Checkout/AssignPickupSlot.php`, `Checkout/Observer/{ReservePickupSlot,AttachPickupBooking,ReleasePickupBooking}.php`, `Checkout/Block/Adminhtml/Form/Field/*`, `etc/webapi.xml`, `js/view/pickup-slot.js`, `template/pickup-slot.html` |
-| Emballage cadeau | `Checkout/Model/GiftWrap/*`, `Checkout/Model/Total/{Quote,Invoice,Creditmemo}/GiftWrap.php`, `etc/sales.xml`, `etc/pdf.xml`, `Checkout/Block/Sales/GiftWrapTotal.php` (+ layouts `sales_*`), `Checkout/Model/Mollie/GiftWrapLine.php`, `js/view/gift-wrap.js`, `js/view/summary/gift-wrap.js` |
-| Statuts sur le réel | `Checkout/Setup/Patch/Data/MapMollieStatuses.php`, `Checkout/Plugin/Sales/StatusOnCompletion.php` |
+| Emballage cadeau | `Checkout/Model/GiftWrap/*`, `Checkout/Model/Total/{Quote,Invoice,Creditmemo}/GiftWrap.php`, `etc/sales.xml`, `etc/pdf.xml`, `Checkout/Block/Sales/GiftWrapTotal.php` (+ layouts `sales_*`), `js/view/gift-wrap.js`, `js/view/summary/gift-wrap.js` |
+| Statuts sur le réel | `Checkout/Setup/Patch/Data/UseOwnStatusesAsStateDefaults.php` (lot 8, Stripe), `Checkout/Plugin/Sales/StatusOnCompletion.php` |
+| Paiement en ligne Stripe (lot 8) | `Checkout/etc/config.xml` (réglages par défaut), thème `default/StripeIntegration_Payments/layout/*` (retraits Hyvä), `Theme/Setup/Patch/Data/NameStripeInLegalPages.php` — détail ci-dessous, « Paiement en ligne : Stripe »
 | Report sur la commande | `Checkout/Plugin/Sales/CopyDeliveryChoicesToOrder.php` (adresse), `Checkout/Observer/CopyGiftWrapToOrder.php` (montants) |
 | Validation de l'étape Livraison, envoi au serveur, récapitulatif | `js/mixin/{shipping,payload-extender,shipping-information}-mixin.js` |
 | Textes alignés, mention de TVA, TikTok | `Theme/Setup/Patch/Data/{AlignDisplayWithDelivery,AlignHeaderAnnouncement}.php`, `Theme/Plugin/Sales/VatMentionOnInvoicePdf.php`, `Magento_Email/email/footer.html`, `Magento_Theme/layout/default.xml` |
@@ -959,8 +964,8 @@ Posée par data patches, une seule fois : un réglage modifié ensuite dans l'ad
 | `shipping/origin/*` | 35 Grande Rue, 37800 Saint-Épain, Indre-et-Loire, FR |
 | `tax/defaults/country` | `FR` ; aucune règle de taxe, prix TTC = prix encaissés |
 | `payment/checkmo/active` | `0` |
-| `payment/mollie_methods_*/active` | le patch ne laissait que la carte bancaire ; **Pierre a ensuite réactivé** Apple Pay, Google Pay, Bancontact, iDEAL, Wero et Klarna depuis l'admin et demandé de garder cette configuration (09/10/2026). Écart avec le call consigné au §23 |
-| `payment/mollie_general/order_status_*` | `madameaiguille_pending_payment` / `madameaiguille_payment_received` |
+| `payment/stripe_payments/*` | défauts du `config.xml` du module Checkout (lot 8) : titre « Carte bancaire », formulaire intégré, encaissement immédiat |
+| Statuts par défaut des états | `pending_payment` → `madameaiguille_pending_payment`, `processing` → `madameaiguille_payment_received` (lot 8) |
 | `payment/cashondelivery/*` | actif, renommé « Paiement sur place » |
 | `carriers/tablerate/*` | actif, « Mondial Relay — Livraison en point relais », condition `package_weight` |
 | `carriers/flatrate/active`, `carriers/freeshipping/active` | `0` |
@@ -968,7 +973,7 @@ Posée par data patches, une seule fois : un réglage modifié ensuite dans l'ad
 | `sales/gift_options/allow_order` | `1` — le message cadeau natif se saisit dans le panier |
 | `madameaiguille/cart/free_shipping_threshold` | `60` (défaut du module) |
 
-Les clés Mollie (`payment/mollie_general/*`) sont saisies dans l'admin par Pierre ; aucune n'est dans le dépôt. `use_webhooks = disabled` en local : **à réactiver en préproduction**.
+Les clés Stripe (`payment/stripe_payments_basic/*`) sont saisies dans l'admin par Pierre ; aucune n'est dans le dépôt. Mollie, utilisé jusqu'au 23/10/2026, est retiré (compte fermé).
 
 ### Grille au poids
 
@@ -1007,16 +1012,42 @@ Lieu générique en place : « Atelier Madame Aiguille, Saint-Épain (37800) ».
 
 ### Emballage cadeau
 
-Option de l'étape Livraison, 2 € par défaut (*Madame Aiguille › Emballage cadeau* : activation, prix, libellé, texte). Le *Gift Wrapping* natif est réservé à Adobe Commerce : la ligne est un total maison, porté par le panier (`quote.madameaiguille_gift_wrap`, montants sur `quote_address`), la commande, **la première facture** et **l'avoir qui solde la commande** (un retour partiel ne rembourse pas l'emballage). Affichée dans le récapitulatif du tunnel, le compte, les emails, l'admin et le PDF. Mollie reçoit une ligne de surcharge dédiée, pour que la somme des lignes égale le total.
+Option de l'étape Livraison, 2 € par défaut (*Madame Aiguille › Emballage cadeau* : activation, prix, libellé, texte). Le *Gift Wrapping* natif est réservé à Adobe Commerce : la ligne est un total maison, porté par le panier (`quote.madameaiguille_gift_wrap`, montants sur `quote_address`), la commande, **la première facture** et **l'avoir qui solde la commande** (un retour partiel ne rembourse pas l'emballage). Affichée dans le récapitulatif du tunnel, le compte, les emails, l'admin et le PDF. Stripe ne reçoit que le montant total : aucune ligne dédiée n'est nécessaire (la ligne de surcharge Mollie a été retirée au lot 8).
 
 Le **message cadeau** natif (la carte écrite à la main) se saisit dans le panier et s'affiche dans le détail de commande depuis le lot 7.
+
+### Paiement en ligne : Stripe (lot 8)
+
+Mollie est retiré le 23/10/2026 (compte fermé) : paquets déclarés dans le `replace` de `shop/composer.json` (ils étaient tirés par `hyva-themes/magento2-theme-module`, méthode Hyvä), Magewire et `compat-module-fallback` partis avec eux. Les commandes Mollie existantes restent lisibles grâce à la substitution native de Magento (`Payment\Model\Method\Substitution`, libellé enregistré dans la commande) : ni suppression ni module de secours.
+
+**Module** : `stripe/module-payments` **4.7.1** et `stripe/stripe-php ~20.1.0`, depuis `repo.magento.com` (module commandé sur l'Adobe Marketplace avec le compte des clés Composer). **Pas** le méta-paquet `stripe/stripe-payments`, qui embarque Stripe Tax, inutile en franchise de TVA : la séquence de `module.xml` vers `StripeIntegration_Tax` est tolérée par Magento et le module teste `class_exists` avant usage.
+
+| Réglage | Où | Valeur |
+|---|---|---|
+| Titre, flux, encaissement | `Checkout/etc/config.xml` | « Carte bancaire », formulaire intégré au tunnel (`payment_flow = 0`), `authorize_capture`, sans carte enregistrée ni reçu Stripe |
+| Moyens proposés dans le formulaire | tableau de bord Stripe | carte, Apple Pay, Google Pay (Link à trancher par Pierre) |
+| Boutons express, messages de paiement fractionné | `Checkout/etc/config.xml` | coupés : ils contournent le point relais et le créneau, et leur JavaScript Luma ne tourne pas sur Hyvä |
+| Abonnements, virements | `Checkout/etc/config.xml` | coupés |
+| Clés et mode | *Ventes › Moyens de paiement › Stripe* | saisis par Pierre, jamais versionnés |
+| Statuts | `UseOwnStatusesAsStateDefaults` | Stripe pose le statut **par défaut** de l'état, parfois par requête SQL directe : nos statuts deviennent ces défauts |
+
+Côté Hyvä, le thème enfant retire ce que Stripe injecte hors du tunnel (`default/StripeIntegration_Payments/layout/`) : feuille `wallets.css` sur toutes les pages, boutons express et messages de la fiche produit, entrées « My Payment Methods » et « My Subscriptions » du compte. Le gabarit de totaux de commande que Stripe impose reste écrasé par la redéclaration Hyvä : la ligne d'emballage s'affiche (vérifié sur `sales/guest/view`).
+
+**Webhooks** : le module crée lui-même l'endpoint `<URL de base>/stripe/webhooks` dans le compte Stripe à l'enregistrement des clés (`automatic_webhooks_configuration`), sinon `bin/magento stripe:webhooks:configure`. Stripe refuse une URL non publique : en local, l'avertissement « could not be configured automatically » est normal. Sur le serveur, `/stripe/webhooks` est public (seule l'administration est filtrée par nginx). Le paiement par carte est **encaissé et facturé dès la commande** ; les webhooks servent aux remboursements et litiges faits depuis Stripe et aux moyens différés.
+
+**Pages juridiques** : `NameStripeInLegalPages` remplace les trois phrases exactes citant Mollie (CGV, confidentialité) ; une phrase retouchée dans l'admin n'est jamais réécrite.
+
+**`env:check`** : module et méthode actifs (erreur sur le serveur, avertissement en local), mode et clés, clé publique cohérente avec le mode (`pk_test_` / `pk_live_`), webhooks automatiques, boutons express.
+
+Recette locale du 23/10/2026 : relais + cadeau + CGV, carte de test 4242 → commande `000000025` en **Paiement reçu**, 30,90 € capturés, facture `000000010` avec la ligne d'emballage, seul « Carte bancaire » proposé pour le relais. Pas encore recettés : webhooks, remboursement depuis Stripe, emails reçus, Apple Pay / Google Pay (domaine à déclarer dans Stripe), refus et 3-D Secure — sur le serveur en mode test.
 
 ### Statuts
 
 | Évènement | Statut |
 |---|---|
-| Commande Mollie créée | En attente de paiement |
-| Paiement Mollie capté | Paiement reçu → email du lot 7 |
+| Paiement Stripe en attente (moyen différé) | En attente de paiement |
+| Paiement Stripe capté (à la commande) | Paiement reçu → email du lot 7 |
+| Retrait encore « nouveau » facturé par Céline | Paiement reçu → email du lot 7 (statut par défaut de `processing`) |
 | Commande de retrait créée | `pending`, affichée « En attente de paiement » |
 | Expédition d'un colis | Expédiée (+ email d'expédition natif) |
 | « Expédition » d'un retrait (remise en main propre) | Livrée |
@@ -1037,6 +1068,10 @@ Un statut posé à la main par Céline n'est jamais réécrit. L'email de vireme
 - **Fichiers statiques figés en développement** : `Cache-Control: immutable`, un an. Ni Ctrl+Maj+R ni le vidage du cache ne suffisent pour un JS chargé par RequireJS : supprimer `pub/static/deployed_version.txt` (régénéré à la requête suivante). Le dictionnaire `pub/static/frontend/Magento/luma/fr_FR/js-translation.json` se régénère de même, puis vider `mage-translation-storage` dans le `localStorage` du navigateur. La page du tunnel elle-même peut aussi rester en cache : recharger par une URL différente.
 - **Nouvel argument `di.xml` (commande CLI, plugin)** : `setup:di:compile`. Une compilation lancée pendant que php-fpm sert des pages peut échouer sur « directory not empty » : relancer.
 - **Message natif trompeur** : un produit sans stock vendable donne « Some of the products are disabled » au passage de commande par l'API.
+- **Stripe sans clés** (lot 8) : le module ne publie aucune configuration (`isInitialized()`), et les composants `future_subscriptions` et `express_checkout` remplissent la console d'erreurs. Elles disparaissent dès que les clés du mode sont saisies.
+- **Stripe et les statuts** : pas de réglage de statut par état comme chez Mollie ; le module lit `getStateDefaultStatus()` et enregistre parfois l'état par `saveOrderFields()` (SQL direct, sans évènement de sauvegarde). Un observateur ne suffit pas : les statuts du lot 7 sont les statuts par défaut de leurs états.
+- **Formulaire Stripe et automatisation du navigateur** : les champs sont dans des iframes ; le premier clic ne donne pas toujours le focus, passer d'un champ à l'autre au clavier (Tab).
+- **Conteneur vide `.payment-method.stripe-payments.mobile`** en tête des moyens de paiement : c'est l'emplacement des boutons express (coupés), pas la méthode « Carte bancaire ».
 
 ### Recette du 09/10/2026
 
@@ -1194,9 +1229,9 @@ Secrets du dépôt GitHub (jamais dans le code) : `COMPOSER_AUTH`, `SSH_PRIVATE_
 
 ### Installation neuve
 
-`deploy/serveur/80-installer-magento.sh <version>`, une seule fois : base et compte RabbitMQ dédiés, mots de passe et chemin d'administration **générés sur le serveur** et confinés à `env.php`, `setup:install` (Valkey, OpenSearch, RabbitMQ, Varnish), mode production, robots `NOINDEX,NOFOLLOW`, webhooks Mollie actifs en mode test, double authentification par Google Authenticator, indexeurs « planifiés », grille Mondial Relay importée, VCL, cron, mise en ligne. Aucun compte administrateur n'est créé par le script : Pierre le crée lui-même.
+`deploy/serveur/80-installer-magento.sh <version>`, une seule fois : base et compte RabbitMQ dédiés, mots de passe et chemin d'administration **générés sur le serveur** et confinés à `env.php`, `setup:install` (Valkey, OpenSearch, RabbitMQ, Varnish), mode production, robots `NOINDEX,NOFOLLOW`, double authentification par Google Authenticator, indexeurs « planifiés », grille Mondial Relay importée, VCL, cron, mise en ligne. Aucun compte administrateur n'est créé par le script : Pierre le crée lui-même.
 
-Deux patches reproduisent la boutique locale sans jamais réécrire une valeur saisie : `Theme/Setup/Patch/Data/ConfigureStoreIdentity.php` (langue, fuseau, devise, informations de la boutique, expéditeurs `contact@madame-aiguille.fr`, thème Hyvä de la vue, logo, copyright avec mention de TVA, réseaux, URLs propres, télémétrie Adobe coupée) et `Checkout/Setup/Patch/Data/KeepProvisionalMollieMethods.php` (les sept moyens réactivés par Pierre, provisoires). Le téléphone de la boutique n'est pas versionné (dépôt public) : il se saisit dans l'administration.
+Un patch reproduit la boutique locale sans jamais réécrire une valeur saisie : `Theme/Setup/Patch/Data/ConfigureStoreIdentity.php` (langue, fuseau, devise, informations de la boutique, expéditeurs `contact@madame-aiguille.fr`, thème Hyvä de la vue, logo, copyright avec mention de TVA, réseaux, URLs propres, télémétrie Adobe coupée) (le patch des moyens Mollie provisoires, `KeepProvisionalMollieMethods`, est retiré avec Mollie au lot 8 ; les réglages Stripe sont des défauts du `config.xml` du module Checkout). Le téléphone de la boutique n'est pas versionné (dépôt public) : il se saisit dans l'administration.
 
 ### Contrôle d'environnement
 
@@ -1205,11 +1240,11 @@ bin/magento madameaiguille:env:check                      # poste local
 bin/magento madameaiguille:env:check --serveur --noindex  # serveur avant l'ouverture des ventes
 ```
 
-Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation, caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, clé du mode Mollie et webhooks, reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
+Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation, caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
 
 ### Pièges rencontrés
 
-- **Mollie 3.1.3 ne traite un paiement que par le webhook** : le retour navigateur affiche le succès sans facturer ni changer le statut. En local (webhook coupé), une commande payée reste « En attente de paiement ».
+- **Paiement en ligne** : Mollie 3.1.3 ne facturait que par le webhook (8a). Stripe, qui le remplace au lot 8, encaisse et facture dès la commande ; ses webhooks (`POST /stripe/webhooks`, public) servent aux remboursements, litiges et moyens différés (§26).
 - **La mise à niveau Ubuntu 25.10 → 26.04 retire PHP 8.4 sans installer 8.5** : les sites PHP tombent en 502 jusqu'à l'installation de PHP 8.5 et la bascule des sockets nginx. Elle désactive aussi les dépôts externes (`*.list.disabled`), remis au format deb822.
 - **Elasticsearch 9 dimensionne son tas sur la moitié de la RAM** par défaut ; Magento 2.4.9 embarque un client Elasticsearch 8 : OpenSearch 3 retenu.
 - **OpenSearch 3 à l'installation** exige un mot de passe administrateur et dépose des certificats de démonstration aux clés publiques : mot de passe aléatoire non conservé, sécurité désactivée en écoute locale, certificats supprimés.
@@ -1221,7 +1256,7 @@ Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans affic
 
 - Version en ligne `20261010-073014-090e1ba` (build de `090e1ba`), installée par le script 80 ; compte administrateur créé par Pierre (`admin:user:create`), double authentification associée.
 - **SMTP** : réglages non secrets posés par `config:set` (Brevo, 587, LOGIN, TLS, identifiant) ; le mot de passe, champ non « sensible » pour Magento, a été saisi par Pierre en ligne de commande, saisie masquée (`read -rsp` puis `config:set`, qui le chiffre). L'administration était inaccessible avant : la double authentification attend un email.
-- **Mollie** : clés et profil saisis par Pierre dans l'administration ; mode test, webhooks actifs, point d'entrée `POST /mollie/checkout/webhook/` joignable (200).
+- **Paiement** (lot 8) : Stripe remplace Mollie ; clés saisies par Pierre dans l'administration, endpoint `https://madame-aiguille.fr/stripe/webhooks` créé dans le compte Stripe par le module (sinon `stripe:webhooks:configure`).
 - Restent : clés reCAPTCHA, catalogue réel, téléphone de la boutique (§23).
 
 ### Accès à l'administration et alerte Chrome

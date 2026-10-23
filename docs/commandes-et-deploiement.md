@@ -113,13 +113,13 @@ bin/magento madameaiguille:env:check [--serveur] [--noindex]
 
 | Option | Effet |
 |---|---|
-| *(aucune)* | Profil poste local : HTTP, mode développeur et webhook coupé sont tolérés |
-| `--serveur` | Exigences d'un serveur exposé : mode production, HTTPS forcé, webhook Mollie actif, cron de moins de 10 min |
+| *(aucune)* | Profil poste local : HTTP, mode développeur et paiement en ligne coupé sont tolérés |
+| `--serveur` | Exigences d'un serveur exposé : mode production, HTTPS forcé, paiement Stripe actif, cron de moins de 10 min |
 | `--noindex` | Le site ne doit pas être indexé : robots `NOINDEX,NOFOLLOW` exigé (à retirer le jour de l'ouverture) |
 
 Lit la configuration **réellement appliquée** (fusion `env.php` + base + valeurs par défaut des modules), jamais un
 secret : seule la présence d'une clé est vérifiée. Contrôle : mode, URLs, indexation, cache / sessions / Varnish,
-OpenSearch, cron, double authentification, SMTP et expéditeurs, clé Mollie du mode courant et webhooks, reCAPTCHA des
+OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés et cohérence de la clé publique, webhooks automatiques, boutons express), reCAPTCHA des
 quatre formulaires, code enseigne Mondial Relay, franco, poids des produits, fontes des deux thèmes.
 Sortie : tableau OK / ATTENTION / ERREUR ; **code de retour 1 s'il y a au moins une erreur**. Lancée automatiquement à
 la fin de chaque bascule.
@@ -282,6 +282,19 @@ mage cache:clean config
 
 Le CAPTCHA image natif de Magento (`customer/captcha/enable`) est **coupé** : reCAPTCHA le remplace. Ne pas
 réactiver les deux en même temps.
+
+### Paiement Stripe : webhooks
+
+Le module crée l'endpoint `https://madame-aiguille.fr/stripe/webhooks` dans le compte Stripe quand les clés sont
+enregistrées dans l'administration. S'il signale « webhooks could not be configured automatically » :
+
+```bash
+mage stripe:webhooks:configure      # recrée l'endpoint du mode courant (test ou live)
+tail -n 20 /var/www/madame-aiguille/shared/var/log/stripe_payments_webhooks.log
+```
+
+Sur le poste local, cet avertissement est normal : Stripe refuse `http://localhost` (« URL must be publicly
+accessible »). Le paiement par carte n'en dépend pas : il est encaissé et facturé dès la commande.
 
 ### Secrets saisis en ligne de commande
 

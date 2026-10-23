@@ -76,10 +76,10 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --no-extensions app/code/M
 | 3 | Accueil, pages CMS, formulaire de contact, états vides | Livré |
 | 4 | Panier et mini-panier | Livré |
 | 7 | Compte client, emails, statuts de commande | Livré |
-| 5 | Livraison et paiements (Mollie, table rates) | Livré hors préproduction et validation Mollie |
+| 5 | Livraison et paiements (table rates, retrait, cadeau ; paiement en ligne Mollie, remplacé par Stripe au lot 8) | Livré |
 | 6b | Checkout — habillage et confirmations | Livré ; recette et limites dans `docs/recettes/lot-6b.md` |
 | 8a | Domaine, HTTPS, SMTP, serveur et déploiement | Livré : en ligne sur `madame-aiguille.fr`, non indexé ; recette de production au lot 8 |
-| 8 | Recette de production, back-office, exploitation, ouverture des ventes | Prochain lot |
+| 8 | Recette de production, back-office, exploitation, ouverture des ventes | En cours sur `lot-8-ouverture` : Stripe intégré, recette serveur à venir |
 
 Le détail de chaque lot, les décisions prises et les points ouverts sont dans [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
 
