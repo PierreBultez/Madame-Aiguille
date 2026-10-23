@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <madameaiguille>
-            <!-- Code de démonstration Mondial Relay, à remplacer par le code enseigne de l'Offre Start de Céline -->
+            <!-- Code de démonstration Mondial Relay ; le code enseigne du compte pro est saisi en configuration, jamais versionné -->
             <mondial_relay>
                 <brand_code>BDTEST</brand_code>
             </mondial_relay>
@@ -41,5 +41,36 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
                 <specificerrmsg>Le retrait à l'atelier n'est pas proposé pour cette adresse.</specificerrmsg>
             </madameaiguille_pickup>
         </carriers>
+        <!--
+            Stripe (lot 8) : formulaire de paiement intégré au tunnel, encaissement immédiat. Carte, Apple Pay et
+            Google Pay se choisissent dans le tableau de bord Stripe. Les boutons express et les messages de paiement
+            fractionné restent coupés : ils contourneraient le choix du point relais et du créneau, et leur JavaScript
+            Luma ne tourne pas sur les pages Hyvä. Clés et mode se saisissent dans l'administration.
+        -->
+        <payment>
+            <stripe_payments>
+                <title>Carte bancaire</title>
+                <payment_action>authorize_capture</payment_action>
+                <payment_flow>0</payment_flow>
+                <adaptive_pricing>0</adaptive_pricing>
+                <save_payment_method>0</save_payment_method>
+                <receipt_emails>0</receipt_emails>
+            </stripe_payments>
+            <stripe_payments_express>
+                <global_enabled>0</global_enabled>
+                <enabled/>
+            </stripe_payments_express>
+            <stripe_payments_payment_method_messaging>
+                <show_on_product_page>0</show_on_product_page>
+                <show_in_minicart>0</show_in_minicart>
+                <show_in_shopping_cart>0</show_in_shopping_cart>
+            </stripe_payments_payment_method_messaging>
+            <stripe_payments_subscriptions>
+                <active>0</active>
+            </stripe_payments_subscriptions>
+            <stripe_payments_bank_transfers>
+                <active>0</active>
+            </stripe_payments_bank_transfers>
+        </payment>
     </default>
 </config>

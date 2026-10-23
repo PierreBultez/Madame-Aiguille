@@ -35,6 +35,11 @@ class EnvironmentCheckerTest extends TestCase
         'trans_email/ident_general/email' => 'contact@madame-aiguille.fr',
         'trans_email/ident_sales/email' => 'contact@madame-aiguille.fr',
         'trans_email/ident_support/email' => 'contact@madame-aiguille.fr',
+        'payment/stripe_payments/active' => '1',
+        'payment/stripe_payments_basic/stripe_mode' => 'test',
+        'payment/stripe_payments_basic/stripe_test_pk' => 'pk_test_publique',
+        'payment/stripe_payments_basic/stripe_test_sk' => 'chiffré',
+        'payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration' => '1',
         'recaptcha_frontend/type_for/customer_create' => 'invisible',
         'recaptcha_frontend/type_for/contact' => 'invisible',
         'recaptcha_frontend/type_for/newsletter' => 'invisible',
@@ -200,5 +205,44 @@ class EnvironmentCheckerTest extends TestCase
             ['Expéditeurs — « sales » = boutique@example.com, hors du domaine www.madame-aiguille.fr'],
             $warnings
         );
+    }
+
+    public function testAStripeModeWithoutItsKeysIsAnError(): void
+    {
+        $errors = $this->messages($this->check(['payment/stripe_payments_basic/stripe_mode' => 'live']), Finding::ERROR);
+
+        self::assertSame(['Stripe — mode live sans clés'], $errors);
+    }
+
+    public function testATestKeyInLiveModeIsAnError(): void
+    {
+        $errors = $this->messages($this->check([
+            'payment/stripe_payments_basic/stripe_mode' => 'live',
+            'payment/stripe_payments_basic/stripe_live_pk' => 'pk_test_publique',
+            'payment/stripe_payments_basic/stripe_live_sk' => 'chiffré',
+        ]), Finding::ERROR);
+
+        self::assertSame(['Stripe — mode live avec une clé publique d\'un autre mode'], $errors);
+    }
+
+    public function testDisabledOnlinePaymentBlocksAServerButNotALocalMachine(): void
+    {
+        $config = ['payment/stripe_payments/active' => '0'];
+
+        self::assertSame(
+            ['Stripe — paiement en ligne désactivé'],
+            $this->messages($this->check($config), Finding::ERROR)
+        );
+        self::assertSame([], $this->messages($this->check($config, false, false), Finding::ERROR));
+    }
+
+    public function testExpressButtonsAreAWarning(): void
+    {
+        $warnings = $this->messages(
+            $this->check(['payment/stripe_payments_express/global_enabled' => '1']),
+            Finding::WARNING
+        );
+
+        self::assertContains('Stripe — boutons express actifs : ils contournent le point relais et le créneau', $warnings);
     }
 }

@@ -135,7 +135,7 @@ HTML;
 <p>La commande se déroule en ligne, avec ou sans création de compte. Elle n’est définitive qu’après validation du paiement. Un courriel de confirmation récapitule les créations commandées, le mode de livraison et le montant total.</p>
 <p>Une création peut être épuisée entre sa mise au panier et la validation de la commande : dans ce cas, la commande n’est pas enregistrée pour cet article et aucun montant n’est prélevé à ce titre.</p>
 <h2>5. Paiement</h2>
-<p>Le paiement en ligne s’effectue <strong>par carte bancaire</strong>, par l’intermédiaire du prestataire de paiement Mollie. Les données bancaires sont transmises directement au prestataire et ne sont jamais conservées par l’atelier.</p>
+<p>Le paiement en ligne s’effectue <strong>par carte bancaire</strong>, par l’intermédiaire du prestataire de paiement Stripe. Les données bancaires sont transmises directement au prestataire et ne sont jamais conservées par l’atelier.</p>
 <p>Pour les commandes retirées en main propre, le paiement s’effectue <strong>sur place</strong>, par carte bancaire ou en espèces, au moment du retrait.</p>
 <h2>6. Livraison</h2>
 <p>Les créations sont expédiées en <strong>point relais Mondial Relay</strong>, en <strong>France, Belgique et Luxembourg</strong>. Les frais de livraison sont calculés au poids de la commande et affichés avant le paiement.</p>
@@ -195,14 +195,14 @@ HTML;
 <dl>
 <dt>Commande et livraison</dt><dd>Nom, adresse de livraison et de facturation, adresse e-mail, téléphone, détail de la commande. Nécessaires à l’exécution du contrat de vente.</dd>
 <dt>Compte client</dt><dd>Nom, adresse e-mail, mot de passe chiffré, carnet d’adresses, historique de commandes. Créé à votre demande, pour vous éviter de ressaisir vos informations.</dd>
-<dt>Paiement</dt><dd>Les données bancaires sont saisies directement chez notre prestataire Mollie et ne transitent jamais par nos serveurs. Nous ne conservons que la confirmation du paiement.</dd>
+<dt>Paiement</dt><dd>Les données bancaires sont saisies directement chez notre prestataire Stripe et ne transitent jamais par nos serveurs. Nous ne conservons que la confirmation du paiement.</dd>
 <dt>Formulaire de contact</dt><dd>Nom, adresse e-mail, message, et le cas échéant une photo jointe. La photo est stockée hors de l’espace public et <strong>supprimée automatiquement au bout de 30 jours</strong>.</dd>
 <dt>Lettre d’information</dt><dd>Adresse e-mail, sur la base de votre consentement, confirmé par un courriel de validation. Désinscription possible à tout moment par le lien présent dans chaque envoi.</dd>
 </dl>
 <h2>À qui elles sont transmises</h2>
 <p>Vos données ne sont ni vendues ni cédées. Elles sont transmises uniquement aux prestataires nécessaires à l’exécution de votre commande :</p>
 <ul>
-<li><strong>Mollie</strong>, prestataire de paiement, pour le traitement des paiements par carte bancaire ;</li>
+<li><strong>Stripe</strong>, prestataire de paiement, pour le traitement des paiements par carte bancaire ;</li>
 <li><strong>Mondial Relay</strong>, transporteur, pour l’acheminement de votre colis ;</li>
 <li><strong>[hébergeur]</strong>, pour l’hébergement du site ;</li>
 <li><strong>[prestataire d’envoi d’e-mails]</strong>, pour les courriels de commande et la lettre d’information.</li>

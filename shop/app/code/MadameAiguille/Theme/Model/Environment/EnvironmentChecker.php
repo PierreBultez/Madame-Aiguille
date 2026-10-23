@@ -71,6 +71,7 @@ class EnvironmentChecker
         $this->checkCron($onServer);
         $this->checkAdminSecurity($onServer);
         $this->checkMail();
+        $this->checkStripe($onServer);
         $this->checkRecaptcha($onServer);
         $this->checkShipping();
         $this->checkFonts();
@@ -193,6 +194,35 @@ class EnvironmentChecker
             } elseif ($domain !== '' && $domain !== 'localhost' && !str_ends_with($email, '@' . $this->apex($domain))) {
                 $this->warning('Expéditeurs', sprintf('« %s » = %s, hors du domaine %s', $identity, $email, $domain));
             }
+        }
+    }
+
+    private function checkStripe(bool $onServer): void
+    {
+        if (!$this->moduleManager->isEnabled('StripeIntegration_Payments')
+            || !$this->flag('payment/stripe_payments/active')
+        ) {
+            // Sans paiement en ligne, une commande en point relais ne peut pas être réglée.
+            $this->add('Stripe', $onServer ? Finding::ERROR : Finding::WARNING, 'paiement en ligne désactivé');
+            return;
+        }
+
+        $mode = (string) ($this->value('payment/stripe_payments_basic/stripe_mode') ?: 'test');
+        $publishable = (string) $this->value(sprintf('payment/stripe_payments_basic/stripe_%s_pk', $mode));
+        if ($publishable === '' || !$this->value(sprintf('payment/stripe_payments_basic/stripe_%s_sk', $mode))) {
+            $this->error('Stripe', sprintf('mode %s sans clés', $mode));
+        } elseif (!str_starts_with($publishable, sprintf('pk_%s_', $mode))) {
+            $this->error('Stripe', sprintf('mode %s avec une clé publique d\'un autre mode', $mode));
+        } else {
+            $this->ok('Stripe', sprintf('mode %s, clés renseignées', $mode));
+        }
+
+        // Le paiement n'est confirmé dans Magento (facture, « Paiement reçu ») qu'à la réception des webhooks.
+        if (!$this->flag('payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration')) {
+            $this->warning('Stripe', 'webhooks non configurés automatiquement : les déclarer dans Stripe');
+        }
+        if ($this->flag('payment/stripe_payments_express/global_enabled')) {
+            $this->warning('Stripe', 'boutons express actifs : ils contournent le point relais et le créneau');
         }
     }
 

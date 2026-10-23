@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- Feuille des boutons express de Stripe : boutons coupés, inutile sur les pages Hyvä -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <remove src="StripeIntegration_Payments::css/wallets.css"/>
+    </head>
+</page>

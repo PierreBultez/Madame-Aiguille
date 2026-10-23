@@ -370,14 +370,15 @@ return [
         'Hyva_LumaCheckout' => 1,
         'MadameAiguille_Theme' => 1,
         'MadameAiguille_Contact' => 1,
-        'MadameAiguille_Checkout' => 1,
+        'StripeIntegration_Payments' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,
         'PayPal_BraintreeGiftCard' => 1,
         'PayPal_BraintreeGiftCardAccount' => 1,
         'PayPal_BraintreeGiftWrapping' => 1,
         'PayPal_BraintreeGraphQl' => 1,
-        'PayPal_BraintreeReward' => 1
+        'PayPal_BraintreeReward' => 1,
+        'MadameAiguille_Checkout' => 1
     ],
     'scopes' => [
         'websites' => [
