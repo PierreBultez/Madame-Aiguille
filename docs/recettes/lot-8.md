@@ -34,8 +34,8 @@ Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1
 
 | Contrôle | Attendu | Résultat |
 |---|---|---|
-| Bascule | `setup:upgrade` passé, `env:check --serveur --noindex` sans erreur Stripe | 23/10 : base à jour, `StripeIntegration_Payments` actif, Mollie absent. `env:check` : 1 erreur « Stripe : mode test sans clés » — **aucune ligne `payment/stripe*` en base**, clés à enregistrer dans l'administration du serveur |
-| Webhooks | Endpoint `https://madame-aiguille.fr/stripe/webhooks` créé dans le compte Stripe (sinon `stripe:webhooks:configure`) | 23/10 : URL publique servie par le module (GET 200 « accessible », POST 400 « no signing secrets configured ») ; endpoint pas encore créé, faute de clés |
+| Bascule | `setup:upgrade` passé, `env:check --serveur --noindex` sans erreur Stripe | 23/10 : base à jour, `StripeIntegration_Payments` actif, Mollie absent. `env:check` : 1 erreur « Stripe : mode test sans clés » — **aucune ligne `payment/stripe*` en base**, clés à enregistrer dans l'administration du serveur. Après enregistrement par Pierre (portée par défaut, mode test) : **0 erreur, 0 avertissement** |
+| Webhooks | Endpoint `https://madame-aiguille.fr/stripe/webhooks` créé dans le compte Stripe (sinon `stripe:webhooks:configure`) | 23/10 : URL publique servie par le module (GET 200 « accessible », POST 400 « no signing secrets configured ») ; endpoint pas encore créé, faute de clés. À l'enregistrement des clés : endpoint `we_…` **créé automatiquement** dans le compte de test, premier évènement signé reçu et vérifié (200 OK) |
 | Pages juridiques | CGV et confidentialité citent Stripe, plus Mollie | 23/10 : **OK**, Stripe ×1 (CGV) et ×2 (confidentialité), plus aucun Mollie dans le contenu. Le menu affiche encore la catégorie « Catégorie test final Mollie » : à désactiver dans l'administration |
 | Relais + cadeau + CGV, carte 4242 | « Paiement reçu », facture avec emballage, email « Paiement reçu » **reçu** | |
 | Carte refusée (4000 0000 0000 0002) | Message dans le tunnel, panier conservé, aucune commande payée | |
@@ -44,3 +44,7 @@ Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1
 | Remboursement | Avoir en ligne depuis la facture → remboursement visible dans Stripe, emballage remboursé | |
 | Retrait à l'atelier | Seul « Paiement sur place » proposé ; facturé par Céline → « Paiement reçu » | |
 | Commandes de test | Annulées ou remboursées dans l'administration | |
+
+À noter : l'enregistrement de la section Stripe dans l'administration écrit tous ses champs en base. `receipt_emails` y vaut `1` (le défaut du module Checkout est `0`) : Stripe envoie alors son propre reçu en plus de l'email de commande de Magento. À trancher par Pierre.
+
+Les paiements de test sur `madame-aiguille.fr` sont saisis par Pierre (domaine de production) ; l'agent vérifie ensuite commande, facture, webhooks et emails côté serveur.
