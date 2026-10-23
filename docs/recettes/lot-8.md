@@ -30,12 +30,13 @@ SSH, ni clé Stripe, ni code enseigne).
 ## Stripe — recette serveur en mode test
 
 À dérouler après le déploiement de `lot-8-ouverture` et la saisie des clés de **test** dans l'administration du serveur.
+Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1 dans `main`, contenu identique à `75ba4e2`).
 
 | Contrôle | Attendu | Résultat |
 |---|---|---|
-| Bascule | `setup:upgrade` passé, `env:check --serveur --noindex` sans erreur Stripe | |
-| Webhooks | Endpoint `https://madame-aiguille.fr/stripe/webhooks` créé dans le compte Stripe (sinon `stripe:webhooks:configure`) | |
-| Pages juridiques | CGV et confidentialité citent Stripe, plus Mollie | |
+| Bascule | `setup:upgrade` passé, `env:check --serveur --noindex` sans erreur Stripe | 23/10 : base à jour, `StripeIntegration_Payments` actif, Mollie absent. `env:check` : 1 erreur « Stripe : mode test sans clés » — **aucune ligne `payment/stripe*` en base**, clés à enregistrer dans l'administration du serveur |
+| Webhooks | Endpoint `https://madame-aiguille.fr/stripe/webhooks` créé dans le compte Stripe (sinon `stripe:webhooks:configure`) | 23/10 : URL publique servie par le module (GET 200 « accessible », POST 400 « no signing secrets configured ») ; endpoint pas encore créé, faute de clés |
+| Pages juridiques | CGV et confidentialité citent Stripe, plus Mollie | 23/10 : **OK**, Stripe ×1 (CGV) et ×2 (confidentialité), plus aucun Mollie dans le contenu. Le menu affiche encore la catégorie « Catégorie test final Mollie » : à désactiver dans l'administration |
 | Relais + cadeau + CGV, carte 4242 | « Paiement reçu », facture avec emballage, email « Paiement reçu » **reçu** | |
 | Carte refusée (4000 0000 0000 0002) | Message dans le tunnel, panier conservé, aucune commande payée | |
 | 3-D Secure (4000 0027 6000 3184) | Fenêtre d'authentification, puis « Paiement reçu » | |
