@@ -37,9 +37,9 @@ Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1
 | Bascule | `setup:upgrade` passé, `env:check --serveur --noindex` sans erreur Stripe | 23/10 : base à jour, `StripeIntegration_Payments` actif, Mollie absent. `env:check` : 1 erreur « Stripe : mode test sans clés » — **aucune ligne `payment/stripe*` en base**, clés à enregistrer dans l'administration du serveur. Après enregistrement par Pierre (portée par défaut, mode test) : **0 erreur, 0 avertissement** |
 | Webhooks | Endpoint `https://madame-aiguille.fr/stripe/webhooks` créé dans le compte Stripe (sinon `stripe:webhooks:configure`) | 23/10 : URL publique servie par le module (GET 200 « accessible », POST 400 « no signing secrets configured ») ; endpoint pas encore créé, faute de clés. À l'enregistrement des clés : endpoint `we_…` **créé automatiquement** dans le compte de test, premier évènement signé reçu et vérifié (200 OK) |
 | Pages juridiques | CGV et confidentialité citent Stripe, plus Mollie | 23/10 : **OK**, Stripe ×1 (CGV) et ×2 (confidentialité), plus aucun Mollie dans le contenu. Le menu affiche encore la catégorie « Catégorie test final Mollie » : à désactiver dans l'administration |
-| Relais + cadeau + CGV, carte 4242 | « Paiement reçu », facture avec emballage, email « Paiement reçu » **reçu** | |
-| Carte refusée (4000 0000 0000 0002) | Message dans le tunnel, panier conservé, aucune commande payée | |
-| 3-D Secure (4000 0027 6000 3184) | Fenêtre d'authentification, puis « Paiement reçu » | |
+| Relais + cadeau + CGV, carte 4242 | « Paiement reçu », facture avec emballage, email « Paiement reçu » **reçu** | 23/10 : commande `000000002`, point relais FR-017502, 19,95 + 4,90 + **2,00 de cadeau** = 26,85 € capturés (Visa), **Paiement reçu**, facture `000000002` payée avec l'emballage ; webhooks `payment_intent.succeeded` et `charge.succeeded` reçus (200, le second mis en file pendant la création puis traité) ; emails de commande et de facture marqués envoyés, aucun échec de notification journalisé. Réception à confirmer par Pierre |
+| Carte refusée (4000 0000 0000 0002) | Message dans le tunnel, panier conservé, aucune commande payée | 23/10 : **OK**, deux refus « Your card was declined » (18 h 19, 18 h 20 UTC), aucune commande, panier toujours actif, webhooks `payment_failed` reçus (200) |
+| 3-D Secure (4000 0027 6000 3184) | Fenêtre d'authentification, puis « Paiement reçu » | 23/10 : **OK**, commande `000000003` : « Authentication Required » au premier passage, puis commande créée et payée 9 s plus tard sur le même paiement, **Paiement reçu**, facture `000000003` (sans cadeau, non choisi pour ce test) |
 | Apple Pay / Google Pay | Proposés sur un appareil compatible, domaine déclaré dans Stripe | |
 | Remboursement | Avoir en ligne depuis la facture → remboursement visible dans Stripe, emballage remboursé | |
 | Retrait à l'atelier | Seul « Paiement sur place » proposé ; facturé par Céline → « Paiement reçu » | |
@@ -48,3 +48,7 @@ Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1
 À noter : l'enregistrement de la section Stripe dans l'administration écrit tous ses champs en base. `receipt_emails` y vaut `1` (le défaut du module Checkout est `0`) : Stripe envoie alors son propre reçu en plus de l'email de commande de Magento. À trancher par Pierre.
 
 Les paiements de test sur `madame-aiguille.fr` sont saisis par Pierre (domaine de production) ; l'agent vérifie ensuite commande, facture, webhooks et emails côté serveur.
+
+Commande Mollie `000000001` du serveur : `closed` au 23/10/2026 (soldée par avoir).
+
+Relevé en passant dans les journaux du serveur (hors Stripe) : avertissements PHP 8.5 « Using null as the key parameter for array_key_exists() » dans `magento/module-captcha`, journalisés en CRITICAL ; « The product with ID "1" does not exist » (produit supprimé encore référencé). À examiner.
