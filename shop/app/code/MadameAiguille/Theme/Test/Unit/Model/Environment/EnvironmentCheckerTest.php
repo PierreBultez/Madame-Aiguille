@@ -35,10 +35,6 @@ class EnvironmentCheckerTest extends TestCase
         'trans_email/ident_general/email' => 'contact@madame-aiguille.fr',
         'trans_email/ident_sales/email' => 'contact@madame-aiguille.fr',
         'trans_email/ident_support/email' => 'contact@madame-aiguille.fr',
-        'payment/mollie_general/enabled' => '1',
-        'payment/mollie_general/type' => 'test',
-        'payment/mollie_general/apikey_test' => 'chiffré',
-        'payment/mollie_general/use_webhooks' => 'enabled',
         'recaptcha_frontend/type_for/customer_create' => 'invisible',
         'recaptcha_frontend/type_for/contact' => 'invisible',
         'recaptcha_frontend/type_for/newsletter' => 'invisible',
@@ -124,17 +120,6 @@ class EnvironmentCheckerTest extends TestCase
         );
     }
 
-    public function testDisabledMollieWebhooksBlockAServerButNotALocalMachine(): void
-    {
-        $config = ['payment/mollie_general/use_webhooks' => 'disabled'];
-
-        self::assertStringContainsString(
-            'webhooks désactivés',
-            implode("\n", $this->messages($this->check($config), Finding::ERROR))
-        );
-        self::assertSame([], $this->messages($this->check($config, false, false), Finding::ERROR));
-    }
-
     public function testIndexedRobotsAreAnErrorOnlyWhenTheSiteMustStayHidden(): void
     {
         $config = ['design/search_engine_robots/default_robots' => 'INDEX,FOLLOW'];
@@ -183,7 +168,7 @@ class EnvironmentCheckerTest extends TestCase
         );
 
         self::assertContains('reCAPTCHA — newsletter : non protégé', $warnings);
-        self::assertContains('reCAPTCHA — passage de commande protégé : non retenu, risque de gêner Mollie', $warnings);
+        self::assertContains('reCAPTCHA — passage de commande protégé : non retenu, risque de gêner le paiement', $warnings);
     }
 
     public function testStoppedCronMissingFontsAndProductsWithoutWeightAreErrors(): void
@@ -215,12 +200,5 @@ class EnvironmentCheckerTest extends TestCase
             ['Expéditeurs — « sales » = boutique@example.com, hors du domaine www.madame-aiguille.fr'],
             $warnings
         );
-    }
-
-    public function testAMollieModeWithoutItsKeyIsAnError(): void
-    {
-        $errors = $this->messages($this->check(['payment/mollie_general/type' => 'live']), Finding::ERROR);
-
-        self::assertSame(['Mollie — mode live sans clé'], $errors);
     }
 }

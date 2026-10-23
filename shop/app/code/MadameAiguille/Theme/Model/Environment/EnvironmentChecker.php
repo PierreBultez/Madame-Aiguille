@@ -71,7 +71,6 @@ class EnvironmentChecker
         $this->checkCron($onServer);
         $this->checkAdminSecurity($onServer);
         $this->checkMail();
-        $this->checkMollie($onServer);
         $this->checkRecaptcha($onServer);
         $this->checkShipping();
         $this->checkFonts();
@@ -197,31 +196,6 @@ class EnvironmentChecker
         }
     }
 
-    private function checkMollie(bool $onServer): void
-    {
-        if (!$this->flag('payment/mollie_general/enabled')) {
-            $this->warning('Mollie', 'module désactivé');
-            return;
-        }
-
-        $mode = (string) $this->value('payment/mollie_general/type');
-        $this->value('payment/mollie_general/apikey_' . $mode)
-            ? $this->ok('Mollie', sprintf('mode %s, clé renseignée', $mode))
-            : $this->error('Mollie', sprintf('mode %s sans clé', $mode));
-
-        $webhooks = (string) $this->value('payment/mollie_general/use_webhooks');
-        if ($webhooks === 'disabled') {
-            // Sans webhook, Mollie 3.x ne facture jamais : la commande reste « En attente de paiement ».
-            $this->add(
-                'Mollie',
-                $onServer ? Finding::ERROR : Finding::OK,
-                'webhooks désactivés : les paiements ne passent pas la commande en « Paiement reçu »'
-            );
-            return;
-        }
-        $this->ok('Mollie', sprintf('webhooks : %s', $webhooks));
-    }
-
     private function checkRecaptcha(bool $onServer): void
     {
         $level = $onServer ? Finding::WARNING : Finding::OK;
@@ -242,7 +216,7 @@ class EnvironmentChecker
         }
 
         if ((string) $this->value('recaptcha_frontend/type_for/place_order') !== '') {
-            $this->warning('reCAPTCHA', 'passage de commande protégé : non retenu, risque de gêner Mollie');
+            $this->warning('reCAPTCHA', 'passage de commande protégé : non retenu, risque de gêner le paiement');
         }
     }
 

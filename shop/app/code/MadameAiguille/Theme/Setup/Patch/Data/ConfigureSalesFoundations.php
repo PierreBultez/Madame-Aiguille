@@ -2,9 +2,7 @@
 /**
  * Pose le socle de vente arrêté au call Céline du 11/09/2026 et tranché par Pierre le 09/10/2026 :
  * zone France / Belgique / Luxembourg (Monaco suit la France), expédition depuis Saint-Épain,
- * franchise en base de TVA, carte bancaire Mollie seule, message cadeau natif.
- *
- * Ne touche ni aux clés ni à l'activation Mollie (payment/mollie_general/*), saisies dans l'administration.
+ * franchise en base de TVA, message cadeau natif. Le paiement en ligne est réglé par le module Checkout.
  */
 
 declare(strict_types=1);
@@ -22,7 +20,6 @@ class ConfigureSalesFoundations implements DataPatchInterface
 
     private const COPYRIGHT_PATH = 'design/footer/copyright';
     private const COPYRIGHT_LOT1 = '© 2026 Madame Aiguille — Cousu main en France.';
-    private const MOLLIE_CARD_METHOD = 'mollie_methods_creditcard';
 
     private const VALUES = [
         'general/country/allow' => 'FR,BE,LU,MC',
@@ -35,8 +32,6 @@ class ConfigureSalesFoundations implements DataPatchInterface
         'tax/defaults/region' => '219',
         'tax/defaults/postcode' => '37800',
         'payment/checkmo/active' => '0',
-        'payment/' . self::MOLLIE_CARD_METHOD . '/active' => '1',
-        'payment/' . self::MOLLIE_CARD_METHOD . '/title' => 'Carte bancaire',
         'sales/gift_options/allow_order' => '1',
         'sales/gift_options/allow_items' => '0',
     ];
@@ -51,12 +46,6 @@ class ConfigureSalesFoundations implements DataPatchInterface
     {
         foreach (self::VALUES as $path => $value) {
             $this->configWriter->save($path, $value);
-        }
-
-        foreach (array_keys((array) $this->scopeConfig->getValue('payment')) as $method) {
-            if (str_starts_with((string) $method, 'mollie_methods_') && $method !== self::MOLLIE_CARD_METHOD) {
-                $this->configWriter->save('payment/' . $method . '/active', '0');
-            }
         }
 
         if ($this->scopeConfig->getValue(self::COPYRIGHT_PATH) === self::COPYRIGHT_LOT1) {

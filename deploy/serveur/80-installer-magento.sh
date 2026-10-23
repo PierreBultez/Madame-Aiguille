@@ -5,8 +5,8 @@
 # l'administration : ils ne vivent que dans shared/app/etc/env.php (0600, utilisateur madame-aiguille).
 # Aucun compte administrateur n'est créé ici : Pierre le crée lui-même (commande affichée en fin de script).
 #
-# Réglages propres à ce serveur : robots NOINDEX,NOFOLLOW, Varnish, webhooks Mollie, Mollie en mode test,
-# double authentification par Google Authenticator. Les secrets (SMTP, clés Mollie et reCAPTCHA) se saisissent
+# Réglages propres à ce serveur : robots NOINDEX,NOFOLLOW, Varnish, double authentification par Google
+# Authenticator. Les secrets (SMTP, clés de paiement et reCAPTCHA) se saisissent
 # ensuite dans l'administration.
 #
 # Usage : depuis une copie du dossier deploy/ envoyée sur le serveur (deploy/serveur/README.md) :
@@ -91,8 +91,6 @@ magento config:set system/full_page_cache/varnish/backend_host 127.0.0.1
 magento config:set system/full_page_cache/varnish/backend_port 8080
 magento config:set system/full_page_cache/varnish/access_list 127.0.0.1
 magento config:set system/full_page_cache/varnish/grace_period 300
-magento config:set payment/mollie_general/type test
-magento config:set payment/mollie_general/use_webhooks enabled
 magento config:set twofactorauth/general/force_providers google
 magento indexer:set-mode schedule
 magento madameaiguille:shipping:import-rates

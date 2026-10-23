@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Restreint l'administration : une IP de la liste ouvre directement la page Magento ; depuis ailleurs (déplacement,
 # smartphone), nginx demande d'abord l'identifiant et le mot de passe HTTP (satisfy any). La vitrine, le tunnel et
-# le webhook Mollie restent publics. Le robot de Google ne voit plus le formulaire de connexion, signalé à tort
+# le webhook de paiement restent publics. Le robot de Google ne voit plus le formulaire de connexion, signalé à tort
 # comme hameçonnage le 10/10/2026.
 #
 # Le chemin de l'administration est lu dans env.php et n'est écrit que dans /etc/nginx/snippets/ : jamais dans le
@@ -48,5 +48,4 @@ sudo systemctl reload nginx
 # Depuis le serveur, absent de la liste : le mot de passe doit être exigé ; la vitrine reste ouverte
 echo "Administration sans mot de passe : $(curl -s -o /dev/null -w '%{http_code}' "https://madame-aiguille.fr/$ADMIN/") (401 attendu)"
 echo "Vitrine : $(curl -s -o /dev/null -w '%{http_code}' https://madame-aiguille.fr/) (200 attendu)"
-echo "Webhook Mollie : $(curl -s -o /dev/null -w '%{http_code}' -X POST -d testByMollie=1 https://madame-aiguille.fr/mollie/checkout/webhook/) (200 attendu)"
 echo "IP autorisées : $*"
