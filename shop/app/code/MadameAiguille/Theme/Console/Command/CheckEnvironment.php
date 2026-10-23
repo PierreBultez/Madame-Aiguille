@@ -3,7 +3,7 @@
  * bin/magento madameaiguille:env:check [--serveur] [--noindex]
  *
  * À passer après chaque déploiement : sort en erreur si un réglage rend la boutique inutilisable ou dangereuse
- * (HTTP, webhook Mollie coupé, cron arrêté, fontes absentes, produit sans poids…). N'affiche aucun secret.
+ * (HTTP, cron arrêté, fontes absentes, produit sans poids…). N'affiche aucun secret.
  */
 
 declare(strict_types=1);

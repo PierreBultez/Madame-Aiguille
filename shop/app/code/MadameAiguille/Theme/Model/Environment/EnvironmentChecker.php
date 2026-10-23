@@ -71,7 +71,7 @@ class EnvironmentChecker
         $this->checkCron($onServer);
         $this->checkAdminSecurity($onServer);
         $this->checkMail();
-        $this->checkMollie($onServer);
+        $this->checkStripe($onServer);
         $this->checkRecaptcha($onServer);
         $this->checkShipping();
         $this->checkFonts();
@@ -197,29 +197,33 @@ class EnvironmentChecker
         }
     }
 
-    private function checkMollie(bool $onServer): void
+    private function checkStripe(bool $onServer): void
     {
-        if (!$this->flag('payment/mollie_general/enabled')) {
-            $this->warning('Mollie', 'module désactivé');
+        if (!$this->moduleManager->isEnabled('StripeIntegration_Payments')
+            || !$this->flag('payment/stripe_payments/active')
+        ) {
+            // Sans paiement en ligne, une commande en point relais ne peut pas être réglée.
+            $this->add('Stripe', $onServer ? Finding::ERROR : Finding::WARNING, 'paiement en ligne désactivé');
             return;
         }
 
-        $mode = (string) $this->value('payment/mollie_general/type');
-        $this->value('payment/mollie_general/apikey_' . $mode)
-            ? $this->ok('Mollie', sprintf('mode %s, clé renseignée', $mode))
-            : $this->error('Mollie', sprintf('mode %s sans clé', $mode));
-
-        $webhooks = (string) $this->value('payment/mollie_general/use_webhooks');
-        if ($webhooks === 'disabled') {
-            // Sans webhook, Mollie 3.x ne facture jamais : la commande reste « En attente de paiement ».
-            $this->add(
-                'Mollie',
-                $onServer ? Finding::ERROR : Finding::OK,
-                'webhooks désactivés : les paiements ne passent pas la commande en « Paiement reçu »'
-            );
-            return;
+        $mode = (string) ($this->value('payment/stripe_payments_basic/stripe_mode') ?: 'test');
+        $publishable = (string) $this->value(sprintf('payment/stripe_payments_basic/stripe_%s_pk', $mode));
+        if ($publishable === '' || !$this->value(sprintf('payment/stripe_payments_basic/stripe_%s_sk', $mode))) {
+            $this->error('Stripe', sprintf('mode %s sans clés', $mode));
+        } elseif (!str_starts_with($publishable, sprintf('pk_%s_', $mode))) {
+            $this->error('Stripe', sprintf('mode %s avec une clé publique d\'un autre mode', $mode));
+        } else {
+            $this->ok('Stripe', sprintf('mode %s, clés renseignées', $mode));
         }
-        $this->ok('Mollie', sprintf('webhooks : %s', $webhooks));
+
+        // Le paiement n'est confirmé dans Magento (facture, « Paiement reçu ») qu'à la réception des webhooks.
+        if (!$this->flag('payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration')) {
+            $this->warning('Stripe', 'webhooks non configurés automatiquement : les déclarer dans Stripe');
+        }
+        if ($this->flag('payment/stripe_payments_express/global_enabled')) {
+            $this->warning('Stripe', 'boutons express actifs : ils contournent le point relais et le créneau');
+        }
     }
 
     private function checkRecaptcha(bool $onServer): void
@@ -242,7 +246,7 @@ class EnvironmentChecker
         }
 
         if ((string) $this->value('recaptcha_frontend/type_for/place_order') !== '') {
-            $this->warning('reCAPTCHA', 'passage de commande protégé : non retenu, risque de gêner Mollie');
+            $this->warning('reCAPTCHA', 'passage de commande protégé : non retenu, risque de gêner le paiement');
         }
     }
 

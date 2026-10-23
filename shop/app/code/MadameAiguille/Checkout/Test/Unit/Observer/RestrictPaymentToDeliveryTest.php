@@ -42,8 +42,8 @@ class RestrictPaymentToDeliveryTest extends TestCase
     {
         return [
             'retrait : paiement sur place' => ['cashondelivery', Pickup::SHIPPING_METHOD, true],
-            'retrait : pas de carte en ligne' => ['mollie_methods_creditcard', Pickup::SHIPPING_METHOD, false],
-            'point relais : carte en ligne' => ['mollie_methods_creditcard', 'tablerate_bestway', true],
+            'retrait : pas de carte en ligne' => ['stripe_payments', Pickup::SHIPPING_METHOD, false],
+            'point relais : carte en ligne' => ['stripe_payments', 'tablerate_bestway', true],
             'point relais : pas de paiement sur place' => ['cashondelivery', 'tablerate_bestway', false],
             'commande à 0 € : toujours possible' => ['free', Pickup::SHIPPING_METHOD, true],
         ];

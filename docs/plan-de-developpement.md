@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.0 (10/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a livrés** ; boutique en ligne sur `https://madame-aiguille.fr`, non indexée ; prochain lot : **8**, recette de production, exploitation et ouverture
+Document interne — v3.1 (23/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a livrés** ; boutique en ligne sur `https://madame-aiguille.fr`, non indexée ; **lot 8 en cours** sur `lot-8-ouverture` : recette de production, exploitation et ouverture
+
+> **v3.1** — **Lot 8 en cours.** Hygiène du serveur traitée (titre de l'accueil, espace de la connexion, compte RabbitMQ `guest` en script, Magento Analytics / export Commerce / Payment Services coupés). Code enseigne Mondial Relay du compte pro saisi en local et sur le serveur (non versionné). **Mollie remplacé par Stripe** (décision de Pierre, compte Mollie fermé) : paquets Mollie retirés par le `replace` Composer, `stripe/module-payments` 4.7.1 sans Stripe Tax, réglages par défaut dans le module Checkout, retraits Hyvä dans le thème enfant, statuts du lot 7 en statuts par défaut, pages juridiques corrigées, `env:check` étendu. Paiement par carte de test recetté en local (« Paiement reçu », facture avec emballage). Reste : recette Stripe en mode test sur le serveur, puis la suite du lot 8. Détail : `documentation-theme.md` §23 et §26.
 
 > **v3.0** — **Lot 8a livré** sur `lot-8a-preproduction` (`276f162` → clôture). Sur décision de Pierre, la boutique s'installe **directement sur le domaine principal**, sans sous-domaine, en **installation neuve**, non indexée, pour que Mollie puisse vérifier le site. VPS OVH partagé avec ses autres sites, **aligné sur le poste** : Ubuntu 26.04 LTS (mise à niveau par Pierre), PHP 8.5.4, MariaDB 12.3.3, OpenSearch 3.9 (Elasticsearch 9 inutilisé supprimé), Valkey 9.0.4 (remplace Redis, y compris pour les sites Laravel), Varnish 7.7 ; provisionnement en scripts versionnés `deploy/serveur/`. **Build dans GitHub Actions** sans base de données, publication par **versions successives** et lien `current`, retour arrière par le même script ; PHP-FPM, cron et commandes sous un utilisateur système dédié. Certificat unique `madame-aiguille.fr` + `www`, `www` et HTTP en 301, double authentification, SMTP Brevo opérationnel, webhook Mollie actif, clés Mollie saisies. Contrôle `madameaiguille:env:check`. **Alerte Chrome « Site dangereux »** sur la connexion de l'administration (faux positif d'hameçonnage) : administration réservée aux IP connues ou au mot de passe HTTP, signalement envoyé à Google. **Reportés au lot 8**, faute de catalogue réel et de clés reCAPTCHA : paiement Mollie de bout en bout, emails reçus, newsletter, reCAPTCHA, facture / avoir avec emballage, validation du compte Mollie. Recette : `docs/recettes/lot-8a.md`. Prochain prompt : `docs/prompts/prompt-lot8.md`.
 
@@ -350,7 +352,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - Alerte email de stock bas (native), seuil par produit ou global.
 - Guide utilisateur illustré (`docs/guide-back-office.md`) : ajouter un produit (poids !), gérer un stock, traiter une commande, encaisser un virement, modifier le bandeau / les blocs d'accueil / les visuels Instagram, changer les liens réseaux sociaux.
 - ~~CI/CD GitHub Actions, mode production, Varnish / Valkey, HTTPS~~ : **livrés au 8a** (§29 de la documentation). Pas de staging séparé : décision de Pierre du 09/10/2026.
-- **Recette de production reportée du 8a** : paiement Mollie de bout en bout, restauration du panier, retrait, facture / avoir avec emballage, emails reçus, newsletter, reCAPTCHA ; puis validation Mollie et paiement réel.
+- **Recette de production reportée du 8a** : paiement **Stripe** de bout en bout (Mollie remplacé le 23/10/2026), refus et 3-D Secure, retrait, facture / avoir avec emballage, emails reçus, newsletter, reCAPTCHA ; puis activation du compte Stripe et paiement réel.
 - Ouverture : sitemap, robots et `X-Robots-Tag`, redirection `madameaiguille.fr` → `madame-aiguille.fr`, **sauvegardes BDD + médias avec test de restauration**.
 - Recette complète (plan de tests §3 à §10), audit Lighthouse (accueil, catégorie, fiche), contrôle poids sur tout le catalogue, paiement réel de test.
 - Logo SVG (brief `prompts/prompt-logos-svg.md`) intégré à la place du PNG provisoire, favicon.
@@ -379,12 +381,12 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 8. ~~Statut fiscal / TVA~~ — franchise en base, mention en place.
 9. Comptes réseaux sociaux réels : Instagram et Facebook saisis, **URL TikTok à fournir**.
 10. Nom de domaine et serveur (lot **8a**).
-11. Méthodes Mollie définitives, texte CGV et confidentialité (newsletter / transporteurs), adresse exacte du retrait : **à valider avant ouverture**.
+11. ~~Méthodes Mollie définitives~~ (carte, Apple Pay, Google Pay le 14/10/2026, via Stripe depuis le 23/10/2026), texte CGV et confidentialité (newsletter / transporteurs), adresse exacte du retrait : **à valider avant ouverture**.
 
 ## Décisions techniques à prendre (Pierre)
 
 1. ~~Hyvä Checkout ou checkout Luma~~ — **tranché : Luma Fallback Checkout** (`hyva-themes/magento2-luma-checkout`), lot 6a.
-2. ~~Stripe ou Mollie~~ — **tranché : Mollie** (10/09/2026). Déjà installé et activé ; reste la création du compte marchand et la saisie des clés.
+2. ~~Stripe ou Mollie~~ — **tranché : Mollie** (10/09/2026), puis **Stripe** (23/10/2026) : compte Mollie fermé, `stripe/module-payments` installé au lot 8.
 3. ~~Module Mondial Relay~~ — **widget officiel intégré en maison** (spike du 09/10/2026).
 4. ~~Formulaire de contact~~ — module dédié `MadameAiguille_Contact`; logique dans le module, surcharge visuelle dans le thème enfant.
 5. ~~Catégories de test « Sneakers » et « T-Shirts » à supprimer~~ — fait au lot 2.

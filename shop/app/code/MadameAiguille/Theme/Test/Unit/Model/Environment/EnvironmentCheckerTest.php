@@ -35,10 +35,11 @@ class EnvironmentCheckerTest extends TestCase
         'trans_email/ident_general/email' => 'contact@madame-aiguille.fr',
         'trans_email/ident_sales/email' => 'contact@madame-aiguille.fr',
         'trans_email/ident_support/email' => 'contact@madame-aiguille.fr',
-        'payment/mollie_general/enabled' => '1',
-        'payment/mollie_general/type' => 'test',
-        'payment/mollie_general/apikey_test' => 'chiffré',
-        'payment/mollie_general/use_webhooks' => 'enabled',
+        'payment/stripe_payments/active' => '1',
+        'payment/stripe_payments_basic/stripe_mode' => 'test',
+        'payment/stripe_payments_basic/stripe_test_pk' => 'pk_test_publique',
+        'payment/stripe_payments_basic/stripe_test_sk' => 'chiffré',
+        'payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration' => '1',
         'recaptcha_frontend/type_for/customer_create' => 'invisible',
         'recaptcha_frontend/type_for/contact' => 'invisible',
         'recaptcha_frontend/type_for/newsletter' => 'invisible',
@@ -124,17 +125,6 @@ class EnvironmentCheckerTest extends TestCase
         );
     }
 
-    public function testDisabledMollieWebhooksBlockAServerButNotALocalMachine(): void
-    {
-        $config = ['payment/mollie_general/use_webhooks' => 'disabled'];
-
-        self::assertStringContainsString(
-            'webhooks désactivés',
-            implode("\n", $this->messages($this->check($config), Finding::ERROR))
-        );
-        self::assertSame([], $this->messages($this->check($config, false, false), Finding::ERROR));
-    }
-
     public function testIndexedRobotsAreAnErrorOnlyWhenTheSiteMustStayHidden(): void
     {
         $config = ['design/search_engine_robots/default_robots' => 'INDEX,FOLLOW'];
@@ -183,7 +173,7 @@ class EnvironmentCheckerTest extends TestCase
         );
 
         self::assertContains('reCAPTCHA — newsletter : non protégé', $warnings);
-        self::assertContains('reCAPTCHA — passage de commande protégé : non retenu, risque de gêner Mollie', $warnings);
+        self::assertContains('reCAPTCHA — passage de commande protégé : non retenu, risque de gêner le paiement', $warnings);
     }
 
     public function testStoppedCronMissingFontsAndProductsWithoutWeightAreErrors(): void
@@ -217,10 +207,42 @@ class EnvironmentCheckerTest extends TestCase
         );
     }
 
-    public function testAMollieModeWithoutItsKeyIsAnError(): void
+    public function testAStripeModeWithoutItsKeysIsAnError(): void
     {
-        $errors = $this->messages($this->check(['payment/mollie_general/type' => 'live']), Finding::ERROR);
+        $errors = $this->messages($this->check(['payment/stripe_payments_basic/stripe_mode' => 'live']), Finding::ERROR);
 
-        self::assertSame(['Mollie — mode live sans clé'], $errors);
+        self::assertSame(['Stripe — mode live sans clés'], $errors);
+    }
+
+    public function testATestKeyInLiveModeIsAnError(): void
+    {
+        $errors = $this->messages($this->check([
+            'payment/stripe_payments_basic/stripe_mode' => 'live',
+            'payment/stripe_payments_basic/stripe_live_pk' => 'pk_test_publique',
+            'payment/stripe_payments_basic/stripe_live_sk' => 'chiffré',
+        ]), Finding::ERROR);
+
+        self::assertSame(['Stripe — mode live avec une clé publique d\'un autre mode'], $errors);
+    }
+
+    public function testDisabledOnlinePaymentBlocksAServerButNotALocalMachine(): void
+    {
+        $config = ['payment/stripe_payments/active' => '0'];
+
+        self::assertSame(
+            ['Stripe — paiement en ligne désactivé'],
+            $this->messages($this->check($config), Finding::ERROR)
+        );
+        self::assertSame([], $this->messages($this->check($config, false, false), Finding::ERROR));
+    }
+
+    public function testExpressButtonsAreAWarning(): void
+    {
+        $warnings = $this->messages(
+            $this->check(['payment/stripe_payments_express/global_enabled' => '1']),
+            Finding::WARNING
+        );
+
+        self::assertContains('Stripe — boutons express actifs : ils contournent le point relais et le créneau', $warnings);
     }
 }

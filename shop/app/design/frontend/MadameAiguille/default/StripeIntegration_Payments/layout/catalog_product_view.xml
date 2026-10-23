@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+    Boutons express et messages de paiement fractionné de Stripe : coupés en configuration (module Checkout),
+    retirés aussi ici pour qu'une réactivation dans l'administration ne charge pas leur JavaScript Luma sur Hyvä.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.info.stripe_payments_express" remove="true"/>
+        <referenceBlock name="payment.method.messaging.element" remove="true"/>
+        <referenceBlock name="product.info.addtocart.stripe_payments_express.additional" remove="true"/>
+        <referenceBlock name="payment.method.messaging.element.additional" remove="true"/>
+        <referenceBlock name="product.info.addtocart.stripe_payments_express.bundle" remove="true"/>
+    </body>
+</page>
