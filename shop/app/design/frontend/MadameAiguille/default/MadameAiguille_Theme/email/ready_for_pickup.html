@@ -29,7 +29,7 @@
             <div class="email-note">
                 <p><strong>{{trans "Your appointment"}}</strong><br/>{{var pickup_slot}}</p>
                 <p><strong>{{var pickup_location_name}}</strong><br/>{{var pickup_location_address|escape|nl2br}}</p>
-                {{depend pickup_directions_url}}<p><a href="{{var pickup_directions_url}}">{{trans "Get directions"}}</a></p>{{/depend}}
+                {{if pickup_directions_url}}<p><a href="{{var pickup_directions_url}}">{{trans "Get directions"}}</a></p>{{/if}}
                 <p>{{trans "Payment is made on site, by card or in cash."}}</p>
             </div>
         </td>
