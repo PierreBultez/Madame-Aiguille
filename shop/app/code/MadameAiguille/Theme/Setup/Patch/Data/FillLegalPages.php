@@ -202,14 +202,15 @@ HTML;
 <dl>
 <dt>Commande et livraison</dt><dd>Nom, adresse de livraison et de facturation, adresse e-mail, téléphone, détail de la commande. Nécessaires à l’exécution du contrat de vente.</dd>
 <dt>Compte client</dt><dd>Nom, adresse e-mail, mot de passe chiffré, carnet d’adresses, historique de commandes. Créé à votre demande, pour vous éviter de ressaisir vos informations.</dd>
-<dt>Paiement</dt><dd>Les données bancaires sont saisies directement chez notre prestataire Stripe et ne transitent jamais par nos serveurs. Nous ne conservons que la confirmation du paiement.</dd>
+<dt>Paiement</dt><dd>Les données bancaires sont saisies directement chez notre prestataire Stripe et ne transitent jamais par nos serveurs. Si vous choisissez Klarna, les informations nécessaires à son service (identité, coordonnées, montant de la commande) lui sont transmises, et Klarna peut vérifier votre éligibilité avant d’accepter le paiement. Nous ne conservons que la confirmation du paiement.</dd>
 <dt>Formulaire de contact</dt><dd>Nom, adresse e-mail, message, et le cas échéant une photo jointe. La photo est stockée hors de l’espace public et <strong>supprimée automatiquement au bout de 30 jours</strong>.</dd>
 <dt>Lettre d’information</dt><dd>Adresse e-mail, sur la base de votre consentement, confirmé par un courriel de validation. Désinscription possible à tout moment par le lien présent dans chaque envoi.</dd>
 </dl>
 <h2>À qui elles sont transmises</h2>
 <p>Vos données ne sont ni vendues ni cédées. Elles sont transmises uniquement aux prestataires nécessaires à l’exécution de votre commande :</p>
 <ul>
-<li><strong>Stripe</strong>, prestataire de paiement, pour le traitement des paiements par carte bancaire ;</li>
+<li><strong>Stripe</strong>, prestataire de paiement, pour le traitement des paiements en ligne (carte bancaire, Apple Pay, Google Pay, Bancontact) ;</li>
+<li><strong>Klarna</strong>, lorsque vous choisissez ce moyen de paiement, pour le paiement en plusieurs fois ou différé : Klarna traite alors vos données pour son propre service, selon sa propre politique de confidentialité ;</li>
 <li><strong>Mondial Relay</strong>, transporteur, pour l’acheminement de votre colis ;</li>
 <li><strong>[hébergeur]</strong>, pour l’hébergement du site ;</li>
 <li><strong>[prestataire d’envoi d’e-mails]</strong>, pour les courriels de commande et la lettre d’information.</li>

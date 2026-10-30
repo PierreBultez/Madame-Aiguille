@@ -99,3 +99,8 @@ Observation (antérieure au lot 8) : la frise d'une commande remboursée (`close
 ## CGV : moyens de paiement (30/10/2026, local)
 
 §5 réécrit par `ListPaymentMethodsInTerms` (phrase exacte remplacée, présente à l'identique sur le serveur) : Stripe, au choix carte bancaire, Apple Pay ou Google Pay, Bancontact, Klarna (service de Klarna selon ses conditions, l'atelier encaissant la commande en une fois) ; encaissement à la validation ; retrait payé en ligne ou sur place. §4 : la commande en retrait payée sur place est définitive dès son enregistrement. Rendu contrôlé à 1440 et 390 px (liste à puces de la charte, aucun débordement). Texte à valider par le conseil de Céline.
+
+## Confidentialité : Klarna (30/10/2026, local)
+
+`NameKlarnaInPrivacyPage` (phrases exactes, présentes à l'identique sur le serveur) : partie « Paiement » — si la cliente choisit Klarna, identité, coordonnées et montant lui sont transmis et Klarna peut vérifier son éligibilité ; liste des destinataires — Stripe pour carte bancaire, Apple Pay, Google Pay et Bancontact, **Klarna** lorsqu'il est choisi, pour son propre service et selon sa politique de confidentialité. Rendu contrôlé à 1440 et 390 px. Les mentions « [hébergeur] » et « [prestataire d'envoi d'e-mails] » restent à remplacer (OVH, Brevo : §23). Texte à valider par le conseil de Céline.
+
