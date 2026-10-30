@@ -7,6 +7,7 @@ use MadameAiguille\Theme\Model\Order\StatusConfig;
 use MadameAiguille\Theme\ViewModel\Order\Progress;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\Data\OrderStatusHistoryInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
@@ -27,9 +28,19 @@ class ProgressTest extends TestCase
     /**
      * @param OrderStatusHistoryInterface[] $histories
      */
-    private function order(string $status, array $histories = [], float $quantity = 2.0): OrderInterface
-    {
+    private function order(
+        string $status,
+        array $histories = [],
+        float $quantity = 2.0,
+        ?string $paymentMethod = null
+    ): OrderInterface {
         $order = $this->createStub(OrderInterface::class);
+        if ($paymentMethod !== null) {
+            $payment = $this->createStub(OrderPaymentInterface::class);
+            $payment->method('getMethod')->willReturn($paymentMethod);
+            $order->method('getPayment')->willReturn($payment);
+            $order->method('getEntityId')->willReturn(42);
+        }
         $order->method('getStatus')->willReturn($status);
         $order->method('getStatusHistories')->willReturn($histories);
         $order->method('getUpdatedAt')->willReturn('2026-09-10 10:00:00');
@@ -92,6 +103,27 @@ class ProgressTest extends TestCase
 
         self::assertSame(StatusConfig::READY_FOR_PICKUP, $timeline[3]['code']);
         self::assertSame('current', $timeline[3]['state']);
+    }
+
+    public function testPayOnSitePickupIsReadyBeforeBeingPaid(): void
+    {
+        $order = $this->order(StatusConfig::READY_FOR_PICKUP, [
+            $this->history('pending', '2026-10-30 09:00:00'),
+            $this->history(StatusConfig::READY_FOR_PICKUP, '2026-11-02 12:00:00'),
+        ], 1.0, 'cashondelivery');
+
+        $timeline = $this->viewModel()->getTimeline($order);
+
+        self::assertSame(
+            [
+                StatusConfig::PENDING_PAYMENT,
+                StatusConfig::READY_FOR_PICKUP,
+                StatusConfig::PAYMENT_RECEIVED,
+                StatusConfig::DELIVERED,
+            ],
+            array_column($timeline, 'code')
+        );
+        self::assertSame(['complete', 'current', 'upcoming', 'upcoming'], array_column($timeline, 'state'));
     }
 
     public function testQuantityLabelHandlesSingularAndPlural(): void

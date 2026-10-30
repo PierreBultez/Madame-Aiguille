@@ -685,10 +685,10 @@ Créés par le data patch `Setup/Patch/Data/CreateOrderStatuses`, à partir de l
 | Paiement reçu | `madameaiguille_payment_received` | `processing` |
 | En préparation | `madameaiguille_preparing` | `processing` |
 | Expédiée | `madameaiguille_shipped` | `complete` |
-| Prête pour retrait | `madameaiguille_ready_for_pickup` | `processing` |
+| Prête pour retrait | `madameaiguille_ready_for_pickup` | `processing`, et `new` depuis le 30/10/2026 (retrait payé sur place, avant facture : `Checkout/Setup/Patch/Data/AllowReadyForPickupBeforePayment.php`) |
 | Livrée | `madameaiguille_delivered` | `complete` |
 
-La frise du détail de commande a cinq étapes. Elle suit le parcours livraison par défaut et remplace « Expédiée » par « Prête pour retrait » dès qu'un passage par ce statut figure dans l'historique. Les dates viennent de l'historique natif des statuts, jamais d'un champ ajouté. Les statuts natifs des commandes antérieures (`pending`, `processing`, `complete`) sont ramenés au statut équivalent pour que leur suivi reste cohérent.
+La frise du détail de commande a cinq étapes. Elle suit le parcours livraison par défaut et remplace « Expédiée » par « Prête pour retrait » dès qu'un passage par ce statut figure dans l'historique. Une commande **payée sur place** (méthode `cashondelivery`, retrait seulement) suit sa propre frise de quatre étapes : En attente de paiement → Prête pour retrait → Paiement reçu → Livrée (30/10/2026), pour ne jamais afficher un paiement qui n'a pas eu lieu. Les dates viennent de l'historique natif des statuts, jamais d'un champ ajouté. Les statuts natifs des commandes antérieures (`pending`, `processing`, `complete`) sont ramenés au statut équivalent pour que leur suivi reste cohérent.
 
 ### Textes français
 
@@ -1050,6 +1050,8 @@ Recette locale du 23/10/2026 : relais + cadeau + CGV, carte de test 4242 → com
 | Paiement Stripe capté (à la commande) | Paiement reçu → email du lot 7 |
 | Retrait encore « nouveau » facturé par Céline | Paiement reçu → email du lot 7 (statut par défaut de `processing`) |
 | Commande de retrait créée, paiement sur place | `pending`, affichée « En attente de paiement » |
+| Retrait payé sur place, prêt | « Prête pour retrait » posé par Céline (état `new` conservé) → email avec rendez-vous et « Le règlement se fait sur place » |
+| Retrait payé sur place, remis | Facture → Paiement reçu (email), puis expédition → Livrée |
 | Commande de retrait payée en ligne | Paiement reçu → email du lot 7 |
 | Expédition d'un colis | Expédiée (+ email d'expédition natif) |
 | « Expédition » d'un retrait (remise en main propre) | Livrée |
@@ -1075,6 +1077,8 @@ Un statut posé à la main par Céline n'est jamais réécrit. L'email de vireme
 - **Formulaire Stripe et automatisation du navigateur** : les champs sont dans des iframes ; le premier clic ne donne pas toujours le focus, passer d'un champ à l'autre au clavier (Tab).
 - **`{{depend}}` imbriqués dans un gabarit d'email** : la directive associe le `{{depend}}` extérieur au premier `{{/depend}}` rencontré ; le reste part en directive orpheline et le rendu lève une `TypeError` (envoi abandonné, journalisé « Échec de la notification »). À l'intérieur d'un `{{depend}}`, conditionner avec `{{if}}`. Corrigé le 30/10/2026 dans `ready_for_pickup.html` (lien d'itinéraire).
 - **Apple Pay et Google Pay invisibles** : tant que l'emplacement express « Checkout, within payment form » est inactif, le module passe `wallets: never` au formulaire de paiement. Corrigé le 30/10/2026 (défauts du module Checkout, réglé dans l'admin du serveur par Pierre) ; `env:check` le signale.
+- **Statut introuvable dans l'administration** : la liste de *Historique de la commande* ne propose que les statuts rattachés à l'**état** courant. Une commande payée sur place reste `new` jusqu'à sa facture : « Prête pour retrait » (rattaché à `processing`) n'y apparaissait pas avant le 30/10/2026.
+- **`Order::getPayment()` sur une commande non enregistrée** : interroge la base (et plante en test unitaire, fabrique absente). Ne le lire que si `getEntityId()` est renseigné.
 - **Conteneur vide `.payment-method.stripe-payments.mobile`** en tête des moyens de paiement : c'est l'emplacement des boutons express (coupés), pas la méthode « Carte bancaire ».
 
 ### Recette du 09/10/2026
