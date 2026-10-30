@@ -81,3 +81,15 @@ Version `20261030-100325-328149f` (fusion de la PR #2 dans `main`).
 | Pages juridiques | CGV §5 et §7, Livraison et retours : « en ligne ou sur place » |
 | `env:check --serveur --noindex` | 0 erreur ; 1 avertissement « boutons express actifs » : Pierre avait activé l'emplacement « Checkout, within payment form » avec Apple Pay et Google Pay, **le bon réglage** (sans lui, ces portefeuilles sont masqués). Contrôle affiné : il n'avertit plus que pour les emplacements hors du formulaire, ou si Apple Pay / Google Pay sont masqués. Klarna coché dans ce réglage : conforme à la décision du 30/10/2026 (cinq moyens, Klarna compris) |
 | Après le déploiement de la PR #3 (`20261030-101836-0b188f8`) | Libellé du retrait « Sur rendez-vous à l'atelier de Saint-Épain (37800) » en ligne ; `env:check --serveur --noindex` à **0 erreur, 0 avertissement** ; **Stripe en mode live** (clés live renseignées) : tout paiement par carte est désormais réel |
+
+## « Prête pour retrait » avant paiement (30/10/2026, local)
+
+Relevé en préparant la recette du retrait payé sur place : la commande reste `new` jusqu'à sa facture, et l'administration ne propose que les statuts de l'état courant ; « Prête pour retrait » (état `processing`) était inaccessible, contrairement au mémo de Céline. Défaut antérieur au lot 8.
+
+| Contrôle | Résultat |
+|---|---|
+| Statuts proposés pour une commande `new` | « Pending », **« Prête pour retrait »** ; statut par défaut inchangé (`pending`) |
+| Frise d'une commande payée sur place | En attente de paiement → **Prête pour retrait** → Paiement reçu → Livrée (test unitaire) ; la frise ne montre plus « Paiement reçu » franchi avant le règlement |
+| Tests | 122 tests, 306 assertions ; PHPCS Magento2 sans erreur |
+
+Parcours complet (passage en « Prête pour retrait », email, facture, expédition) à recetter par Pierre sur le serveur après déploiement : chaque changement de statut envoie un vrai email.

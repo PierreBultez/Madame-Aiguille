@@ -32,6 +32,17 @@ class Progress implements ArgumentInterface
         StatusConfig::DELIVERED,
     ];
 
+    /** Retrait payé sur place : la commande est prête avant d'être réglée, au rendez-vous. */
+    private const PAY_ON_SITE_STEPS = [
+        StatusConfig::PENDING_PAYMENT,
+        StatusConfig::READY_FOR_PICKUP,
+        StatusConfig::PAYMENT_RECEIVED,
+        StatusConfig::DELIVERED,
+    ];
+
+    /** Méthode native renommée « Paiement sur place », réservée au retrait (module Checkout). */
+    private const PAY_ON_SITE_METHOD = 'cashondelivery';
+
     public function __construct(
         private readonly TimezoneInterface $timezone,
         private readonly StatusConfig $statusConfig
@@ -121,6 +132,11 @@ class Progress implements ArgumentInterface
      */
     private function getStepCodes(OrderInterface $order): array
     {
+        // Une commande non enregistrée (exemples du styleguide) n'a pas de paiement : pas de requête inutile.
+        if ($order->getEntityId() && $order->getPayment()?->getMethod() === self::PAY_ON_SITE_METHOD) {
+            return self::PAY_ON_SITE_STEPS;
+        }
+
         $statuses = array_map(
             fn(OrderStatusHistoryInterface $history): string => $this->normalizeStatus(
                 (string) $history->getStatus()
