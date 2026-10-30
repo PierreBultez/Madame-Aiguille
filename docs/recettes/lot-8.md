@@ -41,7 +41,7 @@ Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1
 | Carte refusée (4000 0000 0000 0002) | Message dans le tunnel, panier conservé, aucune commande payée | 23/10 : **OK**, deux refus « Your card was declined » (18 h 19, 18 h 20 UTC), aucune commande, panier toujours actif, webhooks `payment_failed` reçus (200) |
 | 3-D Secure (4000 0027 6000 3184) | Fenêtre d'authentification, puis « Paiement reçu » | 23/10 : **OK**, commande `000000003` : « Authentication Required » au premier passage, puis commande créée et payée 9 s plus tard sur le même paiement, **Paiement reçu**, facture `000000003` (sans cadeau, non choisi pour ce test) |
 | Apple Pay / Google Pay | Proposés sur un appareil compatible, domaine déclaré dans Stripe | |
-| Remboursement | Avoir en ligne depuis la facture → remboursement visible dans Stripe, emballage remboursé | |
+| Remboursement | Avoir en ligne depuis la facture → remboursement visible dans Stripe, emballage remboursé | 30/10 : **OK**, avoir `000000002` créé par Pierre depuis la facture (« Rembourser ») : 19,95 + 4,90 + **2,00 d'emballage** = 26,85 € remboursés **en ligne** (transaction `refund`), commande `closed` ; webhooks `charge.refunded` et `refund.updated` reçus (200), confirmation Stripe dans l'historique. Email d'avoir non envoyé (case « copie par email » non cochée) |
 | Retrait à l'atelier | Seul « Paiement sur place » proposé ; facturé par Céline → « Paiement reçu » | |
 | Commandes de test | Annulées ou remboursées dans l'administration | |
 
@@ -52,3 +52,5 @@ Les paiements de test sur `madame-aiguille.fr` sont saisis par Pierre (domaine d
 Commande Mollie `000000001` du serveur : `closed` au 23/10/2026 (soldée par avoir).
 
 Relevé en passant dans les journaux du serveur (hors Stripe) : avertissements PHP 8.5 « Using null as the key parameter for array_key_exists() » dans `magento/module-captcha`, journalisés en CRITICAL ; « The product with ID "1" does not exist » (produit supprimé encore référencé). À examiner.
+
+Les lignes INFO « Could not retrieve checkout session: The resource ID cannot be null or whitespace » du module Stripe sont attendues : le flux intégré n'utilise pas de session Stripe Checkout.
