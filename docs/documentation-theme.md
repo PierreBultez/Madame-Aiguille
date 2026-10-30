@@ -752,7 +752,7 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 | **Tarifs Mondial Relay** | Le compte pro est ouvert et son code enseigne posé (lot 8, 23/10/2026). Remplacer les tarifs provisoires de `Theme/data/tablerates-mondial-relay.csv` (FR, MC, BE, LU) par la politique de prix de Céline, puis rejouer l'import ; peser l'emballage type | Céline (tarifs), Pierre (CSV, déploiement) |
 | **Automatisation Mondial Relay** | Le compte pro fournit aussi une **clé privée** et un **code marque** pour l'API Web Services (appels serveur signés) : création des expéditions et étiquettes depuis Magento, numéro de suivi ajouté automatiquement à l'expédition, contrôle serveur du point choisi. Non utilisés : le widget ne demande que le code enseigne, et Céline crée ses étiquettes dans l'espace pro. La clé privée est un secret : configuration chiffrée de l'administration, jamais le dépôt | Décision après l'ouverture, selon le volume de commandes |
 | **Lieu de retrait réel** | Adresse, coordonnées et, si souhaité, image de plan dans *Madame Aiguille › Retrait à l'atelier*. Un lieu générique « Saint-Épain (37800) » est en place | Céline |
-| **Moyens de paiement** | Carte bancaire, Apple Pay et Google Pay (décision de Pierre et Céline du 14/10/2026), proposés par Stripe dans un seul formulaire « Carte bancaire ». Bancontact, iDEAL, Wero, Klarna ne sont plus proposés. Aligner la CGV si elle ne cite que la carte | Pierre / Céline |
+| **Moyens de paiement** | Carte bancaire, Apple Pay et Google Pay (décision de Pierre et Céline du 14/10/2026), proposés par Stripe dans un seul formulaire « Carte bancaire en ligne ». Le retrait à l'atelier se règle en ligne ou sur place, par carte au TPE ou en espèces (décision de Pierre du 30/10/2026 ; CGV et page Livraison alignées par `OfferOnlinePaymentForPickupInLegalPages`). Bancontact, iDEAL, Wero, Klarna ne sont plus proposés | Pierre / Céline |
 | **Contenus juridiques** | Brouillons en place sur le serveur. Compléter : hébergeur (OVH), médiateur de la consommation, date de mise en ligne, délai de réponse ; citer **Brevo** (emails), **Google reCAPTCHA**, **Mondial Relay**, **OpenStreetMap** et **Stripe** dans la confidentialité — Stripe peut transférer des données hors de l'UE : à faire mentionner par le conseil ; ajouter l'emballage cadeau à la CGV ; retirer les encadrés « Brouillon ». Le nom du prestataire (Mollie → Stripe) est corrigé par `NameStripeInLegalPages` | Céline avec conseil, avant l'activation Stripe en live |
 | **Contenus génériques** | Remplacer `home_story`, `home_actualities`, `a-propos`, `nos-tissus`, `contact_help`, `contact_locations` ; choisir la destination du CTA « Voir toutes les nouveautés » | Céline, avant l'activation Stripe en live |
 | **Téléphone de la boutique** | *Général › Informations sur le magasin* (non versionné, dépôt public) | Pierre / Céline |
@@ -847,7 +847,7 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Réglage | Effet | Détail |
 |---|---|---|
 | Paiement reçu › Activé / Expéditeur / Gabarit | Notification envoyée automatiquement quand une commande passe au statut « Paiement reçu » | §22 |
-| Prête pour retrait › Activé / Expéditeur / Gabarit | Notification envoyée quand une commande passe au statut « Prête pour retrait ». Elle contient automatiquement **le rendez-vous choisi, le lieu et le lien d'itinéraire** ; un commentaire visible saisi dans la commande s'y ajoute | §22, §26 |
+| Prête pour retrait › Activé / Expéditeur / Gabarit | Notification envoyée quand une commande passe au statut « Prête pour retrait ». Elle contient automatiquement **le rendez-vous choisi, le lieu, le lien d'itinéraire et le mode de règlement** (sur place, ou déjà réglée en ligne) ; un commentaire visible saisi dans la commande s'y ajoute | §22, §26 |
 | Confirmation, expédition, avoir… | Réglages natifs de Magento, inchangés | §22 |
 
 Les **textes** des emails se modifient dans *Marketing › Communications › Modèles d'e-mail* : dupliquer le gabarit voulu, le modifier, puis le sélectionner dans le réglage correspondant. L'en-tête au logo et le pied de page de la marque s'appliquent automatiquement — inutile de les recopier dans chaque gabarit.
@@ -862,7 +862,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Renommer un statut | *Ventes › Statuts de commande* : le libellé change côté cliente **et** côté back-office. Ne pas supprimer un statut ni changer son code | §21 |
 | **Expédier en point relais** | L'*Adresse de livraison* de la commande est celle du point (« NOM — Point relais FR-087807 »). Créer l'étiquette sur l'espace pro Mondial Relay avec cette adresse, puis cliquer **Expédier** dans la commande (numéro de suivi facultatif) : la commande passe en « Expédiée » et l'email d'expédition part | §26 |
 | **Préparer un retrait** | Le rendez-vous figure dans *Méthode de livraison* (« Retrait à l'atelier — jeudi 15 octobre 2026 à 9 h 00 »). Quand la commande est prête : statut **Prête pour retrait**, l'email part avec le rendez-vous et le lieu | §26 |
-| **Remettre un retrait** | Au rendez-vous, encaisser (TPE ou espèces), puis **Facturer** et **Expédier** la commande : elle passe en « Livrée » | §26 |
+| **Remettre un retrait** | La méthode de paiement de la commande dit si elle est déjà réglée. **Carte bancaire en ligne** : déjà payée et facturée, **Expédier** suffit. **Paiement sur place** : au rendez-vous, encaisser (TPE ou espèces), puis **Facturer** et **Expédier**. Dans les deux cas, la commande passe en « Livrée » | §26 |
 | **Rendez-vous non honoré** | Annuler la commande (*Annuler* en haut de la commande) : le stock des créations et le créneau sont libérés automatiquement. Prévenir la cliente si besoin par un commentaire visible | §26 |
 | Emballage cadeau | Ligne « Emballage cadeau » dans les totaux de la commande ; le message à écrire sur la carte est dans *Message cadeau* du détail | §26 |
 
@@ -966,7 +966,7 @@ Posée par data patches, une seule fois : un réglage modifié ensuite dans l'ad
 | `payment/checkmo/active` | `0` |
 | `payment/stripe_payments/*` | défauts du `config.xml` du module Checkout (lot 8) : titre « Carte bancaire », formulaire intégré, encaissement immédiat |
 | Statuts par défaut des états | `pending_payment` → `madameaiguille_pending_payment`, `processing` → `madameaiguille_payment_received` (lot 8) |
-| `payment/cashondelivery/*` | actif, renommé « Paiement sur place » |
+| `payment/cashondelivery/*` | actif, renommé « Paiement sur place (carte ou espèces) » (« Paiement sur place » jusqu'au 30/10/2026) ; proposé avec le retrait seulement |
 | `carriers/tablerate/*` | actif, « Mondial Relay — Livraison en point relais », condition `package_weight` |
 | `carriers/flatrate/active`, `carriers/freeshipping/active` | `0` |
 | `carriers/madameaiguille_pickup/*` | actif, France seulement |
@@ -1002,11 +1002,11 @@ Contrôles serveur : point obligatoire, identifiant `XX-NNNNNN` cohérent avec l
 
 ### Retrait à l'atelier et rendez-vous
 
-Transporteur `madameaiguille_pickup` à 0 €, France seulement (réglage natif *Pays*). Paiement **sur place** uniquement — et les paiements en ligne ne sont proposés qu'avec le point relais (`Observer\RestrictPaymentToDelivery`, la méthode `free` reste toujours possible).
+Transporteur `madameaiguille_pickup` à 0 €, France seulement (réglage natif *Pays*), libellé « Sur rendez-vous, en ligne ou sur place ». **Depuis le 30/10/2026 (décision de Pierre)**, le retrait se règle au choix **en ligne** (« Carte bancaire en ligne », Stripe) ou **sur place** (« Paiement sur place (carte ou espèces) », méthode native `cashondelivery`, carte au TPE ou espèces) ; le point relais se paie en ligne seulement. `Observer\RestrictPaymentToDelivery` ne fait plus que retirer le paiement sur place hors retrait. Les deux titres ont été renommés par `Checkout/Setup/Patch/Data/RelabelPickupPaymentChoices.php` (seulement s'ils avaient encore leur valeur d'origine).
 
 La cliente choisit un jour puis une heure parmi les créneaux libres, lus par `GET /V1/madameaiguille/pickup-slots`. Calcul : plages hebdomadaires, durée d'un créneau, délai de prévenance, horizon, jours sans retrait (`Model\Pickup\SlotCalendar`, testé). Le créneau est revérifié au passage de l'étape Livraison, puis **réservé à la validation de la commande** : une ligne par place dans `madameaiguille_pickup_booking`, clé unique `(slot, seat)`. Deux clientes qui valident le même créneau au même instant : la seconde reçoit « Ce créneau vient d'être réservé. Revenez à l'étape Livraison pour en choisir un autre. » La place est libérée si la commande échoue, ou à l'**annulation** de la commande.
 
-Restitution : le rendez-vous s'ajoute à la description de livraison (« Retrait à l'atelier - … — jeudi 15 octobre 2026 à 9 h 00 »), donc à l'admin, aux emails, à la facture et au compte. L'email « Prête pour retrait » reçoit le rendez-vous, le lieu et le lien d'itinéraire (`Model\Pickup\EmailVariables`, branché sur l'expéditeur du lot 7 par `Theme\Model\Order\Email\TemplateVariablesProviderInterface`). Le rendez-vous est formaté dans la **langue de la boutique**, pas celle de l'utilisateur de l'admin.
+Restitution : le rendez-vous s'ajoute à la description de livraison (« Retrait à l'atelier - … — jeudi 15 octobre 2026 à 9 h 00 »), donc à l'admin, aux emails, à la facture et au compte. L'email « Prête pour retrait » reçoit le rendez-vous, le lieu, le lien d'itinéraire et `pickup_pay_on_site` (« Le règlement se fait sur place… » ou « Votre commande est déjà réglée en ligne. ») (`Model\Pickup\EmailVariables`, branché sur l'expéditeur du lot 7 par `Theme\Model\Order\Email\TemplateVariablesProviderInterface`). Le rendez-vous est formaté dans la **langue de la boutique**, pas celle de l'utilisateur de l'admin.
 
 Lieu générique en place : « Atelier Madame Aiguille, Saint-Épain (37800) ». Pas de carte interactive : une image de plan facultative et un lien d'itinéraire Google Maps, pour un lieu unique et sans question RGPD.
 
@@ -1048,7 +1048,8 @@ Recette locale du 23/10/2026 : relais + cadeau + CGV, carte de test 4242 → com
 | Paiement Stripe en attente (moyen différé) | En attente de paiement |
 | Paiement Stripe capté (à la commande) | Paiement reçu → email du lot 7 |
 | Retrait encore « nouveau » facturé par Céline | Paiement reçu → email du lot 7 (statut par défaut de `processing`) |
-| Commande de retrait créée | `pending`, affichée « En attente de paiement » |
+| Commande de retrait créée, paiement sur place | `pending`, affichée « En attente de paiement » |
+| Commande de retrait payée en ligne | Paiement reçu → email du lot 7 |
 | Expédition d'un colis | Expédiée (+ email d'expédition natif) |
 | « Expédition » d'un retrait (remise en main propre) | Livrée |
 
@@ -1071,6 +1072,7 @@ Un statut posé à la main par Céline n'est jamais réécrit. L'email de vireme
 - **Stripe sans clés** (lot 8) : le module ne publie aucune configuration (`isInitialized()`), et les composants `future_subscriptions` et `express_checkout` remplissent la console d'erreurs. Elles disparaissent dès que les clés du mode sont saisies.
 - **Stripe et les statuts** : pas de réglage de statut par état comme chez Mollie ; le module lit `getStateDefaultStatus()` et enregistre parfois l'état par `saveOrderFields()` (SQL direct, sans évènement de sauvegarde). Un observateur ne suffit pas : les statuts du lot 7 sont les statuts par défaut de leurs états.
 - **Formulaire Stripe et automatisation du navigateur** : les champs sont dans des iframes ; le premier clic ne donne pas toujours le focus, passer d'un champ à l'autre au clavier (Tab).
+- **`{{depend}}` imbriqués dans un gabarit d'email** : la directive associe le `{{depend}}` extérieur au premier `{{/depend}}` rencontré ; le reste part en directive orpheline et le rendu lève une `TypeError` (envoi abandonné, journalisé « Échec de la notification »). À l'intérieur d'un `{{depend}}`, conditionner avec `{{if}}`. Corrigé le 30/10/2026 dans `ready_for_pickup.html` (lien d'itinéraire).
 - **Conteneur vide `.payment-method.stripe-payments.mobile`** en tête des moyens de paiement : c'est l'emplacement des boutons express (coupés), pas la méthode « Carte bancaire ».
 
 ### Recette du 09/10/2026

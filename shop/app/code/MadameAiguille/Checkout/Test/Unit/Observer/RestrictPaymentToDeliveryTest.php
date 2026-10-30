@@ -42,15 +42,15 @@ class RestrictPaymentToDeliveryTest extends TestCase
     {
         return [
             'retrait : paiement sur place' => ['cashondelivery', Pickup::SHIPPING_METHOD, true],
-            'retrait : pas de carte en ligne' => ['stripe_payments', Pickup::SHIPPING_METHOD, false],
+            'retrait : carte en ligne aussi' => ['stripe_payments', Pickup::SHIPPING_METHOD, true],
             'point relais : carte en ligne' => ['stripe_payments', 'tablerate_bestway', true],
             'point relais : pas de paiement sur place' => ['cashondelivery', 'tablerate_bestway', false],
-            'commande à 0 € : toujours possible' => ['free', Pickup::SHIPPING_METHOD, true],
+            'commande à 0 € : toujours possible' => ['free', 'tablerate_bestway', true],
         ];
     }
 
     #[DataProvider('cases')]
-    public function testOnePaymentFamilyPerDeliveryMode(string $payment, string $shipping, bool $expected): void
+    public function testPayOnSiteIsReservedForPickup(string $payment, string $shipping, bool $expected): void
     {
         self::assertSame($expected, $this->isAvailable($payment, $shipping));
     }

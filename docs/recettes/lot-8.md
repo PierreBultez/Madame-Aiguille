@@ -42,8 +42,8 @@ Déployée le 23/10/2026 : version `20261023-165441-1a22192` (fusion de la PR #1
 | 3-D Secure (4000 0027 6000 3184) | Fenêtre d'authentification, puis « Paiement reçu » | 23/10 : **OK**, commande `000000003` : « Authentication Required » au premier passage, puis commande créée et payée 9 s plus tard sur le même paiement, **Paiement reçu**, facture `000000003` (sans cadeau, non choisi pour ce test) |
 | Apple Pay / Google Pay | Proposés sur un appareil compatible, domaine déclaré dans Stripe | |
 | Remboursement | Avoir en ligne depuis la facture → remboursement visible dans Stripe, emballage remboursé | 30/10 : **OK**, avoir `000000002` créé par Pierre depuis la facture (« Rembourser ») : 19,95 + 4,90 + **2,00 d'emballage** = 26,85 € remboursés **en ligne** (transaction `refund`), commande `closed` ; webhooks `charge.refunded` et `refund.updated` reçus (200), confirmation Stripe dans l'historique. Email d'avoir non envoyé (case « copie par email » non cochée) |
-| Retrait à l'atelier | Seul « Paiement sur place » proposé ; facturé par Céline → « Paiement reçu » | |
-| Commandes de test | Annulées ou remboursées dans l'administration | |
+| Retrait à l'atelier | Au choix « Paiement sur place (carte ou espèces) » ou « Carte bancaire en ligne » (décision du 30/10) ; payé en ligne → « Paiement reçu » ; sur place, facturé par Céline → « Paiement reçu » ; email « Prête pour retrait » adapté au mode de règlement | |
+| Commandes de test | Annulées ou remboursées dans l'administration | 30/10 : `000000002` et `000000003` remboursées en ligne par avoir (Pierre), `closed` ; email d'avoir de la `000000003` envoyé |
 
 À noter : l'enregistrement de la section Stripe dans l'administration écrit tous ses champs en base. `receipt_emails` y vaut `1` (le défaut du module Checkout est `0`) : Stripe envoie alors son propre reçu en plus de l'email de commande de Magento. À trancher par Pierre.
 
@@ -54,3 +54,17 @@ Commande Mollie `000000001` du serveur : `closed` au 23/10/2026 (soldée par avo
 Relevé en passant dans les journaux du serveur (hors Stripe) : avertissements PHP 8.5 « Using null as the key parameter for array_key_exists() » dans `magento/module-captcha`, journalisés en CRITICAL ; « The product with ID "1" does not exist » (produit supprimé encore référencé). À examiner.
 
 Les lignes INFO « Could not retrieve checkout session: The resource ID cannot be null or whitespace » du module Stripe sont attendues : le flux intégré n'utilise pas de session Stripe Checkout.
+
+## Retrait payé en ligne ou sur place (30/10/2026, local)
+
+Décision de Pierre : le retrait à l'atelier se règle au choix en ligne (Stripe) ou sur place (carte au TPE ou espèces) ; le point relais reste payé en ligne.
+
+| Contrôle | Résultat |
+|---|---|
+| Libellés | « Sur rendez-vous, en ligne ou sur place » (étape Livraison et récapitulatif), « Paiement sur place (carte ou espèces) » et « Carte bancaire en ligne » à l'étape Paiement |
+| Retrait, étape Paiement | Les deux moyens proposés ; point relais : carte en ligne seule (tests unitaires) |
+| Retrait payé par carte de test 4242 | Commande `000000026`, **Paiement reçu**, 24 € facturés, créneau du 12/11 à 10 h réservé et rattaché, confirmation avec rendez-vous et itinéraire |
+| Email « Prête pour retrait » (rendu sans envoi) | Payé en ligne : « Votre commande est déjà réglée en ligne. » ; sur place : « Le règlement se fait sur place, par carte ou en espèces. » ; rendez-vous et itinéraire présents |
+| Défaut corrigé au passage | Le gabarit imbriquait `{{depend pickup_directions_url}}` dans `{{depend pickup_slot}}` : le rendu levait une `TypeError`, l'email « Prête pour retrait » avec rendez-vous ne pouvait pas partir (antérieur au lot 8). Remplacé par `{{if}}` |
+| Pages juridiques locales | CGV §5 et §7, page Livraison et retours : « en ligne ou sur place » |
+| Tests | 120 tests, 303 assertions ; PHPCS Magento2 sans erreur |
