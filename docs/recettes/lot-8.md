@@ -7,6 +7,8 @@ SSH, ni clé Stripe, ni code enseigne).
 ## Décisions de Pierre
 
 - 14/10/2026, avec Céline : carte bancaire, Apple Pay et Google Pay seulement (Bancontact, iDEAL, Wero, Klarna coupés).
+- **30/10/2026 : changement de stratégie**, cinq moyens retenus : carte bancaire, Apple Pay, Google Pay, Bancontact et Klarna. Tableau de bord Stripe et administration réglés par Pierre : n'y rien changer.
+- 30/10/2026 : le retrait à l'atelier se règle en ligne ou sur place (carte au TPE ou espèces).
 - 23/10/2026 : compte Mondial Relay pro ouvert, code enseigne saisi en configuration (local et serveur), jamais versionné.
   Clé privée et code marque de l'API conservés par Pierre pour une automatisation future.
 - 23/10/2026 : **Mollie abandonné** (compte fermé) au profit de **Stripe**, compte ouvert par Pierre en « tunnel de
@@ -77,4 +79,5 @@ Version `20261030-100325-328149f` (fusion de la PR #2 dans `main`).
 |---|---|
 | Titres de paiement | « Carte bancaire en ligne » et « Paiement sur place (carte ou espèces) » en base |
 | Pages juridiques | CGV §5 et §7, Livraison et retours : « en ligne ou sur place » |
-| `env:check --serveur --noindex` | 0 erreur ; 1 avertissement « boutons express actifs » : Pierre avait activé l'emplacement « Checkout, within payment form » avec Apple Pay et Google Pay, **le bon réglage** (sans lui, ces portefeuilles sont masqués). Contrôle affiné : il n'avertit plus que pour les emplacements hors du formulaire, ou si Apple Pay / Google Pay sont masqués. Klarna coché dans ce réglage : sans effet hors des boutons express, mais à laisser désactivé dans le tableau de bord Stripe |
+| `env:check --serveur --noindex` | 0 erreur ; 1 avertissement « boutons express actifs » : Pierre avait activé l'emplacement « Checkout, within payment form » avec Apple Pay et Google Pay, **le bon réglage** (sans lui, ces portefeuilles sont masqués). Contrôle affiné : il n'avertit plus que pour les emplacements hors du formulaire, ou si Apple Pay / Google Pay sont masqués. Klarna coché dans ce réglage : conforme à la décision du 30/10/2026 (cinq moyens, Klarna compris) |
+| Après le déploiement de la PR #3 (`20261030-101836-0b188f8`) | Libellé du retrait « Sur rendez-vous à l'atelier de Saint-Épain (37800) » en ligne ; `env:check --serveur --noindex` à **0 erreur, 0 avertissement** ; **Stripe en mode live** (clés live renseignées) : tout paiement par carte est désormais réel |
