@@ -381,7 +381,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 8. ~~Statut fiscal / TVA~~ — franchise en base, mention en place.
 9. Comptes réseaux sociaux réels : Instagram et Facebook saisis, **URL TikTok à fournir**.
 10. Nom de domaine et serveur (lot **8a**).
-11. ~~Méthodes Mollie définitives~~ (carte, Apple Pay, Google Pay le 14/10/2026, via Stripe depuis le 23/10/2026), texte CGV et confidentialité (newsletter / transporteurs), adresse exacte du retrait : **à valider avant ouverture**.
+11. ~~Méthodes Mollie définitives~~ (carte, Apple Pay, Google Pay le 14/10/2026, via Stripe depuis le 23/10/2026 ; **cinq moyens depuis le 30/10/2026** : carte, Apple Pay, Google Pay, Bancontact, Klarna ; retrait payable en ligne ou sur place), texte CGV et confidentialité (newsletter / transporteurs), adresse exacte du retrait : **à valider avant ouverture**.
 
 ## Décisions techniques à prendre (Pierre)
 
