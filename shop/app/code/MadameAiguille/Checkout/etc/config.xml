@@ -33,7 +33,7 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
                 <active>1</active>
                 <model>MadameAiguille\Checkout\Model\Carrier\Pickup</model>
                 <title>Retrait à l'atelier</title>
-                <name>Sur rendez-vous, payé sur place</name>
+                <name>Sur rendez-vous, en ligne ou sur place</name>
                 <sallowspecific>1</sallowspecific>
                 <specificcountry>FR</specificcountry>
                 <showmethod>0</showmethod>
@@ -49,7 +49,7 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
         -->
         <payment>
             <stripe_payments>
-                <title>Carte bancaire</title>
+                <title>Carte bancaire en ligne</title>
                 <payment_action>authorize_capture</payment_action>
                 <payment_flow>0</payment_flow>
                 <adaptive_pricing>0</adaptive_pricing>

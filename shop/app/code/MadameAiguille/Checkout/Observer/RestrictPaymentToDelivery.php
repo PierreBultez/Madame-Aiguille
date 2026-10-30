@@ -1,10 +1,10 @@
 <?php
 /**
- * Un moyen de paiement par mode de livraison (call Céline du 11/09/2026) :
- * le retrait à l'atelier se règle sur place, tout le reste se paie en ligne.
+ * Moyens de paiement selon le mode de livraison : le point relais se paie en ligne ; le retrait à l'atelier
+ * se règle au choix en ligne ou sur place, par carte au TPE ou en espèces (décision de Pierre du 30/10/2026,
+ * le call Céline du 11/09/2026 ne prévoyait que le paiement sur place).
  *
- * Le paiement sur place est la méthode native « cashondelivery », renommée.
- * « free » (commande à 0 €) reste toujours possible.
+ * Le paiement sur place est la méthode native « cashondelivery », renommée : c'est la seule que l'on retire.
  */
 
 declare(strict_types=1);
@@ -20,7 +20,6 @@ use Magento\Quote\Api\Data\CartInterface;
 class RestrictPaymentToDelivery implements ObserverInterface
 {
     public const PAY_ON_SITE = 'cashondelivery';
-    private const ALWAYS_ALLOWED = ['free'];
 
     public function execute(Observer $observer): void
     {
@@ -29,17 +28,14 @@ class RestrictPaymentToDelivery implements ObserverInterface
         $quote = $observer->getEvent()->getQuote();
         $code = (string) $observer->getEvent()->getMethodInstance()->getCode();
 
-        if (!$result->getData('is_available')
-            || !$quote instanceof CartInterface
-            || in_array($code, self::ALWAYS_ALLOWED, true)
-        ) {
+        if ($code !== self::PAY_ON_SITE || !$result->getData('is_available') || !$quote instanceof CartInterface) {
             return;
         }
 
         $isPickup = !$quote->isVirtual()
             && $quote->getShippingAddress()->getShippingMethod() === Pickup::SHIPPING_METHOD;
 
-        if ($isPickup !== ($code === self::PAY_ON_SITE)) {
+        if (!$isPickup) {
             $result->setData('is_available', false);
         }
     }

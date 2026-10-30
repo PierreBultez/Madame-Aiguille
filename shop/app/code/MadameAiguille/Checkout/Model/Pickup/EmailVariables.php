@@ -1,12 +1,14 @@
 <?php
 /**
- * Variables de l'email « Prête pour retrait » : rendez-vous choisi dans le tunnel, lieu et itinéraire.
+ * Variables de l'email « Prête pour retrait » : rendez-vous choisi dans le tunnel, lieu, itinéraire,
+ * et mode de règlement (sur place, ou déjà payé en ligne).
  */
 
 declare(strict_types=1);
 
 namespace MadameAiguille\Checkout\Model\Pickup;
 
+use MadameAiguille\Checkout\Observer\RestrictPaymentToDelivery;
 use MadameAiguille\Checkout\Plugin\Checkout\AssignPickupSlot;
 use MadameAiguille\Theme\Model\Order\Email\TemplateVariablesProviderInterface;
 use Magento\Sales\Model\Order;
@@ -31,6 +33,10 @@ class EmailVariables implements TemplateVariablesProviderInterface
             'pickup_location_name' => $this->config->getLocationName(),
             'pickup_location_address' => $this->config->getLocationAddress(),
             'pickup_directions_url' => $this->config->getDirectionsUrl(),
+            // Chaîne vide pour la branche {{else}} de la directive {{if}} des gabarits
+            'pickup_pay_on_site' => $order->getPayment()?->getMethod() === RestrictPaymentToDelivery::PAY_ON_SITE
+                ? '1'
+                : '',
         ];
     }
 }

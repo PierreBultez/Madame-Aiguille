@@ -1,6 +1,6 @@
 <?php
 /**
- * Retrait à l'atelier (click & collect) : 0 €, payé sur place, sur rendez-vous.
+ * Retrait à l'atelier (click & collect) : 0 €, sur rendez-vous, payé en ligne ou sur place.
  *
  * La restriction géographique éventuelle passe par les réglages natifs « pays autorisés » du transporteur.
  */

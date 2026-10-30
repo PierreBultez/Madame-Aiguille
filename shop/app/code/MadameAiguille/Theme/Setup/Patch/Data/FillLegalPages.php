@@ -136,13 +136,13 @@ HTML;
 <p>Une création peut être épuisée entre sa mise au panier et la validation de la commande : dans ce cas, la commande n’est pas enregistrée pour cet article et aucun montant n’est prélevé à ce titre.</p>
 <h2>5. Paiement</h2>
 <p>Le paiement en ligne s’effectue <strong>par carte bancaire</strong>, par l’intermédiaire du prestataire de paiement Stripe. Les données bancaires sont transmises directement au prestataire et ne sont jamais conservées par l’atelier.</p>
-<p>Pour les commandes retirées en main propre, le paiement s’effectue <strong>sur place</strong>, par carte bancaire ou en espèces, au moment du retrait.</p>
+<p>Pour les commandes retirées en main propre, le paiement s’effectue au choix <strong>en ligne</strong> lors de la commande, ou <strong>sur place</strong> au moment du retrait, par carte bancaire ou en espèces.</p>
 <h2>6. Livraison</h2>
 <p>Les créations sont expédiées en <strong>point relais Mondial Relay</strong>, en <strong>France, Belgique et Luxembourg</strong>. Les frais de livraison sont calculés au poids de la commande et affichés avant le paiement.</p>
 <p><strong>Livraison offerte à partir de 60 €</strong> d’achat, en point relais.</p>
 <p>Les commandes sont expédiées sous <strong>4 à 5 jours ouvrés</strong>, auxquels s’ajoute le délai d’acheminement du transporteur. Ces délais sont indicatifs ; un retard ne peut donner lieu à annulation ou indemnité, sauf dispositions légales contraires.</p>
 <h2>7. Retrait en main propre</h2>
-<p>Le retrait en main propre est proposé sur rendez-vous, aux créneaux indiqués lors de la commande. Le paiement s’effectue sur place. À défaut de retrait au rendez-vous convenu, et sans nouvelle prise de rendez-vous, la commande peut être annulée et les créations remises en vente.</p>
+<p>Le retrait en main propre est proposé sur rendez-vous, aux créneaux indiqués lors de la commande. Le paiement s’effectue en ligne lors de la commande ou sur place au moment du retrait. À défaut de retrait au rendez-vous convenu, et sans nouvelle prise de rendez-vous, la commande peut être annulée et les créations remises en vente.</p>
 <h2>8. Droit de rétractation</h2>
 <p>Conformément aux articles L. 221-18 et suivants du Code de la consommation, la cliente dispose d’un délai de <strong>quatorze jours</strong> à compter de la réception de sa commande pour exercer son droit de rétractation, sans avoir à motiver sa décision.</p>
 <p>Pour l’exercer, il suffit d’en informer l’atelier par le <a href="{{store url='contact'}}">formulaire de contact</a> ou par courriel avant l’expiration du délai. Les créations doivent être renvoyées complètes, non utilisées et dans leur état d’origine, dans les quatorze jours suivant cette notification.</p>
@@ -173,7 +173,7 @@ HTML;
 <p>Les créations étant cousues à la main, les commandes sont expédiées sous <strong>4 à 5 jours ouvrés</strong>. S’ajoute ensuite le délai d’acheminement de Mondial Relay, généralement de deux à quatre jours ouvrés.</p>
 <p>Les périodes de marchés et de congés sont annoncées dans le bandeau en haut du site.</p>
 <h2>Retrait en main propre</h2>
-<p>Vous pouvez aussi retirer votre commande sur rendez-vous, sans frais de livraison. Le créneau se choisit au moment de la commande, parmi les disponibilités de l’atelier, et <strong>le paiement s’effectue sur place</strong>, par carte bancaire ou en espèces.</p>
+<p>Vous pouvez aussi retirer votre commande sur rendez-vous, sans frais de livraison. Le créneau se choisit au moment de la commande, parmi les disponibilités de l’atelier, et le paiement s’effectue au choix <strong>en ligne ou sur place</strong>, par carte bancaire ou en espèces.</p>
 <p>Si vous ne pouvez pas venir au rendez-vous convenu, prévenez-nous : sans nouvelle de votre part, la commande peut être annulée et les créations remises en vente.</p>
 <h2>Changer d’avis</h2>
 <p>Vous disposez de <strong>quatorze jours</strong> après réception pour changer d’avis, sans avoir à vous justifier. Prévenez-nous par le <a href="{{store url='contact'}}">formulaire de contact</a>, puis renvoyez la création complète, non utilisée et dans son état d’origine, dans les quatorze jours qui suivent.</p>
