@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <!--
-    Boutons express et messages de paiement fractionné de Stripe : coupés en configuration (module Checkout),
-    retirés aussi ici pour qu'une réactivation dans l'administration ne charge pas leur JavaScript Luma sur Hyvä.
+    Boutons express et messages de paiement fractionné de Stripe sur la fiche produit. L'interrupteur express
+    général reste actif pour Apple Pay / Google Pay dans le formulaire de paiement du tunnel (module Checkout) :
+    ces blocs, conditionnés par lui seul, sont donc retirés ici, leur JavaScript Luma ne tournant pas sur Hyvä.
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">

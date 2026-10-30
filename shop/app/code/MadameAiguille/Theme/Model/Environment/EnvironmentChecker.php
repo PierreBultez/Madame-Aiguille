@@ -40,6 +40,9 @@ class EnvironmentChecker
 
     private const CRON_MAX_MINUTES = 10;
 
+    /** Emplacement express « dans le formulaire de paiement » : seul accès d'Apple Pay et Google Pay au tunnel. */
+    public const STRIPE_WALLETS_IN_FORM = 'checkout_page_embedded';
+
     /** @var list<Finding> */
     private array $findings = [];
 
@@ -217,12 +220,25 @@ class EnvironmentChecker
             $this->ok('Stripe', sprintf('mode %s, clés renseignées', $mode));
         }
 
-        // Le paiement n'est confirmé dans Magento (facture, « Paiement reçu ») qu'à la réception des webhooks.
+        // Les remboursements et litiges faits depuis Stripe ne remontent dans Magento que par les webhooks.
         if (!$this->flag('payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration')) {
             $this->warning('Stripe', 'webhooks non configurés automatiquement : les déclarer dans Stripe');
         }
-        if ($this->flag('payment/stripe_payments_express/global_enabled')) {
-            $this->warning('Stripe', 'boutons express actifs : ils contournent le point relais et le créneau');
+
+        // Dans le formulaire de paiement, Apple Pay et Google Pay arrivent après le choix de la livraison ;
+        // partout ailleurs, les boutons express contournent le point relais et le créneau.
+        $locations = $this->flag('payment/stripe_payments_express/global_enabled')
+            ? array_filter(explode(',', (string) $this->value('payment/stripe_payments_express/enabled')))
+            : [];
+        $outside = array_diff($locations, [self::STRIPE_WALLETS_IN_FORM]);
+        if ($outside !== []) {
+            $this->warning('Stripe', sprintf(
+                'boutons express hors du formulaire de paiement (%s) : ils contournent le point relais et le créneau',
+                implode(', ', $outside)
+            ));
+        }
+        if (!in_array(self::STRIPE_WALLETS_IN_FORM, $locations, true)) {
+            $this->warning('Stripe', 'Apple Pay et Google Pay masqués : activer « Checkout, within payment form »');
         }
     }
 

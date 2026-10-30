@@ -33,7 +33,7 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
                 <active>1</active>
                 <model>MadameAiguille\Checkout\Model\Carrier\Pickup</model>
                 <title>Retrait à l'atelier</title>
-                <name>Sur rendez-vous, en ligne ou sur place</name>
+                <name>Sur rendez-vous à l'atelier de Saint-Épain (37800)</name>
                 <sallowspecific>1</sallowspecific>
                 <specificcountry>FR</specificcountry>
                 <showmethod>0</showmethod>
@@ -42,10 +42,12 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
             </madameaiguille_pickup>
         </carriers>
         <!--
-            Stripe (lot 8) : formulaire de paiement intégré au tunnel, encaissement immédiat. Carte, Apple Pay et
-            Google Pay se choisissent dans le tableau de bord Stripe. Les boutons express et les messages de paiement
-            fractionné restent coupés : ils contourneraient le choix du point relais et du créneau, et leur JavaScript
-            Luma ne tourne pas sur les pages Hyvä. Clés et mode se saisissent dans l'administration.
+            Stripe (lot 8) : formulaire de paiement intégré au tunnel, encaissement immédiat. Apple Pay et Google Pay
+            n'apparaissent dans ce formulaire que si l'emplacement express « checkout_page_embedded » est actif (sinon
+            le module les force à « never ») : c'est le seul emplacement retenu, la livraison y est déjà choisie.
+            Ailleurs (fiche produit, mini-panier, panier, haut du tunnel), les boutons express contourneraient le
+            point relais et le créneau, et leur JavaScript Luma ne tourne pas sur Hyvä. Les moyens proposés se
+            choisissent aussi dans le tableau de bord Stripe. Clés et mode se saisissent dans l'administration.
         -->
         <payment>
             <stripe_payments>
@@ -57,8 +59,14 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
                 <receipt_emails>0</receipt_emails>
             </stripe_payments>
             <stripe_payments_express>
-                <global_enabled>0</global_enabled>
-                <enabled/>
+                <global_enabled>1</global_enabled>
+                <enabled>checkout_page_embedded</enabled>
+                <apple_pay_enabled>1</apple_pay_enabled>
+                <google_pay_enabled>1</google_pay_enabled>
+                <link_enabled>0</link_enabled>
+                <paypal_enabled>0</paypal_enabled>
+                <amazon_pay_enabled>0</amazon_pay_enabled>
+                <klarna_enabled>0</klarna_enabled>
             </stripe_payments_express>
             <stripe_payments_payment_method_messaging>
                 <show_on_product_page>0</show_on_product_page>

@@ -40,6 +40,8 @@ class EnvironmentCheckerTest extends TestCase
         'payment/stripe_payments_basic/stripe_test_pk' => 'pk_test_publique',
         'payment/stripe_payments_basic/stripe_test_sk' => 'chiffré',
         'payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration' => '1',
+        'payment/stripe_payments_express/global_enabled' => '1',
+        'payment/stripe_payments_express/enabled' => 'checkout_page_embedded',
         'recaptcha_frontend/type_for/customer_create' => 'invisible',
         'recaptcha_frontend/type_for/contact' => 'invisible',
         'recaptcha_frontend/type_for/newsletter' => 'invisible',
@@ -236,13 +238,30 @@ class EnvironmentCheckerTest extends TestCase
         self::assertSame([], $this->messages($this->check($config, false, false), Finding::ERROR));
     }
 
-    public function testExpressButtonsAreAWarning(): void
+    public function testExpressButtonsOutsideThePaymentFormAreAWarning(): void
     {
         $warnings = $this->messages(
-            $this->check(['payment/stripe_payments_express/global_enabled' => '1']),
+            $this->check(['payment/stripe_payments_express/enabled' => 'product_page,checkout_page_embedded']),
             Finding::WARNING
         );
 
-        self::assertContains('Stripe — boutons express actifs : ils contournent le point relais et le créneau', $warnings);
+        self::assertContains(
+            'Stripe — boutons express hors du formulaire de paiement (product_page) :'
+                . ' ils contournent le point relais et le créneau',
+            $warnings
+        );
+    }
+
+    public function testWalletsHiddenFromThePaymentFormAreAWarning(): void
+    {
+        $warnings = $this->messages(
+            $this->check(['payment/stripe_payments_express/global_enabled' => '0']),
+            Finding::WARNING
+        );
+
+        self::assertSame(
+            ['Stripe — Apple Pay et Google Pay masqués : activer « Checkout, within payment form »'],
+            $warnings
+        );
     }
 }
