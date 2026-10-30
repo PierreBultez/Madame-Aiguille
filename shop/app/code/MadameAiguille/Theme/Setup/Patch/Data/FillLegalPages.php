@@ -132,10 +132,17 @@ HTML;
 <p>Les prix sont indiqués en euros, toutes taxes comprises. <strong>TVA non applicable, article 293 B du Code général des impôts</strong> : l’atelier bénéficie de la franchise en base et ne facture donc pas de TVA. Les frais de livraison sont indiqués séparément avant la validation de la commande.</p>
 <p>L’atelier se réserve le droit de modifier ses prix à tout moment ; les créations sont facturées au prix en vigueur au moment de la validation de la commande.</p>
 <h2>4. Commande</h2>
-<p>La commande se déroule en ligne, avec ou sans création de compte. Elle n’est définitive qu’après validation du paiement. Un courriel de confirmation récapitule les créations commandées, le mode de livraison et le montant total.</p>
+<p>La commande se déroule en ligne, avec ou sans création de compte. Elle n’est définitive qu’après validation du paiement en ligne ou, pour un retrait payé sur place, dès son enregistrement. Un courriel de confirmation récapitule les créations commandées, le mode de livraison et le montant total.</p>
 <p>Une création peut être épuisée entre sa mise au panier et la validation de la commande : dans ce cas, la commande n’est pas enregistrée pour cet article et aucun montant n’est prélevé à ce titre.</p>
 <h2>5. Paiement</h2>
-<p>Le paiement en ligne s’effectue <strong>par carte bancaire</strong>, par l’intermédiaire du prestataire de paiement Stripe. Les données bancaires sont transmises directement au prestataire et ne sont jamais conservées par l’atelier.</p>
+<p>Le paiement en ligne s’effectue par l’intermédiaire du prestataire de paiement <strong>Stripe</strong>, au choix :</p>
+<ul>
+<li>par <strong>carte bancaire</strong> (CB, Visa, Mastercard notamment) ;</li>
+<li>avec <strong>Apple Pay</strong> ou <strong>Google Pay</strong>, depuis un appareil compatible ;</li>
+<li>avec <strong>Bancontact</strong> ;</li>
+<li>avec <strong>Klarna</strong>, qui permet, selon les offres proposées au moment du paiement et sous réserve de son accord, de régler en plusieurs fois ou plus tard. Ce service est fourni par Klarna, selon ses propres conditions, présentées avant toute validation ; l’atelier reçoit le paiement de la commande en une fois.</li>
+</ul>
+<p>Les moyens proposés peuvent varier selon l’appareil, le pays et le montant de la commande. Le paiement en ligne est encaissé à la validation de la commande. Les données bancaires sont transmises directement au prestataire et ne sont jamais conservées par l’atelier.</p>
 <p>Pour les commandes retirées en main propre, le paiement s’effectue au choix <strong>en ligne</strong> lors de la commande, ou <strong>sur place</strong> au moment du retrait, par carte bancaire ou en espèces.</p>
 <h2>6. Livraison</h2>
 <p>Les créations sont expédiées en <strong>point relais Mondial Relay</strong>, en <strong>France, Belgique et Luxembourg</strong>. Les frais de livraison sont calculés au poids de la commande et affichés avant le paiement.</p>
