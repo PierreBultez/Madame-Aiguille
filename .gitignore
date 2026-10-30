@@ -16,6 +16,8 @@
 
 # Configuration d'environnement : identifiants BDD, clé de chiffrement — JAMAIS commité
 /shop/app/etc/env.php
+# … ni ses copies de sauvegarde (env.php.bak-AAAAMMJJ, env.php.orig…), qui contiennent les mêmes secrets
+/shop/app/etc/env.php.*
 # app/etc/config.php (liste des modules) est volontairement suivi
 
 # Squelette fourni par magento/magento2-base (restauré par composer install, magento-force=override) :
