@@ -1002,7 +1002,7 @@ Contrôles serveur : point obligatoire, identifiant `XX-NNNNNN` cohérent avec l
 
 ### Retrait à l'atelier et rendez-vous
 
-Transporteur `madameaiguille_pickup` à 0 €, France seulement (réglage natif *Pays*), libellé « Sur rendez-vous, en ligne ou sur place ». **Depuis le 30/10/2026 (décision de Pierre)**, le retrait se règle au choix **en ligne** (« Carte bancaire en ligne », Stripe) ou **sur place** (« Paiement sur place (carte ou espèces) », méthode native `cashondelivery`, carte au TPE ou espèces) ; le point relais se paie en ligne seulement. `Observer\RestrictPaymentToDelivery` ne fait plus que retirer le paiement sur place hors retrait. Les deux titres ont été renommés par `Checkout/Setup/Patch/Data/RelabelPickupPaymentChoices.php` (seulement s'ils avaient encore leur valeur d'origine).
+Transporteur `madameaiguille_pickup` à 0 €, France seulement (réglage natif *Pays*), libellé « Sur rendez-vous à l'atelier de Saint-Épain (37800) » (*Ventes › Méthodes de livraison › Retrait à l'atelier*, champ du nom de la méthode, à modifier si le lieu change). **Depuis le 30/10/2026 (décision de Pierre)**, le retrait se règle au choix **en ligne** (« Carte bancaire en ligne », Stripe) ou **sur place** (« Paiement sur place (carte ou espèces) », méthode native `cashondelivery`, carte au TPE ou espèces) ; le point relais se paie en ligne seulement. `Observer\RestrictPaymentToDelivery` ne fait plus que retirer le paiement sur place hors retrait. Les deux titres ont été renommés par `Checkout/Setup/Patch/Data/RelabelPickupPaymentChoices.php` (seulement s'ils avaient encore leur valeur d'origine).
 
 La cliente choisit un jour puis une heure parmi les créneaux libres, lus par `GET /V1/madameaiguille/pickup-slots`. Calcul : plages hebdomadaires, durée d'un créneau, délai de prévenance, horizon, jours sans retrait (`Model\Pickup\SlotCalendar`, testé). Le créneau est revérifié au passage de l'étape Livraison, puis **réservé à la validation de la commande** : une ligne par place dans `madameaiguille_pickup_booking`, clé unique `(slot, seat)`. Deux clientes qui valident le même créneau au même instant : la seconde reçoit « Ce créneau vient d'être réservé. Revenez à l'étape Livraison pour en choisir un autre. » La place est libérée si la commande échoue, ou à l'**annulation** de la commande.
 
@@ -1025,8 +1025,9 @@ Mollie est retiré le 23/10/2026 (compte fermé) : paquets déclarés dans le `r
 | Réglage | Où | Valeur |
 |---|---|---|
 | Titre, flux, encaissement | `Checkout/etc/config.xml` | « Carte bancaire », formulaire intégré au tunnel (`payment_flow = 0`), `authorize_capture`, sans carte enregistrée ni reçu Stripe |
-| Moyens proposés dans le formulaire | tableau de bord Stripe | carte, Apple Pay, Google Pay (Link à trancher par Pierre) |
-| Boutons express, messages de paiement fractionné | `Checkout/etc/config.xml` | coupés : ils contournent le point relais et le créneau, et leur JavaScript Luma ne tourne pas sur Hyvä |
+| Moyens proposés dans le formulaire | tableau de bord Stripe | carte, Apple Pay, Google Pay ; ni Klarna ni Link |
+| Apple Pay / Google Pay | `Checkout/etc/config.xml` | interrupteur express actif, emplacement **« Checkout, within payment form »** (`checkout_page_embedded`) seul : sans lui, le module force Apple Pay, Google Pay et Link à « never » dans le formulaire. La livraison y est déjà choisie |
+| Boutons express ailleurs, messages de paiement fractionné | `Checkout/etc/config.xml` + thème | coupés (fiche produit, mini-panier, panier, haut du tunnel) : ils contournent le point relais et le créneau, et leur JavaScript Luma ne tourne pas sur Hyvä |
 | Abonnements, virements | `Checkout/etc/config.xml` | coupés |
 | Clés et mode | *Ventes › Moyens de paiement › Stripe* | saisis par Pierre, jamais versionnés |
 | Statuts | `UseOwnStatusesAsStateDefaults` | Stripe pose le statut **par défaut** de l'état, parfois par requête SQL directe : nos statuts deviennent ces défauts |
@@ -1037,7 +1038,7 @@ Côté Hyvä, le thème enfant retire ce que Stripe injecte hors du tunnel (`def
 
 **Pages juridiques** : `NameStripeInLegalPages` remplace les trois phrases exactes citant Mollie (CGV, confidentialité) ; une phrase retouchée dans l'admin n'est jamais réécrite.
 
-**`env:check`** : module et méthode actifs (erreur sur le serveur, avertissement en local), mode et clés, clé publique cohérente avec le mode (`pk_test_` / `pk_live_`), webhooks automatiques, boutons express.
+**`env:check`** : module et méthode actifs (erreur sur le serveur, avertissement en local), mode et clés, clé publique cohérente avec le mode (`pk_test_` / `pk_live_`), webhooks automatiques, boutons express **hors** du formulaire de paiement, Apple Pay / Google Pay masqués.
 
 Recette locale du 23/10/2026 : relais + cadeau + CGV, carte de test 4242 → commande `000000025` en **Paiement reçu**, 30,90 € capturés, facture `000000010` avec la ligne d'emballage, seul « Carte bancaire » proposé pour le relais. Pas encore recettés : webhooks, remboursement depuis Stripe, emails reçus, Apple Pay / Google Pay (domaine à déclarer dans Stripe), refus et 3-D Secure — sur le serveur en mode test.
 
@@ -1073,6 +1074,7 @@ Un statut posé à la main par Céline n'est jamais réécrit. L'email de vireme
 - **Stripe et les statuts** : pas de réglage de statut par état comme chez Mollie ; le module lit `getStateDefaultStatus()` et enregistre parfois l'état par `saveOrderFields()` (SQL direct, sans évènement de sauvegarde). Un observateur ne suffit pas : les statuts du lot 7 sont les statuts par défaut de leurs états.
 - **Formulaire Stripe et automatisation du navigateur** : les champs sont dans des iframes ; le premier clic ne donne pas toujours le focus, passer d'un champ à l'autre au clavier (Tab).
 - **`{{depend}}` imbriqués dans un gabarit d'email** : la directive associe le `{{depend}}` extérieur au premier `{{/depend}}` rencontré ; le reste part en directive orpheline et le rendu lève une `TypeError` (envoi abandonné, journalisé « Échec de la notification »). À l'intérieur d'un `{{depend}}`, conditionner avec `{{if}}`. Corrigé le 30/10/2026 dans `ready_for_pickup.html` (lien d'itinéraire).
+- **Apple Pay et Google Pay invisibles** : tant que l'emplacement express « Checkout, within payment form » est inactif, le module passe `wallets: never` au formulaire de paiement. Corrigé le 30/10/2026 (défauts du module Checkout, réglé dans l'admin du serveur par Pierre) ; `env:check` le signale.
 - **Conteneur vide `.payment-method.stripe-payments.mobile`** en tête des moyens de paiement : c'est l'emplacement des boutons express (coupés), pas la méthode « Carte bancaire ».
 
 ### Recette du 09/10/2026

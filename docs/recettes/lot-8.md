@@ -61,10 +61,20 @@ Décision de Pierre : le retrait à l'atelier se règle au choix en ligne (Strip
 
 | Contrôle | Résultat |
 |---|---|
-| Libellés | « Sur rendez-vous, en ligne ou sur place » (étape Livraison et récapitulatif), « Paiement sur place (carte ou espèces) » et « Carte bancaire en ligne » à l'étape Paiement |
+| Libellés | « Sur rendez-vous, en ligne ou sur place » (étape Livraison et récapitulatif), remplacé le jour même à la demande de Pierre par « Sur rendez-vous à l'atelier de Saint-Épain (37800) » ; « Paiement sur place (carte ou espèces) » et « Carte bancaire en ligne » à l'étape Paiement |
 | Retrait, étape Paiement | Les deux moyens proposés ; point relais : carte en ligne seule (tests unitaires) |
 | Retrait payé par carte de test 4242 | Commande `000000026`, **Paiement reçu**, 24 € facturés, créneau du 12/11 à 10 h réservé et rattaché, confirmation avec rendez-vous et itinéraire |
 | Email « Prête pour retrait » (rendu sans envoi) | Payé en ligne : « Votre commande est déjà réglée en ligne. » ; sur place : « Le règlement se fait sur place, par carte ou en espèces. » ; rendez-vous et itinéraire présents |
 | Défaut corrigé au passage | Le gabarit imbriquait `{{depend pickup_directions_url}}` dans `{{depend pickup_slot}}` : le rendu levait une `TypeError`, l'email « Prête pour retrait » avec rendez-vous ne pouvait pas partir (antérieur au lot 8). Remplacé par `{{if}}` |
 | Pages juridiques locales | CGV §5 et §7, page Livraison et retours : « en ligne ou sur place » |
 | Tests | 120 tests, 303 assertions ; PHPCS Magento2 sans erreur |
+
+## Serveur après déploiement du 30/10/2026
+
+Version `20261030-100325-328149f` (fusion de la PR #2 dans `main`).
+
+| Contrôle | Résultat |
+|---|---|
+| Titres de paiement | « Carte bancaire en ligne » et « Paiement sur place (carte ou espèces) » en base |
+| Pages juridiques | CGV §5 et §7, Livraison et retours : « en ligne ou sur place » |
+| `env:check --serveur --noindex` | 0 erreur ; 1 avertissement « boutons express actifs » : Pierre avait activé l'emplacement « Checkout, within payment form » avec Apple Pay et Google Pay, **le bon réglage** (sans lui, ces portefeuilles sont masqués). Contrôle affiné : il n'avertit plus que pour les emplacements hors du formulaire, ou si Apple Pay / Google Pay sont masqués. Klarna coché dans ce réglage : sans effet hors des boutons express, mais à laisser désactivé dans le tableau de bord Stripe |
