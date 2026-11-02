@@ -41,8 +41,12 @@ class CreateWorkshopRole implements DataPatchInterface
         'Magento_Backend::global_search',
     ];
 
-    /** Droits accordés seuls : fiches clientes sans suppression ni mot de passe, pages sans suppression ni design. */
+    /**
+     * Droits accordés seuls : fiches clientes sans suppression ni mot de passe, pages sans suppression ni design,
+     * et sa propre double authentification (sans elle, la connexion est refusée).
+     */
     public const SINGLE = [
+        'Magento_TwoFactorAuth::tfa',
         'Magento_Customer::manage',
         'Magento_Customer::online',
         'Magento_Cms::page',

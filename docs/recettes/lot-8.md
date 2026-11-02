@@ -104,3 +104,13 @@ Observation (antérieure au lot 8) : la frise d'une commande remboursée (`close
 
 `NameKlarnaInPrivacyPage` (phrases exactes, présentes à l'identique sur le serveur) : partie « Paiement » — si la cliente choisit Klarna, identité, coordonnées et montant lui sont transmis et Klarna peut vérifier son éligibilité ; liste des destinataires — Stripe pour carte bancaire, Apple Pay, Google Pay et Bancontact, **Klarna** lorsqu'il est choisi, pour son propre service et selon sa politique de confidentialité. Rendu contrôlé à 1440 et 390 px. Les mentions « [hébergeur] » et « [prestataire d'envoi d'e-mails] » restent à remplacer (OVH, Brevo : §23). Texte à valider par le conseil de Céline.
 
+## Ouverture et grille Mondial Relay (02/11/2026, serveur)
+
+| Contrôle | Résultat |
+|---|---|
+| `95-ouverture-ventes.sh` | En-tête `X-Robots-Tag` retiré ; le contrôle immédiat le montrait encore (anciens processus nginx), absent des réponses ensuite |
+| Indexation | Balise robots `INDEX,FOLLOW`, `robots.txt` avec exclusions et sitemap ; sitemap `https://madame-aiguille.fr/media/sitemap.xml` en ligne (25 adresses), déclaré dans la Search Console par Pierre avec demande d'indexation de l'accueil |
+| `env:check --serveur` | 0 erreur, 0 avertissement |
+| Compte de Céline | Créé par Pierre : actif, rôle « Atelier », français |
+| Grille Mondial Relay | Importée (26 lignes) : FR 0,5 kg → 4,10 € ; 0,51 kg → 4,51 € ; 4 kg → 6,71 € ; 30 kg → 23,99 € ; MC 1 kg → 4,51 € ; BE 0,5 kg → 4,60 € ; BE 4 kg → 9,99 € ; LU 10 kg → 17,40 € |
+

@@ -19,6 +19,11 @@
         <plugin name="madameaiguille_copy_delivery_choices_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyDeliveryChoicesToOrder" sortOrder="10"/>
     </type>
 
+    <!-- Grille Mondial Relay : poids de l'emballage type ajouté au colis, le temps du calcul -->
+    <type name="Magento\OfflineShipping\Model\Carrier\Tablerate">
+        <plugin name="madameaiguille_add_packaging_weight" type="MadameAiguille\Checkout\Plugin\Shipping\AddPackagingWeight" sortOrder="10"/>
+    </type>
+
     <!-- Expédition : « Expédiée » ou « Livrée » (retrait) au lieu du statut natif « complete » -->
     <type name="Magento\Sales\Model\ResourceModel\Order\Handler\State">
         <plugin name="madameaiguille_status_on_completion" type="MadameAiguille\Checkout\Plugin\Sales\StatusOnCompletion" sortOrder="10"/>
