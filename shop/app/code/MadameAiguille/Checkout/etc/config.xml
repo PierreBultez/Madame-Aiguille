@@ -5,6 +5,8 @@
             <!-- Code de démonstration Mondial Relay ; le code enseigne du compte pro est saisi en configuration, jamais versionné -->
             <mondial_relay>
                 <brand_code>BDTEST</brand_code>
+                <!-- Emballage type pesé par Céline (02/11/2026), ajouté une fois par colis -->
+                <packaging_weight>0.2</packaging_weight>
             </mondial_relay>
             <!-- Lieu générique en attendant l'adresse de Céline ; plages du call du 11/09/2026 (jeudi 9 h-18 h, vendredi 9 h-11 h 30) -->
             <pickup>

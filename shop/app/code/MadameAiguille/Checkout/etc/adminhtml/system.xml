@@ -10,6 +10,11 @@
                     <comment>Fourni avec le compte pro Mondial Relay (Offre Start). « BDTEST » est le code de démonstration : la carte affiche alors un avertissement.</comment>
                     <validate>required-entry validate-alphanum</validate>
                 </field>
+                <field id="packaging_weight" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Poids de l'emballage (kg)</label>
+                    <comment>Ajouté une fois par colis au poids des créations pour choisir le tarif de la grille. 0 pour ne rien ajouter.</comment>
+                    <validate>validate-zero-or-greater validate-number</validate>
+                </field>
             </group>
             <group id="pickup" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Retrait à l'atelier</label>
