@@ -75,7 +75,7 @@ est issue : `20261010-073014-090e1ba` = construite le 10/10/2026 à 07:30:14 dep
    - **change le lien `current`** en une opération atomique : il n'existe aucun instant où le site est « entre deux » ;
    - recharge PHP-FPM (OPcache garde le code en mémoire et doit l'oublier) et nginx ;
    - vide les caches de Magento et de Varnish, sort de maintenance si elle était active ;
-   - lance `madameaiguille:env:check --serveur --noindex` et affiche le résultat ;
+   - lance `madameaiguille:env:check --serveur` et affiche le résultat (`--noindex` jusqu'à l'ouverture des ventes du 02/11/2026) ;
    - supprime les versions au-delà des **cinq plus récentes**, jamais celle en ligne.
 
 Sans patch de données ni changement de schéma, **il n'y a aucune coupure** : l'ancienne version sert les visiteurs
@@ -115,7 +115,7 @@ bin/magento madameaiguille:env:check [--serveur] [--noindex]
 |---|---|
 | *(aucune)* | Profil poste local : HTTP, mode développeur et paiement en ligne coupé sont tolérés |
 | `--serveur` | Exigences d'un serveur exposé : mode production, HTTPS forcé, paiement Stripe actif, cron de moins de 10 min |
-| `--noindex` | Le site ne doit pas être indexé : robots `NOINDEX,NOFOLLOW` exigé (à retirer le jour de l'ouverture) |
+| `--noindex` | Le site ne doit pas être indexé : robots `NOINDEX,NOFOLLOW` exigé. Sans ce drapeau, un serveur encore en `NOINDEX` est en erreur (boutique ouverte depuis le lot 8) |
 
 Lit la configuration **réellement appliquée** (fusion `env.php` + base + valeurs par défaut des modules), jamais un
 secret : seule la présence d'une clé est vérifiée. Contrôle : mode, URLs, indexation, cache / sessions / Varnish,
@@ -125,7 +125,7 @@ Sortie : tableau OK / ATTENTION / ERREUR ; **code de retour 1 s'il y a au moins 
 la fin de chaque bascule.
 
 ```bash
-ssh <vps> 'sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento madameaiguille:env:check --serveur --noindex'
+ssh <vps> 'sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento madameaiguille:env:check --serveur'
 ```
 
 ### `madameaiguille:shipping:import-rates` — grille Mondial Relay
@@ -338,6 +338,6 @@ catalogue réel y est saisi dans l'administration. Mode d'emploi : `docs/jeux-de
 | Vérifier une branche sans la publier | *Run workflow* sur la branche, « Publier » décoché |
 | Revenir à la version précédente | `ls releases/`, puis `bascule.sh <version>` (§2) ; restaurer le dump si la base avait évolué |
 | Changer les tarifs Mondial Relay | Modifier `Theme/data/tablerates-mondial-relay.csv`, déployer, puis `mage madameaiguille:shipping:import-rates --dry-run` et sans `--dry-run` |
-| Vérifier la santé de la boutique | `mage madameaiguille:env:check --serveur --noindex` (sans `--noindex` après l'ouverture) |
+| Vérifier la santé de la boutique | `mage madameaiguille:env:check --serveur` (avec `--noindex` avant l'ouverture) |
 | Donner l'administration à Céline | `90-acces-admin.sh <ip-pierre> <ip-céline>`, puis `admin:user:create` (rôle restreint au lot 8) |
 | Après une mise à jour d'Ubuntu | Vérifier PHP (`php -v`) et que tous les sites répondent ; relancer `10-depots.sh` si des dépôts sont `.disabled` |

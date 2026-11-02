@@ -758,9 +758,9 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 | **Téléphone de la boutique** | *Général › Informations sur le magasin* (non versionné, dépôt public) | Pierre / Céline |
 | **Langue de l'administration** | Passer chaque compte en *Français (France)* dans *Paramètres du compte* (réglage par utilisateur, §28) | Pierre ; Céline à la création de son compte |
 | **Compte et rôle de Céline** | Rôle **« Atelier »** créé par `Theme/Setup/Patch/Data/CreateWorkshopRole.php` (02/11/2026) : ventes, catalogue (sans design), clientes (sans suppression, mot de passe, groupes ni connexion à leur place ; la fiche reste modifiable, Magento n'ayant pas de lecture seule), pages (sans suppression ni design), blocs, médiathèque, code promo, modèles d'emails, abonnés, stock bas, section *Madame Aiguille*, case des CGV, *Mon compte*. Reste : **compte à son nom** créé par Pierre (`admin:user:create`, puis rôle « Atelier » dans *Système › Permissions › Tous les utilisateurs*, langue *Français (France)*), double authentification à l'enrôlement, guide du back-office | Pierre (compte), lot 8 (guide) |
-| **Ouverture des ventes** | Retirer `X-Robots-Tag` (`deploy/serveur/nginx/madame-aiguille.conf`, puis nginx rechargé) **et** passer *robots* à `INDEX,FOLLOW` ; `env:check --serveur` sans `--noindex` ; sitemap | Lot 8 |
-| **Domaine secondaire** | `madameaiguille.fr` ne résout pas : le réserver et le rediriger en 301 | Pierre, lot 8 |
-| **Délivrabilité** | DKIM Brevo et DMARC `p=none` en place ; SPF limité à OVH (alignement DMARC par DKIM). Vérifier la réception Gmail / Outlook / webmail français, durcir DMARC après observation | Lot 8 |
+| **Ouverture des ventes** | Préparée le 02/11/2026 : `Theme/Setup/Patch/Data/OpenStoreToSearchEngines.php` (robots `INDEX,FOLLOW`, `robots.txt` sans panier, tunnel, compte, recherche ni retours Stripe ; sitemap `https://madame-aiguille.fr/media/sitemap.xml`, régénéré chaque nuit, annoncé dans `robots.txt`), `DisableNativePrivacyPage` (page anglaise native retirée), bascule et `env:check --serveur` sans `--noindex`. Après déploiement, Pierre lance `deploy/serveur/95-ouverture-ventes.sh` (retire `X-Robots-Tag`), génère le sitemap (*Marketing › Plan du site › Générer*) puis, dans la Search Console, déclare le sitemap et demande l'indexation de l'accueil | Pierre (déploiement, script, Search Console) |
+| **Domaine secondaire** | `madameaiguille.fr` paraît libre (aucun serveur de noms, 02/11/2026) : conseillé (~7 €/an) contre les fautes de frappe et l'usurpation. Redirection 301 par nginx avec certificat (la redirection web d'OVH ne gère pas HTTPS) : enregistrements A vers le VPS, puis script à écrire | Pierre (achat) |
+| **Délivrabilité** | Vérifié le 02/11/2026 sur Gmail et Proton : SPF, DKIM (`ovhmo-selector-1` pour Zimbra, `brevo1`/`brevo2` pour Brevo) et DMARC **passent**, alignés sur `madame-aiguille.fr`, pour Zimbra comme pour les emails transactionnels. DMARC passé en **`p=quarantine`** par Pierre le 02/11/2026 ; `p=reject` après quelques semaines de rapports propres (Brevo › DMARC) | Pierre |
 | **Hygiène du serveur** | Traité au lot 8 : `<title>` de l'accueil et espace de la connexion (`67be41f`), Magento Analytics, export Commerce et Payment Services désactivés (`1d7dd31`), script de suppression du compte RabbitMQ `guest` (`8f953ab`), **joué par Pierre le 02/11/2026** (seul reste le compte `madame-aiguille`) | Soldé |
 | **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées | Recette transversale du lot 8 |
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
@@ -840,7 +840,7 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Paiement en ligne Stripe | *Magasins › Configuration › Ventes › Moyens de paiement › Stripe* : mode test / live et clés (Pierre). Les moyens proposés (carte, Apple Pay, Google Pay, Bancontact, Klarna) se règlent dans le **tableau de bord Stripe**, les remboursements se font par un **avoir en ligne** depuis la facture | §26 |
 | Clés reCAPTCHA | *Magasins › Configuration › Sécurité › Google reCAPTCHA Storefront* : les clés d'abord, le type par formulaire ensuite | §23, §27 |
 | Téléphone et adresse de la boutique | *Magasins › Configuration › Général › Général › Informations sur le magasin* | §29 |
-| Ouverture des ventes | Indexation par les moteurs et retrait de l'en-tête serveur : Pierre, au lot 8 | §23 |
+| Ouverture des ventes | Boutique indexée depuis le lot 8. Ne pas repasser *robots* en `NOINDEX` dans *Contenu › Configuration du design* | §23 |
 
 ### Emails — *Boutiques › Configuration › Ventes › Emails de vente*
 
@@ -1246,7 +1246,7 @@ Un patch reproduit la boutique locale sans jamais réécrire une valeur saisie :
 
 ```bash
 bin/magento madameaiguille:env:check                      # poste local
-bin/magento madameaiguille:env:check --serveur --noindex  # serveur avant l'ouverture des ventes
+bin/magento madameaiguille:env:check --serveur            # serveur ouvert (avant l'ouverture : --noindex)
 ```
 
 Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation, caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.

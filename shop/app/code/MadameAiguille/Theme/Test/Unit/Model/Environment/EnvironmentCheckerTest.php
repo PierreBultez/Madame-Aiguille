@@ -138,6 +138,15 @@ class EnvironmentCheckerTest extends TestCase
         self::assertSame([], $this->messages($this->check($config, true, false), Finding::ERROR));
     }
 
+    public function testAHiddenSiteIsAnErrorOnceTheStoreIsOpen(): void
+    {
+        self::assertSame(
+            ['Indexation — robots = NOINDEX,NOFOLLOW : boutique ouverte, INDEX,FOLLOW attendu'],
+            $this->messages($this->check([], true, false), Finding::ERROR)
+        );
+        self::assertSame([], $this->messages($this->check([], false, false), Finding::ERROR));
+    }
+
     public function testHttpBaseUrlsAndDeveloperModeAreErrorsOnAServer(): void
     {
         $errors = $this->messages(

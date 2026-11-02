@@ -9,6 +9,7 @@
             <module name="Magento_ConfigurableProduct"/>
             <module name="Magento_Email"/>
             <module name="Magento_Sales"/>
+            <module name="Magento_Sitemap"/>
         </sequence>
     </module>
 </config>
