@@ -114,3 +114,28 @@ Observation (antérieure au lot 8) : la frise d'une commande remboursée (`close
 | Compte de Céline | Créé par Pierre : actif, rôle « Atelier », français |
 | Grille Mondial Relay | Importée (26 lignes) : FR 0,5 kg → 4,10 € ; 0,51 kg → 4,51 € ; 4 kg → 6,71 € ; 30 kg → 23,99 € ; MC 1 kg → 4,51 € ; BE 0,5 kg → 4,60 € ; BE 4 kg → 9,99 € ; LU 10 kg → 17,40 € |
 
+## Recettes restantes (02/11/2026, serveur)
+
+### Contrôlé par l'agent
+
+| Contrôle | Résultat |
+|---|---|
+| reCAPTCHA, configuration | Type « invisible » et clés renseignées sur création de compte, contact, newsletter, mot de passe oublié, **et aussi** connexion client et avis produit (plus large que la décision du 09/10/2026, sans gêne) ; passage de commande non protégé, comme prévu |
+| reCAPTCHA, refus serveur sans jeton | Contact, newsletter, création de compte, mot de passe oublié : requête sans jeton (clé de formulaire valide, données volontairement invalides par sécurité) **refusée par reCAPTCHA** sur les quatre, message « Quelque chose d'inattendu s'est produit avec reCAPTCHA. Contactez le webmaster. » ; aucun client ni abonné créé |
+| Écrans à 1440 et 390 px | Accueil, catégorie, fiche, panier, connexion, contact, CGV : aucun débordement horizontal, aucune image cassée, aucune erreur dans la console |
+| Catalogue en ligne | 2 catégories, 13 sous-catégories (une par modèle), 3 créations : 10 sous-catégories vides affichent l'état « La série est en cours de couture » et figurent dans le sitemap, donc sont indexables |
+
+Le message d'échec reCAPTCHA (« Contactez le webmaster ») est générique ; il se change dans *Sécurité › Google reCAPTCHA Storefront › Messages d'échec* si une formulation plus douce est souhaitée.
+
+### À faire par Pierre (envois réels, reCAPTCHA, boîte mail, téléphone)
+
+| Contrôle | Attendu | Résultat |
+|---|---|---|
+| Newsletter, invitée | Inscription depuis le pied de page → email de confirmation reçu → clic → abonnée | |
+| Newsletter, connectée | Case du compte cochée → abonnée (confirmation selon le réglage) | |
+| Tunnel sans la case newsletter | Aucune inscription | |
+| Création de compte | Compte créé, email de bienvenue reçu | |
+| Mot de passe oublié | Email de réinitialisation reçu, lien fonctionnel | |
+| Contact avec une photo JPG puis PNG | Message reçu par contact@, pièce jointe lisible ; accusé de réception à l'expéditrice | |
+| Apple Pay / Google Pay / Bancontact / Klarna | Proposés dans le formulaire de paiement sur un appareil compatible (Stripe en live : vérifier l'affichage sans payer, ou payer un petit montant et rembourser) | |
+
