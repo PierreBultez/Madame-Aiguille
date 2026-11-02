@@ -25,7 +25,7 @@ tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/s
 | `40-opensearch.sh` | OpenSearch 3, nœud unique local, tas 2 Go | appliqué le 09/10/2026 |
 | `50-varnish.sh` | Varnish 7 local devant Magento, 1 Go | appliqué le 09/10/2026 |
 | `60-valkey.sh` | Valkey à la place de Redis (sites Laravel, 6379) + cache (6380) et sessions (6381) Magento | appliqué le 10/10/2026 |
-| `65-rabbitmq-guest.sh` | Supprime le compte RabbitMQ `guest` ; s'arrête si une connexion l'utilise encore | à jouer (lot 8) |
+| `65-rabbitmq-guest.sh` | Supprime le compte RabbitMQ `guest` ; s'arrête si une connexion l'utilise encore | appliqué le 02/11/2026 (seul reste le compte `madame-aiguille`) |
 | `70-hebergement.sh` | Utilisateur `madame-aiguille`, arborescence, pool PHP-FPM, réglages MariaDB, certificat `madame-aiguille.fr` + `www`, rotation des journaux | à jouer |
 | `80-installer-magento.sh <version>` | Installation neuve dans une version envoyée par GitHub Actions, réglages du serveur, VCL, cron, mise en ligne, activation nginx | appliqué le 10/10/2026 |
 | `90-acces-admin.sh <ip> [<ip>…]` | Administration : IP autorisées ou mot de passe HTTP (`satisfy any`) ; rejouable pour changer la liste | à jouer, après le mot de passe |
