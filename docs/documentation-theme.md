@@ -874,6 +874,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Photos | Ratio **4:5** (portrait), trois vues minimum. Une photo hors ratio est rognée, pas déformée | §8 |
 | Poids | **Obligatoire**, en kilogrammes — il servira au calcul des frais de port | §8 |
 | Stock | Le nombre saisi est le nombre de pièces restantes. À 0, la création passe « Épuisé » et reste visible en fin de liste | §8 |
+| Stock bas | *Rapports › Produits › Stock faible* liste les créations **sous 2 pièces** (seuil posé par `Theme/Setup/Patch/Data/SetLowStockThreshold.php`) : la dernière pièce d'une série y apparaît. Aucun email : Magento Open Source n'en envoie pas pour le stock bas. Seuil réglable par création (*Quantité de notification* de la source) | §8 |
 | Série limitée | Cocher *Série limitée* et renseigner le nombre de pièces | §8 |
 | Modèle en deux tailles | Produit **configurable** sur l'attribut Taille ; chaque taille a son propre stock et son propre poids | §8 |
 | Badge « Nouveauté » | Dates *Définir le produit comme nouveau à partir de / jusqu'au*. Ces dates alimentent aussi le bloc Nouveautés de l'accueil et les suggestions du panier vide | §8, §19 |
