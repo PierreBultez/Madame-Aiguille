@@ -141,3 +141,17 @@ Le message d'échec reCAPTCHA (« Contactez le webmaster ») est générique ; i
 
 Aucun échec d'envoi d'email journalisé au 02/11/2026. Relevé dans les journaux : « The product with ID "2" does not exist » répété (comme « ID 1 » le 23/10) — une référence à un produit supprimé subsiste (bloc, widget ou historique) ; à examiner.
 
+## Qualité (02/11/2026)
+
+Lighthouse 13.5 lancé en local contre le site en ligne (quota de PageSpeed Insights épuisé).
+
+| Page | Performance | Accessibilité | Bonnes pratiques | SEO |
+|---|---|---|---|---|
+| Accueil, ordinateur | 94 | 100 | 100 | 100 |
+| Accueil, mobile | **75** (image principale en 9,6 s) | 100 | 100 | 100 |
+| Catégorie | 99 à 100 | 100 | 100 | **92** (pas de méta-description) |
+| Fiche | 98 à 100 | 100 | 100 | 100 |
+
+Corrigé : images de l'accueil et de « Nos tissus » en WebP qualité 82 (`hero` 1,47 Mo et `atelier` 801 Ko en tête ; 3,6 Mo → 129 Ko au total), contenus CMS existants repointés par `UseWebpHomeImages` (seules les références exactes d'origine) ; logo en WebP 712 × 132 (94 → 10 Ko) dans l'en-tête, le pied de page et le tunnel. Contrôlé en local : accueil à 1440 et 390 px, toutes les images servies en `.webp`, PHPCS (avertissements de docblocks habituels des patchs) et 126 tests unitaires.
+
+Restent : méta-description des catégories (Céline), favicon lisible à 16 px (propositions soumises à Pierre), logo SVG. Lighthouse à rejouer après déploiement.

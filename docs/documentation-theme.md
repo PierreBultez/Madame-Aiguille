@@ -71,7 +71,7 @@ MadameAiguille/default/
 └── web/
     ├── css/styles.css                   GÉNÉRÉ — jamais édité, jamais commité
     ├── fonts/                           .woff2 + licences FFL
-    ├── images/logo-rectangulaire.jpg    logo officiel du header et du footer
+    ├── images/logo-rectangulaire.webp   logo officiel du header et du footer (712 × 132, 10 Ko)
     └── tailwind/
         ├── tailwind-source.css          point d'entrée : @source, @theme (tokens)
         ├── hyva.config.json             tokens de couleur (oklch) + inclusion du parent
@@ -239,7 +239,7 @@ Template : `Magento_Theme/templates/html/header.phtml`. Layout : `Magento_Theme/
 | Quoi | Où | Comment |
 |---|---|---|
 | **Bandeau d'annonce** | Admin › *Contenu › Blocs › `header_announcement`* | Modifier le texte ; vider ou désactiver le bloc pour masquer le bandeau. Vider le cache `full_page` ensuite (`bin/magento cache:clean full_page`) |
-| **Logo** | `web/images/logo-rectangulaire.jpg`, copie fidèle de `docs/logos/logo-rectangulaire.jpg` ; ou admin › *Contenu › Design › Configuration › Header › Logo* (prioritaire s'il est renseigné) | Tailles : 240 px mobile · 288 px md · 356 px lg (classes `w-60 md:w-72 lg:w-89` dans `header/logo.phtml`). Ratio intrinsèque 1864 × 345 et dimensions HTML 356 × 66. Texte alternatif : config `design/header/logo_alt` |
+| **Logo** | `web/images/logo-rectangulaire.webp` (712 × 132, deux fois la largeur affichée, 10 Ko), tiré de `docs/logos/logo-rectangulaire.jpg` ; le thème du tunnel en a sa copie. Le `.jpg` reste pour mémoire ; ou admin › *Contenu › Design › Configuration › Header › Logo* (prioritaire s'il est renseigné) | Tailles : 240 px mobile · 288 px md · 356 px lg (classes `w-60 md:w-72 lg:w-89` dans `header/logo.phtml`). Ratio intrinsèque 1864 × 345 et dimensions HTML 356 × 66. Texte alternatif : config `design/header/logo_alt` |
 | **Favicon** | `Magento_Theme/web/favicon.ico`, généré depuis `docs/logos/logo-carre.jpg` ; source conservée sous `Magento_Theme/web/images/logo-carre.jpg` | contient les tailles 16, 32, 48, 64, 128 et 256 px. Un favicon chargé dans *Contenu › Design › Configuration › HTML Head › Favicon Icon* est prioritaire sur celui du thème |
 | **Navigation** | Admin › *Catalogue › Catégories* | Catégories actives et « Inclure dans le menu » sous *Default Category*, 2 niveaux affichés (`getNavigation(3)` — niveau absolu). Aucun lien en dur : le logo est le lien vers l'accueil, À propos / Contact sont dans le footer |
 | Compare | `default.xml` → `show_compare` | désactivé |
@@ -298,9 +298,9 @@ L'accueil suit cet ordre : hero, Nouveautés, Incontournables, nouvelles de l'at
 | Nouveautés | Dates *Définir le produit comme nouveau à partir de / jusqu'au* sur la fiche ; titre et accroche dans `home_new` | widget Magento `NewWidget`, règles de dates natives ; produits épuisés exclus par `ViewModel/Home/Products.php` |
 | Incontournables | Fiche produit, groupe *Accueil* › *Incontournable sur l'accueil* ; titre et accroche dans `home_featured` | attribut EAV `home_featured`, quatre produits disponibles au maximum, ordre de création décroissant |
 | Marchés, congés, annonces | bloc `home_actualities` | bloc CMS indépendant ; le texte initial est volontairement générique et ne contient ni date ni promesse non validée |
-| Histoire | bloc `home_story` | visuel initial `web/images/home/atelier.png` et lien vers `a-propos` |
+| Histoire | bloc `home_story` | visuel initial `web/images/home/atelier.webp` et lien vers `a-propos` |
 | Arguments | titre du bloc `home_why`, puis ses quatre éléments | grille 2 colonnes mobile / 4 desktop |
-| Instagram | bloc `home_instagram` pour les quatre visuels ; URL dans *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | images initiales `web/images/home/ig-1.png` à `ig-4.png` ; bouton absent si l'URL Instagram est vide |
+| Instagram | bloc `home_instagram` pour les quatre visuels ; URL dans *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | images initiales `web/images/home/ig-1.webp` à `ig-4.webp` ; bouton absent si l'URL Instagram est vide |
 | Newsletter | bloc `home_newsletter` pour l'accroche | formulaire natif Magento retemplété dans `Magento_Newsletter/templates/subscribe.phtml`, reCAPTCHA natif conservé, confirmation par email activée dans `etc/config.xml` |
 
 Le titre affiché des sections structurées est le **titre du bloc CMS**. Désactiver un bloc le masque. Une sélection Nouveautés ou Incontournables sans produit disponible est masquée avec son titre. Les images sont éditables dans le contenu CMS avec le sélecteur de médias ; les fichiers du thème servent de valeurs initiales.
@@ -781,8 +781,8 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 | **Produit désactivé pendant qu'il est au panier** | Magento retire la ligne sans message. Décider si une information explicite est souhaitée — elle demanderait un observateur dédié | Décision Pierre |
 | **Code promo du panier** | Activer le champ le jour où une règle de panier existe | Céline |
 | **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* | Céline, avant ouverture |
-| Production | Contrôler la purge des pièces jointes et des badges Nouveauté sur le serveur ; WebP et performances (Lighthouse) | Lot 8 |
-| Logo et favicon | Vérifier le favicon à 16 / 32 px | Lot 8 |
+| Production | Contrôler la purge des pièces jointes et des badges Nouveauté sur le serveur | Lot 8 |
+| **Qualité (Lighthouse du 02/11/2026)** | Accueil : performance 94 sur ordinateur, **75 sur mobile** (image principale affichée en 9,6 s : `hero.png` de 1,47 Mo) ; catégorie 99 à 100, fiche 98 à 100 ; accessibilité, bonnes pratiques et SEO à 100, sauf **SEO 92 sur la catégorie** (pas de méta-description). Images de l'accueil et de « Nos tissus » passées en **WebP** (3,6 Mo → 129 Ko, `UseWebpHomeImages`), logo en WebP (94 → 10 Ko). Restent : la **méta-description de chaque catégorie** (*Catalogue › Catégories › Moteurs de recherche*), le **favicon** illisible à 16 px (logotype entier, 72 Ko) et un logo vectoriel (SVG) | Céline (méta-descriptions), Pierre (favicon, SVG) |
 
 Soldé au lot 8 : **ouverture des ventes** (02/11/2026, §29), **grille Mondial Relay définitive** et emballage de 0,2 kg (§26), **rôle « Atelier », compte et guide de Céline**, alerte de stock bas, retrait payable en ligne ou sur place, CGV et confidentialité à jour des cinq moyens de paiement, compte RabbitMQ `guest` supprimé ; **Mollie remplacé par Stripe** (23/10/2026, §26 « Paiement en ligne : Stripe »), recetté en local ; code enseigne Mondial Relay du compte pro, saisi le 23/10/2026 en local et sur le serveur ; `env:check` le contrôle, la carte ne montre plus l'avertissement de démonstration et la sélection d'un point fonctionne.
 
@@ -1123,7 +1123,7 @@ Tous les chemins suivants partent de `shop/app/design/frontend/MadameAiguille/ch
 | Déclaration Luma enfant | `registration.php`, `theme.xml`, `composer.json` (parent `Magento/luma`) |
 | Palette et fontes | `web/css/source/_tokens.less`, `_theme.less`, `_typography.less` ; WOFF2 originaux dans `web/fonts/`, ignorés par Git, licences versionnées |
 | Règles du tunnel | `web/css/source/_extend.less`, `_checkout.less` ; pas de Tailwind |
-| Logo et favicon | `web/images/logo-rectangulaire.jpg`, `Magento_Theme/web/favicon.ico` |
+| Logo et favicon | `web/images/logo-rectangulaire.webp`, `Magento_Theme/web/favicon.ico` |
 | Structure et récapitulatif | `Magento_Checkout/layout/checkout_index_index.xml`, `Magento_Checkout/web/template/summary.html` |
 | Retour au panier et pied minimal | `Magento_Checkout/templates/header/back.phtml`, `footer.phtml` |
 | Étapes / récapitulatif mobile | `Magento_Checkout/web/template/progress-bar.html`, `estimation.html` |
