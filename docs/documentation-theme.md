@@ -56,10 +56,10 @@ MadameAiguille/default/
 ├── Magento_Swatches/templates/product/  sélecteur de taille (renderer + swatch-item)
 ├── Magento_Theme/
 │   ├── layout/default.xml               header, logo, footer (fusionné avec le parent)
-│   ├── layout/default_head_blocks.xml   preload des fontes
-│   ├── web/favicon.ico                  favicon multi-tailles issu du logo carré officiel
-│   ├── web/images/logo-carre.jpg        source carrée officielle conservée dans le thème
+│   ├── layout/default_head_blocks.xml   preload des fontes, bloc des icônes
+│   ├── web/favicon.ico                  favicon 16 à 64 px : l'aiguille et le fil (docs/logos/03-aiguille-et-fil.ico)
 │   └── templates/html/
+│       ├── head/icons.phtml             icône SVG et icône d'écran d'accueil iOS
 │       ├── header.phtml                 header (bandeau, grille, panier)
 │       ├── header/logo.phtml            logo responsive
 │       ├── header/menu/desktop.phtml    navigation ≥ md
@@ -71,7 +71,9 @@ MadameAiguille/default/
 └── web/
     ├── css/styles.css                   GÉNÉRÉ — jamais édité, jamais commité
     ├── fonts/                           .woff2 + licences FFL
-    ├── images/logo-rectangulaire.webp   logo officiel du header et du footer (712 × 132, 10 Ko)
+    ├── images/logo-madame-aiguille.svg  logo officiel du header, du footer et du tunnel (vectoriel)
+    ├── images/logo-madame-aiguille-email.png  le même en PNG 440 px pour les emails
+    ├── images/favicon.svg, apple-touch-icon.png  icônes carrées (l'aiguille et le fil)
     └── tailwind/
         ├── tailwind-source.css          point d'entrée : @source, @theme (tokens)
         ├── hyva.config.json             tokens de couleur (oklch) + inclusion du parent
@@ -239,8 +241,8 @@ Template : `Magento_Theme/templates/html/header.phtml`. Layout : `Magento_Theme/
 | Quoi | Où | Comment |
 |---|---|---|
 | **Bandeau d'annonce** | Admin › *Contenu › Blocs › `header_announcement`* | Modifier le texte ; vider ou désactiver le bloc pour masquer le bandeau. Vider le cache `full_page` ensuite (`bin/magento cache:clean full_page`) |
-| **Logo** | `web/images/logo-rectangulaire.webp` (712 × 132, deux fois la largeur affichée, 10 Ko), tiré de `docs/logos/logo-rectangulaire.jpg` ; le thème du tunnel en a sa copie. Le `.jpg` reste pour mémoire ; ou admin › *Contenu › Design › Configuration › Header › Logo* (prioritaire s'il est renseigné) | Tailles : 240 px mobile · 288 px md · 356 px lg (classes `w-60 md:w-72 lg:w-89` dans `header/logo.phtml`). Ratio intrinsèque 1864 × 345 et dimensions HTML 356 × 66. Texte alternatif : config `design/header/logo_alt` |
-| **Favicon** | `Magento_Theme/web/favicon.ico`, généré depuis `docs/logos/logo-carre.jpg` ; source conservée sous `Magento_Theme/web/images/logo-carre.jpg` | contient les tailles 16, 32, 48, 64, 128 et 256 px. Un favicon chargé dans *Contenu › Design › Configuration › HTML Head › Favicon Icon* est prioritaire sur celui du thème |
+| **Logo** | `web/images/logo-madame-aiguille.svg`, tiré de `docs/logos/madame-aiguille-vectoriel.svg` (version définitive du 02/11/2026, coordonnées arrondies au dixième : 52 Ko, 21 Ko compressé) ; le thème du tunnel en a sa copie. Les emails utilisent `web/images/logo-madame-aiguille-email.png` (440 × 81, tiré de `docs/logos/madame-aiguille-transparent.png`), Gmail n'affichant pas le SVG ; ou admin › *Contenu › Design › Configuration › Header › Logo* (prioritaire s'il est renseigné) | Tailles : 240 px mobile · 288 px md · 356 px lg (classes `w-60 md:w-72 lg:w-89` dans `header/logo.phtml`). Ratio intrinsèque 1864 × 345 et dimensions HTML 356 × 66. Texte alternatif : config `design/header/logo_alt` |
+| **Favicon et icônes** | L'aiguille et le fil, version définitive du 02/11/2026 (`docs/logos/03-aiguille-et-fil.svg`, `.png`, `.ico`) : `Magento_Theme/web/favicon.ico` (16, 32, 48, 64 px ; copie dans le thème du tunnel), `web/images/favicon.svg` et `web/images/apple-touch-icon.png` (180 px sur fond ivoire), déclarés par `Magento_Theme/templates/html/head/icons.phtml` — pas en `<link src>` dans `default_head_blocks.xml`, où Magento rangeait le SVG avec les préchargements de fontes | Toute icône carrée (réseaux sociaux, Stripe…) part de `03-aiguille-et-fil`. Un favicon chargé dans *Contenu › Design › Configuration › HTML Head › Favicon Icon* est prioritaire sur celui du thème |
 | **Navigation** | Admin › *Catalogue › Catégories* | Catégories actives et « Inclure dans le menu » sous *Default Category*, 2 niveaux affichés (`getNavigation(3)` — niveau absolu). Aucun lien en dur : le logo est le lien vers l'accueil, À propos / Contact sont dans le footer |
 | Compare | `default.xml` → `show_compare` | désactivé |
 | Recherche | `header/search-form.phtml` du parent (desktop) ; formulaire simple dans `header/menu/mobile.phtml` (mobile) | raccourci ⌘/Ctrl+K |
@@ -782,7 +784,7 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 | **Code promo du panier** | Activer le champ le jour où une règle de panier existe | Céline |
 | **Textes des emails transactionnels** | Relire et personnaliser les gabarits natifs (confirmation, expédition, bienvenue, réinitialisation) dans *Marketing › Modèles d'e-mail* | Céline, avant ouverture |
 | Production | Contrôler la purge des pièces jointes et des badges Nouveauté sur le serveur | Lot 8 |
-| **Qualité (Lighthouse du 02/11/2026)** | Accueil : performance 94 sur ordinateur, **75 sur mobile** (image principale affichée en 9,6 s : `hero.png` de 1,47 Mo) ; catégorie 99 à 100, fiche 98 à 100 ; accessibilité, bonnes pratiques et SEO à 100, sauf **SEO 92 sur la catégorie** (pas de méta-description). Images de l'accueil et de « Nos tissus » passées en **WebP** (3,6 Mo → 129 Ko, `UseWebpHomeImages`), logo en WebP (94 → 10 Ko). Restent : la **méta-description de chaque catégorie** (*Catalogue › Catégories › Moteurs de recherche*), le **favicon** illisible à 16 px (logotype entier, 72 Ko) et un logo vectoriel (SVG) | Céline (méta-descriptions), Pierre (favicon, SVG) |
+| **Qualité (Lighthouse du 02/11/2026)** | Accueil : performance 94 sur ordinateur, **75 sur mobile** (image principale affichée en 9,6 s : `hero.png` de 1,47 Mo) ; catégorie 99 à 100, fiche 98 à 100 ; accessibilité, bonnes pratiques et SEO à 100, sauf **SEO 92 sur la catégorie** (pas de méta-description). Images de l'accueil et de « Nos tissus » passées en **WebP** (3,6 Mo → 129 Ko, `UseWebpHomeImages`), logo en WebP (94 → 10 Ko). Logo vectoriel et favicon « aiguille et fil » définitifs posés (02/11/2026). **Méta-description des catégories** : toutes vides ; à défaut, `Theme/Plugin/Catalog/CategoryMetaDescriptionFallback.php` reprend la description de la catégorie (160 caractères) ou compose « {Nom} : créations en tissu cousues main à Saint-Épain, en séries limitées de 5 à 10 pièces. » Une méta-description saisie dans *Catalogue › Catégories › Optimisation pour les moteurs de recherche* reste prioritaire. Reste : Lighthouse après déploiement | Pierre (Lighthouse), Céline (méta-descriptions sur mesure, facultatif) |
 
 Soldé au lot 8 : **ouverture des ventes** (02/11/2026, §29), **grille Mondial Relay définitive** et emballage de 0,2 kg (§26), **rôle « Atelier », compte et guide de Céline**, alerte de stock bas, retrait payable en ligne ou sur place, CGV et confidentialité à jour des cinq moyens de paiement, compte RabbitMQ `guest` supprimé ; **Mollie remplacé par Stripe** (23/10/2026, §26 « Paiement en ligne : Stripe »), recetté en local ; code enseigne Mondial Relay du compte pro, saisi le 23/10/2026 en local et sur le serveur ; `env:check` le contrôle, la carte ne montre plus l'avertissement de démonstration et la sélection d'un point fonctionne.
 
@@ -1123,7 +1125,7 @@ Tous les chemins suivants partent de `shop/app/design/frontend/MadameAiguille/ch
 | Déclaration Luma enfant | `registration.php`, `theme.xml`, `composer.json` (parent `Magento/luma`) |
 | Palette et fontes | `web/css/source/_tokens.less`, `_theme.less`, `_typography.less` ; WOFF2 originaux dans `web/fonts/`, ignorés par Git, licences versionnées |
 | Règles du tunnel | `web/css/source/_extend.less`, `_checkout.less` ; pas de Tailwind |
-| Logo et favicon | `web/images/logo-rectangulaire.webp`, `Magento_Theme/web/favicon.ico` |
+| Logo et favicon | `web/images/logo-madame-aiguille.svg`, `Magento_Theme/web/favicon.ico`, `web/images/favicon.svg` |
 | Structure et récapitulatif | `Magento_Checkout/layout/checkout_index_index.xml`, `Magento_Checkout/web/template/summary.html` |
 | Retour au panier et pied minimal | `Magento_Checkout/templates/header/back.phtml`, `footer.phtml` |
 | Étapes / récapitulatif mobile | `Magento_Checkout/web/template/progress-bar.html`, `estimation.html` |
