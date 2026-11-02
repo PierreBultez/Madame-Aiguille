@@ -136,7 +136,7 @@ Le message d'échec reCAPTCHA (« Contactez le webmaster ») est générique ; i
 | Tunnel sans la case newsletter | Aucune inscription | **OK**, et avec la case cochée : inscription |
 | Création de compte | Compte créé, email de bienvenue reçu | **OK** |
 | Mot de passe oublié | Email de réinitialisation reçu, lien fonctionnel | **OK** |
-| Contact avec une photo JPG puis PNG | Message reçu par contact@, pièce jointe lisible ; accusé de réception à l'expéditrice | **OK** pour une photo légère ; **413 Request Entity Too Large** pour un JPG de 3,7 Mo : le bloc nginx backend (8080, derrière Varnish) gardait la limite par défaut de 1 Mo. Corrigé dans le gabarit et par `deploy/serveur/97-taille-envois.sh` (à jouer), à revérifier ensuite |
+| Contact avec une photo JPG puis PNG | Message reçu par contact@, pièce jointe lisible ; accusé de réception à l'expéditrice | **OK** pour une photo légère ; **413 Request Entity Too Large** pour un JPG de 3,7 Mo : le bloc nginx backend (8080, derrière Varnish) gardait la limite par défaut de 1 Mo. Corrigé dans le gabarit et par `deploy/serveur/97-taille-envois.sh`, joué par Pierre : **JPG de 3,7 Mo reçu** (pièce jointe stockée, 3 721 279 octets) |
 | Apple Pay / Google Pay / Bancontact / Klarna | Proposés dans le formulaire de paiement sur un appareil compatible (Stripe en live : vérifier l'affichage sans payer, ou payer un petit montant et rembourser) | **OK** (Pierre) |
 
 Aucun échec d'envoi d'email journalisé au 02/11/2026. Relevé dans les journaux : « The product with ID "2" does not exist » répété (comme « ID 1 » le 23/10) — une référence à un produit supprimé subsiste (bloc, widget ou historique) ; à examiner.
