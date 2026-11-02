@@ -166,3 +166,8 @@ Après déploiement (02/11/2026, serveur) : logo SVG, favicon et icônes servis,
 | Fiche « La Trousse de voyage », mobile | 99 | 100 | 100 | 100 | 1,8 s | 230 Ko |
 
 La méta-description des fiches est, à défaut de saisie, le nom de la création (comportement natif) : Céline peut l'enrichir dans l'onglet *Optimisation pour les moteurs de recherche* de chaque fiche.
+
+## Footer : logos officiels (02/11/2026, local)
+
+Logos fournis par Pierre dans `docs/logos/` : moyens de paiement (CB, Visa, Mastercard, Apple Pay, Google Pay, Bancontact, Klarna), Instagram, Facebook, Mondial Relay ; « Retrait à l'atelier » prend l'aiguille et le fil. Réduits en WebP 48 px de haut (1 à 5 Ko chacun, contre 12 à 770 Ko fournis). Contrôlé en local à 1440 et 390 px : logos nets, aucun débordement horizontal. À contrôler en ligne après déploiement.
+

@@ -258,10 +258,10 @@ Template : `Magento_Theme/templates/html/footer.phtml` ; colonnes déclarées da
 | Quoi | Où | Comment |
 |---|---|---|
 | Accroche sous le logo | `default.xml` → bloc `footer.brand`, argument `tagline` | texte traduisible |
-| **Réseaux sociaux** | Admin › *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | Instagram, Facebook, TikTok (Pinterest retiré au lot 5) — vide = masqué. Ajouter un réseau : `ViewModel/SocialLinks.php` (constante `NETWORKS`) + `system.xml` + icône Lucide (ou SVG dans `Hyva_Theme/web/svg/lucide/`, comme `tiktok.svg`) |
+| **Réseaux sociaux** | Admin › *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | Instagram, Facebook, TikTok (Pinterest retiré au lot 5) — vide = masqué. Ajouter un réseau : `ViewModel/SocialLinks.php` (constante `NETWORKS`) + `system.xml` + icône Lucide (ou SVG dans `Hyva_Theme/web/svg/lucide/`, comme `tiktok.svg`). **Instagram et Facebook affichent leurs logos officiels** (`web/images/footer/instagram.webp`, `facebook.webp`, 48 px pour un affichage à 24, tirés de `docs/logos/`, 02/11/2026) : tableau `$networkLogos` de `footer/brand.phtml` ; un réseau absent du tableau garde son icône Lucide |
 | Colonne **Boutique** | automatique : catégories de niveau 1 | `footer/shop.phtml` |
 | Colonne **Informations** | `default.xml` → bloc `footer.info`, argument `links` (`label` + `path`) | les `path` sont des URL relatives : identifiant de page CMS, `contact`, etc. |
-| Colonne **Paiement & livraison** | `default.xml` → bloc `footer.services`, arguments `payment_methods` / `shipping_methods` | Carte bancaire, Sur place au retrait · Mondial Relay, Retrait à l'atelier (alignés au lot 5) |
+| Colonne **Paiement & livraison** | `default.xml` → bloc `footer.services`, arguments `payment_methods` / `shipping_methods` ; chaque entrée : `label` (texte alternatif), `image`, `width` / `height` affichés, `text` pour garder le libellé à côté de l'image ; sans `image`, le libellé seul | **Logos officiels depuis le 02/11/2026** (décision de Pierre, à la place des mots du Design System §6.11) : CB, Visa, Mastercard, Apple Pay, Google Pay, Bancontact, Klarna, puis « Sur place au retrait » en texte · Mondial Relay (SVG officiel), « Retrait à l'atelier » avec l'aiguille et le fil. Fichiers dans `web/images/footer/` (WebP 48 px de haut, tirés de `docs/logos/`). Changer de moyen de paiement dans Stripe impose de mettre cette liste à jour |
 | **Copyright** | Admin › *Contenu › Design › Configuration › Footer › Copyright* (`design/footer/copyright`) | porte la mention « TVA non applicable, art. 293 B du CGI. » depuis le lot 5 |
 | Gabarit de colonne (titre + liste, accordéon mobile) | `footer/column.phtml` | réutilisable via `fetchView` |
 
@@ -1294,6 +1294,7 @@ Non indexé (balise robots, `robots.txt`, en-tête nginx), mais public : comme l
 
 ### Pièges rencontrés
 
+- **Cache du site guide-magento** : sans `Cache-Control`, le navigateur gardait les anciennes pages et l'ancien favicon après `docs-site/publier.sh`. Le gabarit `deploy/serveur/nginx/guide-magento.conf` envoie `no-cache` (revalidation à chaque visite) ; sur le serveur déjà installé, `deploy/serveur/98-cache-guide.sh` l'ajoute.
 - **Taille des envois derrière Varnish** : `client_max_body_size` doit figurer dans **les deux** blocs nginx, TLS (443) et backend (8080). Sans lui, le backend garde 1 Mo et répond 413 à une photo de contact de quelques Mo (02/11/2026, `97-taille-envois.sh`).
 - **Rôle d'administration restreint et double authentification** : sans le droit `Magento_TwoFactorAuth::tfa` (*Système › Permissions › Two Factor Auth*), un rôle restreint est refusé à l'étape du code. Toujours tester un nouveau rôle avec un vrai compte, jusqu'au tableau de bord.
 - **Adresses de l'administration** : saisies sans leur clé de sécurité (`/key/…`), elles renvoient au tableau de bord ; naviguer par le menu.

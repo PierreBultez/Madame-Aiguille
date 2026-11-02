@@ -77,12 +77,66 @@
             <block name="footer.services" as="services" template="Magento_Theme::html/footer/services.phtml">
                 <arguments>
                     <argument name="payment_methods" xsi:type="array">
-                        <item name="card" xsi:type="string" translate="true">Carte bancaire</item>
-                        <item name="on_site" xsi:type="string" translate="true">Sur place au retrait</item>
+                        <item name="cb" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Carte bancaire CB</item>
+                            <item name="image" xsi:type="string">images/footer/cb.webp</item>
+                            <item name="width" xsi:type="number">28</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="visa" xsi:type="array">
+                            <item name="label" xsi:type="string">Visa</item>
+                            <item name="image" xsi:type="string">images/footer/visa.webp</item>
+                            <item name="width" xsi:type="number">43</item>
+                            <item name="height" xsi:type="number">14</item>
+                        </item>
+                        <item name="mastercard" xsi:type="array">
+                            <item name="label" xsi:type="string">Mastercard</item>
+                            <item name="image" xsi:type="string">images/footer/mastercard.webp</item>
+                            <item name="width" xsi:type="number">26</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="apple_pay" xsi:type="array">
+                            <item name="label" xsi:type="string">Apple Pay</item>
+                            <item name="image" xsi:type="string">images/footer/apple-pay.webp</item>
+                            <item name="width" xsi:type="number">49</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="google_pay" xsi:type="array">
+                            <item name="label" xsi:type="string">Google Pay</item>
+                            <item name="image" xsi:type="string">images/footer/google-pay.webp</item>
+                            <item name="width" xsi:type="number">53</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="bancontact" xsi:type="array">
+                            <item name="label" xsi:type="string">Bancontact</item>
+                            <item name="image" xsi:type="string">images/footer/bancontact.webp</item>
+                            <item name="width" xsi:type="number">32</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="klarna" xsi:type="array">
+                            <item name="label" xsi:type="string">Klarna</item>
+                            <item name="image" xsi:type="string">images/footer/klarna.webp</item>
+                            <item name="width" xsi:type="number">48</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="on_site" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Sur place au retrait</item>
+                        </item>
                     </argument>
                     <argument name="shipping_methods" xsi:type="array">
-                        <item name="mondialrelay" xsi:type="string">Mondial Relay</item>
-                        <item name="pickup" xsi:type="string" translate="true">Retrait à l'atelier</item>
+                        <item name="mondialrelay" xsi:type="array">
+                            <item name="label" xsi:type="string">Mondial Relay</item>
+                            <item name="image" xsi:type="string">images/footer/mondial-relay.svg</item>
+                            <item name="width" xsi:type="number">58</item>
+                            <item name="height" xsi:type="number">20</item>
+                        </item>
+                        <item name="pickup" xsi:type="array">
+                            <item name="label" xsi:type="string" translate="true">Retrait à l'atelier</item>
+                            <item name="image" xsi:type="string">images/favicon.svg</item>
+                            <item name="width" xsi:type="number">20</item>
+                            <item name="height" xsi:type="number">20</item>
+                            <item name="text" xsi:type="boolean">true</item>
+                        </item>
                     </argument>
                 </arguments>
             </block>
