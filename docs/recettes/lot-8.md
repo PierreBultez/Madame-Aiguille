@@ -156,4 +156,13 @@ Corrigé : images de l'accueil et de « Nos tissus » en WebP qualité 82 (`hero
 
 Logos définitifs choisis par Pierre : « aiguille et fil » pour le favicon et les icônes carrées, logo vectoriel partout ailleurs (PNG 440 px dans les emails). Méta-descriptions des catégories toutes vides : repli `CategoryMetaDescriptionFallback`. Contrôlé en local : en-tête et pied de page à 1440 et 390 px (SVG net, aucun débordement), icônes SVG et iOS dans le `<head>`, préchargement des deux fontes intact, fichiers du thème du tunnel servis, méta-description composée sur « Trousses de toilette » et reprise de la description sur « Réutilisables au quotidien », 129 tests unitaires. Non vu : le tunnel lui-même (panier local vide) et un email reçu avec le nouveau logo.
 
-Reste : Lighthouse à rejouer après déploiement.
+Après déploiement (02/11/2026, serveur) : logo SVG, favicon et icônes servis, images de l'accueil en `.webp`, méta-description composée sur les catégories. Lighthouse rejoué :
+
+| Page | Performance | Accessibilité | Bonnes pratiques | SEO | LCP | Poids |
+|---|---|---|---|---|---|---|
+| Accueil, mobile | **99** (75 avant) | 100 | 100 | 100 | 1,8 s (9,6 s avant) | 302 Ko |
+| Accueil, ordinateur | 100 | 100 | 100 | 100 | 0,4 s | 355 Ko |
+| Catégorie « Accessoires & Beautés », mobile | 100 | 100 | 100 | **100** (92 avant) | 1,7 s | 223 Ko |
+| Fiche « La Trousse de voyage », mobile | 99 | 100 | 100 | 100 | 1,8 s | 230 Ko |
+
+La méta-description des fiches est, à défaut de saisie, le nom de la création (comportement natif) : Céline peut l'enrichir dans l'onglet *Optimisation pour les moteurs de recherche* de chaque fiche.
