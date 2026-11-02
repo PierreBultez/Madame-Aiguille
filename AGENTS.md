@@ -8,7 +8,7 @@ Cliente finale : **Céline**, qui gère la boutique depuis le back-office sans t
 
 1. `docs/documentation-theme.md` — ce qui existe, où, et où modifier quoi. **§25 : le rituel de fin de lot.**
 2. `docs/plan-de-developpement.md` — lots, état, décisions.
-3. `docs/prompts/prompt-lot<N>.md` — le prompt de reprise du lot en cours.
+3. `docs/guide-exploitation.md` — **le développement par lots est terminé (lot 8 clos le 02/11/2026)** : surveillance, renouvellements, sauvegardes, mises à jour, déploiement et retour arrière. Les `docs/prompts/prompt-lot<N>.md` restent pour l'historique.
 4. `docs/cahier-des-charges-docs-developpement/guide-bonnes-pratiques-hyva.md` — conventions de code.
 
 ## Règles non négociables
@@ -24,4 +24,4 @@ Cliente finale : **Céline**, qui gère la boutique depuis le back-office sans t
 
 ## Terminer un lot
 
-Dérouler **intégralement** le §25 de `docs/documentation-theme.md`, sans qu'on ait à le redemander : recette (écrans **et** administration), documentation (sections du thème, mémo Céline, limites, journal, plan, styleguide), fusion en avance rapide dans `main` et push sur GitHub, puis écriture du prompt de reprise du lot suivant. Ce qui ne peut pas être tenu est dit et consigné comme limite — jamais sauté en silence.
+Dérouler **intégralement** le §25 de `docs/documentation-theme.md`, sans qu'on ait à le redemander : recette (écrans **et** administration), documentation (sections du thème, mémo Céline, limites, journal, plan, styleguide), fusion en avance rapide dans `main` et push sur GitHub, puis écriture du prompt de reprise du lot suivant (après le lot 8, mise à jour de `docs/guide-exploitation.md` à la place). Ce qui ne peut pas être tenu est dit et consigné comme limite — jamais sauté en silence.

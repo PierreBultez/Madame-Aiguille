@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v3.2 (02/11/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »). **Lot 8 en clôture** : paiement Stripe en live (§26), retrait payable en ligne ou sur place, rôle « Atelier » et guide de Céline (`docs/guide-back-office.md`), grille Mondial Relay définitive, recette de production, qualité (Lighthouse) et identité définitive faites ; reste la clôture (§23, §25).
+Document interne — v3.3 (02/11/2026), **tous les lots livrés** — le lot 8, dernier lot, est clos le 02/11/2026 ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »), paiement Stripe en live (§26). La vie de la boutique après le développement — surveillance, renouvellements, sauvegardes, mises à jour, retour arrière — est dans `docs/guide-exploitation.md` ; ce qui reste ouvert, au §23.
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -578,6 +578,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8 — Qualité (02/11/2026) | Lighthouse : images de l'accueil et de « Nos tissus » en WebP (3,6 Mo → 129 Ko, `UseWebpHomeImages`), méta-description de repli des catégories (`CategoryMetaDescriptionFallback`) ; accueil mobile de 75 à 99, SEO des catégories de 92 à 100 | `d93260e`, `111ceb3`, `15b0246` |
 | 8 — Identité définitive (02/11/2026) | logo vectoriel (en-tête, pied de page, tunnel, PNG pour les emails), favicon et icônes « aiguille et fil », logos officiels des paiements, réseaux et livraisons au footer | `b7ac1d7`, `80fd8fa` |
 | 8 — Site de documentation, suite (02/11/2026) | pages revalidées à chaque visite (`98-cache-guide.sh`), page « Lighthouse » façon PageSpeed Insights (`docs/audits/lighthouse.json`, `resumer-lighthouse.mjs`), §23 renommé et journal complété | `76f05b7` + commit de la page |
+| 8 — Clôture (02/11/2026) | contrôles finaux (129 tests unitaires, PHPCS sans erreur sur les 39 fichiers PHP du lot, `env:check --serveur` à 0 erreur et 0 avertissement), **guide d'exploitation** `docs/guide-exploitation.md` publié sur le site de documentation, plan v3.3, fusion dans `main` | commit de clôture |
 
 ## 18. Formulaire de contact
 
@@ -756,7 +757,7 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 
 ## 23. Lot 8 : ce qui reste à faire
 
-Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, dernier lot, est en cours de clôture. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, paiement Stripe en live, **indexée depuis l'ouverture du 02/11/2026**, administration réservée (§29). La recette de production, la qualité (page « Lighthouse » du site de documentation) et le back-office de Céline sont faits. Le tableau garde l'historique de chaque sujet : « Soldé » quand il n'y a plus rien à faire, sinon l'action attendue et son responsable.
+Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, dernier lot, est **clos le 02/11/2026** : il n'y a plus de lot, la suite se lit dans `docs/guide-exploitation.md`. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, paiement Stripe en live, **indexée depuis l'ouverture du 02/11/2026**, administration réservée (§29). La recette de production, la qualité (page « Lighthouse » du site de documentation) et le back-office de Céline sont faits. Le tableau garde l'historique de chaque sujet : « Soldé » quand il n'y a plus rien à faire, sinon l'action attendue et son responsable.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
@@ -949,6 +950,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 
 - Écrire le **prompt de reprise du lot suivant** dans `docs/prompts/`, sur le modèle de `prompt-lot5.md` : état de départ vérifiable, ce qui est déjà tranché, règles non négociables, périmètre, ce qui ne pourra pas être bouclé, décisions à demander à Pierre, pièges connus du projet.
 - Mettre à jour le prompt avec les pièges découverts pendant le lot qu'on vient de finir.
+- **Après le lot 8, dernier lot**, il n'y a plus de prompt de lot : on met à jour `docs/guide-exploitation.md` (versions, échéances, pièges, sujets ouverts).
 
 ## 26. Livraison et paiements (lot 5)
 

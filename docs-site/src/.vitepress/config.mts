@@ -10,7 +10,7 @@ export default defineConfig({
     lang: 'fr-FR',
     title: 'Madame Aiguille',
     titleTemplate: ':title — Guide Madame Aiguille',
-    description: 'Guide du back-office, documentation du thème et aide-mémoire du déploiement de la boutique Madame Aiguille.',
+    description: 'Guide du back-office, documentation du thème, aide-mémoire du déploiement et guide d’exploitation de la boutique Madame Aiguille.',
     cleanUrls: true,
     lastUpdated: false,
     // Documentation interne : pas d'indexation par les moteurs (doublé par l'en-tête nginx)
@@ -29,6 +29,7 @@ export default defineConfig({
             { text: 'Guide', link: '/guide/', activeMatch: '^/guide/' },
             { text: 'Thème', link: '/documentation/', activeMatch: '^/documentation/' },
             { text: 'Déploiement', link: '/commandes/', activeMatch: '^/commandes/' },
+            { text: 'Exploitation', link: '/exploitation/', activeMatch: '^/exploitation/' },
             { text: 'Lighthouse', link: '/lighthouse', activeMatch: '^/lighthouse' },
             { text: 'Boutique', link: 'https://madame-aiguille.fr' },
         ],
@@ -60,6 +61,7 @@ export default defineConfig({
                     guide: 'guide-back-office.md',
                     documentation: 'documentation-theme.md',
                     commandes: 'commandes-et-deploiement.md',
+                    exploitation: 'guide-exploitation.md',
                 };
                 return `https://github.com/PierreBultez/Madame-Aiguille/blob/main/docs/${sources[filePath.split('/')[0]] ?? ''}`;
             },

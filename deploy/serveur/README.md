@@ -29,7 +29,7 @@ tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/s
 | `95-ouverture-ventes.sh` | Ouverture des ventes : retire l'en-tête `X-Robots-Tag` de nginx (copie, test, retour arrière), puis contrôle en-tête, balise robots, `robots.txt` et sitemap | à jouer après le déploiement du patch `OpenStoreToSearchEngines` |
 | `96-guide-magento.sh` | Site de documentation `guide-magento.pierrebultez.com` : dossier `/var/www/guide-magento`, nginx statique (`nginx/guide-magento.conf`), certificat Let's Encrypt ; vérifie d'abord le DNS. Contenu publié par `docs-site/publier.sh` | à jouer une fois, après l'enregistrement DNS |
 | `97-taille-envois.sh` | Ajoute `client_max_body_size 64m` au bloc backend nginx (8080) : sans lui, 413 au-delà de 1 Mo derrière Varnish (photo de contact) | appliqué le 02/11/2026 |
-| `98-cache-guide.sh` | Ajoute `Cache-Control: no-cache` aux pages du site guide-magento : sans lui, le navigateur gardait les anciennes pages après une publication | à jouer |
+| `98-cache-guide.sh` | Ajoute `Cache-Control: no-cache` aux pages du site guide-magento : sans lui, le navigateur gardait les anciennes pages après une publication | appliqué le 02/11/2026 |
 | `70-hebergement.sh` | Utilisateur `madame-aiguille`, arborescence, pool PHP-FPM, réglages MariaDB, certificat `madame-aiguille.fr` + `www`, rotation des journaux | à jouer |
 | `80-installer-magento.sh <version>` | Installation neuve dans une version envoyée par GitHub Actions, réglages du serveur, VCL, cron, mise en ligne, activation nginx | appliqué le 10/10/2026 |
 | `90-acces-admin.sh <ip> [<ip>…]` | Administration : IP autorisées ou mot de passe HTTP (`satisfy any`) ; rejouable pour changer la liste | à jouer, après le mot de passe |

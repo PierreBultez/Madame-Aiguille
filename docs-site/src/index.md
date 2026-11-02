@@ -15,6 +15,9 @@ hero:
     - theme: alt
       text: Commandes et déploiement
       link: /commandes/
+    - theme: alt
+      text: Guide d’exploitation
+      link: /exploitation/
 
 features:
   - title: Guide du back-office
@@ -29,4 +32,12 @@ features:
     details: L’aide-mémoire des commandes maison, des scripts du serveur et du déploiement par versions, avec le retour arrière.
     link: /commandes/
     linkText: Ouvrir l’aide-mémoire
+  - title: Guide d’exploitation
+    details: Pour faire vivre la boutique après le développement — surveiller, renouveler, sauvegarder, mettre à jour Magento et Hyvä, déployer et revenir en arrière.
+    link: /exploitation/
+    linkText: Ouvrir le guide d’exploitation
+  - title: Audit Lighthouse
+    details: Vitesse, accessibilité, bonnes pratiques et référencement de l’accueil, d’une catégorie et d’une fiche, sur mobile et sur ordinateur, avant et après les corrections.
+    link: /lighthouse
+    linkText: Voir l’audit
 ---
