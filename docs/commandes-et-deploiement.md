@@ -324,6 +324,23 @@ mage cache:flush                     # tous les caches, Varnish compris
 mage indexer:status                  # les 14 indexeurs sont en « planifié » : mis à jour par le cron
 ```
 
+### Site de documentation
+
+`https://guide-magento.pierrebultez.com` (VitePress, `docs-site/`) reprend trois fichiers de `docs/` : ce guide,
+`documentation-theme.md` et `guide-back-office.md` avec ses captures. Une page par section `##` ; on n'édite que
+`docs/`. Aperçu et publication :
+
+```bash
+cd docs-site && npm install && npm run dev      # aperçu local, rechargé à chaque modification de docs/
+docs-site/publier.sh                            # construit et envoie sur le serveur (rsync)
+```
+
+Mise en place, une fois : enregistrement DNS A `guide-magento.pierrebultez.com` vers l'IP du VPS, puis :
+
+```bash
+tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/serveur/96-guide-magento.sh"; rm -rf "$D"'
+```
+
 ## 8. Jeux de données (poste local seulement)
 
 `docs/jeux-de-donnees/` : `categories.php`, `produits-test.php`, `accueil.php`. Peuplent un environnement de

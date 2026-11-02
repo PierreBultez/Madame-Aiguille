@@ -1,0 +1,15 @@
+{
+  "name": "madame-aiguille-guide",
+  "private": true,
+  "type": "module",
+  "description": "Site de documentation guide-magento.pierrebultez.com, généré depuis docs/*.md",
+  "scripts": {
+    "pages": "node scripts/generer-pages.mjs",
+    "dev": "npm run pages && vitepress dev src",
+    "build": "npm run pages && vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4"
+  }
+}

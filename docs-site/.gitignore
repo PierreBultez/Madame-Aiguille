@@ -1,0 +1,9 @@
+node_modules/
+# Pages générées depuis docs/*.md par scripts/generer-pages.mjs : jamais éditées à la main
+src/guide/
+src/documentation/
+src/commandes/
+src/public/guide-back-office/
+src/.vitepress/sidebar.json
+src/.vitepress/cache/
+src/.vitepress/dist/
