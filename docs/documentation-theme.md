@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v3.2 (02/11/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »). **Lot 8 en cours** : paiement Stripe en live (§26), retrait payable en ligne ou sur place, rôle « Atelier » et guide de Céline (`docs/guide-back-office.md`), grille Mondial Relay définitive ; restent la qualité et une partie de la recette (§23).
+Document interne — v3.2 (02/11/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »). **Lot 8 en clôture** : paiement Stripe en live (§26), retrait payable en ligne ou sur place, rôle « Atelier » et guide de Céline (`docs/guide-back-office.md`), grille Mondial Relay définitive, recette de production, qualité (Lighthouse) et identité définitive faites ; reste la clôture (§23, §25).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -535,6 +535,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 7 — Compte client | navigation restylée avec l'identité de la cliente, tableau de bord, commandes en cartes, détail avec frise, formulaires, retrait de l'assistance distante, dictionnaire `fr_FR.csv` | `b4c1f86` |
 | 7 — Emails | enveloppe commune header/footer aux couleurs de la marque, styles LESS email, notifications « paiement reçu » et « prête pour retrait » (observateur + envoi configurable), accusé de réception du contact réaligné | `635efa5` |
 | 7 — Styleguide et documentation | états du compte sur `/styleguide` via `ViewModel\Styleguide\OrderStates`, sections §21 et §22, mémo Céline complété | `8f33ac5` → `8f2c4c4` |
+| 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 | 5 — Préparation (09/10/2026) | contenus génériques des quatre pages juridiques par data patch non destructif, styles CMS des listes, définitions et bandeau de brouillon | `5a23cb8` |
 | 5 — Spike et socle (09/10/2026) | spike Mondial Relay ; zone FR/BE/LU/MC, origine Saint-Épain, TVA FR, chèque coupé, Mollie restreint, message cadeau | `8982ecb` → `718f8bc` |
 | 5 — Livraison | grille au poids versionnée et commande d'import, franco à 60 € depuis le seul seuil du panier, contrôle des poids | `0171883` → `871c67d` |
@@ -569,8 +570,14 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8 — Back-office de Céline (02/11/2026) | rôle « Atelier » (`CreateWorkshopRole`), droit de double authentification (`AllowWorkshopTwoFactorAuth`), seuil de stock faible à 2 (`SetLowStockThreshold`), guide illustré `docs/guide-back-office.md` | `b9fb8a2`, `2d71795`, `e7c2502`, `87a5424` |
 | 8 — Ouverture des ventes (02/11/2026) | robots `INDEX,FOLLOW`, `robots.txt`, sitemap quotidien dans `pub/media`, page de confidentialité anglaise désactivée, bascule et `env:check` sans `--noindex`, `deploy/serveur/95-ouverture-ventes.sh` | `ce010ba` |
 | 8 — Mondial Relay définitif (02/11/2026) | grille FR / MC (tarif pro ×1,2) et BE / LU (prix publics TTC), bornes « jusqu'à » respectées, emballage type de 0,2 kg ajouté au poids (`AddPackagingWeight`) | `08dddad`, `7b3c73b` |
-| 8 — Site de documentation (02/11/2026) | `docs-site/` (VitePress 1.6.4) : `guide-magento.pierrebultez.com` généré depuis `docs/guide-back-office.md`, `documentation-theme.md` et `commandes-et-deploiement.md`, une page par section, liens « §N » ; `96-guide-magento.sh`, `docs-site/publier.sh` | commit du site |
-| 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
+| 8 — Recette Stripe sur le serveur (23 et 30/10/2026) | clés et webhook vérifiés, commande relais + cadeau, carte refusée et 3-D Secure, emails reçus, remboursement par avoir en ligne ; cinq moyens de paiement et passage en live consignés ; catalogue réel de Céline (script) | `73dee79`, `905aadc`, `d860004`, `92bc1cd`, `ba47770`, `725fed5`, `36503c7` |
+| 8 — Retrait payé sur place, recette (30/10/2026) | commande locale et serveur payées sur place, « Prête pour retrait » avant paiement ; feuille Tailwind compilée avec Node 26 ; copies d'`env.php` ignorées | `4f7625b`, `5e32650`, `1e42f54` |
+| 8 — Serveur (02/11/2026) | compte RabbitMQ `guest` supprimé, ouverture et import de la grille Mondial Relay constatés ; documentation détaillée de l'ouverture et du back-office | `2930fe5`, `21cd104`, `bdf27fa` |
+| 8 — Site de documentation (02/11/2026) | `docs-site/` (VitePress 1.6.4) : `guide-magento.pierrebultez.com` généré depuis `docs/guide-back-office.md`, `documentation-theme.md` et `commandes-et-deploiement.md`, une page par section, liens « §N » ; `96-guide-magento.sh`, `docs-site/publier.sh` | `d531e73` |
+| 8 — Recettes restantes (02/11/2026) | reCAPTCHA refusé côté serveur sans jeton (quatre formulaires), écrans du serveur à 1440 et 390 px, newsletter, compte, mot de passe oublié, Apple Pay / Google Pay / Bancontact / Klarna ; photo de contact de 3,7 Mo acceptée après `client_max_body_size` sur le bloc backend (`97-taille-envois.sh`) | `66916e8`, `f73b6d7`, `39d4aa9` |
+| 8 — Qualité (02/11/2026) | Lighthouse : images de l'accueil et de « Nos tissus » en WebP (3,6 Mo → 129 Ko, `UseWebpHomeImages`), méta-description de repli des catégories (`CategoryMetaDescriptionFallback`) ; accueil mobile de 75 à 99, SEO des catégories de 92 à 100 | `d93260e`, `111ceb3`, `15b0246` |
+| 8 — Identité définitive (02/11/2026) | logo vectoriel (en-tête, pied de page, tunnel, PNG pour les emails), favicon et icônes « aiguille et fil », logos officiels des paiements, réseaux et livraisons au footer | `b7ac1d7`, `80fd8fa` |
+| 8 — Site de documentation, suite (02/11/2026) | pages revalidées à chaque visite (`98-cache-guide.sh`), page « Lighthouse » façon PageSpeed Insights (`docs/audits/lighthouse.json`, `resumer-lighthouse.mjs`), §23 renommé et journal complété | `76f05b7` + commit de la page |
 
 ## 18. Formulaire de contact
 
@@ -747,9 +754,9 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 - **Délivrabilité et SMTP** (SPF, DKIM, DMARC) : dépendent du domaine, **lot 8**. Tant que le SMTP de production n'est pas en place, un email peut partir sans arriver.
 - **Recette de bout en bout** d'une commande payée en ligne : statuts câblés au lot 5 sur Mollie, rebranchés sur Stripe au lot 8 ; paiement local recetté (§26), recette serveur au §23.
 
-## 23. Après le lot 8a : ce qui reste à faire
+## 23. Lot 8 : ce qui reste à faire
 
-Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, **indexée depuis l'ouverture du 02/11/2026**, administration réservée (§29). Les éléments suivants demandent du contenu réel, une action de Pierre ou de Céline, ou appartiennent au lot 8. La **recette fonctionnelle de production** (paiement, emails, newsletter, reCAPTCHA, pièces de vente) attend un catalogue réel et ouvre le lot 8.
+Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, dernier lot, est en cours de clôture. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, paiement Stripe en live, **indexée depuis l'ouverture du 02/11/2026**, administration réservée (§29). La recette de production, la qualité (page « Lighthouse » du site de documentation) et le back-office de Céline sont faits. Le tableau garde l'historique de chaque sujet : « Soldé » quand il n'y a plus rien à faire, sinon l'action attendue et son responsable.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
@@ -1287,6 +1294,7 @@ Décision de Pierre : la boutique est indexée et totalement ouverte. Réalisé 
 | Configuration (menu, recherche, libellés, lien vers la source GitHub, `noindex`) | `docs-site/src/.vitepress/config.mts` |
 | Couleurs de la boutique, clair et sombre | `docs-site/src/.vitepress/theme/custom.css` |
 | Accueil | `docs-site/src/index.md` |
+| Page **Lighthouse** (jauges, métriques, avant / après, façon PageSpeed Insights) | page `docs-site/src/lighthouse.md`, composant `theme/components/LighthouseRapport.vue`, données `docs/audits/lighthouse.json` produites par `docs-site/scripts/resumer-lighthouse.mjs` depuis les rapports JSON de Lighthouse (non versionnés) ; marche à suivre sur la page même |
 | Groupes de la barre latérale du thème | `DOCUMENTS` dans `docs-site/scripts/generer-pages.mjs` (une section sans groupe fait échouer le build) |
 | Hébergement | `deploy/serveur/96-guide-magento.sh`, `deploy/serveur/nginx/guide-magento.conf` ; publication `docs-site/publier.sh` |
 
