@@ -567,6 +567,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8 — Back-office de Céline (02/11/2026) | rôle « Atelier » (`CreateWorkshopRole`), droit de double authentification (`AllowWorkshopTwoFactorAuth`), seuil de stock faible à 2 (`SetLowStockThreshold`), guide illustré `docs/guide-back-office.md` | `b9fb8a2`, `2d71795`, `e7c2502`, `87a5424` |
 | 8 — Ouverture des ventes (02/11/2026) | robots `INDEX,FOLLOW`, `robots.txt`, sitemap quotidien dans `pub/media`, page de confidentialité anglaise désactivée, bascule et `env:check` sans `--noindex`, `deploy/serveur/95-ouverture-ventes.sh` | `ce010ba` |
 | 8 — Mondial Relay définitif (02/11/2026) | grille FR / MC (tarif pro ×1,2) et BE / LU (prix publics TTC), bornes « jusqu'à » respectées, emballage type de 0,2 kg ajouté au poids (`AddPackagingWeight`) | `08dddad`, `7b3c73b` |
+| 8 — Site de documentation (02/11/2026) | `docs-site/` (VitePress 1.6.4) : `guide-magento.pierrebultez.com` généré depuis `docs/guide-back-office.md`, `documentation-theme.md` et `commandes-et-deploiement.md`, une page par section, liens « §N » ; `96-guide-magento.sh`, `docs-site/publier.sh` | commit du site |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
@@ -1274,6 +1275,20 @@ Décision de Pierre : la boutique est indexée et totalement ouverte. Réalisé 
 | Contrôles | La bascule lance `env:check --serveur` sans `--noindex` ; un serveur encore en `NOINDEX` y est en erreur |
 | Search Console | Domaine vérifié par TXT ; sitemap déclaré et indexation de l'accueil demandée par Pierre le 02/11/2026 ; alerte Safe Browsing levée |
 | Emails | SPF, DKIM et DMARC alignés pour Zimbra et Brevo (vérifié sur Gmail et Proton) ; DMARC passé en `p=quarantine` le 02/11/2026 |
+
+### Site de documentation (02/11/2026)
+
+`https://guide-magento.pierrebultez.com` présente trois documents de `docs/` comme un site de documentation (navigation latérale, sommaire de page, recherche, mode sombre) : le guide du back-office, cette documentation et l'aide-mémoire des commandes. **Source unique : `docs/`.** `docs-site/scripts/generer-pages.mjs` en tire une page par section `##` (les `###` alimentent le sommaire), une page « Présentation » du texte d'introduction, la barre latérale (sections du thème groupées par sujet), transforme « §N » en lien vers la section N, copie les captures, et enveloppe chaque page dans `::: v-pre` (Vue interpréterait sinon les `{{ … }}` des gabarits d'email, même en code en ligne). Les pages générées ne sont pas versionnées.
+
+| Quoi | Où |
+|---|---|
+| Configuration (menu, recherche, libellés, lien vers la source GitHub, `noindex`) | `docs-site/src/.vitepress/config.mts` |
+| Couleurs de la boutique, clair et sombre | `docs-site/src/.vitepress/theme/custom.css` |
+| Accueil | `docs-site/src/index.md` |
+| Groupes de la barre latérale du thème | `DOCUMENTS` dans `docs-site/scripts/generer-pages.mjs` (une section sans groupe fait échouer le build) |
+| Hébergement | `deploy/serveur/96-guide-magento.sh`, `deploy/serveur/nginx/guide-magento.conf` ; publication `docs-site/publier.sh` |
+
+Non indexé (balise robots, `robots.txt`, en-tête nginx), mais public : comme le dépôt, il ne contient aucun secret.
 
 ### Pièges rencontrés
 

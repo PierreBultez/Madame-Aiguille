@@ -1,0 +1,47 @@
+/* Couleurs de Madame Aiguille, reprises des emails de la boutique (prune, brun, encre, rose poudré, ivoire). */
+:root {
+    --vp-c-brand-1: #8a615c;
+    --vp-c-brand-2: #6e4d49;
+    --vp-c-brand-3: #6e4d49;
+    --vp-c-brand-soft: rgba(138, 97, 92, 0.14);
+    --vp-c-text-1: #3f312b;
+    --vp-c-text-2: #5f4a41;
+    --vp-c-bg: #fffcfa;
+    --vp-c-bg-alt: #faf0eb;
+    --vp-c-bg-soft: #f4e7e7;
+    --vp-c-divider: #f2e0d7;
+    --vp-c-gutter: #f2e0d7;
+    --vp-home-hero-name-color: #8a615c;
+    --vp-button-brand-bg: #8a615c;
+    --vp-button-brand-hover-bg: #6e4d49;
+    --vp-button-brand-active-bg: #5f4139;
+}
+
+.dark {
+    --vp-c-brand-1: #e0b4ad;
+    --vp-c-brand-2: #d39c94;
+    --vp-c-brand-3: #8a615c;
+    --vp-c-brand-soft: rgba(224, 180, 173, 0.16);
+    --vp-c-bg: #1e1917;
+    --vp-c-bg-alt: #171311;
+    --vp-c-bg-soft: #2a2321;
+    --vp-c-divider: #3a302c;
+    --vp-c-gutter: #120f0e;
+    --vp-home-hero-name-color: #e0b4ad;
+    --vp-button-brand-text: #1e1917;
+    --vp-button-brand-bg: #e0b4ad;
+    --vp-button-brand-hover-bg: #d39c94;
+}
+
+/* Captures du guide : cadre discret, jamais plus larges que la colonne */
+.vp-doc img {
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(63, 49, 43, 0.08);
+}
+
+/* Tableaux larges de la documentation : défilement horizontal plutôt que débordement */
+.vp-doc table {
+    display: block;
+    overflow-x: auto;
+}

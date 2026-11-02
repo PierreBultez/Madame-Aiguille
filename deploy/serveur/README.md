@@ -27,6 +27,7 @@ tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/s
 | `60-valkey.sh` | Valkey à la place de Redis (sites Laravel, 6379) + cache (6380) et sessions (6381) Magento | appliqué le 10/10/2026 |
 | `65-rabbitmq-guest.sh` | Supprime le compte RabbitMQ `guest` ; s'arrête si une connexion l'utilise encore | appliqué le 02/11/2026 (seul reste le compte `madame-aiguille`) |
 | `95-ouverture-ventes.sh` | Ouverture des ventes : retire l'en-tête `X-Robots-Tag` de nginx (copie, test, retour arrière), puis contrôle en-tête, balise robots, `robots.txt` et sitemap | à jouer après le déploiement du patch `OpenStoreToSearchEngines` |
+| `96-guide-magento.sh` | Site de documentation `guide-magento.pierrebultez.com` : dossier `/var/www/guide-magento`, nginx statique (`nginx/guide-magento.conf`), certificat Let's Encrypt ; vérifie d'abord le DNS. Contenu publié par `docs-site/publier.sh` | à jouer une fois, après l'enregistrement DNS |
 | `70-hebergement.sh` | Utilisateur `madame-aiguille`, arborescence, pool PHP-FPM, réglages MariaDB, certificat `madame-aiguille.fr` + `www`, rotation des journaux | à jouer |
 | `80-installer-magento.sh <version>` | Installation neuve dans une version envoyée par GitHub Actions, réglages du serveur, VCL, cron, mise en ligne, activation nginx | appliqué le 10/10/2026 |
 | `90-acces-admin.sh <ip> [<ip>…]` | Administration : IP autorisées ou mot de passe HTTP (`satisfy any`) ; rejouable pour changer la liste | à jouer, après le mot de passe |

@@ -83,6 +83,8 @@ vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist --no-extensions app/code/M
 
 Le détail de chaque lot, les décisions prises et les points ouverts sont dans [`docs/plan-de-developpement.md`](docs/plan-de-developpement.md).
 
+La documentation se lit aussi en ligne, sur **https://guide-magento.pierrebultez.com** (site VitePress `docs-site/`, généré depuis `docs/`) : guide du back-office, documentation du thème, commandes et déploiement.
+
 ## Licences
 
 Magento Open Source est distribué sous OSL-3.0, le thème Hyvä sous BSD-3-Clause. Les fontes Britney et Sentient restent la propriété d'Indian Type Foundry (ITF Free Font License, voir les fichiers `FFL-*.txt`). Les visuels, photos et contenus de la boutique appartiennent à leur autrice.
