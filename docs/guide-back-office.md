@@ -178,5 +178,4 @@ système** pour modifier un champ, puis **Sauvegarder la configuration**.
 ## 7. En cas de doute
 
 - Une action irréversible (avoir, annulation) : prenez le temps de relire le montant et la commande.
-- Un message d'erreur, une page qui ne s'ouvre pas, un réglage introuvable : notez l'heure et la page, et prévenez
-  Pierre.
+- Un message d'erreur, une page qui ne s'ouvre pas, un réglage introuvable : notez l'heure et la page, et prévenez Pierre.
