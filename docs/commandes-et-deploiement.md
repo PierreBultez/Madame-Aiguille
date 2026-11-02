@@ -335,6 +335,8 @@ cd docs-site && npm install && npm run dev      # aperçu local, rechargé à ch
 docs-site/publier.sh                            # construit et envoie sur le serveur (rsync)
 ```
 
+La page « Lighthouse » du site lit `docs/audits/lighthouse.json` ; pour la mettre à jour après un nouvel audit, suivre la section « Rejouer l'audit » de la page.
+
 Mise en place, une fois : enregistrement DNS A `guide-magento.pierrebultez.com` vers l'IP du VPS, puis :
 
 ```bash

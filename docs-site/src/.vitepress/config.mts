@@ -1,6 +1,7 @@
 // Site de documentation de Madame Aiguille : guide-magento.pierrebultez.com.
 // Les pages viennent de docs/*.md (scripts/generer-pages.mjs) ; la barre latérale aussi.
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitepress';
 
 const sidebar = JSON.parse(readFileSync(new URL('./sidebar.json', import.meta.url), 'utf8'));
@@ -17,6 +18,10 @@ export default defineConfig({
         ['meta', { name: 'robots', content: 'noindex, nofollow' }],
         ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
     ],
+    // La page Lighthouse lit docs/audits/lighthouse.json, hors du dossier src/
+    vite: {
+        server: { fs: { allow: [fileURLToPath(new URL('../../..', import.meta.url))] } },
+    },
     themeConfig: {
         logo: '/favicon.svg',
         siteTitle: 'Guide Madame Aiguille',
@@ -24,6 +29,7 @@ export default defineConfig({
             { text: 'Guide', link: '/guide/', activeMatch: '^/guide/' },
             { text: 'Thème', link: '/documentation/', activeMatch: '^/documentation/' },
             { text: 'Déploiement', link: '/commandes/', activeMatch: '^/commandes/' },
+            { text: 'Lighthouse', link: '/lighthouse', activeMatch: '^/lighthouse' },
             { text: 'Boutique', link: 'https://madame-aiguille.fr' },
         ],
         sidebar,
