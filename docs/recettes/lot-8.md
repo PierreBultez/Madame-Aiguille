@@ -169,5 +169,9 @@ La méta-description des fiches est, à défaut de saisie, le nom de la créatio
 
 ## Footer : logos officiels (02/11/2026, local)
 
-Logos fournis par Pierre dans `docs/logos/` : moyens de paiement (CB, Visa, Mastercard, Apple Pay, Google Pay, Bancontact, Klarna), Instagram, Facebook, Mondial Relay ; « Retrait à l'atelier » prend l'aiguille et le fil. Réduits en WebP 48 px de haut (1 à 5 Ko chacun, contre 12 à 770 Ko fournis). Contrôlé en local à 1440 et 390 px : logos nets, aucun débordement horizontal. À contrôler en ligne après déploiement.
+Logos fournis par Pierre dans `docs/logos/` : moyens de paiement (CB, Visa, Mastercard, Apple Pay, Google Pay, Bancontact, Klarna), Instagram, Facebook, Mondial Relay ; « Retrait à l'atelier » prend l'aiguille et le fil. Réduits en WebP 48 px de haut (1 à 5 Ko chacun, contre 12 à 770 Ko fournis). Contrôlé en local à 1440 et 390 px : logos nets, aucun débordement horizontal. **En ligne le 02/11/2026** : les dix logos du footer servis (200, 1 à 12 Ko), plus d'icône Lucide pour Instagram et Facebook.
+
+## Site guide-magento : cache (02/11/2026, serveur)
+
+`98-cache-guide.sh` joué par Pierre : pages, page Lighthouse et favicon en `Cache-Control: no-cache` ; fichiers empreintés de `/assets/` toujours en cache d'un an (`public, immutable`).
 
