@@ -22,7 +22,7 @@
         <!-- Logo : verrou horizontal officiel, ratio intrinsèque conservé -->
         <referenceBlock name="logo">
             <arguments>
-                <argument name="logo_file" xsi:type="string">images/logo-rectangulaire.webp</argument>
+                <argument name="logo_file" xsi:type="string">images/logo-madame-aiguille.svg</argument>
                 <argument name="logo_width" xsi:type="number">356</argument>
                 <argument name="logo_height" xsi:type="number">66</argument>
             </arguments>

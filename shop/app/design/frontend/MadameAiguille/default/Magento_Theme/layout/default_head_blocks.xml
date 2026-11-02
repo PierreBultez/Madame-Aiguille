@@ -6,6 +6,8 @@
  * Préchargement des deux fontes du premier écran (charte graphique §4).
  * Les @font-face sont dans web/tailwind/src/fonts.css ; les fichiers dans web/fonts/.
  * La feuille css/styles.css est déclarée par le thème parent.
+ * Icônes : templates/html/head/icons.phtml (déclarées en <link src> dans <head>, Magento rangeait le SVG
+ * avec les préchargements de fontes).
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
@@ -13,4 +15,10 @@
         <link src="fonts/Britney-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin="anonymous"/>
         <link src="fonts/Sentient-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin="anonymous"/>
     </head>
+    <body>
+        <referenceBlock name="head.additional">
+            <block class="Magento\Framework\View\Element\Template" name="madameaiguille.head.icons"
+                   template="Magento_Theme::html/head/icons.phtml"/>
+        </referenceBlock>
+    </body>
 </page>
