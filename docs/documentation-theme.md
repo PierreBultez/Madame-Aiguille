@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v3.1 (23/10/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne sur `https://madame-aiguille.fr`**, non indexée, installation neuve (§29). **Lot 8 en cours** : paiement en ligne passé de Mollie à Stripe (§26), recette de production à suivre (§23).
+Document interne — v3.2 (02/11/2026), lots 6a, 3, 4, 7, 5, 6b et **8a** livrés ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »). **Lot 8 en cours** : paiement Stripe en live (§26), retrait payable en ligne ou sur place, rôle « Atelier » et guide de Céline (`docs/guide-back-office.md`), grille Mondial Relay définitive ; restent la qualité et une partie de la recette (§23).
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -559,6 +559,14 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8 — Mondial Relay (23/10/2026) | code enseigne du compte pro saisi en configuration (non versionné), identifiants API consignés pour une automatisation future | `b7fe66f`, `33c3b19` |
 | 8 — Mollie retiré (23/10/2026) | paquets en `replace`, ligne cadeau, patches et contrôle Mollie supprimés ; anciennes commandes lisibles par substitution native | `f59e89f` |
 | 8 — Stripe (23/10/2026) | `stripe/module-payments` 4.7.1 sans Tax, défauts du module Checkout, retraits Hyvä, statuts par défaut, pages juridiques, `env:check` ; paiement recetté en local | `bba5407` + documentation |
+| 8 — Retrait payé en ligne ou sur place (30/10/2026) | `RestrictPaymentToDelivery` ne retire plus que le paiement sur place hors retrait, libellés « Carte bancaire en ligne » / « Paiement sur place (carte ou espèces) », email « Prête pour retrait » selon le règlement, CGV et page Livraison alignées | `fb7c6f3` |
+| 8 — Email « Prête pour retrait » (30/10/2026) | `{{depend}}` imbriqués remplacés par `{{if}}` : l'email avec rendez-vous ne pouvait pas partir (défaut du lot 5) | `5f22d40` |
+| 8 — Libellé du retrait, Apple Pay / Google Pay (30/10/2026) | « Sur rendez-vous à l'atelier de Saint-Épain (37800) » ; emplacement express « Checkout, within payment form » seul, sans quoi Apple Pay et Google Pay sont masqués ; `env:check` affiné | `dd3b5d2` |
+| 8 — « Prête pour retrait » avant paiement (30/10/2026) | statut rattaché aussi à l'état `new`, frise propre au paiement sur place | `76ff31f` |
+| 8 — CGV et confidentialité (30/10/2026) | cinq moyens de paiement (`ListPaymentMethodsInTerms`), Klarna dans la confidentialité (`NameKlarnaInPrivacyPage`) | `6bdfb7a`, `9edd7a2` |
+| 8 — Back-office de Céline (02/11/2026) | rôle « Atelier » (`CreateWorkshopRole`), droit de double authentification (`AllowWorkshopTwoFactorAuth`), seuil de stock faible à 2 (`SetLowStockThreshold`), guide illustré `docs/guide-back-office.md` | `b9fb8a2`, `2d71795`, `e7c2502`, `87a5424` |
+| 8 — Ouverture des ventes (02/11/2026) | robots `INDEX,FOLLOW`, `robots.txt`, sitemap quotidien dans `pub/media`, page de confidentialité anglaise désactivée, bascule et `env:check` sans `--noindex`, `deploy/serveur/95-ouverture-ventes.sh` | `ce010ba` |
+| 8 — Mondial Relay définitif (02/11/2026) | grille FR / MC (tarif pro ×1,2) et BE / LU (prix publics TTC), bornes « jusqu'à » respectées, emballage type de 0,2 kg ajouté au poids (`AddPackagingWeight`) | `08dddad`, `7b3c73b` |
 | 7 — Correction (11/09/2026) | identifiants des deux gabarits d'email alignés sur le chemin de configuration : sans cela, la page *Emails de vente* de l'administration ne s'ouvrait plus du tout | `62d7647` |
 
 ## 18. Formulaire de contact
@@ -738,7 +746,7 @@ L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/
 
 ## 23. Après le lot 8a : ce qui reste à faire
 
-Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, non indexée, administration réservée (§29). Les éléments suivants demandent du contenu réel, une action de Pierre ou de Céline, ou appartiennent au lot 8. La **recette fonctionnelle de production** (paiement, emails, newsletter, reCAPTCHA, pièces de vente) attend un catalogue réel et ouvre le lot 8.
+Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tourne sur `https://madame-aiguille.fr`, installation neuve, mode production, **indexée depuis l'ouverture du 02/11/2026**, administration réservée (§29). Les éléments suivants demandent du contenu réel, une action de Pierre ou de Céline, ou appartiennent au lot 8. La **recette fonctionnelle de production** (paiement, emails, newsletter, reCAPTCHA, pièces de vente) attend un catalogue réel et ouvre le lot 8.
 
 | Sujet | Action attendue | Responsable / échéance |
 |---|---|---|
@@ -775,7 +783,7 @@ Les lots 3, 4, 7, 5, 6b et **8a (infrastructure)** sont livrés. La boutique tou
 | Production | Contrôler la purge des pièces jointes et des badges Nouveauté sur le serveur ; WebP et performances (Lighthouse) | Lot 8 |
 | Logo et favicon | Vérifier le favicon à 16 / 32 px | Lot 8 |
 
-Soldé au lot 8 : **Mollie remplacé par Stripe** (23/10/2026, §26 « Paiement en ligne : Stripe »), recetté en local ; code enseigne Mondial Relay du compte pro, saisi le 23/10/2026 en local et sur le serveur ; `env:check` le contrôle, la carte ne montre plus l'avertissement de démonstration et la sélection d'un point fonctionne.
+Soldé au lot 8 : **ouverture des ventes** (02/11/2026, §29), **grille Mondial Relay définitive** et emballage de 0,2 kg (§26), **rôle « Atelier », compte et guide de Céline**, alerte de stock bas, retrait payable en ligne ou sur place, CGV et confidentialité à jour des cinq moyens de paiement, compte RabbitMQ `guest` supprimé ; **Mollie remplacé par Stripe** (23/10/2026, §26 « Paiement en ligne : Stripe »), recetté en local ; code enseigne Mondial Relay du compte pro, saisi le 23/10/2026 en local et sur le serveur ; `env:check` le contrôle, la carte ne montre plus l'avertissement de démonstration et la sélection d'un point fonctionne.
 
 Soldé au lot 8a : domaine, DNS, HTTPS (certificat `madame-aiguille.fr` + `www`), serveur aligné (Ubuntu 26.04, PHP 8.5.4, MariaDB 12.3.3, OpenSearch 3.9, Valkey 9.0.4, Varnish 7.7), SMTP Brevo opérationnel, webhook Mollie actif et joignable, clés Mollie saisies, double authentification, langue reproductible (paquet dans `composer.lock`), fontes provisionnées par le build, déploiement versionné et retour arrière, contrôle d'environnement. Détail : §29 et `docs/recettes/lot-8a.md`. Le prompt du lot suivant est `docs/prompts/prompt-lot8.md`.
 
@@ -1215,7 +1223,7 @@ Ubuntu 26.04 LTS, alignée sur le poste de développement : PHP 8.5.4, MariaDB 1
 
 | Service | Rôle | Écoute |
 |---|---|---|
-| nginx 443 | TLS (certificat unique `madame-aiguille.fr` + `www`), `www` et HTTP en 301, `X-Robots-Tag: noindex, nofollow` avant l'ouverture | public |
+| nginx 443 | TLS (certificat unique `madame-aiguille.fr` + `www`), `www` et HTTP en 301 ; `X-Robots-Tag: noindex, nofollow` jusqu'à l'ouverture du 02/11/2026, retiré par `95-ouverture-ventes.sh` | public |
 | Varnish | cache de pages, VCL généré par Magento | 127.0.0.1:6081 |
 | nginx 8080 | backend de Varnish, `nginx.conf.sample` de la version en ligne | 127.0.0.1 |
 | PHP-FPM, pool `madame-aiguille` | utilisateur système dédié sans connexion, socket lu par nginx | socket |
@@ -1250,10 +1258,29 @@ bin/magento madameaiguille:env:check                      # poste local
 bin/magento madameaiguille:env:check --serveur            # serveur ouvert (avant l'ouverture : --noindex)
 ```
 
-Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation, caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
+Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation (`NOINDEX` exigé avec `--noindex`, interdit sur un serveur contrôlé sans ce drapeau depuis l'ouverture), caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
+
+### Ouverture des ventes (lot 8, 02/11/2026)
+
+Décision de Pierre : la boutique est indexée et totalement ouverte. Réalisé par déploiement de `Theme/Setup/Patch/Data/OpenStoreToSearchEngines.php`, puis `deploy/serveur/95-ouverture-ventes.sh` lancé par Pierre :
+
+| Élément | État |
+|---|---|
+| Balise robots | `INDEX,FOLLOW` (le patch ; `80-installer-magento.sh` repose `NOINDEX` sur une installation neuve, le temps de sa recette) |
+| En-tête nginx | `X-Robots-Tag` retiré de la configuration installée (copie `/etc/nginx/madame-aiguille.conf.avant-ouverture`) et du gabarit versionné. Le contrôle du script, lancé juste après le rechargement, peut encore voir l'en-tête servi par un ancien processus nginx |
+| `robots.txt` | Servi par Magento : exclut `/checkout/`, `/customer/`, `/sales/`, `/wishlist/`, `/catalogsearch/`, `/newsletter/`, `/stripe/` et les URL de session, annonce le sitemap |
+| Sitemap | `https://madame-aiguille.fr/media/sitemap.xml` : écrit dans `pub/media`, **partagé entre les versions** (un fichier de `pub/` disparaîtrait au déploiement suivant) ; régénéré chaque nuit à 0 h par le cron, ou *Marketing › Plan du site › Générer* |
+| Page native anglaise | `privacy-policy-cookie-restriction-mode` désactivée (`DisableNativePrivacyPage`) : elle serait partie dans le sitemap |
+| Contrôles | La bascule lance `env:check --serveur` sans `--noindex` ; un serveur encore en `NOINDEX` y est en erreur |
+| Search Console | Domaine vérifié par TXT ; sitemap déclaré et indexation de l'accueil demandée par Pierre le 02/11/2026 ; alerte Safe Browsing levée |
+| Emails | SPF, DKIM et DMARC alignés pour Zimbra et Brevo (vérifié sur Gmail et Proton) ; DMARC passé en `p=quarantine` le 02/11/2026 |
 
 ### Pièges rencontrés
 
+- **Rôle d'administration restreint et double authentification** : sans le droit `Magento_TwoFactorAuth::tfa` (*Système › Permissions › Two Factor Auth*), un rôle restreint est refusé à l'étape du code. Toujours tester un nouveau rôle avec un vrai compte, jusqu'au tableau de bord.
+- **Adresses de l'administration** : saisies sans leur clé de sécurité (`/key/…`), elles renvoient au tableau de bord ; naviguer par le menu.
+- **Configuration DI compilée en mode développeur** : après un `setup:di:compile`, un nouveau plugin déclaré dans `di.xml` est ignoré jusqu'à la compilation suivante.
+- **Rapport de stock faible (MSI)** : il ne liste que les articles qui ont une ligne dans `inventory_low_stock_notification_configuration`, créée à l'enregistrement du produit dans l'administration ; un produit créé par script n'y apparaît jamais.
 - **Paiement en ligne** : Mollie 3.1.3 ne facturait que par le webhook (8a). Stripe, qui le remplace au lot 8, encaisse et facture dès la commande ; ses webhooks (`POST /stripe/webhooks`, public) servent aux remboursements, litiges et moyens différés (§26).
 - **La mise à niveau Ubuntu 25.10 → 26.04 retire PHP 8.4 sans installer 8.5** : les sites PHP tombent en 502 jusqu'à l'installation de PHP 8.5 et la bascule des sockets nginx. Elle désactive aussi les dépôts externes (`*.list.disabled`), remis au format deb822.
 - **Elasticsearch 9 dimensionne son tas sur la moitié de la RAM** par défaut ; Magento 2.4.9 embarque un client Elasticsearch 8 : OpenSearch 3 retenu.
@@ -1274,6 +1301,8 @@ Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans affic
 Le 10/10/2026, Chrome a affiché « Site dangereux » sur l'administration : sa protection en temps réel a pris pour de l'hameçonnage le formulaire de connexion standard de Magento (titre « Admin Magento », logo Adobe, champ mot de passe) servi sur un domaine neuf à la vitrine encore vide. Audit en lecture seule : aucune injection dans la configuration ni le CMS, aucun PHP dans les médias, un seul administrateur, aucun fichier modifié hors `setup:install` ; l'intégration « Magento Analytics user » vient du cron natif. Le rapport de transparence Safe Browsing n'avait aucune donnée sur le domaine.
 
 Réponse : `deploy/serveur/90-acces-admin.sh` génère `/etc/nginx/snippets/madame-aiguille-admin.conf` (hors dépôt, contient le chemin de l'administration) inclus par la configuration versionnée : `satisfy any` — une IP de la liste passe, toute autre doit fournir l'identifiant et le mot de passe HTTP (hachage SHA-512 dans `/etc/nginx/madame-aiguille-admin.htpasswd`, choisi par Pierre). Vitrine, tunnel et webhook restent publics ; le robot de Google reçoit un 401 et ne voit plus le formulaire. Signalement envoyé à Google Safe Browsing ; propriété Search Console créée (aucun problème de sécurité). Ajouter l'IP de Céline en relançant le script avec les deux adresses.
+
+Comptes au 02/11/2026 : celui de Pierre (*Administrators*) et celui de Céline (rôle **« Atelier »**, français, double authentification Google Authenticator). Son IP n'est pas encore connue : hors liste, elle passe par l'identifiant et le mot de passe HTTP. Guide : `docs/guide-back-office.md`.
 
 ### Recette du 10/10/2026
 
