@@ -22,6 +22,11 @@ $lucideIcons = $viewModels->require(LucideIcons::class);
 $socialLinks = $block->getData('social_links');
 $links = $socialLinks ? $socialLinks->getLinks() : [];
 $tagline = (string) $block->getData('tagline');
+// Logos officiels fournis par Pierre (docs/logos/, 02/11/2026) ; un réseau sans logo garde son icône Lucide
+$networkLogos = [
+    'instagram' => 'images/footer/instagram.webp',
+    'facebook' => 'images/footer/facebook.webp',
+];
 ?>
 <div class="flex flex-col items-center md:items-start text-center md:text-left pb-4 md:pb-0">
     <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>" class="inline-flex min-h-11 items-center rounded-sm mb-3" aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Home page')) ?>">
@@ -48,7 +53,18 @@ $tagline = (string) $block->getData('tagline');
                         rel="noopener noreferrer"
                         aria-label="<?= $escaper->escapeHtmlAttr(__('%1 (nouvelle fenêtre)', $link['name'])) ?>"
                     >
-                        <?= $lucideIcons->renderHtml($link['icon'], '', 20, 20, ['aria-hidden' => 'true']) ?>
+                        <?php if (isset($networkLogos[$link['icon']])): ?>
+                            <img
+                                src="<?= $escaper->escapeUrl($block->getViewFileUrl($networkLogos[$link['icon']])) ?>"
+                                alt=""
+                                width="24"
+                                height="24"
+                                class="block"
+                                loading="lazy"
+                            >
+                        <?php else: ?>
+                            <?= $lucideIcons->renderHtml($link['icon'], '', 20, 20, ['aria-hidden' => 'true']) ?>
+                        <?php endif; ?>
                     </a>
                 </li>
             <?php endforeach; ?>
