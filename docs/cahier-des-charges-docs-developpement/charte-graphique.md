@@ -39,7 +39,9 @@ Composition circulaire : « Madame Aiguille » en script, arqué au-dessus d'un 
 
 Brief de production : **`../prompts/prompt-logos-svg.md`**.
 
-**État d'intégration au 10/09/2026** : les deux fichiers validés dans `docs/logos/` sont utilisés par le thème enfant. `logo-rectangulaire.jpg` est le logo du header et du footer ; `logo-carre.jpg` fournit le favicon ICO multi-tailles. La vectorisation ci-dessous reste une amélioration de netteté et de poids pour une phase ultérieure, sans bloquer les lots fonctionnels.
+**Versions définitives au 02/11/2026** (décision de Pierre) : `docs/logos/madame-aiguille-vectoriel.svg` partout où un logo rectangulaire est nécessaire (header, footer, tunnel ; `madame-aiguille-transparent.png` pour les emails), `docs/logos/03-aiguille-et-fil.svg` (et `.png`, `.ico`) partout où un logo carré est nécessaire (favicon, icônes). Les JPEG ci-dessous sont retirés.
+
+**État d'intégration au 10/09/2026** (historique) : les deux fichiers validés dans `docs/logos/` sont utilisés par le thème enfant. `logo-rectangulaire.jpg` est le logo du header et du footer ; `logo-carre.jpg` fournit le favicon ICO multi-tailles. La vectorisation ci-dessous reste une amélioration de netteté et de poids pour une phase ultérieure, sans bloquer les lots fonctionnels.
 
 | Fichier | Usage | Bascule |
 |---|---|---|

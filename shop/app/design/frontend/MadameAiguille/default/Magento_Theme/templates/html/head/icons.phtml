@@ -1,0 +1,17 @@
+<?php
+/**
+ * Madame Aiguille — icônes du site : l'aiguille et le fil (docs/logos/03-aiguille-et-fil.*), en SVG pour les
+ * navigateurs récents et en PNG 180 px sur fond ivoire pour l'écran d'accueil d'iOS. Le favicon.ico de
+ * Magento_Theme/web reste le repli des autres navigateurs.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+?>
+<link rel="icon" type="image/svg+xml" href="<?= $escaper->escapeUrl($block->getViewFileUrl('images/favicon.svg')) ?>">
+<link rel="apple-touch-icon" href="<?= $escaper->escapeUrl($block->getViewFileUrl('images/apple-touch-icon.png')) ?>">

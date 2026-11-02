@@ -154,4 +154,6 @@ Lighthouse 13.5 lancé en local contre le site en ligne (quota de PageSpeed Insi
 
 Corrigé : images de l'accueil et de « Nos tissus » en WebP qualité 82 (`hero` 1,47 Mo et `atelier` 801 Ko en tête ; 3,6 Mo → 129 Ko au total), contenus CMS existants repointés par `UseWebpHomeImages` (seules les références exactes d'origine) ; logo en WebP 712 × 132 (94 → 10 Ko) dans l'en-tête, le pied de page et le tunnel. Contrôlé en local : accueil à 1440 et 390 px, toutes les images servies en `.webp`, PHPCS (avertissements de docblocks habituels des patchs) et 126 tests unitaires.
 
-Restent : méta-description des catégories (Céline), favicon lisible à 16 px (propositions soumises à Pierre), logo SVG. Lighthouse à rejouer après déploiement.
+Logos définitifs choisis par Pierre : « aiguille et fil » pour le favicon et les icônes carrées, logo vectoriel partout ailleurs (PNG 440 px dans les emails). Méta-descriptions des catégories toutes vides : repli `CategoryMetaDescriptionFallback`. Contrôlé en local : en-tête et pied de page à 1440 et 390 px (SVG net, aucun débordement), icônes SVG et iOS dans le `<head>`, préchargement des deux fontes intact, fichiers du thème du tunnel servis, méta-description composée sur « Trousses de toilette » et reprise de la description sur « Réutilisables au quotidien », 129 tests unitaires. Non vu : le tunnel lui-même (panier local vide) et un email reçu avec le nouveau logo.
+
+Reste : Lighthouse à rejouer après déploiement.
