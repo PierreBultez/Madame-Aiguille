@@ -58,7 +58,7 @@ class CreateFabricPageAndPrepareAbout implements DataPatchInterface
     private function getAboutContent(): string
     {
         return <<<'HTML'
-<figure class="cms-media"><img src="{{view url='images/home/atelier.png'}}" alt="Création textile en cours à l’atelier" width="930" height="591"></figure>
+<figure class="cms-media"><img src="{{view url='images/home/atelier.webp'}}" alt="Création textile en cours à l’atelier" width="930" height="591"></figure>
 <p class="cms-lead">Bienvenue dans l’univers de Madame Aiguille, un atelier de créations textiles imaginées au fil des tissus et des envies.</p>
 <h2>Une histoire à raconter</h2>
 <p>Cette page accueillera l’histoire de Céline, son parcours et ce qui l’a menée à créer Madame Aiguille. Le texte définitif sera publié après sa validation.</p>
@@ -74,10 +74,10 @@ HTML;
         return <<<'HTML'
 <p class="cms-lead">Voici quelques motifs de l’univers Madame Aiguille. Notez leur référence pour en parler dans votre message ; leur disponibilité sera confirmée selon les coupons présents à l’atelier.</p>
 <div class="fabric-grid">
-<figure class="fabric-card"><img src="{{view url='images/home/ig-1.png'}}" alt="Exemple de motif textile rose clair" width="471" height="471"><figcaption><strong>Motif T01</strong><span>Disponibilité sur demande</span></figcaption></figure>
-<figure class="fabric-card"><img src="{{view url='images/home/ig-2.png'}}" alt="Exemple de motif textile bleu" width="414" height="414"><figcaption><strong>Motif T02</strong><span>Disponibilité sur demande</span></figcaption></figure>
-<figure class="fabric-card"><img src="{{view url='images/home/ig-3.png'}}" alt="Exemple de motif textile aux tons poudrés" width="408" height="408"><figcaption><strong>Motif T03</strong><span>Disponibilité sur demande</span></figcaption></figure>
-<figure class="fabric-card"><img src="{{view url='images/home/ig-4.png'}}" alt="Exemple de motif textile fleuri" width="483" height="483"><figcaption><strong>Motif T04</strong><span>Disponibilité sur demande</span></figcaption></figure>
+<figure class="fabric-card"><img src="{{view url='images/home/ig-1.webp'}}" alt="Exemple de motif textile rose clair" width="471" height="471"><figcaption><strong>Motif T01</strong><span>Disponibilité sur demande</span></figcaption></figure>
+<figure class="fabric-card"><img src="{{view url='images/home/ig-2.webp'}}" alt="Exemple de motif textile bleu" width="414" height="414"><figcaption><strong>Motif T02</strong><span>Disponibilité sur demande</span></figcaption></figure>
+<figure class="fabric-card"><img src="{{view url='images/home/ig-3.webp'}}" alt="Exemple de motif textile aux tons poudrés" width="408" height="408"><figcaption><strong>Motif T03</strong><span>Disponibilité sur demande</span></figcaption></figure>
+<figure class="fabric-card"><img src="{{view url='images/home/ig-4.webp'}}" alt="Exemple de motif textile fleuri" width="483" height="483"><figcaption><strong>Motif T04</strong><span>Disponibilité sur demande</span></figcaption></figure>
 </div>
 <aside class="cms-callout"><h2>Vous avez un motif en tête ?</h2><p>Indiquez la référence du tissu et la création concernée dans le formulaire de contact. Vous pouvez aussi joindre une photo d’inspiration.</p><a class="btn btn-primary" href="{{store url='contact'}}">Échanger autour d’un projet</a></aside>
 HTML;

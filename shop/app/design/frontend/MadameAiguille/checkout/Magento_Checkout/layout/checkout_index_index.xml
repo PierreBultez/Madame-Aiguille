@@ -8,7 +8,7 @@
     <body>
         <referenceBlock name="logo">
             <arguments>
-                <argument name="logo_file" xsi:type="string">images/logo-rectangulaire.jpg</argument>
+                <argument name="logo_file" xsi:type="string">images/logo-rectangulaire.webp</argument>
                 <argument name="logo_alt" xsi:type="string" translate="true">Madame Aiguille — Accueil</argument>
                 <argument name="logo_width" xsi:type="number">300</argument>
                 <argument name="logo_height" xsi:type="number">96</argument>

@@ -42,7 +42,7 @@ class CreateHomeBlocks implements DataPatchInterface
                 'Accueil — visuel principal',
                 <<<'HTML'
 <section class="home-hero" aria-labelledby="home-hero-title">
-<div class="home-hero-image"><img src="{{view url='images/home/hero.png'}}" alt="Trousse fleurie posée sur du linge clair" width="1024" height="1024" fetchpriority="high"></div>
+<div class="home-hero-image"><img src="{{view url='images/home/hero.webp'}}" alt="Trousse fleurie posée sur du linge clair" width="1024" height="1024" fetchpriority="high"></div>
 <div class="home-hero-copy"><p class="home-kicker">Des tissus, du fil &amp; de la douceur</p><h1 id="home-hero-title">De petites créations,<br>de grands bonheurs</h1><p>Des accessoires en tissu pour embellir les petits instants du quotidien.</p><a class="btn btn-primary" href="{{store direct_url='trousses-de-toilette.html'}}">Découvrir la collection</a></div>
 </section>
 HTML
@@ -68,7 +68,7 @@ HTML
             'home_story' => [
                 'Accueil — histoire',
                 <<<'HTML'
-<section class="home-story" aria-labelledby="home-story-title"><img src="{{view url='images/home/atelier.png'}}" alt="Tissus et accessoires de couture à l’atelier" width="1024" height="1024" loading="lazy"><div><p class="home-kicker">Derrière les coutures</p><h2 id="home-story-title">L’histoire de Madame Aiguille</h2><p>Tout commence avec un tissu, une couleur, une envie de créer.</p><p>Madame Aiguille vous invite dans un univers de créations textiles pensées pour accompagner votre quotidien.</p><a href="{{store url='a-propos'}}">Découvrir l’univers de l’atelier</a></div></section>
+<section class="home-story" aria-labelledby="home-story-title"><img src="{{view url='images/home/atelier.webp'}}" alt="Tissus et accessoires de couture à l’atelier" width="1024" height="1024" loading="lazy"><div><p class="home-kicker">Derrière les coutures</p><h2 id="home-story-title">L’histoire de Madame Aiguille</h2><p>Tout commence avec un tissu, une couleur, une envie de créer.</p><p>Madame Aiguille vous invite dans un univers de créations textiles pensées pour accompagner votre quotidien.</p><a href="{{store url='a-propos'}}">Découvrir l’univers de l’atelier</a></div></section>
 HTML
             ],
             'home_why' => [
@@ -80,7 +80,7 @@ HTML
             'home_instagram' => [
                 'Instants d’atelier',
                 <<<'HTML'
-<p class="home-intro">Un peu de douceur et de couleurs en images.</p><div class="home-gallery"><img src="{{view url='images/home/ig-1.png'}}" alt="Trousse et panier de linge" width="1024" height="1024" loading="lazy"><img src="{{view url='images/home/ig-2.png'}}" alt="Pochette à livre bleue" width="1024" height="1024" loading="lazy"><img src="{{view url='images/home/ig-3.png'}}" alt="Pochettes nomades et café" width="1024" height="1024" loading="lazy"><img src="{{view url='images/home/ig-4.png'}}" alt="Petit sac fleuri" width="1024" height="1024" loading="lazy"></div>
+<p class="home-intro">Un peu de douceur et de couleurs en images.</p><div class="home-gallery"><img src="{{view url='images/home/ig-1.webp'}}" alt="Trousse et panier de linge" width="1024" height="1024" loading="lazy"><img src="{{view url='images/home/ig-2.webp'}}" alt="Pochette à livre bleue" width="1024" height="1024" loading="lazy"><img src="{{view url='images/home/ig-3.webp'}}" alt="Pochettes nomades et café" width="1024" height="1024" loading="lazy"><img src="{{view url='images/home/ig-4.webp'}}" alt="Petit sac fleuri" width="1024" height="1024" loading="lazy"></div>
 HTML
             ],
             'home_newsletter' => [
