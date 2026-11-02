@@ -1292,6 +1292,7 @@ Non indexé (balise robots, `robots.txt`, en-tête nginx), mais public : comme l
 
 ### Pièges rencontrés
 
+- **Taille des envois derrière Varnish** : `client_max_body_size` doit figurer dans **les deux** blocs nginx, TLS (443) et backend (8080). Sans lui, le backend garde 1 Mo et répond 413 à une photo de contact de quelques Mo (02/11/2026, `97-taille-envois.sh`).
 - **Rôle d'administration restreint et double authentification** : sans le droit `Magento_TwoFactorAuth::tfa` (*Système › Permissions › Two Factor Auth*), un rôle restreint est refusé à l'étape du code. Toujours tester un nouveau rôle avec un vrai compte, jusqu'au tableau de bord.
 - **Adresses de l'administration** : saisies sans leur clé de sécurité (`/key/…`), elles renvoient au tableau de bord ; naviguer par le menu.
 - **Configuration DI compilée en mode développeur** : après un `setup:di:compile`, un nouveau plugin déclaré dans `di.xml` est ignoré jusqu'à la compilation suivante.
