@@ -68,7 +68,7 @@ class EnvironmentChecker
 
         $this->checkMode($onServer);
         $this->checkBaseUrls($onServer);
-        $this->checkIndexing($noIndex);
+        $this->checkIndexing($onServer, $noIndex);
         $this->checkCaches($onServer);
         $this->checkSearchEngine();
         $this->checkCron($onServer);
@@ -108,12 +108,17 @@ class EnvironmentChecker
         }
     }
 
-    private function checkIndexing(bool $noIndex): void
+    private function checkIndexing(bool $onServer, bool $noIndex): void
     {
         $robots = strtoupper((string) $this->value('design/search_engine_robots/default_robots'));
         $indexed = !str_contains($robots, 'NOINDEX');
         if ($noIndex && $indexed) {
             $this->error('Indexation', sprintf('robots = %s : NOINDEX,NOFOLLOW attendu avant l\'ouverture', $robots));
+            return;
+        }
+        // Boutique ouverte (lot 8) : un serveur contrôlé sans --noindex doit être indexable.
+        if ($onServer && !$noIndex && !$indexed) {
+            $this->error('Indexation', sprintf('robots = %s : boutique ouverte, INDEX,FOLLOW attendu', $robots));
             return;
         }
         $this->ok('Indexation', sprintf('robots = %s', $robots ?: '(vide)'));

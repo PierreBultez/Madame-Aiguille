@@ -70,7 +70,7 @@ if [ "$NEEDS_UPGRADE" -eq 1 ]; then
 fi
 
 echo "Version en ligne : $RELEASE"
-magento madameaiguille:env:check --serveur --noindex || echo "Contrôle d'environnement en erreur : voir ci-dessus"
+magento madameaiguille:env:check --serveur || echo "Contrôle d'environnement en erreur : voir ci-dessus"
 
 # Ménage : les KEEP versions les plus récentes, jamais celle en ligne
 CURRENT="$(basename "$(readlink -f "$BASE/current")")"
