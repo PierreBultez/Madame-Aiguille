@@ -175,3 +175,15 @@ Logos fournis par Pierre dans `docs/logos/` : moyens de paiement (CB, Visa, Mast
 
 `98-cache-guide.sh` joué par Pierre : pages, page Lighthouse et favicon en `Cache-Control: no-cache` ; fichiers empreintés de `/assets/` toujours en cache d'un an (`public, immutable`).
 
+## Clôture du lot 8 (02/11/2026)
+
+| Contrôle | Résultat |
+|---|---|
+| Tests unitaires `MadameAiguille` | 129 tests, 335 assertions, OK |
+| PHPCS `Magento2` sur les 39 fichiers PHP / PHTML ajoutés ou modifiés depuis le lot 8a | 0 erreur (avertissements de style : docblocks, longueur de ligne) |
+| `madameaiguille:env:check --serveur` | 0 erreur, 0 avertissement (production, indexation, Valkey, Varnish, OpenSearch, cron, double authentification, SMTP, Stripe live, quatre reCAPTCHA, Mondial Relay, franco, poids, fontes) |
+| Surcharges de l'administration | aucun logo, favicon ni description par défaut saisi dans *Contenu › Design › Configuration* : ceux du thème s'appliquent |
+| Certificats | `madame-aiguille.fr` valide jusqu'au 08/01/2027, renouvellement automatique actif |
+
+Limite assumée, consignée dans le guide d'exploitation : **aucune sauvegarde planifiée** (décision de Pierre). Le développement par lots est terminé ; la suite est décrite dans `docs/guide-exploitation.md`.
+

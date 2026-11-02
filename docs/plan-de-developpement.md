@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.2 (02/11/2026), lots 6a, 3, 4, 7, 5, 6b et **8a livrés** ; boutique en ligne sur `https://madame-aiguille.fr`, non indexée ; **lot 8 en cours** sur `lot-8-ouverture` : recette de production, exploitation et ouverture
+Document interne — v3.3 (02/11/2026), **tous les lots livrés** (2, 6a, 3, 4, 7, 5, 6b, 8a et **8**, clos le 02/11/2026) ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`. La suite se lit dans `guide-exploitation.md`.
+
+> **v3.3** — **Lot 8 livré, développement terminé.** Recettes restantes faites sur le serveur (reCAPTCHA, écrans, newsletter, compte, contact avec photo de 3,7 Mo après `97-taille-envois.sh`, Apple Pay / Google Pay / Bancontact / Klarna). Qualité : images en WebP, logo vectoriel et favicon « aiguille et fil » définitifs, méta-description de repli des catégories ; Lighthouse de 99 à 100 sur accueil, catégorie et fiche (accueil mobile de 75 à 99). Footer aux logos officiels. Site de documentation `guide-magento.pierrebultez.com` avec page Lighthouse. **Guide d'exploitation** (`guide-exploitation.md`) à la place d'un prompt de lot. Limite assumée : **pas de sauvegarde planifiée** (reportée par Pierre), premier chantier de l'exploitation. Détail : `documentation-theme.md` §17, §23.
 
 > **v3.2** — **Boutique ouverte le 02/11/2026** (indexation, `robots.txt`, sitemap, Search Console). Retrait payable en ligne ou sur place, « Prête pour retrait » avant paiement, email du retrait réparé, CGV et confidentialité à jour des cinq moyens de paiement (carte, Apple Pay, Google Pay, Bancontact, Klarna ; Stripe en live). Rôle « Atelier », compte et guide illustré de Céline, alerte de stock bas. Grille Mondial Relay définitive et emballage de 0,2 kg. Restent : qualité (Lighthouse, poids, favicon, logo), recettes restantes, sauvegardes (reportées par Pierre), guide d'exploitation de fin de lot. Détail : `documentation-theme.md` §23, §26, §29.
 
@@ -158,6 +160,13 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 - **Incertitudes levées** : hébergement natif sur le VPS (pas de Docker), pas d'environnement de staging séparé, déploiement par versions et lien symbolique avec bascule de quelques secondes, build dans GitHub Actions déclenché à la main.
 - **Ce qui bloque l'ouverture** : catalogue et contenus réels, pages juridiques, clés reCAPTCHA, recette de production (paiement, emails, newsletter, pièces de vente), validation Mollie et paiement réel, sauvegardes automatiques, décisions de Céline (Mondial Relay, retrait, moyens Mollie). Détail : `documentation-theme.md` §23.
 
+## État après le lot 8 (02/11/2026)
+
+- **La boutique est ouverte** : indexée, Stripe en live (cinq moyens de paiement et paiement sur place au retrait), grille Mondial Relay définitive, compte et rôle « Atelier » de Céline avec son guide illustré. `env:check --serveur` : 0 erreur, 0 avertissement.
+- **Incertitudes levées** : Stripe à la place de Mollie ; emballage type de 0,2 kg ; logos définitifs ; WebP par conversion dans le thème (pas de module tiers) ; pas de staging séparé.
+- **Ce qui reste**, avec son responsable (`documentation-theme.md` §23, `guide-exploitation.md` §10) : **sauvegardes** (reportées par Pierre), IP de Céline, validation juridique et contenus génériques par Céline, DMARC en `p=reject`, domaine secondaire, nettoyage de deux entrées inutiles de l'administration.
+- Rythme de mise à jour de Céline face aux séries qui s'épuisent : à rediscuter après un mois d'exploitation.
+
 ## Vue d'ensemble
 
 | Lot | Titre | Dépend de | Effort | Risque |
@@ -168,9 +177,9 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 5 | Livraison et paiements (Mondial Relay point relais, **Mollie CB**, click & collect avec rendez-vous, emballage cadeau) + **8a mise en ligne** | 2, 6a + identifiants Mondial Relay + domaine | **XL** | moyen |
 | 6 | Checkout Luma fallback : installation (6a) et habillage (6b) — **livrés** | 5 | **L** | moyen |
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
-| 8 | Back-office, exploitation, mise en production | tous | **M** | moyen |
+| 8 | Back-office, exploitation, mise en production — **livré** | tous | **M** | moyen |
 
-Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a**. Ordre restant : **8**, qui commence par la recette de production reportée du 8a puis la validation Mollie, et se termine par l'ouverture des ventes.
+Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**. Il ne reste aucun lot : l'exploitation suit `guide-exploitation.md`.
 
 Les lots 5 et 6b ont été livrés après le brief. La recette de bout en bout — paiement confirmé, tous les statuts et emails reçus — reste à rejouer sur la préproduction HTTPS du 8a. Le lot 7 avait été avancé pendant l’attente du brief.
 
@@ -346,7 +355,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 
 ---
 
-## Lot 8 — Back-office, exploitation, mise en production
+## Lot 8 — Back-office, exploitation, mise en production — **livré le 02/11/2026**
 
 **Périmètre**
 

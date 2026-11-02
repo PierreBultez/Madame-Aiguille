@@ -38,6 +38,11 @@ const DOCUMENTS = [
         dossier: 'commandes',
         titre: 'Commandes et déploiement',
     },
+    {
+        fichier: 'guide-exploitation.md',
+        dossier: 'exploitation',
+        titre: "Guide d'exploitation",
+    },
 ];
 
 const sansAccents = (texte) => texte.normalize('NFD').replace(/[̀-ͯ]/g, '');
