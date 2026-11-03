@@ -4,6 +4,7 @@ src/guide/
 src/documentation/
 src/commandes/
 src/exploitation/
+src/conformite/
 src/public/guide-back-office/
 src/.vitepress/sidebar.json
 src/.vitepress/cache/
