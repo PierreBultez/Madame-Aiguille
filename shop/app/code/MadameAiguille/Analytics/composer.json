@@ -1,0 +1,15 @@
+{
+    "name": "madameaiguille/module-analytics",
+    "description": "Mesure d'audience Madame Aiguille : Matomo auto-hébergé, sans cookie, vitrine et tunnel",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MadameAiguille\\Analytics\\": ""
+        }
+    }
+}

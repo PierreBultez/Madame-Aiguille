@@ -1,0 +1,25 @@
+<?php
+/**
+ * Madame Aiguille — balise de suivi Matomo : une seule balise externe, paramétrée par ses attributs data-*, sans
+ * script inline (CSP). Rien n'est rendu tant que la mesure n'est pas activée et complète.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Analytics\ViewModel\Tracker;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var Tracker $tracker */
+$tracker = $block->getData('view_model');
+$attributes = $tracker->getAttributes($block->getData('page_type'));
+if ($attributes === []) {
+    return;
+}
+?>
+<?php $src = $block->getViewFileUrl('MadameAiguille_Analytics::js/tracker.js') ?>
+<script src="<?= $escaper->escapeUrl($src) ?>"<?php
+foreach ($attributes as $name => $value): ?> <?= $escaper->escapeHtmlAttr($name) ?>="<?= $escaper->escapeHtmlAttr($value) ?>"<?php
+endforeach ?> async></script>

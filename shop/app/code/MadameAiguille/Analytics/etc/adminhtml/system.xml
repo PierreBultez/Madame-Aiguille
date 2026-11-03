@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="madameaiguille_analytics" translate="label" type="text" sortOrder="155" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Mesure d'audience</label>
+            <tab>general</tab>
+            <resource>MadameAiguille_Analytics::config</resource>
+            <group id="matomo" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Matomo</label>
+                <comment>Statistiques de visite sans cookie, hébergées sur notre serveur. Les réglages de confidentialité (IP anonymisée, conservation, exclusions) se font dans Matomo. Après un changement : vider le cache.</comment>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Activer la mesure d'audience</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Non : aucun script de mesure n'est chargé, la boutique fonctionne à l'identique.</comment>
+                </field>
+                <field id="url" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Adresse de Matomo</label>
+                    <comment>En https, par exemple https://stats.madame-aiguille.fr/</comment>
+                    <validate>validate-url</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="site_id" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Identifiant du site</label>
+                    <comment>Numéro du site dans Matomo (Administration › Sites › Gérer).</comment>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

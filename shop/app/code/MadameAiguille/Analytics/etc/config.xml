@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <!-- Vide par défaut : rien n'est rendu en local ni dans le build. L'adresse et l'identifiant du site sont
+             saisis sur le serveur (config:set), jamais versionnés dans config.php. -->
+        <madameaiguille_analytics>
+            <matomo>
+                <enabled>0</enabled>
+                <url/>
+                <site_id/>
+            </matomo>
+        </madameaiguille_analytics>
+    </default>
+</config>

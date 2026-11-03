@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="MadameAiguille_Analytics::statistics" title="Statistiques du site" translate="title"
+             module="MadameAiguille_Analytics" parent="Magento_Reports::report" sortOrder="1"
+             action="madameaiguille_analytics/statistics/index" resource="MadameAiguille_Analytics::statistics"/>
+    </menu>
+</config>
