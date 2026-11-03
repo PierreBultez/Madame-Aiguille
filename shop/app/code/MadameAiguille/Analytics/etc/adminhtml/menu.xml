@@ -3,6 +3,7 @@
     <menu>
         <add id="MadameAiguille_Analytics::statistics" title="Statistiques du site" translate="title"
              module="MadameAiguille_Analytics" parent="Magento_Reports::report" sortOrder="1"
-             action="madameaiguille_analytics/statistics/index" resource="MadameAiguille_Analytics::statistics"/>
+             action="madameaiguille_analytics/statistics/index" target="_blank"
+             resource="MadameAiguille_Analytics::statistics"/>
     </menu>
 </config>
