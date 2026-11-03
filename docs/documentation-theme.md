@@ -580,6 +580,9 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8 — Site de documentation, suite (02/11/2026) | pages revalidées à chaque visite (`98-cache-guide.sh`), page « Lighthouse » façon PageSpeed Insights (`docs/audits/lighthouse.json`, `resumer-lighthouse.mjs`), §23 renommé et journal complété | `76f05b7` + commit de la page |
 | 8 — Clôture (02/11/2026) | contrôles finaux (129 tests unitaires, PHPCS sans erreur sur les 39 fichiers PHP du lot, `env:check --serveur` à 0 erreur et 0 avertissement), **guide d'exploitation** `docs/guide-exploitation.md` publié sur le site de documentation, plan v3.3, fusion dans `main` | commit de clôture |
 | 9 — Ouverture (03/11/2026) | cahier des charges de la mesure d'audience Matomo (plan v3.4) et prompt `docs/prompts/prompt-lot9.md` ; aucun code | commit du prompt |
+| 9 — Serveur Matomo (03/11/2026) | `deploy/serveur/99-matomo.sh` et ses gabarits : Matomo 5.14.2 à signature GPG vérifiée, utilisateur, pool PHP 8.5 et base dédiés, nginx durci, certificat, cron `core:archive` ; joué par Pierre, puis rejoué pour refuser `/console` et `/tests/` ; assistant, comptes et réglages CNIL faits par Pierre | `6a4c1c6`, `86e10f7` |
+| 9 — Module `MadameAiguille_Analytics` (03/11/2026) | balise externe sans cookie dans `head.additional` (vitrine et tunnel), recherche interne et 404, origine Matomo ajoutée à la CSP depuis la configuration, opposition et sous-section « Mesure d'audience » de la page Confidentialité, *Rapports › Statistiques du site*, `env:check` ; PR #17, version `604e5ef` ; réglages posés par `config:set` | `b87e83f`, `7288ad3`, `ad9627c` |
+| 9 — Conformité et recette (03/11/2026) | grille d'auto-évaluation CNIL `docs/conformite/matomo-cnil.md` ; recette de production (balise sur sept écrans, mesures reçues en 204, aucun cookie `_pk_*`, aucune erreur CSP à 1440 et 390 px, HTML identique pour deux visiteurs), opposition recettée, Lighthouse de 98 à 100 | `e6efdac` + commit de clôture |
 
 ## 18. Formulaire de contact
 
@@ -785,6 +788,7 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées | Recette transversale du lot 8 |
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
+| **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
 | **Colis au-delà du dernier palier** | `tablerate` n'a pas de borne haute : au-delà de 30 kg (France, Monaco) ou 25 kg (Belgique, Luxembourg), un colis prend le tarif du dernier palier alors que Mondial Relay le refuse | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
 | **Seuil de TVA intra-UE** | Aucune TVA facturée, Céline étant en franchise de base. **À revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année** (guichet OSS) ; la mention se change dans *Mentions légales* | Céline avec conseil |
@@ -830,6 +834,14 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Panier › Seuil de livraison offerte | Montant à partir duquel le point relais est offert (**60 €**), et montant de la barre du panier. `0` supprime le franco et la barre. Penser au bandeau et au bloc `product_reassurance`, qui citent « 60 € » en toutes lettres | §20, §26 |
 | Panier › Afficher le champ code promo | Masqué tant qu'aucun code n'existe | §20 |
 | Formulaire de contact › Conservation des pièces jointes | Durée avant suppression automatique des photos reçues (30 jours par défaut) | §18 |
+
+### Statistiques — *Rapports › Statistiques du site* (lot 9)
+
+| Geste | Effet | Détail |
+|---|---|---|
+| **Consulter les statistiques** | Ouvre Matomo (`https://stats.madame-aiguille.fr`) : visites, pages, sources, appareils, pays, recherche interne, pages introuvables. Connexion avec **son compte Matomo** (lecture seule), distinct de celui de Magento. Un rapport mensuel arrive sur `contact@madame-aiguille.fr`. Guide : `guide-back-office.md` §7 | §30 |
+| *Configuration › Général › Mesure d'audience* | Activation, adresse de Matomo, identifiant du site : **réservé à Pierre** (hors du rôle « Atelier »). « Non » coupe la mesure, la boutique fonctionne à l'identique ; vider le cache après un changement | §30 |
+| Page `confidentialite`, sous-section « Mesure d'audience » | Décrit Matomo et contient le module d'opposition (`{{block class="MadameAiguille\Analytics\Block\OptOut" …}}`) : **ne pas supprimer cette ligne** en retouchant la page | §30 |
 
 ### Livraison — *Boutiques › Configuration › Ventes › Méthodes de livraison*
 
@@ -1346,3 +1358,104 @@ Non recetté faute de catalogue réel et de clés reCAPTCHA : paiement et retour
 - **reCAPTCHA v2 invisible** activé par Pierre : vitrine (création de compte, connexion, contact, newsletter, mot de passe oublié, avis, envoi à un ami) et administration (connexion, mot de passe oublié). Côté serveur, la vérification fonctionne : connexions à l'administration acceptées après activation ; envoi sans jeton refusé (« Can not resolve reCAPTCHA parameter » au journal, message technique affiché, comportement prévu de Magento). L'avertissement « Votre clé ne demande pas de scores » de la console Google tient à l'absence d'envoi réel avec jeton depuis la création de la clé ; à revoir après un premier envoi du formulaire de contact. Secours si Google ne répond plus : `docs/commandes-et-deploiement.md`.
 - **CAPTCHA image natif** : actif par défaut dans Magento 2.4.9 (`customer/captcha/enable = 1`, mot de passe oublié et connexion après échec), coupé en local mais pas repris par l'installation neuve. Coupé par Pierre sur le serveur ; `Theme/Setup/Patch/Data/DisableNativeStorefrontCaptcha.php` le reproduit sur une installation neuve sans réécrire une valeur saisie.
 - Les `POST /app/etc/config.php` du journal nginx viennent du serveur lui-même : contrôle de sécurité natif de Magento (`AdminNotification/Model/System/Message/Security.php`), qui vérifie à chaque passage dans l'administration que `config.php` n'est pas exposé ; la réponse 404 est la bonne.
+
+## 30. Mesure d'audience (lot 9)
+
+Lot ouvert et livré le 03/11/2026, après la clôture du développement. **Matomo On-Premise 5.14.2**, auto-hébergé sur
+`https://stats.madame-aiguille.fr`, mesure le trafic de base (visites, pages vues, entrées et sorties, sources,
+appareils, pays, recherche interne, pages introuvables) **sans cookie et sans bannière**, dans le cadre de l'exemption
+de consentement de la CNIL. La démonstration critère par critère est dans `docs/conformite/matomo-cnil.md`. La
+boutique ne dépend jamais de Matomo : s'il ne répond pas, seule la mesure échoue.
+
+### Serveur
+
+| Élément | Où |
+|---|---|
+| Installation, rejouable | `deploy/serveur/99-matomo.sh` (lancé par Pierre) : vérifie le DNS et les extensions PHP, télécharge le paquet officiel et vérifie sa **signature GPG** contre l'empreinte publiée par Matomo (`F529 A270 0847 7483 777F C23D 63BB 30D0 E5D2 C749`, clé des versions ≥ 4.8.0), crée l'utilisateur système `matomo`, la base et l'utilisateur MariaDB `matomo` (mot de passe généré dans `~/matomo-mariadb.txt` de Pierre, 0600), le pool PHP-FPM, l'hôte nginx, le certificat, le cron et la rotation des journaux |
+| Code | `/var/www/matomo`, propriété de `matomo` (groupe lu par `www-data` pour les fichiers statiques) |
+| PHP | pool `deploy/serveur/php-fpm/matomo.conf` → `/etc/php/8.5/fpm/pool.d/matomo.conf`, socket `/run/php/php8.5-fpm-matomo.sock`, processus à la demande. PHP 8.5 : la branche 5.x de Matomo est testée en 8.5 par ses tests automatiques (relevé du 03/11/2026) |
+| nginx | `deploy/serveur/nginx/matomo.conf` → `/etc/nginx/sites-available/matomo`. N'exécute que `index.php`, `matomo.php`, `piwik.php` ; refuse `config/`, `tmp/`, `core/`, `lang/`, `tests/`, `/console`, les `.ini`, les autres `.php` et les fichiers cachés ; `libs/`, `vendor/`, `plugins/`, `misc/` refusés sauf leurs ressources statiques. En-têtes `noindex`, `nosniff`, `Referrer-Policy` répétés dans chaque `location` qui pose un en-tête |
+| Archivage | crontab de `matomo` : `core:archive` à la 5ᵉ minute de chaque heure, journal `/var/log/matomo/archive.log` ; l'archivage déclenché par le navigateur est coupé dans Matomo. Les tâches planifiées (rapport mensuel par email, mise à jour de la base DB-IP) passent par ce cron |
+| Journaux | `/var/log/matomo/` (archivage, PHP-FPM), `/var/log/nginx/matomo.*.log` ; rotation hebdomadaire, huit semaines |
+
+Réglages faits par Pierre dans Matomo (roue dentée) : super-utilisateur avec double authentification ; site 1
+« Madame Aiguille » limité à `https://madame-aiguille.fr`, e-commerce désactivé, paramètre de recherche `q` ; IP de
+Pierre exclue ; IP tronquée de 2 octets, aussi pour la géolocalisation ; données brutes supprimées après 760 jours
+(25 mois), rapports agrégés gardés ; archivage navigateur coupé ; SMTP Brevo ; compte de Céline en lecture seule ;
+rapport mensuel par email vers `contact@madame-aiguille.fr`.
+
+### Module `MadameAiguille_Analytics`
+
+| Fichier | Rôle |
+|---|---|
+| `etc/adminhtml/system.xml`, `etc/config.xml`, `etc/acl.xml` | Section *Boutiques › Configuration › Général › Mesure d'audience* (ressource `MadameAiguille_Analytics::config`) : activation, adresse de Matomo, identifiant du site. **Vides par défaut** : rien n'est rendu en local ni dans le build. Sur le serveur, valeurs posées par `config:set` (jamais dans `config.php` ni `env.php` versionnés) |
+| `Model/Config.php` | La mesure n'est « prête » qu'activée, avec une adresse **https** et un identifiant entier positif |
+| `view/frontend/layout/default.xml` | Bloc `madameaiguille.analytics.tracker` dans `head.additional` — layout de module, donc appliqué à la vitrine Hyvä **et** au tunnel Luma. Pas dans `default_head_blocks.xml`, où Magento regroupe les ressources (piège du favicon, lot 8) |
+| `view/frontend/templates/tracker.phtml`, `ViewModel/Tracker.php` | Une seule balise `<script src="…/tracker.js" data-url data-site-id async>`, plus `data-page="search"` avec `data-search-keyword` et `data-search-count` (layout `catalogsearch_result_index.xml`) ou `data-page="not-found"` (layout `cms_noroute_index.xml`). Rien de propre au visiteur : mot-clé et nombre de résultats dépendent de l'URL seule, Varnish sert la même page à tous |
+| `view/frontend/web/js/tracker.js` | Lit ses attributs (`document.currentScript`), pousse `disableCookies`, `trackPageView` (ou `trackSiteSearch` sur la recherche), `enableLinkTracking`, `setTrackerUrl`, `setSiteId`, puis charge `matomo.js`. Sur la 404, titre « `404/URL = …/From = …` » (convention de Matomo, rapport *Comportement › Titres des pages*) |
+| `Model/Csp/MatomoPolicyCollector.php`, `etc/di.xml` | Ajoute l'**origine configurée** à `script-src`, `connect-src` et `img-src` (vitrine en report-only, **tunnel bloquant**), seulement quand la mesure est prête. Pas de `csp_whitelist.xml` : l'adresse y serait figée |
+| `Block/OptOut.php`, `view/frontend/templates/opt-out.phtml` | Module d'opposition de Matomo (`index.php?module=CoreAdminHome&action=optOutJS…`), script externe sans iframe ni inline, appelé par la page CMS `{{block class="MadameAiguille\Analytics\Block\OptOut" template="MadameAiguille_Analytics::opt-out.phtml"}}`. Mesure désactivée : une phrase le dit. Style de la case : `theme/page-cms.css` (`#matomo-opt-out`) |
+| `Setup/Patch/Data/DescribeAudienceMeasurementInPrivacyPage.php` | Remplace, dans la page `confidentialite`, la seule phrase exacte « [Compléter cette section si un outil de mesure d’audience…] » de `FillLegalPages` par la sous-section « Mesure d’audience » (outil, finalité, aucun cookie, IP tronquée, 25 mois, opposition). Phrase absente : rien n'est modifié et `system.log` le signale ; texte à saisir à la main |
+| `etc/adminhtml/menu.xml`, `routes.xml`, `Controller/Adminhtml/Statistics/Index.php` | *Rapports › Statistiques du site* (ressource `MadameAiguille_Analytics::statistics`) : redirige vers Matomo, où chacun se connecte avec son compte Matomo. Pour le rôle « Atelier », cocher **« Rapports »** et **« Statistiques du site »** dans *Système › Permissions › Rôles* (geste de Pierre). Adresse non réglée : message, puis configuration ou tableau de bord selon les droits |
+| `Theme/Model/Environment/EnvironmentChecker.php` | `env:check` : **erreur** si la mesure est activée sans adresse https ou sans identifiant ; **avertissement** sur le serveur si elle est désactivée alors qu'une adresse est saisie (après la mise en service) |
+| Tests | `Analytics/Test/Unit` (ViewModel, collecteur CSP, data patch) et `EnvironmentCheckerTest` |
+
+**Opposition sans cookie de suivi** : avec `disableCookies`, `matomo.js` n'écrit aucun `_pk_*`, mais écrit quand même
+`mtm_consent_removed` quand le visiteur décoche la case (code de `setCookie`, Matomo 5.14.2) : c'est le seul cookie
+possible, il retient l'opposition, et la recocher le supprime. Recetté le 03/11/2026.
+
+### Réglages sur le serveur (03/11/2026)
+
+```bash
+mage config:set madameaiguille_analytics/matomo/url https://stats.madame-aiguille.fr/
+mage config:set madameaiguille_analytics/matomo/site_id 1
+mage config:set madameaiguille_analytics/matomo/enabled 1
+mage cache:flush
+```
+
+Couper la mesure sans déployer : `mage config:set madameaiguille_analytics/matomo/enabled 0 && mage cache:flush` (ou
+*Mesure d'audience › Activer : Non*, puis vider le cache).
+
+### Recette du 03/11/2026
+
+- **Production** : balise rendue sur l'accueil, une catégorie, une fiche, la recherche (`data-search-keyword`,
+  `data-search-count`), la 404 (`data-page="not-found"`), le panier, la page Confidentialité et le tunnel Luma ;
+  mesures reçues par Matomo (`matomo.php` en 204, recherche `search=…&search_count=…`, titre `404/URL = …`) ; tunnel
+  mesuré jusqu'à `/checkout/onepage/success/` (commande 10 en retrait payé sur place, **annulée** dans
+  l'administration) ; visite vue dans *Visiteurs › En temps réel* depuis un téléphone.
+- **Aucun cookie `_pk_*`** ni autre cookie Matomo ; opposition sur la page Confidentialité : `mtm_consent_removed`
+  posé puis retiré.
+- **Aucune erreur CSP** dans la console à 1440 et 390 px (vitrine report-only, tunnel bloquant) ; l'origine Matomo est
+  dans `script-src`, `connect-src` et `img-src` des deux politiques.
+- **Varnish intact** : accueil en HIT, HTML identique pour deux visiteurs.
+- **`stats.` injoignable** : constaté en local avant la création du certificat (`ERR_SSL_UNRECOGNIZED_NAME_ALERT` sur
+  `matomo.js`) : boutique, Alpine et tunnel identiques. Pas de coupure volontaire en production (elle demanderait de
+  toucher nginx).
+- **Administration** : section *Mesure d'audience* ouverte réellement, *Rapports › Statistiques du site* mène à la
+  connexion de Matomo (local) ; rôle « Atelier » complété par Pierre.
+- **Lighthouse** (`docs/audits/lighthouse.json`) : accueil 100 / 99, catégorie 100 / 99, fiche 100 / 98 (ordinateur /
+  mobile), contre 100 / 99, 98 / 100, 100 / 99 au lot 8.
+- **Contrôles** : 142 tests unitaires (13 nouveaux), PHPCS Magento2 sans erreur sur les fichiers du lot,
+  `env:check --serveur` à 0 erreur et 0 avertissement.
+
+### Pièges rencontrés
+
+- **`CompositePolicyCollector` déclaré dans `etc/frontend/di.xml`** : le tableau `collectors` y **remplaçait** ceux de
+  Magento au lieu de s'y ajouter. La politique de la vitrine se réduisait au seul hôte Matomo, et Hyvä basculait sur
+  la version CSP d'Alpine (erreurs « Alpine is unable to interpret… »). Déclaré dans `etc/di.xml` global.
+- **Code de suivi proposé par l'assistant de Matomo** : script inline (bloqué par la CSP du tunnel) et avec cookies. Ne
+  pas le coller ; le module le remplace.
+- **Avertissement « PHP FPM ignorera les règles .htaccess »** de la vérification système de Matomo : générique sous
+  nginx ; les refus sont contrôlés de l'extérieur par la fin de `99-matomo.sh`.
+- **`/console` et `/tests/`** étaient servis en texte par `location /` après la première installation : refusés depuis
+  `86e10f7`.
+- **Géolocalisation** : « aucune base de données trouvée » tant que le fichier DB-IP n'est pas téléchargé ; il se
+  télécharge depuis la partie « mises à jour automatiques » de *Système › Géolocalisation*, puis le fournisseur
+  s'active.
+- **« Urgent PHP security update required »** dans le tableau de bord de Matomo : il ne lit que le numéro de version
+  (8.5.4) ; le paquet Ubuntu `8.5.4-0ubuntu1.5` porte le correctif par rétroportage. Conduite à tenir :
+  `guide-exploitation.md` §8.
+- **Rubriques payantes** (*Formulaires*, *Cartes de chaleur*, *Enregistrement de session*, *Tests A/B*…) affichées dans
+  le menu de Matomo : vitrines d'extensions non installées. Les installer ferait sortir de l'exemption CNIL.
+- Les visites de Pierre (IP exclue) n'apparaissent pas dans *Visiteurs › En temps réel* : recetter depuis un téléphone en données
+  mobiles.

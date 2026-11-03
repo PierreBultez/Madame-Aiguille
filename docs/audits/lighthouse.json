@@ -1,390 +1,7 @@
 {
   "outil": "Lighthouse 13.5.0",
-  "date": "2026-11-02T20:34:33.113Z",
+  "date": "2026-11-03T09:55:30.705Z",
   "avant": {
-    "accueil-desktop": {
-      "url": "https://madame-aiguille.fr/",
-      "date": "2026-11-02T19:59:33.228Z",
-      "scores": {
-        "performance": 94,
-        "accessibility": 100,
-        "best-practices": 100,
-        "seo": 100
-      },
-      "metriques": {
-        "first-contentful-paint": {
-          "valeur": 293.2865,
-          "score": 1
-        },
-        "largest-contentful-paint": {
-          "valeur": 1653.2865,
-          "score": 0.75
-        },
-        "total-blocking-time": {
-          "valeur": 0,
-          "score": 1
-        },
-        "cumulative-layout-shift": {
-          "valeur": 0.0003118239422810896,
-          "score": 1
-        },
-        "speed-index": {
-          "valeur": 293.2865,
-          "score": 1
-        }
-      },
-      "poids": 4086907,
-      "requetes": 16,
-      "alertes": [
-        {
-          "id": "label-content-name-mismatch",
-          "titre": "Les éléments accompagnés de libellés de texte visibles ne sont pas associés à des noms accessibles.",
-          "score": 0
-        },
-        {
-          "id": "total-byte-weight",
-          "titre": "Évitez d'énormes charges utiles de réseau",
-          "score": 0.5
-        },
-        {
-          "id": "bf-cache",
-          "titre": "La page a empêché la restauration du cache back/forward",
-          "score": 0
-        },
-        {
-          "id": "image-delivery-insight",
-          "titre": "Améliorer l'affichage des images",
-          "score": 0
-        },
-        {
-          "id": "network-dependency-tree-insight",
-          "titre": "Arborescence du réseau",
-          "score": 0
-        },
-        {
-          "id": "render-blocking-insight",
-          "titre": "Requêtes de blocage du rendu",
-          "score": 0.5
-        }
-      ]
-    },
-    "accueil-mobile": {
-      "url": "https://madame-aiguille.fr/",
-      "date": "2026-11-02T19:59:21.387Z",
-      "scores": {
-        "performance": 75,
-        "accessibility": 100,
-        "best-practices": 100,
-        "seo": 100
-      },
-      "metriques": {
-        "first-contentful-paint": {
-          "valeur": 1207.1895,
-          "score": 0.99
-        },
-        "largest-contentful-paint": {
-          "valeur": 9630.6895,
-          "score": 0
-        },
-        "total-blocking-time": {
-          "valeur": 0,
-          "score": 1
-        },
-        "cumulative-layout-shift": {
-          "valeur": 0.0008285731545727294,
-          "score": 1
-        },
-        "speed-index": {
-          "valeur": 2566.4617270262843,
-          "score": 0.97
-        }
-      },
-      "poids": 2693055,
-      "requetes": 12,
-      "alertes": [
-        {
-          "id": "interactive",
-          "titre": "Time to Interactive",
-          "score": 0.29
-        },
-        {
-          "id": "bf-cache",
-          "titre": "La page a empêché la restauration du cache back/forward",
-          "score": 0
-        },
-        {
-          "id": "image-delivery-insight",
-          "titre": "Améliorer l'affichage des images",
-          "score": 0
-        },
-        {
-          "id": "network-dependency-tree-insight",
-          "titre": "Arborescence du réseau",
-          "score": 0
-        },
-        {
-          "id": "render-blocking-insight",
-          "titre": "Requêtes de blocage du rendu",
-          "score": 0
-        }
-      ]
-    },
-    "categorie-desktop": {
-      "url": "https://madame-aiguille.fr/accessoires-beautes.html",
-      "date": "2026-11-02T19:59:57.546Z",
-      "scores": {
-        "performance": 100,
-        "accessibility": 100,
-        "best-practices": 100,
-        "seo": 92
-      },
-      "metriques": {
-        "first-contentful-paint": {
-          "valeur": 294.56,
-          "score": 1
-        },
-        "largest-contentful-paint": {
-          "valeur": 434.56,
-          "score": 1
-        },
-        "total-blocking-time": {
-          "valeur": 0,
-          "score": 1
-        },
-        "cumulative-layout-shift": {
-          "valeur": 0.0004920636199730017,
-          "score": 1
-        },
-        "speed-index": {
-          "valeur": 294.56,
-          "score": 1
-        }
-      },
-      "poids": 369679,
-      "requetes": 11,
-      "alertes": [
-        {
-          "id": "label-content-name-mismatch",
-          "titre": "Les éléments accompagnés de libellés de texte visibles ne sont pas associés à des noms accessibles.",
-          "score": 0
-        },
-        {
-          "id": "meta-description",
-          "titre": "Le document ne contient pas d'attribut \"meta description\"",
-          "score": 0
-        },
-        {
-          "id": "bf-cache",
-          "titre": "La page a empêché la restauration du cache back/forward",
-          "score": 0
-        },
-        {
-          "id": "image-delivery-insight",
-          "titre": "Améliorer l'affichage des images",
-          "score": 0
-        },
-        {
-          "id": "network-dependency-tree-insight",
-          "titre": "Arborescence du réseau",
-          "score": 0
-        },
-        {
-          "id": "render-blocking-insight",
-          "titre": "Requêtes de blocage du rendu",
-          "score": 0.5
-        }
-      ]
-    },
-    "categorie-mobile": {
-      "url": "https://madame-aiguille.fr/accessoires-beautes.html",
-      "date": "2026-11-02T19:59:45.246Z",
-      "scores": {
-        "performance": 99,
-        "accessibility": 100,
-        "best-practices": 100,
-        "seo": 92
-      },
-      "metriques": {
-        "first-contentful-paint": {
-          "valeur": 1215.6105,
-          "score": 0.99
-        },
-        "largest-contentful-paint": {
-          "valeur": 2067.1105,
-          "score": 0.96
-        },
-        "total-blocking-time": {
-          "valeur": 1.5,
-          "score": 1
-        },
-        "cumulative-layout-shift": {
-          "valeur": 0.002662856835846376,
-          "score": 1
-        },
-        "speed-index": {
-          "valeur": 1863.8092465771133,
-          "score": 1
-        }
-      },
-      "poids": 369670,
-      "requetes": 11,
-      "alertes": [
-        {
-          "id": "server-response-time",
-          "titre": "Réduire le temps de réponse initial du serveur",
-          "score": 0
-        },
-        {
-          "id": "meta-description",
-          "titre": "Le document ne contient pas d'attribut \"meta description\"",
-          "score": 0
-        },
-        {
-          "id": "bf-cache",
-          "titre": "La page a empêché la restauration du cache back/forward",
-          "score": 0
-        },
-        {
-          "id": "document-latency-insight",
-          "titre": "Latence de la demande de document",
-          "score": 0
-        },
-        {
-          "id": "image-delivery-insight",
-          "titre": "Améliorer l'affichage des images",
-          "score": 0
-        },
-        {
-          "id": "network-dependency-tree-insight",
-          "titre": "Arborescence du réseau",
-          "score": 0
-        },
-        {
-          "id": "render-blocking-insight",
-          "titre": "Requêtes de blocage du rendu",
-          "score": 0
-        }
-      ]
-    },
-    "fiche-desktop": {
-      "url": "https://madame-aiguille.fr/la-trousse-de-voyage.html",
-      "date": "2026-11-02T20:00:22.245Z",
-      "scores": {
-        "performance": 100,
-        "accessibility": 100,
-        "best-practices": 100,
-        "seo": 100
-      },
-      "metriques": {
-        "first-contentful-paint": {
-          "valeur": 326.657,
-          "score": 1
-        },
-        "largest-contentful-paint": {
-          "valeur": 453.657,
-          "score": 1
-        },
-        "total-blocking-time": {
-          "valeur": 0,
-          "score": 1
-        },
-        "cumulative-layout-shift": {
-          "valeur": 0.003374426181951022,
-          "score": 1
-        },
-        "speed-index": {
-          "valeur": 351.71569415475136,
-          "score": 1
-        }
-      },
-      "poids": 376851,
-      "requetes": 11,
-      "alertes": [
-        {
-          "id": "label-content-name-mismatch",
-          "titre": "Les éléments accompagnés de libellés de texte visibles ne sont pas associés à des noms accessibles.",
-          "score": 0
-        },
-        {
-          "id": "bf-cache",
-          "titre": "La page a empêché la restauration du cache back/forward",
-          "score": 0
-        },
-        {
-          "id": "image-delivery-insight",
-          "titre": "Améliorer l'affichage des images",
-          "score": 0
-        },
-        {
-          "id": "network-dependency-tree-insight",
-          "titre": "Arborescence du réseau",
-          "score": 0
-        },
-        {
-          "id": "render-blocking-insight",
-          "titre": "Requêtes de blocage du rendu",
-          "score": 0.5
-        }
-      ]
-    },
-    "fiche-mobile": {
-      "url": "https://madame-aiguille.fr/la-trousse-de-voyage.html",
-      "date": "2026-11-02T20:00:09.374Z",
-      "scores": {
-        "performance": 98,
-        "accessibility": 100,
-        "best-practices": 100,
-        "seo": 100
-      },
-      "metriques": {
-        "first-contentful-paint": {
-          "valeur": 1508.249,
-          "score": 0.96
-        },
-        "largest-contentful-paint": {
-          "valeur": 2284.749,
-          "score": 0.93
-        },
-        "total-blocking-time": {
-          "valeur": 1.5,
-          "score": 1
-        },
-        "cumulative-layout-shift": {
-          "valeur": 0.002694650677209583,
-          "score": 1
-        },
-        "speed-index": {
-          "valeur": 1870.3024815645472,
-          "score": 1
-        }
-      },
-      "poids": 376842,
-      "requetes": 11,
-      "alertes": [
-        {
-          "id": "bf-cache",
-          "titre": "La page a empêché la restauration du cache back/forward",
-          "score": 0
-        },
-        {
-          "id": "image-delivery-insight",
-          "titre": "Améliorer l'affichage des images",
-          "score": 0
-        },
-        {
-          "id": "network-dependency-tree-insight",
-          "titre": "Arborescence du réseau",
-          "score": 0
-        },
-        {
-          "id": "render-blocking-insight",
-          "titre": "Requêtes de blocage du rendu",
-          "score": 0
-        }
-      ]
-    }
-  },
-  "apres": {
     "accueil-desktop": {
       "url": "https://madame-aiguille.fr/",
       "date": "2026-11-02T20:34:33.113Z",
@@ -737,6 +354,414 @@
         {
           "id": "bf-cache",
           "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "titre": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "titre": "Render-blocking requests",
+          "score": 0
+        }
+      ]
+    }
+  },
+  "apres": {
+    "accueil-desktop": {
+      "url": "https://madame-aiguille.fr/",
+      "date": "2026-11-03T09:55:30.705Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metriques": {
+        "first-contentful-paint": {
+          "valeur": 285.7345,
+          "score": 1
+        },
+        "largest-contentful-paint": {
+          "valeur": 405.7345,
+          "score": 1
+        },
+        "total-blocking-time": {
+          "valeur": 0,
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "valeur": 0.0003118239422810896,
+          "score": 1
+        },
+        "speed-index": {
+          "valeur": 285.7345,
+          "score": 1
+        }
+      },
+      "poids": 505187,
+      "requetes": 22,
+      "alertes": [
+        {
+          "id": "label-content-name-mismatch",
+          "titre": "Elements with visible text labels do not have matching accessible names.",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "titre": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "bf-cache",
+          "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "cache-insight",
+          "titre": "Use efficient cache lifetimes",
+          "score": 0.5
+        },
+        {
+          "id": "image-delivery-insight",
+          "titre": "Improve image delivery",
+          "score": 0.5
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "titre": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "titre": "Render-blocking requests",
+          "score": 0.5
+        }
+      ]
+    },
+    "accueil-mobile": {
+      "url": "https://madame-aiguille.fr/",
+      "date": "2026-11-03T09:55:17.573Z",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metriques": {
+        "first-contentful-paint": {
+          "valeur": 1209.0624999999998,
+          "score": 0.99
+        },
+        "largest-contentful-paint": {
+          "valeur": 1832.4144999999996,
+          "score": 0.98
+        },
+        "total-blocking-time": {
+          "valeur": 0,
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "valeur": 0.0008285731545727294,
+          "score": 1
+        },
+        "speed-index": {
+          "valeur": 1209.0624999999998,
+          "score": 1
+        }
+      },
+      "poids": 478871,
+      "requetes": 20,
+      "alertes": [
+        {
+          "id": "unused-javascript",
+          "titre": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "bf-cache",
+          "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "cache-insight",
+          "titre": "Use efficient cache lifetimes",
+          "score": 0.5
+        },
+        {
+          "id": "image-delivery-insight",
+          "titre": "Improve image delivery",
+          "score": 0
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "titre": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "titre": "Render-blocking requests",
+          "score": 0
+        }
+      ]
+    },
+    "categorie-desktop": {
+      "url": "https://madame-aiguille.fr/accessoires-beautes.html",
+      "date": "2026-11-03T09:55:57.210Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metriques": {
+        "first-contentful-paint": {
+          "valeur": 289.46449999999993,
+          "score": 1
+        },
+        "largest-contentful-paint": {
+          "valeur": 431.4279999999999,
+          "score": 1
+        },
+        "total-blocking-time": {
+          "valeur": 0,
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "valeur": 0.0004920636199730017,
+          "score": 1
+        },
+        "speed-index": {
+          "valeur": 289.46449999999993,
+          "score": 1
+        }
+      },
+      "poids": 395834,
+      "requetes": 27,
+      "alertes": [
+        {
+          "id": "label-content-name-mismatch",
+          "titre": "Elements with visible text labels do not have matching accessible names.",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "titre": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "bf-cache",
+          "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "cache-insight",
+          "titre": "Use efficient cache lifetimes",
+          "score": 0.5
+        },
+        {
+          "id": "image-delivery-insight",
+          "titre": "Improve image delivery",
+          "score": 0.5
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "titre": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "titre": "Render-blocking requests",
+          "score": 0.5
+        }
+      ]
+    },
+    "categorie-mobile": {
+      "url": "https://madame-aiguille.fr/accessoires-beautes.html",
+      "date": "2026-11-03T09:55:43.998Z",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metriques": {
+        "first-contentful-paint": {
+          "valeur": 1207.1405,
+          "score": 0.99
+        },
+        "largest-contentful-paint": {
+          "valeur": 1981.1405,
+          "score": 0.97
+        },
+        "total-blocking-time": {
+          "valeur": 0,
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "valeur": 0.002662856835846376,
+          "score": 1
+        },
+        "speed-index": {
+          "valeur": 1721.0485784252305,
+          "score": 1
+        }
+      },
+      "poids": 395831,
+      "requetes": 27,
+      "alertes": [
+        {
+          "id": "unused-javascript",
+          "titre": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "bf-cache",
+          "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "cache-insight",
+          "titre": "Use efficient cache lifetimes",
+          "score": 0.5
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "titre": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "titre": "Render-blocking requests",
+          "score": 0
+        }
+      ]
+    },
+    "fiche-desktop": {
+      "url": "https://madame-aiguille.fr/la-trousse-de-voyage.html",
+      "date": "2026-11-03T09:56:23.169Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metriques": {
+        "first-contentful-paint": {
+          "valeur": 365.466,
+          "score": 1
+        },
+        "largest-contentful-paint": {
+          "valeur": 565.466,
+          "score": 1
+        },
+        "total-blocking-time": {
+          "valeur": 0,
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "valeur": 0.02407415140514352,
+          "score": 1
+        },
+        "speed-index": {
+          "valeur": 365.466,
+          "score": 1
+        }
+      },
+      "poids": 638801,
+      "requetes": 30,
+      "alertes": [
+        {
+          "id": "label-content-name-mismatch",
+          "titre": "Elements with visible text labels do not have matching accessible names.",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "titre": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "bf-cache",
+          "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "cache-insight",
+          "titre": "Use efficient cache lifetimes",
+          "score": 0.5
+        },
+        {
+          "id": "image-delivery-insight",
+          "titre": "Improve image delivery",
+          "score": 0
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "titre": "Network dependency tree",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-insight",
+          "titre": "Render-blocking requests",
+          "score": 0.5
+        }
+      ]
+    },
+    "fiche-mobile": {
+      "url": "https://madame-aiguille.fr/la-trousse-de-voyage.html",
+      "date": "2026-11-03T09:56:10.096Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metriques": {
+        "first-contentful-paint": {
+          "valeur": 1512.56,
+          "score": 0.95
+        },
+        "largest-contentful-paint": {
+          "valeur": 2266.0699999999997,
+          "score": 0.94
+        },
+        "total-blocking-time": {
+          "valeur": 12,
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "valeur": 0.03067474329887469,
+          "score": 1
+        },
+        "speed-index": {
+          "valeur": 1512.56,
+          "score": 1
+        }
+      },
+      "poids": 530517,
+      "requetes": 29,
+      "alertes": [
+        {
+          "id": "unused-javascript",
+          "titre": "Reduce unused JavaScript",
+          "score": 0.5
+        },
+        {
+          "id": "bf-cache",
+          "titre": "Page prevented back/forward cache restoration",
+          "score": 0
+        },
+        {
+          "id": "cache-insight",
+          "titre": "Use efficient cache lifetimes",
+          "score": 0.5
+        },
+        {
+          "id": "image-delivery-insight",
+          "titre": "Improve image delivery",
           "score": 0
         },
         {

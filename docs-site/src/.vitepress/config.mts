@@ -30,6 +30,7 @@ export default defineConfig({
             { text: 'Thème', link: '/documentation/', activeMatch: '^/documentation/' },
             { text: 'Déploiement', link: '/commandes/', activeMatch: '^/commandes/' },
             { text: 'Exploitation', link: '/exploitation/', activeMatch: '^/exploitation/' },
+            { text: 'Conformité', link: '/conformite/', activeMatch: '^/conformite/' },
             { text: 'Lighthouse', link: '/lighthouse', activeMatch: '^/lighthouse' },
             { text: 'Boutique', link: 'https://madame-aiguille.fr' },
         ],
@@ -62,6 +63,7 @@ export default defineConfig({
                     documentation: 'documentation-theme.md',
                     commandes: 'commandes-et-deploiement.md',
                     exploitation: 'guide-exploitation.md',
+                    conformite: 'conformite/matomo-cnil.md',
                 };
                 return `https://github.com/PierreBultez/Madame-Aiguille/blob/main/docs/${sources[filePath.split('/')[0]] ?? ''}`;
             },

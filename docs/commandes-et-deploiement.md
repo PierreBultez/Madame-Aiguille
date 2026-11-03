@@ -120,7 +120,8 @@ bin/magento madameaiguille:env:check [--serveur] [--noindex]
 Lit la configuration **réellement appliquée** (fusion `env.php` + base + valeurs par défaut des modules), jamais un
 secret : seule la présence d'une clé est vérifiée. Contrôle : mode, URLs, indexation, cache / sessions / Varnish,
 OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés et cohérence de la clé publique, webhooks automatiques, boutons express), reCAPTCHA des
-quatre formulaires, code enseigne Mondial Relay, franco, poids des produits, fontes des deux thèmes.
+quatre formulaires, code enseigne Mondial Relay, franco, poids des produits, mesure d'audience Matomo (activée sans
+adresse ou sans identifiant : erreur ; désactivée après sa mise en service : avertissement), fontes des deux thèmes.
 Sortie : tableau OK / ATTENTION / ERREUR ; **code de retour 1 s'il y a au moins une erreur**. Lancée automatiquement à
 la fin de chaque bascule.
 
@@ -214,7 +215,7 @@ Idempotents, sans secret, lancés depuis votre poste. Deux façons de les lancer
 # Scripts autonomes (10 à 60)
 ssh <vps> 'bash -s' < deploy/serveur/<script>.sh
 
-# Scripts qui ont besoin des gabarits voisins (70, 80, 90) : le dossier deploy/ est copié puis effacé
+# Scripts qui ont besoin des gabarits voisins (70, 80, 90, 96, 99) : le dossier deploy/ est copié puis effacé
 tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/serveur/<script>.sh" <arguments>; rm -rf "$D"'
 ```
 
@@ -229,9 +230,10 @@ tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/s
 | `70-hebergement.sh` | — | Utilisateur `madame-aiguille`, arborescence, pool PHP-FPM, réglages MariaDB, certificat `madame-aiguille.fr` + `www`, rotation des journaux | Serveur neuf |
 | `80-installer-magento.sh` | `<version>` | **Installation neuve** dans une version déjà envoyée : base et RabbitMQ dédiés (mots de passe générés, jamais affichés), `setup:install`, mode production, réglages du serveur, VCL, cron, mise en ligne, activation nginx | **Une seule fois** ; refuse de tourner si `env.php` existe |
 | `90-acces-admin.sh` | `<ip> [<ip>…]` | Administration réservée : IP listées ou identifiant + mot de passe HTTP | Pour **ajouter ou retirer une IP** (ex. celle de Céline) |
+| `99-matomo.sh` | — | **Matomo** sur `stats.madame-aiguille.fr` (lot 9) : vérifie le DNS, paquet officiel à signature GPG vérifiée, utilisateur `matomo`, base MariaDB dédiée (mot de passe dans `~/matomo-mariadb.txt`, 0600), pool PHP-FPM, nginx durci, certificat, cron `core:archive` ; contrôle les refus en fin de script | Après un changement de ses gabarits (copie de l'ancien fichier, retour arrière si `nginx -t` échoue). **Ne met pas Matomo à jour** (`guide-exploitation.md` §8) |
 
 Gabarits utilisés : `deploy/serveur/nginx/madame-aiguille.conf` (TLS → Varnish → backend, redirections, `noindex`) et
-`deploy/serveur/php-fpm/madame-aiguille.conf` (pool dédié).
+`deploy/serveur/php-fpm/madame-aiguille.conf` (pool dédié) ; pour Matomo, `nginx/matomo.conf` et `php-fpm/matomo.conf`.
 
 ## 7. Commandes ponctuelles
 
@@ -343,6 +345,28 @@ Mise en place, une fois : enregistrement DNS A `guide-magento.pierrebultez.com` 
 tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/serveur/96-guide-magento.sh"; rm -rf "$D"'
 ```
 
+### Mesure d'audience (Matomo)
+
+Interface : `https://stats.madame-aiguille.fr` (compte Matomo de chacun). Réglages Magento, posés une fois sur le
+serveur le 03/11/2026 (`documentation-theme.md` §30) :
+
+```bash
+mage config:set madameaiguille_analytics/matomo/url https://stats.madame-aiguille.fr/
+mage config:set madameaiguille_analytics/matomo/site_id 1
+mage config:set madameaiguille_analytics/matomo/enabled 1
+mage cache:flush
+```
+
+```bash
+# Couper la mesure sans déployer (la boutique ne dépend pas de Matomo)
+mage config:set madameaiguille_analytics/matomo/enabled 0 && mage cache:flush
+
+# Matomo en ligne de commande, sous son utilisateur
+ssh <vps> 'sudo -u matomo php8.5 /var/www/matomo/console core:version'
+ssh <vps> 'sudo tail -n 20 /var/log/matomo/archive.log'          # archivage horaire
+ssh <vps> 'sudo -u matomo php8.5 /var/www/matomo/console core:archive --url=https://stats.madame-aiguille.fr/'
+```
+
 ## 8. Jeux de données (poste local seulement)
 
 `docs/jeux-de-donnees/` : `categories.php`, `produits-test.php`, `accueil.php`. Peuplent un environnement de
@@ -359,4 +383,5 @@ catalogue réel y est saisi dans l'administration. Mode d'emploi : `docs/jeux-de
 | Changer les tarifs Mondial Relay | Modifier `Theme/data/tablerates-mondial-relay.csv`, déployer, puis `mage madameaiguille:shipping:import-rates --dry-run` et sans `--dry-run` |
 | Vérifier la santé de la boutique | `mage madameaiguille:env:check --serveur` (avec `--noindex` avant l'ouverture) |
 | Donner l'administration à Céline | `90-acces-admin.sh <ip-pierre> <ip-céline>`, puis `admin:user:create` (rôle restreint au lot 8) |
+| Couper ou rétablir la mesure d'audience | `mage config:set madameaiguille_analytics/matomo/enabled 0` (ou `1`), puis `mage cache:flush` |
 | Après une mise à jour d'Ubuntu | Vérifier PHP (`php -v`) et que tous les sites répondent ; relancer `10-depots.sh` si des dépôts sont `.disabled` |

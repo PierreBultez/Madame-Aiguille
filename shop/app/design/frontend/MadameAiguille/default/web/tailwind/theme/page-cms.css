@@ -130,6 +130,16 @@
         @apply text-caption text-brand-muted;
     }
 
+    /* Module d'opposition de Matomo (lot 9, page Confidentialité) : HTML posé par le script optOutJS de Matomo, sans
+       classe ; la case est espacée de son libellé, qui reste cliquable en entier */
+    #matomo-opt-out input[type="checkbox"] {
+        @apply mr-3 size-5 cursor-pointer align-middle accent-brand-dark;
+    }
+
+    #matomo-opt-out label {
+        @apply cursor-pointer;
+    }
+
     .cms-callout {
         @apply mt-12 rounded-sm bg-brand-blush px-5 py-8 text-center text-brand-dark md:px-10 md:py-10;
     }

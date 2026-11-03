@@ -36,11 +36,11 @@ commerce électronique, partage avec un tiers…) peut faire sortir du cadre, et
 | 2 | Production de **données statistiques anonymes** uniquement | Rapports agrégés ; pas de User ID, ni de dimension personnalisée, ni de commerce électronique | `tracker.js` (seuls `disableCookies`, `trackPageView`, `trackSiteSearch`, `enableLinkTracking`) ; *Sites web › Gérer* (e-commerce désactivé) | conforme |
 | 3 | **Aucun recoupement** avec d'autres traitements, aucune transmission à un tiers | Base dédiée, hébergement propre ; pas d'import de données Magento (commandes, clientes) | `deploy/serveur/99-matomo.sh` (base et utilisateur MariaDB séparés de ceux de la boutique) | conforme |
 | 4 | **Pas de suivi** de la navigation sur d'autres sites ni entre plusieurs éditeurs | Un seul site, « Ne suivre que les visites sur ces URL » coché | *Sites web › Gérer › Madame Aiguille* | conforme |
-| 5 | **Adresse IP** : pas de géolocalisation plus précise que la ville, IP non conservée en clair | IP tronquée de **2 octets**, IP tronquée utilisée aussi pour la géolocalisation ; base DB-IP Lite | *Confidentialité › Anonymiser les données* ; *Système › Géolocalisation* | conforme (géolocalisation à activer : voir « Écarts ») |
+| 5 | **Adresse IP** : pas de géolocalisation plus précise que la ville, IP non conservée en clair | IP tronquée de **2 octets**, IP tronquée utilisée aussi pour la géolocalisation ; base DB-IP Lite | *Confidentialité › Anonymiser les données* ; *Système › Géolocalisation* | conforme |
 | 6 | **Traceur** de durée limitée (13 mois au plus), non prorogé à chaque visite | **Aucun cookie** de mesure (`disableCookies`) ; seul cookie possible : `mtm_consent_removed`, déposé uniquement quand le visiteur s'oppose, pour retenir son choix | `tracker.js` ; recette « aucun cookie `_pk_*` » | conforme |
 | 7 | **Conservation** des données collectées : 25 mois au plus | Données brutes supprimées au bout de **760 jours** ; seuls des rapports agrégés anonymes sont gardés au-delà | *Confidentialité › Anonymiser les données › Supprimer les anciennes données brutes* | conforme |
 | 8 | **Information** des personnes | Section « Mesure d'audience » de la page *Confidentialité* : outil, finalité, absence de cookie, IP tronquée, durée, droit d'opposition | `/confidentialite` ; patch `DescribeAudienceMeasurementInPrivacyPage` | conforme |
-| 9 | **Droit d'opposition** simple et effectif | Module d'opposition de Matomo intégré à la page *Confidentialité*, sans script inline ; recette : case décochée → cookie `mtm_consent_removed`, plus aucune requête de mesure ; case recochée → cookie supprimé | `/confidentialite` ; `Block/OptOut.php` | conforme (recetté en local le 03/11/2026, à recetter en production) |
+| 9 | **Droit d'opposition** simple et effectif | Module d'opposition de Matomo intégré à la page *Confidentialité*, sans script inline ; recette : case décochée → cookie `mtm_consent_removed`, plus aucune requête de mesure ; case recochée → cookie supprimé | `/confidentialite` ; `Block/OptOut.php` | conforme (recetté en local et en production le 03/11/2026) |
 | 10 | **Sécurité** des données | HTTPS, double authentification des comptes Matomo, utilisateur système et pool PHP dédiés, configuration nginx durcie | `deploy/serveur/nginx/matomo.conf` ; *Personnel › Sécurité* | conforme |
 | 11 | Durées et réglages **réexaminés** périodiquement | Relecture de cette grille à chaque mise à jour de Matomo et au moins une fois par an | `guide-exploitation.md` (surveillance) | à tenir |
 
@@ -58,7 +58,7 @@ commerce électronique, partage avec un tiers…) peut faire sortir du cadre, et
 
 ## Écarts et limites au 03/11/2026
 
-- **Géolocalisation** : la base DB-IP Lite n'est pas encore téléchargée ; tant qu'elle manque, Matomo devine le pays
-  d'après la langue du navigateur. Sans incidence sur la conformité.
+- **Géolocalisation** : base DB-IP City Lite installée le 03/11/2026 (`misc/DBIP-City.mmdb`), mise à jour mensuelle
+  par Matomo ; avec l'IP tronquée de 2 octets, la localisation reste au mieux à la ville.
 - **Validation** : cette grille est une auto-évaluation technique. Comme le reste de la page *Confidentialité*, le texte
   publié est à faire relire par le conseil de Céline.

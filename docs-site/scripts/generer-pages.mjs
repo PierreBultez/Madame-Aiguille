@@ -30,7 +30,7 @@ const DOCUMENTS = [
             ['Catalogue', [8, 9, 10, 11, 12]],
             ['Panier et tunnel', [14, 20, 26, 27]],
             ['Compte et emails', [21, 22, 28]],
-            ['Exploitation', [15, 17, 23, 24, 25, 29]],
+            ['Exploitation', [15, 17, 23, 24, 25, 29, 30]],
         ],
     },
     {
@@ -42,6 +42,11 @@ const DOCUMENTS = [
         fichier: 'guide-exploitation.md',
         dossier: 'exploitation',
         titre: "Guide d'exploitation",
+    },
+    {
+        fichier: 'conformite/matomo-cnil.md',
+        dossier: 'conformite',
+        titre: 'Conformité CNIL de la mesure d’audience',
     },
 ];
 

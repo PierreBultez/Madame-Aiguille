@@ -10,6 +10,10 @@ Mesure de la vitesse, de l'accessibilité, des bonnes pratiques et du référenc
 
 <LighthouseRapport />
 
+## Ce qui a changé le 3 novembre 2026
+
+- **Mesure d'audience Matomo** (lot 9) : un petit script du module et `matomo.js`, chargés sans bloquer l'affichage. Les notes restent de **98 à 100** (accueil 100 et 99, catégorie 100 et 99, fiche 100 et 98). Lighthouse relève deux nouveaux points sans effet notable sur le score : une partie de `matomo.js` est inutilisée (environ 38 Ko, le script sert à tous les sites Matomo), et sa durée de cache est d'une heure, réglage de nginx sur `stats.madame-aiguille.fr`, qui permet de suivre rapidement les mises à jour de Matomo.
+
 ## Ce qui a changé le 2 novembre 2026
 
 - **Images de l'accueil et de « Nos tissus » en WebP** : 3,6 Mo ramenés à 129 Ko. La photo principale de l'accueil pesait à elle seule 1,47 Mo ; sur mobile, elle s'affichait en 9,6 s, elle s'affiche maintenant en 1,8 s.

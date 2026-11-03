@@ -10,7 +10,7 @@ Scripts autonomes (10 à 65) :
 ssh <vps> 'bash -s' < deploy/serveur/<script>.sh
 ```
 
-Scripts qui ont besoin des gabarits et de `deploy/bascule.sh` (70 et 80) : le dossier `deploy/` est envoyé dans un
+Scripts qui ont besoin des gabarits et de `deploy/bascule.sh` (70, 80, 90, 96 et 99) : le dossier `deploy/` est envoyé dans un
 répertoire temporaire du serveur, puis supprimé.
 
 ```bash
@@ -30,6 +30,7 @@ tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/s
 | `96-guide-magento.sh` | Site de documentation `guide-magento.pierrebultez.com` : dossier `/var/www/guide-magento`, nginx statique (`nginx/guide-magento.conf`), certificat Let's Encrypt ; vérifie d'abord le DNS. Contenu publié par `docs-site/publier.sh` | à jouer une fois, après l'enregistrement DNS |
 | `97-taille-envois.sh` | Ajoute `client_max_body_size 64m` au bloc backend nginx (8080) : sans lui, 413 au-delà de 1 Mo derrière Varnish (photo de contact) | appliqué le 02/11/2026 |
 | `98-cache-guide.sh` | Ajoute `Cache-Control: no-cache` aux pages du site guide-magento : sans lui, le navigateur gardait les anciennes pages après une publication | appliqué le 02/11/2026 |
+| `99-matomo.sh` | Mesure d'audience **Matomo** sur `stats.madame-aiguille.fr` (lot 9) : vérifie le DNS et les extensions PHP, paquet officiel à **signature GPG vérifiée** (empreinte publiée par Matomo), utilisateur système `matomo`, `/var/www/matomo`, base et utilisateur MariaDB `matomo` (mot de passe généré dans `~/matomo-mariadb.txt`, 0600, jamais affiché), pool PHP-FPM (`php-fpm/matomo.conf`), nginx durci (`nginx/matomo.conf` : seuls `index.php`, `matomo.php`, `piwik.php` exécutés), certificat Let's Encrypt, cron `core:archive` horaire, rotation des journaux `/var/log/matomo/`. Rejouable : copie `*.avant-99-<date>` de ce qu'il remplace, retour arrière si `nginx -t` ou `php-fpm -t` échoue. Ne met pas Matomo à jour | appliqué le 03/11/2026 (Matomo 5.14.2), rejoué pour refuser `/console` et `/tests/` |
 | `70-hebergement.sh` | Utilisateur `madame-aiguille`, arborescence, pool PHP-FPM, réglages MariaDB, certificat `madame-aiguille.fr` + `www`, rotation des journaux | à jouer |
 | `80-installer-magento.sh <version>` | Installation neuve dans une version envoyée par GitHub Actions, réglages du serveur, VCL, cron, mise en ligne, activation nginx | appliqué le 10/10/2026 |
 | `90-acces-admin.sh <ip> [<ip>…]` | Administration : IP autorisées ou mot de passe HTTP (`satisfy any`) ; rejouable pour changer la liste | à jouer, après le mot de passe |
@@ -50,6 +51,9 @@ Puis la liste d'IP (celle de la box de Pierre aujourd'hui ; ajouter celle de Cé
 ```bash
 tar -C deploy -cz . | ssh <vps> 'D=$(mktemp -d) && tar -C "$D" -xz && bash "$D/serveur/90-acces-admin.sh" <ip> [<ip>…]; rm -rf "$D"'
 ```
+
+Matomo (`/var/www/matomo`) tourne sous son propre utilisateur `matomo`, sans accès à la boutique ; sa base MariaDB
+`matomo` est distincte de celle de Magento. Commandes : `sudo -u matomo php8.5 /var/www/matomo/console …`.
 
 Ports locaux : MariaDB 3306, OpenSearch 9200, Valkey 6379 / 6380 / 6381, Varnish 6081 (admin 6082), nginx backend 8080,
 RabbitMQ 5672. Aucun n'est ouvert par le pare-feu, qui n'autorise que SSH, 80, 443 et les services des autres sites.
