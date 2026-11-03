@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.3 (02/11/2026), **tous les lots livrés** (2, 6a, 3, 4, 7, 5, 6b, 8a et **8**, clos le 02/11/2026) ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`. La suite se lit dans `guide-exploitation.md`.
+Document interne — v3.4 (03/11/2026), lots 2 à 8 livrés (clos le 02/11/2026) ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`. L'exploitation suit `guide-exploitation.md`. **Lot 9 (mesure d'audience Matomo) ouvert le 03/11/2026.**
+
+> **v3.4** — **Lot 9 ouvert** à la demande de Pierre : mesure d'audience **Matomo auto-hébergé** sur `stats.madame-aiguille.fr`, sans cookie et dans le cadre de l'exemption de consentement de la CNIL, suivi de la vitrine et du tunnel par un module `MadameAiguille_Analytics`. Écartés : Google Analytics, Open Analytics, Plausible, Umami, GoatCounter. Cahier des charges : section « Lot 9 » ci-dessous ; prompt : `prompts/prompt-lot9.md`.
 
 > **v3.3** — **Lot 8 livré, développement terminé.** Recettes restantes faites sur le serveur (reCAPTCHA, écrans, newsletter, compte, contact avec photo de 3,7 Mo après `97-taille-envois.sh`, Apple Pay / Google Pay / Bancontact / Klarna). Qualité : images en WebP, logo vectoriel et favicon « aiguille et fil » définitifs, méta-description de repli des catégories ; Lighthouse de 99 à 100 sur accueil, catégorie et fiche (accueil mobile de 75 à 99). Footer aux logos officiels. Site de documentation `guide-magento.pierrebultez.com` avec page Lighthouse. **Guide d'exploitation** (`guide-exploitation.md`) à la place d'un prompt de lot. Limite assumée : **pas de sauvegarde planifiée** (reportée par Pierre), premier chantier de l'exploitation. Détail : `documentation-theme.md` §17, §23.
 
@@ -178,8 +180,9 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 6 | Checkout Luma fallback : installation (6a) et habillage (6b) — **livrés** | 5 | **L** | moyen |
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production — **livré** | tous | **M** | moyen |
+| 9 | Mesure d'audience Matomo auto-hébergé — **ouvert** | 8 + DNS `stats.` | **M** | faible |
 
-Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**. Il ne reste aucun lot : l'exploitation suit `guide-exploitation.md`.
+Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9** ouvert après la clôture. L'exploitation suit `guide-exploitation.md`.
 
 Les lots 5 et 6b ont été livrés après le brief. La recette de bout en bout — paiement confirmé, tous les statuts et emails reçus — reste à rejouer sur la préproduction HTTPS du 8a. Le lot 7 avait été avancé pendant l’attente du brief.
 
@@ -376,6 +379,121 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 - Rythme de mise à jour mensuel de Céline face aux séries qui s'épuisent : l'alerte de stock bas est la réponse minimale ; à rediscuter après un mois d'exploitation.
 
 **Effort : M** (hors rédaction du guide, qui dépend de la maturité de l'admin).
+
+---
+
+## Lot 9 — Mesure d'audience (Matomo auto-hébergé) — **ouvert le 03/11/2026**
+
+Décidé par Pierre le 03/11/2026, après la clôture du lot 8 : le seul lot ouvert depuis la fin du développement. Prompt
+de lancement : `prompts/prompt-lot9.md`.
+
+**Objectif**
+
+Suivre le **trafic de base** de la boutique : visites, pages vues, pages d'entrée et de sortie, sources (moteurs,
+réseaux sociaux, sites référents, accès direct), appareils, navigateurs, pays, recherche interne et pages 404. Les données
+restent sur notre serveur et **aucune bannière de consentement** n'est ajoutée : la mesure doit rester dans le cadre de
+l'exemption de consentement de la CNIL.
+
+**Choix de l'outil**
+
+- **Matomo On-Premise**, libre (GPLv3) et gratuit en auto-hébergement. C'est un PHP + MariaDB, déjà présents sur le
+  VPS. Configuré dans son mode « conformité CNIL », il peut être utilisé sans consentement.
+- Écartés :
+  - Google Analytics : consentement obligatoire, données hors UE ;
+  - Open Analytics : 10 services, ClickHouse, environ 4 Go de RAM à lui seul ;
+  - Plausible CE : ClickHouse aussi ;
+  - Umami : PostgreSQL en plus ;
+  - GoatCounter : rejeté par Pierre pour son interface.
+- Capacité du VPS relevée le 03/11/2026 : 45 Go de RAM dont 31 disponibles, 12 cœurs, 248 Go de disque libres, PHP 8.4
+  et 8.5, MariaDB 12.3. Matomo n'y pèse presque rien.
+
+**Périmètre**
+
+1. **Serveur**, en script relu que Pierre lance (`deploy/serveur/99-matomo.sh`, ressource partagée du VPS) :
+   - Matomo dans `/var/www/matomo`, sous un utilisateur système et un pool PHP-FPM dédiés ;
+   - une base MariaDB et un utilisateur dédiés, mot de passe généré sur le serveur et jamais affiché dans le dépôt ;
+   - un hôte nginx et un certificat Let's Encrypt pour **`stats.madame-aiguille.fr`** ;
+   - le paquet officiel téléchargé avec vérification d'intégrité (signature ou somme publiée par Matomo) ;
+   - l'archivage des rapports par cron (`core:archive` toutes les heures), l'archivage déclenché par le navigateur
+     étant coupé ;
+   - le script est idempotent et sauvegarde toute configuration qu'il remplace.
+
+   L'assistant d'installation web est fait par Pierre : c'est lui qui crée le compte super-utilisateur.
+2. **Conformité CNIL** :
+   - mode de conformité CNIL de Matomo activé ;
+   - pas de cookie (`disableCookies`) ;
+   - IP anonymisée sur au moins 2 octets ;
+   - géolocalisation au pays ou à la région, base DB-IP Lite ;
+   - ni User ID, ni carte de chaleur, ni enregistrement de session, ni recoupement avec un autre site ;
+   - durée de conservation réglée selon la grille ;
+   - exclusion des robots et des IP de Pierre et Céline (saisies dans Matomo, pas dans le dépôt).
+
+   La **grille d'auto-évaluation** de la CNIL est remplie et versionnée dans `docs/conformite/` (sans secret ni IP),
+   puisque depuis 2026 c'est l'éditeur qui doit prouver la conformité.
+3. **Module `MadameAiguille_Analytics`** :
+   - **Réglages** sous *Stores › Configuration*, dans une section *Mesure d'audience* : activation, adresse de Matomo,
+     identifiant du site. Vides par défaut, si bien que rien n'est rendu en local ni dans le build.
+   - **Chargement du suivi** : un ViewModel et un **script externe** du module, qui lit ses paramètres dans des
+     attributs `data-*` et charge `matomo.js`. Aucun script inline, pour que la CSP n'ait besoin que d'autoriser l'hôte
+     `stats.` (`csp_whitelist.xml` : `script-src`, `connect-src`, `img-src`).
+   - **Pages suivies** : la vitrine Hyvä **et** le tunnel Luma (thème `MadameAiguille/checkout`), succès compris ;
+     jamais l'administration. Recherche interne (mot-clé et nombre de résultats) et pages 404 marquées.
+   - **Compatibilité avec le cache** : rien de propre au visiteur dans le HTML, donc compatible avec Varnish et le
+     cache de pages.
+   - **Statistiques dans l'administration** : un lien vers les statistiques dans le menu de l'administration Magento,
+     derrière sa propre ressource ACL, ajoutée au rôle « Atelier » par Pierre dans l'administration.
+   - **Contrôle d'environnement** : `madameaiguille:env:check --serveur` signale une mesure activée sans adresse ou
+     sans identifiant.
+4. **Opposition et transparence** :
+   - la section « Cookies » de la page *Confidentialité* décrit la mesure d'audience, sa finalité, sa durée de
+     conservation et le droit d'opposition, avec le **module d'opposition** de Matomo intégré à la page ;
+   - le texte est posé par un data patch qui remplace la phrase exacte entre crochets laissée par `FillLegalPages`.
+     Si Céline a modifié la page entre-temps, le patch ne touche à rien et le signale : saisie dans l'administration ;
+   - on vérifie que l'opposition fonctionne bien sans cookie.
+5. **Comptes Matomo**, créés par Pierre et hors dépôt :
+   - Pierre en super-utilisateur, avec la double authentification de Matomo ;
+   - Céline en lecture seule sur le site de la boutique ;
+   - en option, un rapport mensuel envoyé par email à Céline, fonction native de Matomo, avec le SMTP Brevo.
+6. **Documentation** :
+   - une nouvelle section de `documentation-theme.md` ;
+   - une ligne au mémo Céline (§24) et une page « Consulter les statistiques » dans `guide-back-office.md` ;
+   - `guide-exploitation.md` : comptes, surveillance, renouvellements (base DB-IP), **sauvegarde de la base Matomo**,
+     mises à jour de Matomo, incidents ;
+   - `commandes-et-deploiement.md` et `deploy/serveur/README.md` ;
+   - le journal §17.
+
+**Hors périmètre, à trancher au démarrage**
+
+- **Mesure du commerce électronique** (commandes, chiffre d'affaires, paniers abandonnés) : utile, mais dépasse le
+  « trafic de base » demandé. Il faut aussi vérifier qu'elle reste dans le cadre de l'exemption CNIL.
+- Gestionnaire de balises (Matomo Tag Manager) : inutile ici.
+
+**Dépendances**
+
+- Un enregistrement DNS A `stats.madame-aiguille.fr` vers le VPS, ajouté par Pierre chez OVH avant le script, comme
+  pour `guide-magento`.
+
+**Recette**
+
+- Visite enregistrée en temps réel, depuis la vitrine et depuis le tunnel jusqu'au succès.
+- **Aucun cookie `_pk_*`** déposé.
+- Aucune erreur CSP, à 1440 et 390 px.
+- Recherche interne et 404 visibles dans les rapports.
+- Opposition effective.
+- Pages identiques pour deux visiteurs : Varnish intact.
+- Lighthouse rejoué sur accueil, catégorie et fiche, sans baisse notable.
+- `env:check` à 0 erreur et section d'administration ouverte réellement.
+- Tests unitaires et PHPCS.
+
+**Incertitudes**
+
+- **Version de PHP** : Matomo publie la liste des versions de PHP qu'il prend en charge. Si PHP 8.5 n'y figure pas
+  encore, le pool de Matomo tourne en PHP 8.4, déjà installé.
+- **Critères CNIL** : l'exemption repose sur une auto-évaluation. Le mode CNIL de Matomo coche la configuration, mais
+  la grille reste à remplir honnêtement, et toute fonction ajoutée plus tard peut faire sortir du cadre.
+
+**Effort : M.** Risque faible : la boutique ne dépend pas de Matomo, et si `stats.` tombe, le suivi échoue sans rien
+casser.
 
 ---
 

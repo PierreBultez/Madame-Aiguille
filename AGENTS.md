@@ -8,7 +8,7 @@ Cliente finale : **Céline**, qui gère la boutique depuis le back-office sans t
 
 1. `docs/documentation-theme.md` — ce qui existe, où, et où modifier quoi. **§25 : le rituel de fin de lot.**
 2. `docs/plan-de-developpement.md` — lots, état, décisions.
-3. `docs/guide-exploitation.md` — **le développement par lots est terminé (lot 8 clos le 02/11/2026)** : surveillance, renouvellements, sauvegardes, mises à jour, déploiement et retour arrière. Les `docs/prompts/prompt-lot<N>.md` restent pour l'historique.
+3. `docs/guide-exploitation.md` — le développement par lots s'est clos avec le lot 8 (02/11/2026) : surveillance, renouvellements, sauvegardes, mises à jour, déploiement et retour arrière. **Seule exception : le lot 9, mesure d'audience Matomo, ouvert le 03/11/2026** (`docs/prompts/prompt-lot9.md`). Les autres `docs/prompts/prompt-lot<N>.md` restent pour l'historique.
 4. `docs/cahier-des-charges-docs-developpement/guide-bonnes-pratiques-hyva.md` — conventions de code.
 
 ## Règles non négociables
