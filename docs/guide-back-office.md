@@ -181,7 +181,7 @@ Les statistiques de visite du site (combien de visites, quelles pages, d'où vie
 cherchent) sont dans **Matomo**, un outil installé sur le serveur de la boutique. Elles sont anonymes : on ne sait pas
 *qui* visite, seulement *combien* et *comment*.
 
-1. Dans l'administration, *Rapports › Statistiques du site* : la page de Matomo s'ouvre.
+1. Dans l'administration, *Rapports › Statistiques du site* : Matomo s'ouvre dans un nouvel onglet.
 
    ![Le lien vers les statistiques](guide-back-office/15-statistiques-menu.jpg)
 
