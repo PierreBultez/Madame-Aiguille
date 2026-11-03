@@ -273,4 +273,48 @@ class EnvironmentCheckerTest extends TestCase
             $warnings
         );
     }
+
+    public function testEnabledAudienceMeasurementWithoutAddressOrSiteIsAnError(): void
+    {
+        self::assertSame(
+            ['Mesure d\'audience — activée mais sans adresse, sans identifiant de site : rien n\'est mesuré'],
+            $this->messages($this->check(['madameaiguille_analytics/matomo/enabled' => '1']), Finding::ERROR)
+        );
+        self::assertSame(
+            ['Mesure d\'audience — activée mais adresse « http://stats.example.test/ » non https : rien n\'est mesuré'],
+            $this->messages($this->check([
+                'madameaiguille_analytics/matomo/enabled' => '1',
+                'madameaiguille_analytics/matomo/url' => 'http://stats.example.test/',
+                'madameaiguille_analytics/matomo/site_id' => '1',
+            ]), Finding::ERROR)
+        );
+    }
+
+    public function testCompleteAudienceMeasurementIsOk(): void
+    {
+        $findings = $this->check([
+            'madameaiguille_analytics/matomo/enabled' => '1',
+            'madameaiguille_analytics/matomo/url' => 'https://stats.example.test/',
+            'madameaiguille_analytics/matomo/site_id' => '1',
+        ]);
+
+        self::assertSame([], $this->messages($findings, Finding::ERROR));
+        self::assertSame([], $this->messages($findings, Finding::WARNING));
+        self::assertContains('Mesure d\'audience — Matomo https://stats.example.test/, site 1', $this->messages(
+            $findings,
+            Finding::OK
+        ));
+    }
+
+    public function testDisabledAudienceMeasurementWarnsOnlyOnAServerOnceItHasBeenSetUp(): void
+    {
+        $setUp = ['madameaiguille_analytics/matomo/url' => 'https://stats.example.test/'];
+
+        self::assertSame([], $this->messages($this->check(), Finding::WARNING));
+        self::assertSame(
+            ['Mesure d\'audience — désactivée (Matomo https://stats.example.test/)'],
+            $this->messages($this->check($setUp), Finding::WARNING)
+        );
+        self::assertSame([], $this->messages($this->check($setUp, false, false), Finding::WARNING));
+    }
 }
