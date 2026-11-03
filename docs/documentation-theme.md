@@ -788,6 +788,7 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Session / connexion dans le tunnel** | Fusion du panier à la connexion et expiration réelle de session conservées natives, non rejouées | Recette transversale du lot 8 |
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
+| **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
 | **Colis au-delà du dernier palier** | `tablerate` n'a pas de borne haute : au-delà de 30 kg (France, Monaco) ou 25 kg (Belgique, Luxembourg), un colis prend le tarif du dernier palier alors que Mondial Relay le refuse | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
 | **Seuil de TVA intra-UE** | Aucune TVA facturée, Céline étant en franchise de base. **À revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année** (guichet OSS) ; la mention se change dans *Mentions légales* | Céline avec conseil |
@@ -1414,6 +1415,28 @@ mage cache:flush
 
 Couper la mesure sans déployer : `mage config:set madameaiguille_analytics/matomo/enabled 0 && mage cache:flush` (ou
 *Mesure d'audience › Activer : Non*, puis vider le cache).
+
+### Recette du 03/11/2026
+
+- **Production** : balise rendue sur l'accueil, une catégorie, une fiche, la recherche (`data-search-keyword`,
+  `data-search-count`), la 404 (`data-page="not-found"`), le panier, la page Confidentialité et le tunnel Luma ;
+  mesures reçues par Matomo (`matomo.php` en 204, recherche `search=…&search_count=…`, titre `404/URL = …`) ; tunnel
+  mesuré jusqu'à `/checkout/onepage/success/` (commande 10 en retrait payé sur place, **annulée** dans
+  l'administration) ; visite vue dans *Visiteurs › En temps réel* depuis un téléphone.
+- **Aucun cookie `_pk_*`** ni autre cookie Matomo ; opposition sur la page Confidentialité : `mtm_consent_removed`
+  posé puis retiré.
+- **Aucune erreur CSP** dans la console à 1440 et 390 px (vitrine report-only, tunnel bloquant) ; l'origine Matomo est
+  dans `script-src`, `connect-src` et `img-src` des deux politiques.
+- **Varnish intact** : accueil en HIT, HTML identique pour deux visiteurs.
+- **`stats.` injoignable** : constaté en local avant la création du certificat (`ERR_SSL_UNRECOGNIZED_NAME_ALERT` sur
+  `matomo.js`) : boutique, Alpine et tunnel identiques. Pas de coupure volontaire en production (elle demanderait de
+  toucher nginx).
+- **Administration** : section *Mesure d'audience* ouverte réellement, *Rapports › Statistiques du site* mène à la
+  connexion de Matomo (local) ; rôle « Atelier » complété par Pierre.
+- **Lighthouse** (`docs/audits/lighthouse.json`) : accueil 100 / 99, catégorie 100 / 99, fiche 100 / 98 (ordinateur /
+  mobile), contre 100 / 99, 98 / 100, 100 / 99 au lot 8.
+- **Contrôles** : 142 tests unitaires (13 nouveaux), PHPCS Magento2 sans erreur sur les fichiers du lot,
+  `env:check --serveur` à 0 erreur et 0 avertissement.
 
 ### Pièges rencontrés
 

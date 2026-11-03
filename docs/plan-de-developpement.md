@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.4 (03/11/2026), lots 2 à 8 livrés (clos le 02/11/2026) ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`. L'exploitation suit `guide-exploitation.md`. **Lot 9 (mesure d'audience Matomo) ouvert le 03/11/2026.**
+Document interne — v3.5 (03/11/2026), lots 2 à 9 livrés ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+
+> **v3.5** — **Lot 9 livré le 03/11/2026.** Matomo 5.14.2 auto-hébergé sur `stats.madame-aiguille.fr` (`deploy/serveur/99-matomo.sh`, signature GPG vérifiée, utilisateur, pool PHP 8.5 et base dédiés), réglé par Pierre en conformité CNIL (IP tronquée de 2 octets, 25 mois, exclusions, compte de Céline en lecture seule, rapport mensuel). Module `MadameAiguille_Analytics` : balise externe sans cookie sur la vitrine et le tunnel, recherche interne et 404, CSP depuis la configuration, opposition et texte de la page Confidentialité, *Rapports › Statistiques du site*, `env:check`. Commerce électronique écarté (trafic seul). Recette de production complète, Lighthouse de 98 à 100. Grille CNIL : `conformite/matomo-cnil.md`. Détail : `documentation-theme.md` §30.
 
 > **v3.4** — **Lot 9 ouvert** à la demande de Pierre : mesure d'audience **Matomo auto-hébergé** sur `stats.madame-aiguille.fr`, sans cookie et dans le cadre de l'exemption de consentement de la CNIL, suivi de la vitrine et du tunnel par un module `MadameAiguille_Analytics`. Écartés : Google Analytics, Open Analytics, Plausible, Umami, GoatCounter. Cahier des charges : section « Lot 9 » ci-dessous ; prompt : `prompts/prompt-lot9.md`.
 
@@ -169,6 +171,12 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 - **Ce qui reste**, avec son responsable (`documentation-theme.md` §23, `guide-exploitation.md` §10) : **sauvegardes** (reportées par Pierre), IP de Céline, validation juridique et contenus génériques par Céline, DMARC en `p=reject`, domaine secondaire, nettoyage de deux entrées inutiles de l'administration.
 - Rythme de mise à jour de Céline face aux séries qui s'épuisent : à rediscuter après un mois d'exploitation.
 
+## État après le lot 9 (03/11/2026)
+
+- **Mesure d'audience en service** : `https://stats.madame-aiguille.fr`, site 1, `env:check --serveur` à 0 erreur et 0 avertissement. Aucun cookie de mesure ; la boutique ne dépend pas de Matomo (coupure : un `config:set`).
+- **Incertitudes levées** : PHP 8.5 pris en charge par Matomo 5.x (tests officiels), pas de réinstallation de PHP 8.4 ; opposition possible sans cookie de suivi (seul `mtm_consent_removed`, à l'opposition) ; CSP alimentée par la configuration plutôt que par `csp_whitelist.xml`.
+- **Ce qui reste** (`guide-exploitation.md` §10) : sauvegarde de la base Matomo avec celles de la boutique ; IP de l'atelier à exclure ; texte de la page Confidentialité à faire valider par le conseil de Céline.
+
 ## Vue d'ensemble
 
 | Lot | Titre | Dépend de | Effort | Risque |
@@ -180,7 +188,7 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 6 | Checkout Luma fallback : installation (6a) et habillage (6b) — **livrés** | 5 | **L** | moyen |
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production — **livré** | tous | **M** | moyen |
-| 9 | Mesure d'audience Matomo auto-hébergé — **ouvert** | 8 + DNS `stats.` | **M** | faible |
+| 9 | Mesure d'audience Matomo auto-hébergé — **livré** | 8 + DNS `stats.` | **M** | faible |
 
 Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9** ouvert après la clôture. L'exploitation suit `guide-exploitation.md`.
 
@@ -382,7 +390,7 @@ Installation et vérifications techniques terminées, **validées par Pierre apr
 
 ---
 
-## Lot 9 — Mesure d'audience (Matomo auto-hébergé) — **ouvert le 03/11/2026**
+## Lot 9 — Mesure d'audience (Matomo auto-hébergé) — **livré le 03/11/2026**
 
 Décidé par Pierre le 03/11/2026, après la clôture du lot 8 : le seul lot ouvert depuis la fin du développement. Prompt
 de lancement : `prompts/prompt-lot9.md`.
@@ -461,6 +469,10 @@ l'exemption de consentement de la CNIL.
      mises à jour de Matomo, incidents ;
    - `commandes-et-deploiement.md` et `deploy/serveur/README.md` ;
    - le journal §17.
+
+**Décisions du démarrage (Pierre, 03/11/2026)** : DNS `stats.madame-aiguille.fr` créé ; **pas de commerce
+électronique** (trafic seul) ; rapport mensuel par email vers `contact@madame-aiguille.fr` ; conservation de **25 mois** ;
+lien « Statistiques » dans l'administration. PHP : Matomo 5.x est testé en PHP 8.5, le pool tourne en 8.5.
 
 **Hors périmètre, à trancher au démarrage**
 
