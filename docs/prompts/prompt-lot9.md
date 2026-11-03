@@ -28,7 +28,8 @@ en production** : rien de ce lot ne doit pouvoir casser la vente.
 - Serveur, relevé du 03/11/2026 :
   - VPS OVH partagé avec d'autres sites de Pierre, sous Ubuntu 26.04 ;
   - 45 Go de RAM dont 31 disponibles, 12 cœurs, 248 Go de disque libres ;
-  - PHP **8.4 et 8.5** installés, MariaDB 12.3.3, nginx, Varnish 7.7, Let's Encrypt.
+  - PHP **8.5 seul**, en paquet Ubuntu `8.5.4-0ubuntu1.5`, qui corrige php2shell. PHP 8.4 a été retiré par la mise à
+    niveau d'Ubuntu ; ses fichiers de configuration restent dans `/etc/php/8.4`, sans binaire. MariaDB 12.3.3, nginx, Varnish 7.7, Let's Encrypt.
 - Alias SSH : `madame-aiguille`. Sur le serveur, `mage` désigne
   `sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento`.
 
@@ -90,8 +91,8 @@ Regroupe en une seule question ce qui manque :
 Le détail est dans le plan, section « Lot 9 ». Ordre conseillé :
 
 1. **Vérifier la compatibilité.** Dernière version stable de Matomo et versions de PHP officiellement prises en
-   charge. PHP 8.5 si c'est le cas, sinon le pool de Matomo tourne en **PHP 8.4**, déjà installé. Note la source et la
-   date.
+   charge. PHP 8.5 si c'est le cas. Sinon, **demande à Pierre** avant de réinstaller un PHP 8.4 depuis un dépôt
+   externe : c'est une version de plus à tenir à jour. Note la source et la date.
 2. **Script serveur `deploy/serveur/99-matomo.sh`**, relu par Pierre puis lancé par lui, avec la même forme que
    `96-guide-magento.sh` :
    - le script vérifie d'abord le DNS ;

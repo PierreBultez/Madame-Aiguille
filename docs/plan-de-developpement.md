@@ -404,8 +404,8 @@ l'exemption de consentement de la CNIL.
   - Plausible CE : ClickHouse aussi ;
   - Umami : PostgreSQL en plus ;
   - GoatCounter : rejeté par Pierre pour son interface.
-- Capacité du VPS relevée le 03/11/2026 : 45 Go de RAM dont 31 disponibles, 12 cœurs, 248 Go de disque libres, PHP 8.4
-  et 8.5, MariaDB 12.3. Matomo n'y pèse presque rien.
+- Capacité du VPS relevée le 03/11/2026 : 45 Go de RAM dont 31 disponibles, 12 cœurs, 248 Go de disque libres, PHP 8.5
+  seul (8.4 a été retiré par la mise à niveau d'Ubuntu, il n'en reste que des fichiers de configuration), MariaDB 12.3. Matomo n'y pèse presque rien.
 
 **Périmètre**
 
@@ -488,7 +488,8 @@ l'exemption de consentement de la CNIL.
 **Incertitudes**
 
 - **Version de PHP** : Matomo publie la liste des versions de PHP qu'il prend en charge. Si PHP 8.5 n'y figure pas
-  encore, le pool de Matomo tourne en PHP 8.4, déjà installé.
+  encore, on décide avec Pierre : tester Matomo en 8.5 ou réinstaller un PHP 8.4 depuis un dépôt externe. Ce second
+  choix est à éviter : c'est un PHP de plus à tenir à jour (correctifs de sécurité comme ceux de php2shell).
 - **Critères CNIL** : l'exemption repose sur une auto-évaluation. Le mode CNIL de Matomo coche la configuration, mais
   la grille reste à remplir honnêtement, et toute fonction ajoutée plus tard peut faire sortir du cadre.
 
