@@ -175,7 +175,44 @@ système** pour modifier un champ, puis **Sauvegarder la configuration**.
 *Marketing* : **Règles de prix du panier** pour un code promo, **Gabarits d'email** pour relire les textes des emails,
 **Abonnés à la newsletter**.
 
-## 7. En cas de doute
+## 7. Consulter les statistiques
+
+Les statistiques de visite du site (combien de visites, quelles pages, d'où viennent les visiteuses, ce qu'elles
+cherchent) sont dans **Matomo**, un outil installé sur le serveur de la boutique. Elles sont anonymes : on ne sait pas
+*qui* visite, seulement *combien* et *comment*.
+
+1. Dans l'administration, *Rapports › Statistiques du site* : la page de Matomo s'ouvre.
+
+   ![Le lien vers les statistiques](guide-back-office/15-statistiques-menu.jpg)
+
+2. Connectez-vous avec **votre compte Matomo** (identifiant et mot de passe reçus par email à l'invitation de Pierre,
+   distincts de ceux de Magento). Vous pouvez aussi ouvrir directement `https://stats.madame-aiguille.fr`.
+3. Le **tableau de bord** résume la période choisie en haut (jour, semaine, mois…).
+
+   ![Tableau de bord de Matomo](guide-back-office/16-matomo-tableau-de-bord.jpg)
+
+Les rapports les plus utiles, dans le menu de gauche :
+
+| Je veux savoir… | Rapport |
+|---|---|
+| Combien de visites, et quand | *Visiteurs › Vue d'ensemble* |
+| Qui est sur le site en ce moment | *Visiteurs › Temps réel* |
+| Quelles pages sont les plus vues | *Comportement › Pages* |
+| Par quelle page on arrive, par laquelle on part | *Comportement › Pages d'entrée* et *Pages de sortie* |
+| D'où viennent les visites (Google, Instagram, lien direct…) | *Acquisition › Tous les canaux* et *Réseaux sociaux* |
+| Téléphone ou ordinateur | *Visiteurs › Appareils* |
+| Pays et régions | *Visiteurs › Localisation* |
+| Ce que les visiteuses cherchent dans la boutique | *Comportement › Recherche interne* : un mot souvent cherché sans résultat est une idée de création ou de mot-clé |
+| Les liens cassés | *Comportement › Titres des pages*, ligne « 404 » : les pages introuvables et la page d'où venait le lien |
+
+Chaque début de mois, un **rapport par email** arrive sur `contact@madame-aiguille.fr`.
+
+Les visites de Pierre ne sont pas comptées ; les vôtres le seront tant que l'adresse internet de l'atelier n'est pas
+transmise à Pierre, qui l'exclura. Les chiffres du jour se mettent à jour
+toutes les heures ; seul le *Temps réel* est instantané. Votre compte est en **lecture seule** : vous ne pouvez rien
+casser.
+
+## 8. En cas de doute
 
 - Une action irréversible (avoir, annulation) : prenez le temps de relire le montant et la commande.
 - Un message d'erreur, une page qui ne s'ouvre pas, un réglage introuvable : notez l'heure et la page, et prévenez Pierre.
