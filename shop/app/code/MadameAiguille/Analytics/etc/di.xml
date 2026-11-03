@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Hôte Matomo autorisé dans la CSP de la vitrine et du tunnel, lu dans la configuration : un csp_whitelist.xml
+         figerait l'adresse dans le code. Déclaré en global : dans etc/frontend/di.xml, ce tableau remplaçait les
+         collecteurs de Magento au lieu de s'y ajouter (politique réduite au seul hôte Matomo, constaté le 03/11/2026). -->
+    <type name="Magento\Csp\Model\CompositePolicyCollector">
+        <arguments>
+            <argument name="collectors" xsi:type="array">
+                <item name="madameaiguille_matomo" xsi:type="object" sortOrder="4">MadameAiguille\Analytics\Model\Csp\MatomoPolicyCollector\Proxy</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

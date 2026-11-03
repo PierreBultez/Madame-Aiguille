@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- Page introuvable : titre « 404/URL = …/From = … », regroupé dans Matomo sous Comportement › Titres des pages -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="madameaiguille.analytics.tracker">
+            <arguments>
+                <argument name="page_type" xsi:type="const">MadameAiguille\Analytics\ViewModel\Tracker::PAGE_NOT_FOUND</argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

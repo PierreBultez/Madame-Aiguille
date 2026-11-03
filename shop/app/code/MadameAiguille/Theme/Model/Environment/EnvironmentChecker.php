@@ -77,6 +77,7 @@ class EnvironmentChecker
         $this->checkStripe($onServer);
         $this->checkRecaptcha($onServer);
         $this->checkShipping();
+        $this->checkAnalytics($onServer);
         $this->checkFonts();
 
         return $this->findings;
@@ -289,6 +290,37 @@ class EnvironmentChecker
             : $this->error(
                 'Poids',
                 sprintf('%d produit(s) activé(s) sans poids : madameaiguille:catalog:check-weight', $missing)
+            );
+    }
+
+    /**
+     * Mesure d'audience Matomo (lot 9, MadameAiguille_Analytics). Activée mais incomplète : rien n'est mesuré, donc
+     * erreur. Désactivée : avertissement sur le serveur seulement après la mise en service (adresse déjà saisie).
+     */
+    private function checkAnalytics(bool $onServer): void
+    {
+        $url = trim((string) $this->value('madameaiguille_analytics/matomo/url'));
+        $siteId = trim((string) $this->value('madameaiguille_analytics/matomo/site_id'));
+
+        if (!$this->flag('madameaiguille_analytics/matomo/enabled')) {
+            $url !== '' && $onServer
+                ? $this->warning('Mesure d\'audience', sprintf('désactivée (Matomo %s)', $url))
+                : $this->ok('Mesure d\'audience', 'désactivée');
+            return;
+        }
+
+        $problems = [];
+        if (!preg_match('#^https://[^/\s]+#i', $url)) {
+            $problems[] = $url === '' ? 'sans adresse' : sprintf('adresse « %s » non https', $url);
+        }
+        if (!ctype_digit($siteId) || (int) $siteId < 1) {
+            $problems[] = 'sans identifiant de site';
+        }
+        $problems === []
+            ? $this->ok('Mesure d\'audience', sprintf('Matomo %s, site %d', $url, (int) $siteId))
+            : $this->error(
+                'Mesure d\'audience',
+                sprintf('activée mais %s : rien n\'est mesuré', implode(', ', $problems))
             );
     }
 

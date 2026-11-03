@@ -579,6 +579,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 8 — Identité définitive (02/11/2026) | logo vectoriel (en-tête, pied de page, tunnel, PNG pour les emails), favicon et icônes « aiguille et fil », logos officiels des paiements, réseaux et livraisons au footer | `b7ac1d7`, `80fd8fa` |
 | 8 — Site de documentation, suite (02/11/2026) | pages revalidées à chaque visite (`98-cache-guide.sh`), page « Lighthouse » façon PageSpeed Insights (`docs/audits/lighthouse.json`, `resumer-lighthouse.mjs`), §23 renommé et journal complété | `76f05b7` + commit de la page |
 | 8 — Clôture (02/11/2026) | contrôles finaux (129 tests unitaires, PHPCS sans erreur sur les 39 fichiers PHP du lot, `env:check --serveur` à 0 erreur et 0 avertissement), **guide d'exploitation** `docs/guide-exploitation.md` publié sur le site de documentation, plan v3.3, fusion dans `main` | commit de clôture |
+| 9 — Ouverture (03/11/2026) | cahier des charges de la mesure d'audience Matomo (plan v3.4) et prompt `docs/prompts/prompt-lot9.md` ; aucun code | commit du prompt |
 
 ## 18. Formulaire de contact
 
@@ -950,7 +951,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 
 - Écrire le **prompt de reprise du lot suivant** dans `docs/prompts/`, sur le modèle de `prompt-lot5.md` : état de départ vérifiable, ce qui est déjà tranché, règles non négociables, périmètre, ce qui ne pourra pas être bouclé, décisions à demander à Pierre, pièges connus du projet.
 - Mettre à jour le prompt avec les pièges découverts pendant le lot qu'on vient de finir.
-- **Après le lot 8, dernier lot**, il n'y a plus de prompt de lot : on met à jour `docs/guide-exploitation.md` (versions, échéances, pièges, sujets ouverts).
+- **Après le lot 8**, il n'y a plus de prompt de lot : on met à jour `docs/guide-exploitation.md` (versions, échéances, pièges, sujets ouverts). C'est aussi la règle pour un lot ouvert ensuite, comme le lot 9 (mesure d'audience).
 
 ## 26. Livraison et paiements (lot 5)
 

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Balise de suivi Matomo dans head.additional, pour la vitrine Hyvä ET le tunnel Luma (layout de module, commun aux
+ * deux thèmes). Pas dans default_head_blocks.xml : Magento y regroupe les <script src> avec les autres ressources
+ * du <head> (au lot 8, un favicon y a hérité de as="font").
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="head.additional">
+            <block class="Magento\Framework\View\Element\Template" name="madameaiguille.analytics.tracker"
+                   template="MadameAiguille_Analytics::tracker.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">MadameAiguille\Analytics\ViewModel\Tracker</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

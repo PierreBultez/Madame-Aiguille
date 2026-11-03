@@ -1,0 +1,25 @@
+<?php
+/**
+ * Madame Aiguille — module d'opposition de Matomo, rendu dans la page Confidentialité (bloc CMS
+ * MadameAiguille\Analytics\Block\OptOut). Matomo remplit la case à cocher et ses libellés.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Analytics\Block\OptOut;
+use Magento\Framework\Escaper;
+
+/** @var OptOut $block */
+/** @var Escaper $escaper */
+?>
+<?php if (!$block->isActive()): ?>
+    <p>
+        <?= $escaper->escapeHtml(__('La mesure d’audience est désactivée : aucune statistique de visite n’est collectée.')) ?>
+    </p>
+    <?php return; ?>
+<?php endif ?>
+<div id="<?= $escaper->escapeHtmlAttr(OptOut::DIV_ID) ?>"></div>
+<noscript>
+    <p><?= $escaper->escapeHtml(__('JavaScript est désactivé : aucune mesure d’audience n’a lieu.')) ?></p>
+</noscript>
+<script src="<?= $escaper->escapeUrl($block->getScriptUrl()) ?>"></script>
