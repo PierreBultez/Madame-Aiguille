@@ -36,6 +36,10 @@ features:
     details: Pour faire vivre la boutique après le développement — surveiller, renouveler, sauvegarder, mettre à jour Magento et Hyvä, déployer et revenir en arrière.
     link: /exploitation/
     linkText: Ouvrir le guide d’exploitation
+  - title: Conformité CNIL
+    details: Pour Pierre et Céline. La mesure d’audience Matomo, sans cookie ni bannière — critère par critère de l’exemption de consentement, avec le réglage qui le respecte et où le vérifier.
+    link: /conformite/
+    linkText: Ouvrir la grille
   - title: Audit Lighthouse
     details: Vitesse, accessibilité, bonnes pratiques et référencement de l’accueil, d’une catégorie et d’une fiche, sur mobile et sur ordinateur, avant et après les corrections.
     link: /lighthouse

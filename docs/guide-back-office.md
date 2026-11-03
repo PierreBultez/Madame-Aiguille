@@ -195,15 +195,18 @@ Les rapports les plus utiles, dans le menu de gauche :
 
 | Je veux savoir… | Rapport |
 |---|---|
-| Combien de visites, et quand | *Visiteurs › Vue d'ensemble* |
-| Qui est sur le site en ce moment | *Visiteurs › Temps réel* |
+| Combien de visites, et quand | *Visiteurs › Récapitulatif* |
+| Qui est sur le site en ce moment | *Visiteurs › En temps réel* |
 | Quelles pages sont les plus vues | *Comportement › Pages* |
 | Par quelle page on arrive, par laquelle on part | *Comportement › Pages d'entrée* et *Pages de sortie* |
 | D'où viennent les visites (Google, Instagram, lien direct…) | *Acquisition › Tous les canaux* et *Réseaux sociaux* |
-| Téléphone ou ordinateur | *Visiteurs › Appareils* |
-| Pays et régions | *Visiteurs › Localisation* |
-| Ce que les visiteuses cherchent dans la boutique | *Comportement › Recherche interne* : un mot souvent cherché sans résultat est une idée de création ou de mot-clé |
+| Téléphone ou ordinateur | *Visiteurs › Périphériques* |
+| Pays et régions | *Visiteurs › Provenances géographiques* |
+| Ce que les visiteuses cherchent dans la boutique | *Comportement › Recherche sur le site* : un mot souvent cherché sans résultat est une idée de création ou de mot-clé |
 | Les liens cassés | *Comportement › Titres des pages*, ligne « 404 » : les pages introuvables et la page d'où venait le lien |
+
+Le menu propose aussi des rubriques comme *Formulaires*, *Cartes de chaleur* ou *Enregistrement de session* : ce sont
+des options payantes de Matomo, **non installées** (et qui demanderaient une bannière de consentement).
 
 Chaque début de mois, un **rapport par email** arrive sur `contact@madame-aiguille.fr`.
 

@@ -1429,5 +1429,10 @@ Couper la mesure sans déployer : `mage config:set madameaiguille_analytics/mato
 - **Géolocalisation** : « aucune base de données trouvée » tant que le fichier DB-IP n'est pas téléchargé ; il se
   télécharge depuis la partie « mises à jour automatiques » de *Système › Géolocalisation*, puis le fournisseur
   s'active.
-- Les visites de Pierre (IP exclue) n'apparaissent pas dans le *Temps réel* : recetter depuis un téléphone en données
+- **« Urgent PHP security update required »** dans le tableau de bord de Matomo : il ne lit que le numéro de version
+  (8.5.4) ; le paquet Ubuntu `8.5.4-0ubuntu1.5` porte le correctif par rétroportage. Conduite à tenir :
+  `guide-exploitation.md` §8.
+- **Rubriques payantes** (*Formulaires*, *Cartes de chaleur*, *Enregistrement de session*, *Tests A/B*…) affichées dans
+  le menu de Matomo : vitrines d'extensions non installées. Les installer ferait sortir de l'exemption CNIL.
+- Les visites de Pierre (IP exclue) n'apparaissent pas dans *Visiteurs › En temps réel* : recetter depuis un téléphone en données
   mobiles.
