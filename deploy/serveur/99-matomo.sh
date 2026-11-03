@@ -195,7 +195,7 @@ sleep 2
 echo "HTTP              : $(curl -s -o /dev/null -w '%{http_code} → %{redirect_url}' "http://$DOMAIN/") (301 vers https attendu)"
 echo "Interface         : $(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN/index.php") (200 attendu)"
 echo "matomo.js         : $(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN/matomo.js") (200 attendu)"
-for chemin in config/config.ini.php config/global.ini.php tmp/ lang/fr.json core/Version.php plugins/Login/Login.php vendor/autoload.php; do
+for chemin in config/config.ini.php config/global.ini.php tmp/ lang/fr.json core/Version.php plugins/Login/Login.php vendor/autoload.php console tests/README.md; do
     echo "/$chemin : $(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN/$chemin") (403 attendu)"
 done
 echo "Ensuite : https://$DOMAIN/ pour l'assistant d'installation (identifiants de la base : cat $SECRET)."
