@@ -22,8 +22,11 @@ use Anthropic\Core\Exceptions\RateLimitException;
 use Anthropic\ErrorType;
 use Anthropic\Messages\Message;
 use Anthropic\RequestOptions;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\HttpFactory;
 use MadameAiguille\AiAssistant\Model\AssistantException;
 use MadameAiguille\AiAssistant\Model\Config;
+use Psr\Http\Client\ClientInterface as HttpClientInterface;
 
 class SdkClient implements ClientInterface
 {
@@ -51,13 +54,8 @@ class SdkClient implements ClientInterface
             );
         }
 
-        $client = new Client(
-            apiKey: $apiKey,
-            requestOptions: RequestOptions::with(timeout: self::TIMEOUT_SECONDS, maxRetries: self::MAX_RETRIES)
-        );
-
         try {
-            $message = $client->messages->create(
+            $message = $this->client($apiKey)->messages->create(
                 maxTokens: $maxTokens,
                 messages: [['role' => 'user', 'content' => $content]],
                 model: self::MODEL,
@@ -78,6 +76,27 @@ class SdkClient implements ClientInterface
         }
 
         return $this->read($message);
+    }
+
+    /**
+     * Client HTTP et fabriques PSR fixés sur Guzzle (dépendance de Magento) plutôt que laissés à php-http/discovery :
+     * le même code en local, dans les tests et sur le serveur. Les tests y branchent un transport doublé.
+     */
+    protected function client(string $apiKey, ?HttpClientInterface $transporter = null): Client
+    {
+        $factory = new HttpFactory();
+
+        return new Client(
+            apiKey: $apiKey,
+            requestOptions: RequestOptions::with(
+                timeout: self::TIMEOUT_SECONDS,
+                maxRetries: $transporter === null ? self::MAX_RETRIES : 0,
+                transporter: $transporter ?? new GuzzleClient(['timeout' => self::TIMEOUT_SECONDS]),
+                uriFactory: $factory,
+                streamFactory: $factory,
+                requestFactory: $factory
+            )
+        );
     }
 
     private function read(Message $message): Response
