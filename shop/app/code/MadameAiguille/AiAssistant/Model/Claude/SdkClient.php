@@ -73,6 +73,18 @@ class SdkClient implements ClientInterface
                 AssistantException::UNREACHABLE,
                 $exception
             );
+        } catch (\InvalidArgumentException $exception) {
+            // Guzzle refuse un en-tête contenant un caractère interdit (clé mal collée) et recopie sa valeur dans le
+            // message : ni ce message ni l'exception d'origine ne sont transmis, pour que la clé n'atteigne aucun journal
+            throw str_contains(strtolower($exception->getMessage()), 'header')
+                ? new AssistantException(
+                    __('La clé d\'API est illisible : demandez à Pierre de la ressaisir.'),
+                    AssistantException::AUTHENTICATION
+                )
+                : new AssistantException(
+                    __('Le service de rédaction a refusé la demande. Réessayez ; si cela se répète, prévenez Pierre.'),
+                    AssistantException::INVALID_REQUEST
+                );
         }
 
         return $this->read($message);

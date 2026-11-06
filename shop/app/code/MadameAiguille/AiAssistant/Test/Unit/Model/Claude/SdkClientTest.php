@@ -42,7 +42,7 @@ class SdkClientTest extends TestCase
         ClassDiscovery::setStrategies($this->strategies);
     }
 
-    private function client(int $status, array $body, ?string $apiKey = 'sk-ant-test'): SdkClient
+    private function client(int $status, array $body, ?string $apiKey = 'cle-factice-de-test'): SdkClient
     {
         $config = $this->createStub(Config::class);
         $config->method('getApiKey')->willReturn($apiKey);
@@ -119,7 +119,7 @@ class SdkClientTest extends TestCase
         self::assertSame([['type' => 'text', 'text' => 'Consigne', 'cache_control' => ['type' => 'ephemeral']]], $body['system']);
         self::assertArrayNotHasKey('temperature', $body);
         // Le SDK 1.6 transmet la clé en « Authorization: Bearer »
-        self::assertSame('Bearer sk-ant-test', $this->sent[0]->getHeaderLine('Authorization'));
+        self::assertSame('Bearer cle-factice-de-test', $this->sent[0]->getHeaderLine('Authorization'));
         self::assertSame('https://api.anthropic.com/v1/messages', (string) $this->sent[0]->getUri());
     }
 
@@ -175,6 +175,19 @@ class SdkClientTest extends TestCase
         } catch (AssistantException $exception) {
             self::assertSame($reason, $exception->reason);
         }
+    }
+
+    public function testAKeyWithAForbiddenCharacterIsRefusedWithoutBeingRepeated(): void
+    {
+        try {
+            $this->client(200, $this->message('{}'), "cle-factice-de-test\u{0007}collé")->request('C', [], [], 100);
+            self::fail('Une erreur était attendue');
+        } catch (AssistantException $exception) {
+            self::assertSame(AssistantException::AUTHENTICATION, $exception->reason);
+            self::assertStringNotContainsString('cle-factice-de-test', $exception->getMessage());
+            self::assertNull($exception->getPrevious(), 'L\'exception d\'origine recopie la clé : elle ne suit pas');
+        }
+        self::assertSame([], $this->sent);
     }
 
     public function testNoKeyMeansNoCall(): void
