@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.5 (03/11/2026), lots 2 à 9 livrés ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+Document interne — v3.6 (06/11/2026), lots 2 à 9 livrés, lot 10 ouvert ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+
+> **v3.6** — **Lot 10 ouvert** à la demande de Pierre : **assistant IA des fiches produits** dans l'administration. Le modèle pose à Céline les questions qui manquent, puis rédige la description courte, la description longue en HTML et les champs de référencement ; en option, il harmonise les photos (détourage, fond de la charte, cadrage 4:5). Module `MadameAiguille_AiAssistant`, API Claude côté serveur par le SDK PHP officiel, clés chiffrées en configuration. Cahier des charges : section « Lot 10 » ci-dessous ; prompt : `prompts/prompt-lot10.md`.
 
 > **v3.5** — **Lot 9 livré le 03/11/2026.** Matomo 5.14.2 auto-hébergé sur `stats.madame-aiguille.fr` (`deploy/serveur/99-matomo.sh`, signature GPG vérifiée, utilisateur, pool PHP 8.5 et base dédiés), réglé par Pierre en conformité CNIL (IP tronquée de 2 octets, 25 mois, exclusions, compte de Céline en lecture seule, rapport mensuel). Module `MadameAiguille_Analytics` : balise externe sans cookie sur la vitrine et le tunnel, recherche interne et 404, CSP depuis la configuration, opposition et texte de la page Confidentialité, *Rapports › Statistiques du site*, `env:check`. Commerce électronique écarté (trafic seul). Recette de production complète, Lighthouse de 98 à 100. Grille CNIL : `conformite/matomo-cnil.md`. Détail : `documentation-theme.md` §30.
 
@@ -189,8 +191,9 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production — **livré** | tous | **M** | moyen |
 | 9 | Mesure d'audience Matomo auto-hébergé — **livré** | 8 + DNS `stats.` | **M** | faible |
+| 10 | Assistant IA des fiches produits (texte, référencement, photos en option) — **ouvert** | 9 + comptes Anthropic (et PhotoRoom ou OpenAI) | **L** | faible |
 
-Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9** ouvert après la clôture. L'exploitation suit `guide-exploitation.md`.
+Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9** et **10** ouverts après la clôture. L'exploitation suit `guide-exploitation.md`.
 
 Les lots 5 et 6b ont été livrés après le brief. La recette de bout en bout — paiement confirmé, tous les statuts et emails reçus — reste à rejouer sur la préproduction HTTPS du 8a. Le lot 7 avait été avancé pendant l’attente du brief.
 
@@ -507,6 +510,207 @@ lien « Statistiques » dans l'administration. PHP : Matomo 5.x est testé en PH
 
 **Effort : M.** Risque faible : la boutique ne dépend pas de Matomo, et si `stats.` tombe, le suivi échoue sans rien
 casser.
+
+---
+
+## Lot 10 — Assistant IA des fiches produits — **ouvert le 06/11/2026**
+
+Décidé par Pierre le 06/11/2026, après la clôture du lot 9. Prompt de lancement : `prompts/prompt-lot10.md`.
+
+**Objectif**
+
+Aider Céline à créer ses fiches produits depuis la page de création ou d'édition d'un produit dans l'administration :
+
+1. **Rédaction guidée** : un bouton « Rédiger avec l'IA » dans la section *Contenu*. Le modèle lit ce qui est déjà
+   saisi (nom, catégorie, attributs, photos), **pose à Céline les questions qui manquent**, puis rédige la description
+   courte et la description longue en HTML, mise en page et optimisée pour le référencement.
+2. **Référencement** : dans la même passe, tout ce qui sert le référencement de la fiche : titre et description méta,
+   clé d'URL d'un produit neuf, textes alternatifs des photos.
+3. **Photos homogènes** (le « gros plus », facultatif si trop difficile) : recadrer, redimensionner et poser chaque photo
+   sur un fond et une ambiance Madame Aiguille communs à toutes les fiches.
+
+Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic sur *Enregistrer*.
+
+**État de départ relevé le 06/11/2026**
+
+- Champ **Description** (`description`) : **Page Builder actif** sur l'attribut. Les quatre produits en ligne y ont une
+  description dans un seul élément « Code HTML » de Page Builder (`data-content-type="html"`, HTML échappé), collée
+  depuis un texte rédigé à la main.
+- **Description courte** (`short_description`) : éditeur WYSIWYG classique. Sur la carte produit, elle sert de ligne
+  secondaire quand il n'y a pas de mention de série (§9).
+- `composition`, `dimensions`, `entretien` : zones de texte simples, affichées dans les onglets de la fiche (§10).
+- Rendu de la description en vitrine : `div.product-description.prose`, sous un titre `h2` « Description ».
+- Photos : ratio **4:5**, 2 000 px de haut si possible, fond constant (§8, `etc/view.xml`).
+- Référencement de la fiche : champs natifs *Optimisation pour les moteurs de recherche* (clé d'URL, titre méta,
+  mots-clés méta, description méta), vides sur les produits actuels. Pas de données structurées `Product` en JSON-LD
+  dans le thème. Le gabarit Open Graph natif existe dans `Magento_Catalog`, mais son rendu en Hyvä n'est pas vérifié.
+- Aucun SDK d'IA dans `composer.json`. Serveur en PHP 8.5.
+
+**Choix techniques**
+
+- **Un module `MadameAiguille_AiAssistant`**, la logique métier allant dans un module (`AGENTS.md`).
+- **Le navigateur n'appelle jamais une API d'IA.** Un contrôleur d'administration, protégé par sa propre ressource ACL,
+  reçoit la demande. Un service PHP appelle l'API côté serveur, si bien que les clés ne quittent pas le serveur.
+- **Texte : API Claude d'Anthropic**, par le **SDK PHP officiel** `anthropic-ai/sdk`, installé par Composer avec
+  l'accord de Pierre.
+  - Modèle par défaut : **Claude Opus 5.5** (`claude-opus-5-5`), la meilleure plume en français. Le modèle est
+    réglable en configuration pour pouvoir passer à Sonnet 5.5 ou Haiku 5.5.
+  - **Sorties structurées** (`outputConfig` au format `json_schema`) : chaque appel renvoie un JSON imposé, jamais du
+    texte libre.
+  - Consigne permanente (charte de ton, règles HTML, exemples) en tête de requête, avec **mise en cache du prompt**.
+  - Gestion du `stop_reason` `refusal` et de `max_tokens`, des délais et des erreurs d'API (crédit épuisé, surcharge) :
+    un message clair à Céline, jamais une page d'erreur.
+- **Clés d'API** saisies par Pierre dans *Stores › Configuration*, stockées **chiffrées** par Magento (modèle de
+  sauvegarde `Encrypted`). Jamais dans le dépôt, ni dans `config.php` ou `env.php` versionnés.
+- **Données envoyées** : uniquement le produit (textes, attributs, photos) et les réponses de Céline. **Jamais de
+  donnée client.**
+
+**Périmètre**
+
+1. **Insertion dans la description.** Décision à prendre au démarrage avec Pierre (voir plus bas) :
+   - **recommandé** : **désactiver Page Builder sur l'attribut `description`**, par data patch. Le champ repasse à
+     l'éditeur WYSIWYG classique, où le HTML généré s'insère directement et se relit tel qu'il sera affiché. Les quatre
+     descriptions actuelles sont migrées par le même patch : le contenu de l'élément « Code HTML » est extrait et
+     désenveloppé, idempotent, et rien n'est touché sur une description qui n'a pas cette forme. Céline n'utilise
+     aujourd'hui que cet élément, elle ne perd rien ;
+   - sinon, garder Page Builder et insérer un élément « Code HTML ». C'est fragile : le contenu de la scène Page Builder
+     ne se recharge pas proprement quand on change la valeur du champ depuis l'extérieur.
+2. **Rédaction guidée** (section *Contenu* du formulaire produit, par un *modifier* de `product_form`) :
+   - **Étape 1, Analyser.** Le module envoie le nom, la catégorie, le type, les attributs déjà remplis (dont
+     composition, dimensions, entretien, série limitée et taille), les descriptions existantes et **les photos déjà
+     chargées dans la galerie**, réduites à environ 1 100 px côté serveur. Le modèle répond par ce qu'il a compris et
+     par **une liste de questions** : nature, usage, matières, couleurs, dimensions, entretien, public, occasion, ce qui
+     rend la pièce unique… Huit au plus, uniquement celles dont la réponse n'est pas déjà dans la fiche. Chaque question
+     a un type : texte court, choix ou oui/non.
+   - **Étape 2, Répondre.** Céline répond dans le panneau. Elle peut passer une question, et ajouter des notes libres.
+   - **Étape 3, Générer.** Le modèle renvoie :
+     - la **description courte**, en texte brut, en une ou deux phrases et environ 120 caractères pour tenir dans la
+       carte produit ;
+     - la **description longue**, en HTML ;
+     - des **propositions pour `composition`, `dimensions` et `entretien`**, seulement si ces champs sont vides et que
+       les réponses les renseignent ;
+     - la liste des **points à confirmer** par Céline : toute affirmation qu'il a dû déduire.
+   - **Retouches** : « plus court », « plus chaleureux », « régénérer », ou une consigne libre. Chaque retouche est un
+     nouvel appel sans état, avec le résultat précédent et la consigne.
+   - **Aperçu et insertion** : le panneau montre chaque champ proposé avec un aperçu, et une case par champ. *Insérer*
+     remplit les champs cochés du formulaire. **Rien n'est enregistré** avant *Enregistrer*.
+3. **HTML de la description longue** :
+   - balises limitées à `h3`, `p`, `ul`, `li`, `strong` et `em`, sans attribut ni classe. Le `h2` est déjà celui de
+     l'onglet « Description » ;
+   - **nettoyage côté serveur** par liste blanche avant de renvoyer le HTML au navigateur, même si le modèle s'en écarte ;
+   - le rendu vient de la classe `prose` du thème, réglée une fois pour toutes dans le thème enfant si un ajustement
+     est nécessaire. Toutes les fiches ont ainsi le même rendu.
+4. **Charte de rédaction**, versionnée dans le module, à faire valider par Céline :
+   - **vouvoiement**, ton chaleureux et précis, vocabulaire de la couture ;
+   - pièces cousues main à Saint-Épain, en **séries limitées** ;
+   - **ne rien inventer** : matière, dimension, origine ou entretien absents des réponses ne sont pas affirmés, ils vont
+     dans les points à confirmer ;
+   - pas de superlatif creux, pas de promesse de santé ou d'écologie non prouvée ;
+   - deux ou trois descriptions existantes validées par Céline servent d'exemples.
+5. **Référencement**, généré dans la même passe que les textes, chaque champ avec sa case d'insertion :
+   - **titre méta**, environ 60 caractères ;
+   - **description méta**, environ 155 caractères ;
+   - **clé d'URL**, proposée **seulement pour un produit neuf**. Changer celle d'un produit en ligne casse les liens
+     déjà indexés, sauf redirection ;
+   - **textes alternatifs des photos** de la galerie, qui décrivent la photo et pas un argumentaire ;
+   - pas de mots-clés méta, que les moteurs ignorent.
+
+   **Sans IA**, dans le thème, à vérifier puis compléter au besoin :
+   - **données structurées `Product`** en JSON-LD : nom, image, description, prix, disponibilité, marque. Rien de propre
+     au visiteur, pour rester compatible avec Varnish ;
+   - balises **Open Graph** de la fiche, pour le partage sur les réseaux sociaux ;
+   - contrôle avec le test des résultats enrichis de Google.
+6. **Photos homogènes**, en option : la réalisation dépend de l'essai décrit plus bas.
+   - **Méthode recommandée, fidèle au produit** :
+     - **détourage** du produit ;
+     - pose sur le **fond Madame Aiguille**, couleur unie de la charte (`brand-ivory` `#FAF0EB` ou `brand-paper`
+       `#FFFCFA`, à choisir), avec une ombre douce constante ;
+     - **cadrage 4:5** avec la même marge partout, 2 000 px de haut, compression maîtrisée.
+
+     Les pixels du produit ne sont jamais redessinés. La photo reste **conforme à la pièce vendue**, ce qui compte pour
+     des pièces uniques en tissu : une photo qui embellit ou change le motif serait trompeuse pour l'acheteur.
+     Prestataires possibles :
+     - l'**API PhotoRoom** : environ 0,02 $ par détourage, environ 0,10 $ en édition générative ;
+     - le détourage **open source local** (`rembg`), gratuit, mais un logiciel Python de plus à installer sur le VPS
+       par un script de Pierre.
+   - **Méthode générative**, en complément éventuel : un modèle d'images comme **GPT Image 2.5** d'OpenAI. Environ
+     0,05 à 0,20 $ par image, plus l'image envoyée. Il peut créer des **mises en situation** (ambiance de l'atelier,
+     table, lumière), mais il **redessine** le produit : motifs, coutures et couleurs peuvent changer. Donc seulement
+     pour une photo d'ambiance **secondaire**, jamais la photo principale, et toujours relue.
+   - **Interface** : dans la galerie du produit, un bouton « Harmoniser » par photo, avec un aperçu avant et après.
+     Céline choisit de remplacer la photo ou de l'ajouter ; l'original reste dans la galerie tant qu'elle ne l'a pas
+     retiré.
+   - **Essai préalable obligatoire**, sur les vraies photos de Pierre (`docs/photos-produits/`, dossier non suivi : les
+     lire sans les modifier ni les versionner). Si le rendu n'est pas convaincant, la partie photos est consignée en
+     limite et reportée.
+7. **Réglages** (*Stores › Configuration › Madame Aiguille › Assistant IA*) :
+   - activation ;
+   - clé Anthropic et modèle ;
+   - activation des photos, prestataire, clé et couleur de fond.
+
+   Tout est vide par défaut, donc rien n'est actif en local ni dans le build. Le bouton n'apparaît que si l'assistant
+   est activé et configuré.
+8. **Coût et garde-fous** :
+   - une **limite de dépenses mensuelle** posée par Pierre sur chaque compte (Console Anthropic, OpenAI ou PhotoRoom) ;
+   - un **plafond d'appels par jour** dans la configuration du module ;
+   - un journal minimal par appel (date, utilisateur, modèle, jetons ou images, durée), **sans le contenu**, dans
+     `var/log/` ;
+   - `env:check --serveur` signale un assistant activé sans clé.
+9. **ACL** : une ressource *Assistant IA* (texte) et une ressource *Assistant IA — photos*, ajoutées au rôle « Atelier »
+   par Pierre dans l'administration.
+
+**Coût estimé** (tarifs relevés le 06/11/2026, à revérifier à l'ouverture des comptes)
+
+| Poste | Hypothèse | Coût |
+|---|---|---|
+| Texte, Opus 5.5 (4 $ / 20 $ par million de jetons) | analyse avec 3 photos, puis génération : environ 18 000 jetons en entrée et 4 000 en sortie | **≈ 0,15 $ par fiche**, retouches comprises ≈ 0,30 $ |
+| Texte, Haiku 5.5 | même usage | ≈ 0,01 $ par fiche |
+| Photos, détourage PhotoRoom | 3 à 5 photos par fiche | ≈ 0,10 $ par fiche |
+| Photos, génératif GPT Image 2.5 | une mise en situation | ≈ 0,05 à 0,20 $ par image |
+
+Avec quelques dizaines de fiches par mois : **moins de 10 $ par mois** pour l'ensemble avec Opus, en crédits prépayés.
+
+**Hors périmètre**
+
+- Traduction : le site est monolingue.
+- Génération en masse sur tout le catalogue : l'assistant travaille fiche par fiche, à la demande.
+- Descriptions des catégories et pages CMS : envisageables plus tard avec le même service.
+- Photos générées entièrement par l'IA, sans photo réelle du produit.
+
+**Dépendances**
+
+- Les comptes **Anthropic** et, si la partie photos est retenue, **PhotoRoom** ou **OpenAI**, créés par Pierre. Il les
+  crédite, pose les limites de dépenses et saisit les clés.
+- La validation de la charte de rédaction par Céline.
+- Les photos d'essai de Pierre.
+
+**Recette**
+
+- Sur **une copie de fiche désactivée**, puis sur un produit neuf : questions pertinentes, sans redemander ce que la
+  fiche contient ; descriptions conformes à la charte ; points à confirmer présents.
+- HTML nettoyé même si le modèle produit une balise interdite (test unitaire du nettoyeur).
+- Insertion dans les champs, puis **rien d'enregistré sans *Enregistrer*** ; fiche vérifiée en vitrine à 1440 et
+  390 px.
+- Migration des quatre descriptions : rendu en vitrine **identique** avant et après le patch.
+- Clé absente, crédit épuisé, API injoignable : message clair, formulaire intact.
+- Compte de Céline (rôle « Atelier ») : bouton visible et fonctionnel. Un rôle sans la ressource ACL ne le voit pas.
+- Données structurées valides au test des résultats enrichis ; Lighthouse de la fiche rejoué.
+- Photos, si livrées : trois fiches harmonisées, côte à côte en catégorie, à 1440 et 390 px.
+- Tests unitaires (nettoyeur HTML, construction des requêtes, lecture des réponses, migration, `env:check`), PHPCS.
+
+**Incertitudes**
+
+- **Page Builder** : la désactivation sur un seul attribut, et la migration des contenus, sont à valider dans la
+  version 2.4.9.
+- **SDK PHP** : version de PHP prise en charge par `anthropic-ai/sdk`, et conflits de dépendances avec Magento (Guzzle,
+  PSR-18). Si le SDK ne peut pas s'installer proprement, on en parle à Pierre avant de faire autrement.
+- **Photos** : la qualité du détourage sur des tissus clairs, des franges ou des pièces posées à plat n'est connue
+  qu'après l'essai.
+- **Taille des requêtes** : photos de 5 à 10 Mo à réduire avant envoi. Délai de réponse de 20 à 60 secondes en
+  génération, donc un état d'attente lisible et un délai d'expiration PHP et nginx suffisant.
+
+**Effort : L** (M sans la partie photos). Risque faible pour la vente : l'assistant ne vit que dans l'administration et
+la boutique n'en dépend jamais.
 
 ---
 

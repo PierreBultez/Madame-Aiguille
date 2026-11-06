@@ -584,6 +584,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 9 — Module `MadameAiguille_Analytics` (03/11/2026) | balise externe sans cookie dans `head.additional` (vitrine et tunnel), recherche interne et 404, origine Matomo ajoutée à la CSP depuis la configuration, opposition et sous-section « Mesure d'audience » de la page Confidentialité, *Rapports › Statistiques du site*, `env:check` ; PR #17, version `604e5ef` ; réglages posés par `config:set` | `b87e83f`, `7288ad3`, `ad9627c` |
 | 9 — Conformité et recette (03/11/2026) | grille d'auto-évaluation CNIL `docs/conformite/matomo-cnil.md` ; recette de production (balise sur sept écrans, mesures reçues en 204, aucun cookie `_pk_*`, aucune erreur CSP à 1440 et 390 px, HTML identique pour deux visiteurs), opposition recettée, Lighthouse de 98 à 100 | `e6efdac` + commit de clôture |
 | 9 — Statistiques dans un nouvel onglet (03/11/2026) | *Rapports › Statistiques du site* ouvre Matomo dans un nouvel onglet (`target="_blank"` du `menu.xml`, demande de Pierre) | commit du lien |
+| 10 — Ouverture (06/11/2026) | cahier des charges de l'assistant IA des fiches produits (plan v3.6) et prompt `docs/prompts/prompt-lot10.md` ; aucun code | commit du prompt |
 
 ## 18. Formulaire de contact
 
@@ -964,7 +965,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 
 - Écrire le **prompt de reprise du lot suivant** dans `docs/prompts/`, sur le modèle de `prompt-lot5.md` : état de départ vérifiable, ce qui est déjà tranché, règles non négociables, périmètre, ce qui ne pourra pas être bouclé, décisions à demander à Pierre, pièges connus du projet.
 - Mettre à jour le prompt avec les pièges découverts pendant le lot qu'on vient de finir.
-- **Après le lot 8**, il n'y a plus de prompt de lot : on met à jour `docs/guide-exploitation.md` (versions, échéances, pièges, sujets ouverts). C'est aussi la règle pour un lot ouvert ensuite, comme le lot 9 (mesure d'audience).
+- **Après le lot 8**, il n'y a plus de prompt de lot : on met à jour `docs/guide-exploitation.md` (versions, échéances, pièges, sujets ouverts). C'est aussi la règle pour un lot ouvert ensuite, comme le lot 9 (mesure d'audience) ou le lot 10 (assistant IA des fiches produits).
 
 ## 26. Livraison et paiements (lot 5)
 
