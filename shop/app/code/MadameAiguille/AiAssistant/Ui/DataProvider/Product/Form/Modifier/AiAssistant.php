@@ -1,7 +1,7 @@
 <?php
 /**
- * Ajoute le panneau « Rédiger avec l'IA » en tête de la section Contenu du formulaire produit, en création comme en
- * édition. Rien n'est ajouté si l'assistant n'est pas prêt (activé, avec clé) ou si le rôle n'a pas la ressource
+ * Ajoute le panneau « Rédiger avec l'IA » dans la section Contenu du formulaire produit, juste au-dessus de la
+ * description, en création comme en édition. Rien n'est ajouté si l'assistant n'est pas prêt (activé, avec clé) ou si le rôle n'a pas la ressource
  * `MadameAiguille_AiAssistant::assistant` : le formulaire reste alors exactement celui de Magento.
  */
 
@@ -50,7 +50,9 @@ class AiAssistant extends AbstractModifier
                         'componentType' => 'container',
                         'component' => 'MadameAiguille_AiAssistant/js/assistant',
                         'template' => 'MadameAiguille_AiAssistant/assistant',
-                        'sortOrder' => -10,
+                        // Entre la description courte (0) et la description (10) ; une valeur négative se compte depuis
+                        // la fin dans les collections de composants UI
+                        'sortOrder' => 5,
                         'analyseUrl' => $this->urlBuilder->getUrl('madameaiguille_ai/assistant/analyser'),
                         'generateUrl' => $this->urlBuilder->getUrl('madameaiguille_ai/assistant/generer'),
                         'productId' => (int) $this->locator->getProduct()->getId(),
