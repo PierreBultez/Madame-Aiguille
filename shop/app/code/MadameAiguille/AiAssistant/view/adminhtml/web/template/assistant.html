@@ -1,0 +1,130 @@
+<div class="madameaiguille-ai" data-role="madameaiguille-ai">
+    <div class="madameaiguille-ai__head">
+        <strong class="madameaiguille-ai__title" translate="'Rédiger avec l’IA'"></strong>
+        <span class="madameaiguille-ai__hint" translate="'Le modèle lit la fiche et les photos, vous pose les questions qui manquent, puis propose les textes. Rien n’est enregistré avant le bouton Enregistrer.'"></span>
+    </div>
+
+    <div class="message message-error error" if="error()">
+        <div text="error()"></div>
+    </div>
+
+    <div class="madameaiguille-ai__wait" if="busy()" role="status" aria-live="polite">
+        <span class="madameaiguille-ai__spinner" aria-hidden="true"></span>
+        <span text="waitMessage()"></span>
+    </div>
+
+    <!-- Étape 1 -->
+    <div if="step() === 'start'">
+        <p class="madameaiguille-ai__text" translate="'Remplissez d’abord le nom, les catégories et chargez les photos : plus la fiche est complète, moins il y aura de questions.'"></p>
+        <button type="button" class="action-primary" click="analyse" disable="busy()">
+            <span translate="'Analyser la fiche'"></span>
+        </button>
+    </div>
+
+    <!-- Étape 2 -->
+    <div if="step() === 'questions'">
+        <p class="madameaiguille-ai__text" if="comprehension()">
+            <strong translate="'Ce que j’ai compris :'"></strong>
+            <span text="comprehension()"></span>
+        </p>
+        <p class="madameaiguille-ai__text" if="!questions().length" translate="'Aucune question : la fiche suffit.'"></p>
+        <ol class="madameaiguille-ai__questions" if="questions().length">
+            <!-- ko foreach: questions -->
+            <li class="madameaiguille-ai__question">
+                <label class="admin__field-label" attr="for: 'madameaiguille-ai-q' + $index()" text="question"></label>
+                <!-- ko if: type === 'texte' -->
+                <input type="text" class="admin__control-text" attr="id: 'madameaiguille-ai-q' + $index()" textInput="answer"/>
+                <!-- /ko -->
+                <!-- ko if: type === 'choix' -->
+                <select class="admin__control-select" attr="id: 'madameaiguille-ai-q' + $index()"
+                        options="choix" optionsCaption="'—'" value="answer"></select>
+                <!-- /ko -->
+                <!-- ko if: type === 'oui_non' -->
+                <select class="admin__control-select" attr="id: 'madameaiguille-ai-q' + $index()"
+                        options="['Oui', 'Non']" optionsCaption="'—'" value="answer"></select>
+                <!-- /ko -->
+            </li>
+            <!-- /ko -->
+        </ol>
+        <p class="madameaiguille-ai__note" translate="'Laissez vide une question pour la passer.'"></p>
+        <label class="admin__field-label" for="madameaiguille-ai-notes" translate="'Notes libres (facultatif)'"></label>
+        <textarea id="madameaiguille-ai-notes" class="admin__control-textarea" rows="3" textInput="notes"></textarea>
+        <div class="madameaiguille-ai__actions">
+            <button type="button" class="action-primary" click="draft" disable="busy()">
+                <span translate="'Rédiger les textes'"></span>
+            </button>
+            <button type="button" class="action-default" click="restart" disable="busy()">
+                <span translate="'Recommencer'"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Étapes 3 et 4 : aperçu, cases et insertion -->
+    <div if="step() === 'preview'">
+        <div class="message message-warning warning" if="points().length">
+            <strong translate="'Points à confirmer avant d’enregistrer :'"></strong>
+            <ul class="madameaiguille-ai__points" foreach="points">
+                <li text="$data"></li>
+            </ul>
+        </div>
+
+        <!-- ko foreach: proposals -->
+        <div class="madameaiguille-ai__proposal">
+            <label class="madameaiguille-ai__check">
+                <input type="checkbox" class="admin__control-checkbox" checked="checked"/>
+                <span class="madameaiguille-ai__label" text="label"></span>
+                <span class="madameaiguille-ai__count" if="limit" css="'madameaiguille-ai__count--over': tooLong"
+                      text="length + ' / ' + limit"></span>
+            </label>
+            <div class="madameaiguille-ai__preview madameaiguille-ai__preview--html" if="html" html="value"></div>
+            <div class="madameaiguille-ai__preview" ifnot="html" text="value"></div>
+        </div>
+        <!-- /ko -->
+
+        <div class="madameaiguille-ai__proposal" if="altTexts().length">
+            <span class="madameaiguille-ai__label" translate="'Textes alternatifs des photos'"></span>
+            <!-- ko foreach: altTexts -->
+            <label class="madameaiguille-ai__check madameaiguille-ai__check--alt">
+                <input type="checkbox" class="admin__control-checkbox" checked="checked"/>
+                <span text="'Photo ' + number + ' : ' + text"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+
+        <div class="madameaiguille-ai__retouch">
+            <span class="madameaiguille-ai__label" translate="'Retoucher'"></span>
+            <div class="madameaiguille-ai__actions">
+                <button type="button" class="action-default" click="shorter" disable="busy()">
+                    <span translate="'Plus court'"></span>
+                </button>
+                <button type="button" class="action-default" click="warmer" disable="busy()">
+                    <span translate="'Plus chaleureux'"></span>
+                </button>
+                <button type="button" class="action-default" click="regenerate" disable="busy()">
+                    <span translate="'Régénérer'"></span>
+                </button>
+            </div>
+            <div class="madameaiguille-ai__free">
+                <input type="text" class="admin__control-text" textInput="instruction"
+                       aria-label="Consigne de retouche"
+                       placeholder="Autre consigne, par exemple : mentionner l'idée cadeau de Noël"/>
+                <button type="button" class="action-default" click="retouchFree" disable="busy() || !instruction()">
+                    <span translate="'Retoucher'"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="message message-success success" if="inserted()">
+            <div translate="'Champs remplis. Relisez-les dans le formulaire, puis cliquez sur Enregistrer.'"></div>
+        </div>
+
+        <div class="madameaiguille-ai__actions">
+            <button type="button" class="action-primary" click="insert" disable="busy()">
+                <span translate="'Insérer dans la fiche'"></span>
+            </button>
+            <button type="button" class="action-default" click="restart" disable="busy()">
+                <span translate="'Recommencer'"></span>
+            </button>
+        </div>
+    </div>
+</div>

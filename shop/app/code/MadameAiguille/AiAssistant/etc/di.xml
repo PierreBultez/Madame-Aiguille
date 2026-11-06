@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="MadameAiguille\AiAssistant\Model\Claude\ClientInterface" type="MadameAiguille\AiAssistant\Model\Claude\SdkClient"/>
+    <preference for="MadameAiguille\AiAssistant\Model\Claude\ClientInterface" type="MadameAiguille\AiAssistant\Model\Claude\ClientRouter"/>
 
     <!-- Journal de consommation dédié, sans contenu (UsageLogger) -->
     <virtualType name="MadameAiguille\AiAssistant\Logger\Handler" type="Magento\Framework\Logger\Handler\Base">
