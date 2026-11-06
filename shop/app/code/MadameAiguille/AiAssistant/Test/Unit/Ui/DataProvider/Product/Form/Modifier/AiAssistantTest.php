@@ -34,12 +34,12 @@ class AiAssistantTest extends TestCase
         return (new AiAssistant($config, $authorization, $url, $locator))->modifyMeta($meta);
     }
 
-    public function testAddsThePanelAtTheTopOfContentForANewProduct(): void
+    public function testAddsThePanelAboveTheDescriptionForANewProduct(): void
     {
         $config = $this->modify(true, true)['content']['children']['madameaiguille_ai_assistant']['arguments']['data']['config'];
 
         self::assertSame('MadameAiguille_AiAssistant/js/assistant', $config['component']);
-        self::assertSame(-10, $config['sortOrder']);
+        self::assertSame(5, $config['sortOrder'], 'Entre la description courte et la description');
         self::assertSame(0, $config['productId']);
         self::assertSame('configurable', $config['productType']);
         self::assertSame('https://admin.test/madameaiguille_ai/assistant/analyser', $config['analyseUrl']);

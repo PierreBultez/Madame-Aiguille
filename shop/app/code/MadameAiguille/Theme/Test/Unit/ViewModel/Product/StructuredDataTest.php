@@ -61,7 +61,7 @@ class StructuredDataTest extends TestCase
         $data = $this->viewModel()->getData($this->product([
             'name' => 'Le coffret tendresse',
             'sku' => 'CT-1',
-            'meta_description' => '',
+            'meta_description' => 'Le coffret tendresse',
             'short_description' => '<p>Une panière &amp; quatre cotons.</p>',
         ], 34.0, 34.0, true, [
             ['url' => 'https://madame-aiguille.fr/media/a.jpg', 'media_type' => 'image', 'id' => 1],

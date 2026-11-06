@@ -50,10 +50,12 @@ Remplissez, de haut en bas :
 Plus bas :
 
 - **Série limitée** : cochez-la et indiquez le nombre de pièces ; la fiche affiche « Série limitée — N pièces ».
-- **Images et vidéos** : photos au format **portrait 4:5**, trois vues au moins. Une photo d'un autre format est
-  rognée, jamais déformée. La première est la vignette.
-- **Contenu** : la description ; les champs « Composition », « Dimensions » et « Conseils d’entretien » remplissent
-  les onglets de la fiche.
+- **Images et vidéos** : photos au format **portrait 4:5**, trois vues au moins, enregistrées **en JPEG** (un PNG
+  pèse dix fois plus et ralentit la page). Une photo d'un autre format est rognée, jamais déformée. La première est
+  la vignette.
+- **Contenu** : la description courte et la description. Le bouton **« Rédiger avec l'IA »** les propose pour vous,
+  avec le référencement : voir le §8. Les champs « Composition », « Dimensions » et « Conseils d’entretien »
+  remplissent les onglets de la fiche.
 - La section **Subscriptions by Stripe** est à ignorer : la boutique ne vend pas d'abonnement.
 
 Un **modèle en deux tailles** est un produit *configurable* sur l'attribut Taille : chaque taille a son stock et son
@@ -215,7 +217,73 @@ transmise à Pierre, qui l'exclura. Les chiffres du jour se mettent à jour
 toutes les heures ; seul le *Temps réel* est instantané. Votre compte est en **lecture seule** : vous ne pouvez rien
 casser.
 
-## 8. En cas de doute
+## 8. Rédiger une fiche avec l'assistant
+
+L'assistant lit votre fiche et vos photos, vous pose quelques questions, puis vous propose les textes : la
+description courte, la description longue, le titre et la description pour Google, l'adresse de la page (pour une
+nouvelle création) et une phrase qui décrit chaque photo pour les personnes malvoyantes. **Il ne remplace pas votre
+relecture** : rien n'est enregistré tant que vous n'avez pas cliqué sur **Enregistrer**.
+
+### Avant de commencer
+
+Remplissez d'abord ce que vous savez : nom, catégories, prix, poids, série limitée, **photos**, et si possible
+composition, dimensions et entretien. Plus la fiche est complète, moins il y aura de questions et plus le texte sera
+juste.
+
+### 1. Analyser
+
+Dans la section **Contenu**, au-dessus de la description, cliquez sur **Analyser la fiche**. Comptez 10 à
+30 secondes.
+
+![Le bouton de l'assistant](guide-back-office/17-assistant-bouton.jpg)
+
+### 2. Répondre
+
+L'assistant dit ce qu'il a compris, puis pose ses questions (huit au plus). Répondez simplement ; **laissez vide**
+une question dont vous ne connaissez pas la réponse : il n'inventera rien à la place. Le champ **Notes libres** sert
+à ajouter ce qu'il n'a pas demandé (l'histoire du tissu, une idée cadeau…). Cliquez sur **Rédiger les textes**.
+
+![Les questions de l'assistant](guide-back-office/18-assistant-questions.jpg)
+
+### 3. Relire l'aperçu
+
+Chaque texte proposé a sa case. En haut, l'encadré jaune **« Points à confirmer »** liste ce que l'assistant n'a pas
+pu vérifier : **réglez-les toujours avant d'enregistrer**, soit en corrigeant le texte après l'insertion, soit en
+complétant vos réponses (*Recommencer*). Les compteurs (« 99 / 150 ») indiquent la longueur conseillée ; en rouge,
+le texte est trop long pour Google.
+
+![L'aperçu des textes](guide-back-office/19-assistant-apercu.jpg)
+
+### 4. Retoucher, insérer, enregistrer
+
+- **Plus court**, **Plus chaleureux**, **Régénérer**, ou votre propre consigne (« mentionner l'idée cadeau de
+  Noël ») : l'assistant réécrit tout l'ensemble.
+- Décochez ce que vous ne voulez pas, puis **Insérer dans la fiche** : les champs cochés sont remplis, rien d'autre
+  n'est touché.
+- **Relisez dans le formulaire**, corrigez à la main si besoin, puis **Enregistrer**. Pour vérifier le rendu, ouvrez
+  la fiche en boutique.
+
+![Champs remplis](guide-back-office/20-assistant-inserer.jpg)
+
+### Ce qu'il faut toujours relire
+
+- **Les faits** : matières, dimensions, entretien, nombre de pièces, couleurs. L'assistant s'appuie sur vos réponses
+  et vos photos, mais une photo peut tromper (une couleur, une matière).
+- **Les formules sur votre travail** : il doit parler en votre nom (« je », « mon atelier ») et ne rien affirmer sur
+  la fabrication que vous n'avez pas dit.
+- **Les phrases qui se ressemblent d'une fiche à l'autre** : Google n'aime pas les textes répétés.
+- Sur une création **déjà en ligne**, l'assistant ne propose pas de nouvelle adresse de page : la changer casserait
+  les liens existants.
+
+### Bon à savoir
+
+- **50 demandes par jour** pour toute la boutique (analyses, rédactions et retouches). Au-delà, l'assistant reprend
+  le lendemain.
+- Un message rouge dans le panneau (service surchargé, crédit épuisé, clé refusée) ne touche **jamais** votre
+  fiche. Réessayez quelques minutes plus tard ; si le message parle de crédit ou de clé, prévenez Pierre.
+- Le bouton n'apparaît pas ? L'assistant est peut-être coupé, ou votre rôle n'y a pas accès : demandez à Pierre.
+
+## 9. En cas de doute
 
 - Une action irréversible (avoir, annulation) : prenez le temps de relire le montant et la commande.
 - Un message d'erreur, une page qui ne s'ouvre pas, un réglage introuvable : notez l'heure et la page, et prévenez Pierre.

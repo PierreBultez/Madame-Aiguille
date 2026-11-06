@@ -367,6 +367,34 @@ ssh <vps> 'sudo tail -n 20 /var/log/matomo/archive.log'          # archivage hor
 ssh <vps> 'sudo -u matomo php8.5 /var/www/matomo/console core:archive --url=https://stats.madame-aiguille.fr/'
 ```
 
+### Assistant IA des fiches produits
+
+Réglages dans l'administration (*Configuration › Général › Assistant IA*) ; la **clé** s'y saisit et y est chiffrée,
+jamais en ligne de commande dans un historique (`documentation-theme.md` §31).
+
+```bash
+# Couper l'assistant sans déployer (la vitrine n'en dépend pas)
+mage config:set madameaiguille_ai/assistant/enabled 0 && mage cache:flush
+mage config:set madameaiguille_ai/assistant/enabled 1 && mage cache:flush
+
+# Plafond d'appels par jour (50 par défaut)
+mage config:set madameaiguille_ai/assistant/daily_limit 50
+
+# Consommation : une ligne par appel, sans contenu (jetons, durée, issue)
+ssh <vps> 'sudo tail -n 20 /var/www/madame-aiguille/shared/var/log/madameaiguille_assistant_ia.log'
+# Total des jetons du mois en cours
+ssh <vps> "sudo grep \"^\[$(date +%Y-%m)\" /var/www/madame-aiguille/shared/var/log/madameaiguille_assistant_ia.log | grep -o '\"entree\":[0-9]*,\"sortie\":[0-9]*' | awk -F'[:,]' '{e+=\$2; s+=\$4; n++} END {print n\" appels, \"e\" jetons en entrée, \"s\" en sortie\"}'"
+```
+
+En local, sans clé réelle : saisir la clé sentinelle `doublure-locale` (mode développeur seulement) pour obtenir des
+réponses fixes, sans appel ni coût.
+
+```bash
+bin/magento config:set madameaiguille_ai/assistant/enabled 1
+bin/magento config:set madameaiguille_ai/assistant/api_key doublure-locale
+bin/magento cache:flush
+```
+
 ## 8. Jeux de données (poste local seulement)
 
 `docs/jeux-de-donnees/` : `categories.php`, `produits-test.php`, `accueil.php`. Peuplent un environnement de

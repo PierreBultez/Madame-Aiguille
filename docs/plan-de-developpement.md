@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.6 (06/11/2026), lots 2 à 9 livrés, lot 10 ouvert ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+Document interne — v3.7 (06/11/2026), lots 2 à 10 livrés ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+
+> **v3.7** — **Lot 10 livré le 06/11/2026.** Module `MadameAiguille_AiAssistant` (SDK `anthropic-ai/sdk` 1.6.0) : panneau « Rédiger avec l'IA » au-dessus de la description, questions puis rédaction par Claude Haiku 5.5 (modèle et effort fixés dans le code), HTML nettoyé par liste blanche, insertion champ par champ sans enregistrement, plafond de 50 appels par jour, journal sans contenu, `env:check`. Page Builder retiré de la description, descriptions vidées (CT-1, TC-1, TV-1). JSON-LD `Product` sur la fiche, résultats enrichis valides. Recette de production sur une copie désactivée de CT-1 et sur TC-1 : **environ 0,007 $ par fiche**, consigne resserrée. Restent : ressource ACL du rôle « Atelier », exemple de référence à valider par Céline, photos en JPEG. Détail : `documentation-theme.md` §31.
 
 > **v3.6** — **Lot 10 ouvert** à la demande de Pierre : **assistant IA des fiches produits** dans l'administration. Le modèle pose à Céline les questions qui manquent, puis rédige à la première personne la description courte, la description longue en HTML et les champs de référencement. Module `MadameAiguille_AiAssistant` ; textes par Claude Haiku 5.5 côté serveur, modèle fixé dans le code et clé chiffrée en configuration ; Page Builder retiré de la description, descriptions réinitialisées. **Pas de génération d'images**, jugée trop chère : Céline garde son abonnement OpenAI pour ses mises en situation. Cahier des charges : section « Lot 10 » ci-dessous ; prompt : `prompts/prompt-lot10.md`.
 
@@ -178,6 +180,16 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 - **Mesure d'audience en service** : `https://stats.madame-aiguille.fr`, site 1, `env:check --serveur` à 0 erreur et 0 avertissement. Aucun cookie de mesure ; la boutique ne dépend pas de Matomo (coupure : un `config:set`).
 - **Incertitudes levées** : PHP 8.5 pris en charge par Matomo 5.x (tests officiels), pas de réinstallation de PHP 8.4 ; opposition possible sans cookie de suivi (seul `mtm_consent_removed`, à l'opposition) ; CSP alimentée par la configuration plutôt que par `csp_whitelist.xml`.
 - **Ce qui reste** (`guide-exploitation.md` §10) : sauvegarde de la base Matomo avec celles de la boutique ; IP de l'atelier à exclure ; texte de la page Confidentialité à faire valider par le conseil de Céline.
+
+## État après le lot 10 (06/11/2026)
+
+- **Assistant en service** dans l'administration : clé saisie et assistant activé par Pierre, `env:check --serveur` à 0 erreur et 0 avertissement. La vitrine n'en dépend pas (coupure : un `config:set`).
+- **Incertitudes levées** :
+  - **SDK** : `anthropic-ai/sdk` 1.6.0 (PHP ^8.1) s'installe avec deux paquets seulement, sur le client HTTP Guzzle de Magento ; il transmet la clé en `Authorization: Bearer` ;
+  - **Haiku 5.5** : images et sorties structurées confirmées par l'API Models ; français juste et charte tenue sur l'essentiel, avec deux écarts corrigés dans la consigne (détails de fabrication extrapolés, intertitre en tête). Pas de comparatif avec Sonnet nécessaire à ce stade ;
+  - **délai** : 8 à 30 s par appel ; PHP-FPM, nginx et Varnish laissent 600 s, aucun script serveur ;
+  - **coût** : environ 0,007 $ par fiche, retouche comprise, cache de la consigne effectif.
+- **Ce qui reste** (`documentation-theme.md` §23, `guide-exploitation.md` §10) : ressource ACL du rôle « Atelier » et recette avec le compte de Céline ; validation de l'exemple de référence ; descriptions de CT-1, TC-1 et TV-1 à réécrire ; photos en JPEG.
 
 ## Vue d'ensemble
 
@@ -513,7 +525,7 @@ casser.
 
 ---
 
-## Lot 10 — Assistant IA des fiches produits — **ouvert le 06/11/2026**
+## Lot 10 — Assistant IA des fiches produits — **livré le 06/11/2026**
 
 Décidé par Pierre le 06/11/2026, après la clôture du lot 9. Prompt de lancement : `prompts/prompt-lot10.md`.
 
@@ -707,6 +719,11 @@ prépayés. Les images, écartées, auraient coûté environ 0,30 $ chacune, soi
 
 **Effort : M.** Risque faible pour la vente : l'assistant ne vit que dans l'administration et la boutique n'en dépend
 jamais.
+
+**Livré le 06/11/2026** (`documentation-theme.md` §31). Écarts au cahier des charges : le panneau se place
+**au-dessus de la description** (la description courte garde la première place de *Contenu*) ; l'exemple de
+référence attend la validation de Céline, la consigne part sans lui ; le produit reste déclaré aux moteurs par notre
+JSON-LD **et** par les microdonnées de Hyvä, toutes deux valides.
 
 ---
 
