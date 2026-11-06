@@ -86,16 +86,20 @@ class StructuredData implements ArgumentInterface
         return array_values(array_filter($images));
     }
 
-    /** Description méta, sinon accroche, sinon début de la description longue : du texte brut. */
+    /**
+     * Description méta, sinon accroche, sinon début de la description longue : du texte brut. Une valeur qui répète
+     * le nom est sautée (Magento remplit la description méta avec le nom quand elle est vide à l'enregistrement).
+     */
     private function getDescription(Product $product): string
     {
+        $name = mb_strtolower(trim((string) $product->getName()));
         foreach (['meta_description', 'short_description', 'description'] as $code) {
             $text = trim((string) preg_replace(
                 '/\s+/u',
                 ' ',
                 html_entity_decode(strip_tags((string) $product->getData($code)), ENT_QUOTES | ENT_HTML5, 'UTF-8')
             ));
-            if ($text !== '') {
+            if ($text !== '' && mb_strtolower($text) !== $name) {
                 return mb_strlen($text) > self::DESCRIPTION_LENGTH
                     ? rtrim(mb_substr($text, 0, self::DESCRIPTION_LENGTH - 1)) . '…'
                     : $text;
