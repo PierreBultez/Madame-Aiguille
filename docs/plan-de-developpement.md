@@ -2,7 +2,7 @@
 
 Document interne — v3.6 (06/11/2026), lots 2 à 9 livrés, lot 10 ouvert ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
 
-> **v3.6** — **Lot 10 ouvert** à la demande de Pierre : **assistant IA des fiches produits** dans l'administration. Le modèle pose à Céline les questions qui manquent, puis rédige à la première personne la description courte, la description longue en HTML et les champs de référencement ; il met aussi en scène les photos smartphone de Céline dans l'ambiance Madame Aiguille. Module `MadameAiguille_AiAssistant` ; textes par Claude Haiku 5.5 et images par l'API d'OpenAI, côté serveur, modèles fixés dans le code et clés chiffrées en configuration ; Page Builder retiré de la description, descriptions réinitialisées. Cahier des charges : section « Lot 10 » ci-dessous ; prompt : `prompts/prompt-lot10.md`.
+> **v3.6** — **Lot 10 ouvert** à la demande de Pierre : **assistant IA des fiches produits** dans l'administration. Le modèle pose à Céline les questions qui manquent, puis rédige à la première personne la description courte, la description longue en HTML et les champs de référencement. Module `MadameAiguille_AiAssistant` ; textes par Claude Haiku 5.5 côté serveur, modèle fixé dans le code et clé chiffrée en configuration ; Page Builder retiré de la description, descriptions réinitialisées. **Pas de génération d'images**, jugée trop chère : Céline garde son abonnement OpenAI pour ses mises en situation. Cahier des charges : section « Lot 10 » ci-dessous ; prompt : `prompts/prompt-lot10.md`.
 
 > **v3.5** — **Lot 9 livré le 03/11/2026.** Matomo 5.14.2 auto-hébergé sur `stats.madame-aiguille.fr` (`deploy/serveur/99-matomo.sh`, signature GPG vérifiée, utilisateur, pool PHP 8.5 et base dédiés), réglé par Pierre en conformité CNIL (IP tronquée de 2 octets, 25 mois, exclusions, compte de Céline en lecture seule, rapport mensuel). Module `MadameAiguille_Analytics` : balise externe sans cookie sur la vitrine et le tunnel, recherche interne et 404, CSP depuis la configuration, opposition et texte de la page Confidentialité, *Rapports › Statistiques du site*, `env:check`. Commerce électronique écarté (trafic seul). Recette de production complète, Lighthouse de 98 à 100. Grille CNIL : `conformite/matomo-cnil.md`. Détail : `documentation-theme.md` §30.
 
@@ -191,7 +191,7 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production — **livré** | tous | **M** | moyen |
 | 9 | Mesure d'audience Matomo auto-hébergé — **livré** | 8 + DNS `stats.` | **M** | faible |
-| 10 | Assistant IA des fiches produits (texte, référencement, photos mises en scène) — **ouvert** | 9 + comptes Anthropic et OpenAI | **L** | faible |
+| 10 | Assistant IA des fiches produits (texte et référencement) — **ouvert** | 9 + compte Anthropic | **M** | faible |
 
 Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9** et **10** ouverts après la clôture. L'exploitation suit `guide-exploitation.md`.
 
@@ -526,9 +526,6 @@ Aider Céline à créer ses fiches produits depuis la page de création ou d'éd
    courte et la description longue en HTML, mise en page et optimisée pour le référencement.
 2. **Référencement** : dans la même passe, tout ce qui sert le référencement de la fiche : titre et description méta,
    clé d'URL d'un produit neuf, textes alternatifs des photos.
-3. **Photos mises en scène** : Céline fournit des photos de ses créations prises au smartphone. Un modèle d'images les
-   met en situation dans **l'ambiance Madame Aiguille**, définie par des photos de référence et une consigne de style,
-   pour des fiches homogènes.
 
 Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic sur *Enregistrer*.
 
@@ -539,11 +536,8 @@ Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic s
 - **Un seul modèle de texte, fixé dans le code : Claude Haiku 5.5** (`claude-haiku-5-5`). Pas de choix en
   configuration, pour éviter les surprises de facturation. Opus est surdimensionné pour ce texte. Changer de modèle
   passe par un commit, après un essai comparatif.
-- **Photos : modèle d'images d'OpenAI**, que Céline utilise déjà pour ses mises en situation et dont la fidélité aux
-  produits la satisfait. Pas de détourage ni de fond uni.
-- **Ambiance de référence** : celle des visuels actuels de Céline. Fond beige rosé uni, lumière douce et naturelle,
-  ombre légère, composition aérée. Le visuel préféré de Pierre ajoute des **épis de blé séchés** au premier plan : côté
-  zen, bohème, nature. Pierre fournit les photos de référence.
+- **Pas de génération d'images** (décision du 06/11/2026, après chiffrage) : environ 0,30 $ par image par l'API,
+  trop cher. Céline continue de faire ses mises en situation avec son abonnement OpenAI habituel, hors de la boutique.
 - **Ton** : Céline parle **en son nom**, à la première personne du singulier. Elle est une artisane seule : « je vous
   propose », jamais « nous proposons ». On garde la proximité et l'authenticité, et le lecteur est vouvoyé.
 - **Descriptions longues** bien mises en page et assez longues, avec des mots clés travaillés pour le référencement,
@@ -566,9 +560,8 @@ Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic s
 **Choix techniques**
 
 - **Un module `MadameAiguille_AiAssistant`**, la logique métier allant dans un module (`AGENTS.md`).
-- **Le navigateur n'appelle jamais une API d'IA.** Des contrôleurs d'administration, protégés par leurs ressources
-  ACL, reçoivent les demandes. Des services PHP appellent les API côté serveur, si bien que les clés ne quittent pas le
-  serveur.
+- **Le navigateur n'appelle jamais l'API.** Des contrôleurs d'administration, protégés par une ressource ACL,
+  reçoivent les demandes. Un service PHP appelle l'API côté serveur, si bien que la clé ne quitte pas le serveur.
 - **Texte : API Claude d'Anthropic**, par le **SDK PHP officiel** `anthropic-ai/sdk`, installé par Composer avec
   l'accord de Pierre.
   - Modèle **`claude-haiku-5-5`**, constante du code, avec un effort d'analyse fixé lui aussi.
@@ -577,12 +570,7 @@ Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic s
   - Consigne permanente (charte de ton, règles HTML) en tête de requête, avec **mise en cache du prompt**.
   - Gestion du `stop_reason` `refusal` et de `max_tokens`, des délais et des erreurs d'API (crédit épuisé, surcharge) :
     un message clair à Céline, jamais une page d'erreur.
-- **Images : API Images d'OpenAI**, point d'accès d'**édition** (`v1/images/edits`) avec le modèle GPT Image courant,
-  **GPT Image 2.5** au 06/11/2026. Les anciens modèles (GPT Image 1, 1.5, 1 Mini) sont retirés ou en cours de retrait.
-  - Modèle, qualité et format **fixés dans le code**, comme pour le texte.
-  - Appel HTTP direct depuis PHP (client HTTP de Magento ou Guzzle déjà présent), sauf si un SDK PHP officiel d'OpenAI
-    existe et s'installe proprement : à vérifier au démarrage.
-- **Clés d'API** saisies par Pierre dans *Stores › Configuration*, stockées **chiffrées** par Magento (modèle de
+- **Clé d'API** saisie par Pierre dans *Stores › Configuration*, stockée **chiffrée** par Magento (modèle de
   sauvegarde `Encrypted`). Jamais dans le dépôt, ni dans `config.php` ou `env.php` versionnés.
 - **Données envoyées** : uniquement le produit (textes, attributs, photos) et les réponses de Céline. **Jamais de
   donnée client.**
@@ -657,73 +645,40 @@ Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic s
      au visiteur, pour rester compatible avec Varnish ;
    - balises **Open Graph** de la fiche, pour le partage sur les réseaux sociaux ;
    - contrôle avec le test des résultats enrichis de Google.
-6. **Photos mises en scène** :
-   - **Parcours** :
-     - dans la fiche produit, un bouton « Mettre en scène » ouvre un panneau ;
-     - Céline y dépose une ou plusieurs **photos prises au smartphone** de la même création, sous plusieurs angles,
-       ou choisit des photos déjà dans la galerie ;
-     - elle peut ajouter une précision : angle, accessoire, « deux paniers empilés »… ;
-     - le panneau montre les propositions ; Céline en garde une ou plusieurs, ou relance. Les photos gardées sont
-       **ajoutées à la galerie**, recadrées en **4:5** ;
-     - rien n'est remplacé ni supprimé automatiquement, et la photo principale reste un choix de Céline.
-   - **Modèle d'ambiance, pour « entraîner » le modèle** : ce n'est pas un entraînement au sens technique, l'API ne s'en
-     sert pas pour apprendre. À chaque appel, le module envoie au modèle :
-     - les **photos de référence de l'ambiance** fournies par Pierre ;
-     - la **consigne de style** versionnée : fond beige rosé uni, lumière douce venue de côté, ombre légère, produit
-       net et centré, épis de blé ou herbes séchées en accessoire discret, pas d'autre objet, pas de texte ;
-     - la **règle de fidélité** : garder exactement le produit de la photo, sa forme, ses tissus, ses motifs, ses
-       couleurs, ses coutures et ses proportions.
+6. **Réglages** (*Stores › Configuration › Madame Aiguille › Assistant IA*) :
+   - activation, clé Anthropic ;
+   - plafond d'appels par jour.
 
-     Les photos de référence sont **réglables dans l'administration**, pour que Céline fasse évoluer l'ambiance sans
-     développement. Un jeu initial est livré par le module.
-   - **Signature « Madame Aiguille »** : les visuels actuels la portent dans un coin. Un modèle d'images écrit mal le
-     texte, donc il ne la dessine pas : si Pierre la retient, elle est **apposée ensuite** par le serveur depuis le
-     logo officiel, à une place et une taille constantes. À décider au démarrage.
-   - **Taille** : le modèle produit au mieux un format portrait proche de 2:3, qu'on recadre en 4:5. La définition
-     maximale du modèle est à vérifier face aux 2 000 px de haut visés (§8).
-   - **Contrôle de fidélité** : Céline compare la proposition et sa photo d'origine côte à côte avant de la garder.
-     Elle reste responsable de la conformité de la photo à la pièce vendue : une mise en scène qui change un motif ou
-     une couleur est rejetée.
-7. **Réglages** (*Stores › Configuration › Madame Aiguille › Assistant IA*) :
-   - activation du texte, clé Anthropic ;
-   - activation des photos, clé OpenAI, photos de référence de l'ambiance ;
-   - plafonds d'appels par jour, pour le texte et pour les images.
-
-   **Les modèles ne sont pas réglables.** Tout est vide par défaut, donc rien n'est actif en local ni dans le build. Les
-   boutons n'apparaissent que si la partie correspondante est activée et a sa clé.
-8. **Coût et garde-fous** :
-   - une **limite de dépenses mensuelle** posée par Pierre sur les comptes Anthropic et OpenAI ;
-   - **plafonds d'appels par jour** dans la configuration du module, plus serré pour les images ;
-   - un journal minimal par appel (date, utilisateur, modèle, jetons ou images, durée), **sans le contenu**, dans
+   **Le modèle n'est pas réglable.** Tout est vide par défaut, donc rien n'est actif en local ni dans le build. Le
+   bouton n'apparaît que si l'assistant est activé et a sa clé.
+7. **Coût et garde-fous** :
+   - une **limite de dépenses mensuelle** posée par Pierre sur le compte Anthropic ;
+   - un **plafond d'appels par jour** dans la configuration du module ;
+   - un journal minimal par appel (date, utilisateur, modèle, jetons, durée), **sans le contenu**, dans
      `var/log/` ;
-   - `env:check --serveur` signale une partie activée sans clé.
-9. **ACL** : une ressource *Assistant IA — textes* et une ressource *Assistant IA — photos*, ajoutées au rôle « Atelier »
-   par Pierre dans l'administration.
+   - `env:check --serveur` signale un assistant activé sans clé.
+8. **ACL** : une ressource *Assistant IA*, ajoutée au rôle « Atelier » par Pierre dans l'administration.
 
 **Coût estimé** (tarifs relevés le 06/11/2026, à revérifier à l'ouverture des comptes)
 
 | Poste | Hypothèse | Coût |
 |---|---|---|
 | Texte, Haiku 5.5 (0,10 $ / 0,50 $ par million de jetons) | analyse avec 3 photos, puis génération : environ 18 000 jetons en entrée et 4 000 en sortie | **< 0,01 $ par fiche**, retouches comprises |
-| Photo, GPT Image 2.5 en haute qualité | une image portrait, avec 3 à 5 images envoyées (références et photo de Céline) | **≈ 0,25 à 0,35 $ par image** |
 
-Pour vingt fiches par mois avec trois mises en scène chacune, et quelques essais : **≈ 20 à 25 $ par mois**, presque
-entièrement pour les images. Les deux API fonctionnent en crédits prépayés.
+Même avec quelques dizaines de fiches par mois et beaucoup de retouches : **moins de 1 $ par mois**, en crédits
+prépayés. Les images, écartées, auraient coûté environ 0,30 $ chacune, soit 20 à 25 $ par mois.
 
 **Hors périmètre**
 
 - Traduction : le site est monolingue.
 - Génération en masse sur tout le catalogue : l'assistant travaille fiche par fiche, à la demande.
 - Descriptions des catégories et pages CMS : envisageables plus tard avec le même service.
-- Photos d'un produit sans photo réelle : la mise en scène part toujours d'une photo de la pièce.
+- **Génération ou retouche d'images** : Céline les fait avec son abonnement OpenAI, hors de la boutique.
 - Choix du modèle par l'administration.
 
 **Dépendances**
 
-- Les comptes **Anthropic** et **OpenAI** (API, distinct d'un abonnement ChatGPT), créés par Pierre. Il les crédite,
-  pose les limites de dépenses et saisit les clés.
-- Les **photos de référence de l'ambiance** fournies par Pierre, dont le visuel aux épis de blé.
-- Des **photos smartphone** de deux ou trois créations pour la recette.
+- Le compte **Anthropic**, créé par Pierre. Il le crédite, pose la limite de dépenses et saisit la clé.
 - La validation de la charte de rédaction et de l'exemple de référence par Céline.
 
 **Recette**
@@ -736,12 +691,9 @@ entièrement pour les images. Les deux API fonctionnent en crédits prépayés.
   390 px.
 - Page Builder absent du champ Description, présent ailleurs ; descriptions vidées.
 - Clé absente, crédit épuisé, plafond atteint, API injoignable : message clair, formulaire intact.
-- Compte de Céline (rôle « Atelier ») : boutons visibles et fonctionnels. Un rôle sans les ressources ACL ne les voit
-  pas.
+- Compte de Céline (rôle « Atelier ») : bouton visible et fonctionnel. Un rôle sans la ressource ACL ne le voit pas.
 - Données structurées valides au test des résultats enrichis ; Lighthouse de la fiche rejoué.
-- Photos : trois créations mises en scène à partir de photos smartphone, **comparées à l'original** par Céline et
-  Pierre, puis vues côte à côte en catégorie à 1440 et 390 px.
-- Tests unitaires (nettoyeur HTML, construction des requêtes, lecture des réponses, patch, plafonds, `env:check`),
+- Tests unitaires (nettoyeur HTML, construction des requêtes, lecture des réponses, patch, plafond, `env:check`),
   PHPCS.
 
 **Incertitudes**
@@ -750,14 +702,10 @@ entièrement pour les images. Les deux API fonctionnent en crédits prépayés.
   Si le SDK ne peut pas s'installer proprement, on en parle à Pierre avant de faire autrement.
 - **Haiku 5.5** : qualité d'écriture en français à valider sur les premiers essais avec Céline. Si elle ne suffit pas,
   on propose à Pierre un comparatif chiffré avec Sonnet 5.5, et le changement se fait par commit.
-- **API Images d'OpenAI** : nombre d'images de référence acceptées par appel, tailles de sortie, définition maximale,
-  délai de réponse (souvent 30 à 90 s). D'où un état d'attente lisible, un délai d'expiration PHP et nginx suffisant,
-  et peut-être un traitement en file d'attente.
-- **Fidélité** : bonne d'après l'usage de Céline, mais jamais garantie par le modèle. Le contrôle reste humain.
-- **Taille des requêtes** : photos smartphone de 3 à 10 Mo, à réduire avant envoi ; limite d'envoi nginx déjà relevée
-  au lot 8 (`97-taille-envois.sh`).
+- **Délai de réponse** : une génération peut prendre de 10 à 30 secondes. D'où un état d'attente lisible, et un délai
+  d'expiration PHP et nginx à vérifier.
 
-**Effort : L.** Risque faible pour la vente : l'assistant ne vit que dans l'administration et la boutique n'en dépend
+**Effort : M.** Risque faible pour la vente : l'assistant ne vit que dans l'administration et la boutique n'en dépend
 jamais.
 
 ---
