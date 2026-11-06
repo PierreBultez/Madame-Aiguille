@@ -664,7 +664,8 @@ Céline **relit toujours** : rien n'est enregistré sur la fiche sans son clic s
    **Le modèle n'est pas réglable.** Tout est vide par défaut, donc rien n'est actif en local ni dans le build. Le
    bouton n'apparaît que si l'assistant est activé et a sa clé.
 7. **Coût et garde-fous** :
-   - une **limite de dépenses mensuelle** posée par Pierre sur le compte Anthropic ;
+   - une **limite de dépenses mensuelle** posée par Pierre sur le compte Anthropic (au 06/11/2026 : **5 € prépayés sans
+     rechargement automatique**, qui font office de plafond) ;
    - un **plafond d'appels par jour** dans la configuration du module ;
    - un journal minimal par appel (date, utilisateur, modèle, jetons, durée), **sans le contenu**, dans
      `var/log/` ;
