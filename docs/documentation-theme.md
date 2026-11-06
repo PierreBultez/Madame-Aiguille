@@ -1527,7 +1527,7 @@ jamais de l'IA : un assistant coupé, sans crédit ou injoignable ne change rien
 | `Model/HtmlSanitizer.php` | Liste blanche `h3`, `p`, `ul`, `li`, `strong`, `em`, **sans attribut** ; `script`, `style`, cadres retirés avec leur contenu ; `h2` ramené à `h3`, texte nu rangé dans un `p` |
 | `Model/ProductContext.php`, `Model/GalleryImages.php` | Champs retenus (nom, référence, catégories, type, prix, poids, série limitée, textes existants, caractéristiques) ; photos lues seulement dans `pub/media/catalog/product` et `tmp/catalog/product` (suffixe `.tmp` d'une photo pas encore enregistrée), six au plus |
 | `Model/DailyQuota.php`, `Model/UsageLogger.php` | Plafond par jour (table `flag`, remis à zéro à minuit) ; journal `var/log/madameaiguille_assistant_ia.log` : date, utilisateur, action, modèle, jetons (entrée, sortie, cache lu, cache écrit), durée, issue — **jamais le contenu** |
-| `Controller/Adminhtml/Assistant/{Analyser,Generer}.php` | POST seulement, clé de formulaire (CSRF natif), ACL, assistant prêt ; réponse toujours en JSON `{ok, …}`, jamais une page d'erreur |
+| `Controller/Adminhtml/Assistant/{Analyser,Generer}.php` | POST seulement, clé de formulaire (CSRF natif), ACL, assistant prêt ; réponse toujours en JSON `{ok, …}`, jamais une page d'erreur ; une erreur inattendue n'est journalisée que par sa classe et sa ligne, **jamais par son message** |
 | `Ui/DataProvider/Product/Form/Modifier/AiAssistant.php`, `etc/adminhtml/di.xml` | Ajoute le panneau à la section *Contenu* (`sortOrder` 5, juste au-dessus de la description), en création et en édition, si l'assistant est prêt et que le rôle a la ressource ; sinon le formulaire est celui de Magento |
 | `view/adminhtml/web/js/assistant.js`, `web/template/assistant.html`, `web/css/assistant.css`, `layout/catalog_product_form.xml` | Panneau Knockout aux conventions de l'administration ; ouvre la section *Images et vidéos* avant de lire ou d'écrire les photos |
 | `Setup/Patch/Data/RemovePageBuilderFromDescription.php` | `is_pagebuilder_enabled` = 0 sur `description` seul, valeurs supprimées sur toutes les vues, SKU dans `system.log` (serveur : CT-1, TC-1, TV-1 le 06/11/2026) |
@@ -1562,7 +1562,9 @@ entrée de cache (le schéma diffère), valable cinq minutes.
 
 ### Réglages sur le serveur (06/11/2026)
 
-Clé saisie et assistant activé par Pierre dans l'administration ; plafond par défaut (50). Vérifié : `env:check
+Clé saisie et assistant activé par Pierre dans l'administration ; plafond par défaut (50). Compte Anthropic crédité de
+**5 € sans rechargement automatique ni limite mensuelle** : le crédit fait office de plafond (plusieurs centaines de
+fiches) ; à zéro, le panneau affiche « crédit épuisé » et la boutique continue. Vérifié : `env:check
 --serveur` à 0 erreur et 0 avertissement, « Assistant IA activé, clé présente ». Capacités lues par l'API Models
 (non facturée) : modèle actif, images et sorties structurées prises en charge, 1 M de jetons en entrée et 128 000 en
 sortie, aucune date de retrait. Couper l'assistant sans déployer :
@@ -1587,7 +1589,7 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
 - **Résultats enrichis** (test Google, `le-coffret-tendresse.html`) : 5 éléments valides (extraits de produits,
   fiches de marchand, fil d'Ariane) ; seuls avertissements, les avis et la note moyenne, absents par choix.
 - **Lighthouse** de la fiche CT-1 : 76 / 90 en performance (mobile / ordinateur), 100 ailleurs ; voir les limites.
-- Contrôles : **195 tests unitaires** (53 nouveaux), PHPCS Magento2 sans erreur sur les fichiers du lot,
+- Contrôles : **200 tests unitaires** (58 nouveaux, dont ceux de la clé hors des journaux), PHPCS Magento2 sans erreur sur les fichiers du lot,
   `env:check --serveur` à 0 erreur et 0 avertissement.
 
 ### Limites
@@ -1607,6 +1609,11 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
 
 ### Pièges rencontrés
 
+- **Clé recopiée dans les journaux** : une clé contenant un caractère interdit dans un en-tête (copier-coller) fait
+  lever à Guzzle une `InvalidArgumentException` dont le message **recopie la valeur de l'en-tête**. `SdkClient` la
+  traduit en « clé illisible » sans transmettre l'exception d'origine, et les contrôleurs ne journalisent une erreur
+  inattendue que par sa classe et sa ligne (`lot-10-cle-hors-journaux`). Constaté en local avec le bogue de double
+  déchiffrement ci-dessous.
 - **Clé chiffrée lue deux fois** : avec `backend_model="…Encrypted"` dans `config.xml`, `ScopeConfig` rend la valeur
   déjà déchiffrée (`MetadataConfigTypeProcessor`). La déchiffrer de nouveau produisait un en-tête `Authorization`
   invalide.

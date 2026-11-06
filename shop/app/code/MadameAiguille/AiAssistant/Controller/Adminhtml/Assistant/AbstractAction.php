@@ -2,7 +2,8 @@
 /**
  * Socle des deux actions de l'assistant : POST seulement, clé de formulaire vérifiée par Magento (CsrfValidator),
  * ressource ACL `MadameAiguille_AiAssistant::assistant`, assistant prêt. La réponse est toujours un JSON
- * `{ok: true, …}` ou `{ok: false, message}` : jamais une page d'erreur dans le formulaire produit.
+ * `{ok: true, …}` ou `{ok: false, message}` : jamais une page d'erreur dans le formulaire produit. Une erreur inattendue
+ * n'est journalisée que par sa classe et sa ligne, jamais par son message (§31, la clé ne doit atteindre aucun journal).
  */
 
 declare(strict_types=1);
@@ -61,7 +62,13 @@ abstract class AbstractAction extends Action implements HttpPostActionInterface
         } catch (AssistantException $exception) {
             return $result->setData(['ok' => false, 'message' => $exception->getMessage()]);
         } catch (\Throwable $exception) {
-            $this->logger->error('Assistant IA : ' . $exception->getMessage(), ['exception' => $exception]);
+            // Ni le message ni la trace : ils peuvent contenir la clé d'API (en-tête refusé) ou un texte de la fiche
+            $this->logger->error(sprintf(
+                'Assistant IA : erreur inattendue %s (%s:%d)',
+                $exception::class,
+                basename($exception->getFile()),
+                $exception->getLine()
+            ));
 
             return $result->setData([
                 'ok' => false,
