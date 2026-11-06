@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace MadameAiguille\AiAssistant\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
 
 class Config
 {
@@ -24,8 +23,7 @@ class Config
     public const DEFAULT_DAILY_LIMIT = 50;
 
     public function __construct(
-        private readonly ScopeConfigInterface $scopeConfig,
-        private readonly EncryptorInterface $encryptor
+        private readonly ScopeConfigInterface $scopeConfig
     ) {
     }
 
@@ -34,14 +32,15 @@ class Config
         return $this->scopeConfig->isSetFlag(self::XML_PATH_ENABLED) && $this->getApiKey() !== null;
     }
 
-    /** Clé déchiffrée ; null si absente. Jamais journalisée ni renvoyée au navigateur. */
+    /**
+     * Clé en clair ; null si absente. Jamais journalisée ni renvoyée au navigateur.
+     *
+     * Stockée chiffrée, elle arrive **déjà déchiffrée** : `config.xml` déclare le modèle `Encrypted` sur ce chemin,
+     * et Magento l'applique à la lecture (MetadataConfigTypeProcessor). La déchiffrer ici la corromprait.
+     */
     public function getApiKey(): ?string
     {
-        $stored = trim((string) $this->scopeConfig->getValue(self::XML_PATH_API_KEY));
-        if ($stored === '') {
-            return null;
-        }
-        $key = trim($this->encryptor->decrypt($stored));
+        $key = trim((string) $this->scopeConfig->getValue(self::XML_PATH_API_KEY));
 
         return $key === '' ? null : $key;
     }

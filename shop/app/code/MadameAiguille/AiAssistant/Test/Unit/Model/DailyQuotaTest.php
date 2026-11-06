@@ -46,7 +46,7 @@ class DailyQuotaTest extends TestCase
             self::fail('Le troisième appel aurait dû être refusé');
         } catch (AssistantException $exception) {
             self::assertSame(AssistantException::QUOTA, $exception->reason);
-            self::assertStringContainsString('2 demandes par jour', $exception->getMessage());
+            self::assertStringContainsString('(2 appels)', $exception->getMessage());
         }
         self::assertSame(['date' => '2026-11-06', 'count' => 2], $this->stored);
     }

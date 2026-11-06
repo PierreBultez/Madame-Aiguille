@@ -50,10 +50,12 @@ class AiAssistant extends AbstractModifier
                         'componentType' => 'container',
                         'component' => 'MadameAiguille_AiAssistant/js/assistant',
                         'template' => 'MadameAiguille_AiAssistant/assistant',
-                        'sortOrder' => 1,
+                        'sortOrder' => -10,
                         'analyseUrl' => $this->urlBuilder->getUrl('madameaiguille_ai/assistant/analyser'),
                         'generateUrl' => $this->urlBuilder->getUrl('madameaiguille_ai/assistant/generer'),
                         'productId' => (int) $this->locator->getProduct()->getId(),
+                        // Absent des données du formulaire en création : lu sur le produit du localisateur
+                        'productType' => (string) $this->locator->getProduct()->getTypeId(),
                         'provider' => 'product_form.product_form_data_source',
                     ],
                 ],

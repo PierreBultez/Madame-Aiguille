@@ -65,6 +65,11 @@ class HtmlSanitizerTest extends TestCase
         );
     }
 
+    public function testApostrophesAndQuotesStayReadableInTheSource(): void
+    {
+        self::assertSame('<p>J\'ai cousu « Adèle » et "Rose".</p>', $this->sanitize('<p>J\'ai cousu « Adèle » et "Rose".</p>'));
+    }
+
     public function testEmptyInputStaysEmpty(): void
     {
         self::assertSame('', $this->sanitize('   '));

@@ -33,7 +33,7 @@ class DailyQuota
         $limit = $this->config->getDailyLimit();
         if ($used >= $limit) {
             throw new AssistantException(
-                __('Le plafond de %1 demandes par jour est atteint. L\'assistant reprend demain.', $limit),
+                __('Le plafond quotidien de l\'assistant est atteint (%1 appels). Il reprend demain.', $limit),
                 AssistantException::QUOTA
             );
         }

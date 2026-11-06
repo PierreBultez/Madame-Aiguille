@@ -7,11 +7,12 @@
  */
 define([
     'jquery',
+    'ko',
     'underscore',
     'uiElement',
     'uiRegistry',
     'mage/translate'
-], function ($, _, Element, registry, $t) {
+], function ($, ko, _, Element, registry, $t) {
     'use strict';
 
     var FIELDS = [
@@ -31,6 +32,7 @@ define([
             analyseUrl: '',
             generateUrl: '',
             productId: 0,
+            productType: '',
             provider: '',
             step: 'start',
             busy: false,
@@ -62,7 +64,7 @@ define([
                 .done(function (response) {
                     this.comprehension(response.comprehension || '');
                     this.questions(_.map(response.questions || [], function (question) {
-                        question.answer = this.observable('');
+                        question.answer = ko.observable('');
 
                         return question;
                     }, this));
@@ -128,11 +130,11 @@ define([
                     length: value.length,
                     tooLong: field.limit ? value.length > field.limit : false,
                     limit: field.limit || 0,
-                    checked: this.observable(true)
+                    checked: ko.observable(true)
                 } : null;
             }, this)));
             this.altTexts(_.map(response.alt || [], function (alt, index) {
-                return {file: alt.file, text: alt.text, number: index + 1, checked: this.observable(true)};
+                return {file: alt.file, text: alt.text, number: index + 1, checked: ko.observable(true)};
             }, this));
             this.points(response.points || []);
             this.inserted(false);
@@ -146,12 +148,37 @@ define([
                     this.setField(proposal.code, proposal.value);
                 }
             }, this);
-            _.each(this.altTexts(), function (alt) {
-                if (alt.checked()) {
-                    this.setImageLabel(alt.file, alt.text);
+            this.withGallery().done(function () {
+                _.each(this.altTexts(), function (alt) {
+                    if (alt.checked()) {
+                        this.setImageLabel(alt.file, alt.text);
+                    }
+                }, this);
+                this.inserted(true);
+            }.bind(this));
+        },
+
+        /**
+         * La galerie (widget jQuery, pas un composant UI) n'existe dans la page qu'une fois la section « Images et
+         * vidéos » ouverte : on l'ouvre, puis on attend ses photos (3 s au plus, une fiche peut n'en avoir aucune).
+         */
+        withGallery: function () {
+            var deferred = $.Deferred(),
+                section = registry.get(this.parentName.replace(/\.[^.]+$/, '.gallery')),
+                tries = 0,
+                wait;
+
+            if (section && typeof section.opened === 'function') {
+                section.opened(true);
+            }
+            wait = setInterval(function () {
+                if ($('[data-role="image"]').length || ++tries > 30) {
+                    clearInterval(wait);
+                    deferred.resolve();
                 }
-            }, this);
-            this.inserted(true);
+            }, 100);
+
+            return deferred.promise();
         },
 
         restart: function () {
@@ -193,29 +220,39 @@ define([
             });
         },
 
-        /** État du formulaire, y compris ce qui n'est pas encore enregistré. */
+        /**
+         * État du formulaire, y compris ce qui n'est pas encore enregistré. Photos lues dans la galerie affichée
+         * (ordre, ajouts et suppressions non enregistrés), sinon dans les données chargées avec la fiche.
+         */
         collect: function () {
             var source = registry.get(this.provider),
                 product = source ? source.get('data.product') || {} : {},
+                isImage = function (imageData) {
+                    return imageData && imageData.file && !Number(imageData.removed) &&
+                        (imageData['media_type'] || 'image') === 'image';
+                },
                 images = [];
 
             $('[data-role="image"]').each(function () {
                 var imageData = $(this).data('imageData');
 
-                if (imageData && imageData.file && !Number(imageData.removed) &&
-                    (imageData['media_type'] || 'image') === 'image'
-                ) {
+                if (isImage(imageData)) {
                     images.push(imageData.file);
                 }
             });
+            if (!images.length && product['media_gallery'] && product['media_gallery'].images) {
+                images = _.pluck(_.sortBy(_.filter(_.values(product['media_gallery'].images), isImage), function (image) {
+                    return Number(image.position);
+                }), 'file');
+            }
 
             return {
                 product_id: this.productId,
-                product: _.pick(product, [
+                product: _.extend({'type_id': this.productType}, _.pick(product, [
                     'name', 'sku', 'type_id', 'price', 'weight', 'short_description', 'description', 'composition',
                     'dimensions', 'entretien', 'serie_limitee', 'taille_serie', 'category_ids', 'meta_title',
                     'meta_description'
-                ]),
+                ])),
                 images: images
             };
         },
@@ -227,6 +264,14 @@ define([
             this.busy(true);
             this.waitMessage(waitMessage);
 
+            this.withGallery().done(function () {
+                this.post(url, data, deferred);
+            }.bind(this));
+
+            return deferred.promise();
+        },
+
+        post: function (url, data, deferred) {
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -238,6 +283,8 @@ define([
                     payload: JSON.stringify($.extend(this.collect(), data))
                 }
             }).done(function (response) {
+                // Attente levée avant tout traitement : une erreur d'affichage ne doit pas la laisser tourner
+                this.busy(false);
                 if (response && response.ok) {
                     deferred.resolve(response);
                 } else {
@@ -245,13 +292,10 @@ define([
                         $t('La demande n\'a pas abouti. Votre fiche n\'a pas été modifiée.'));
                 }
             }.bind(this)).fail(function () {
+                this.busy(false);
                 this.error($t('Le serveur ne répond pas. Vérifiez la connexion, puis réessayez. ' +
                     'Votre fiche n\'a pas été modifiée.'));
-            }.bind(this)).always(function () {
-                this.busy(false);
             }.bind(this));
-
-            return deferred.promise();
         }
     });
 });

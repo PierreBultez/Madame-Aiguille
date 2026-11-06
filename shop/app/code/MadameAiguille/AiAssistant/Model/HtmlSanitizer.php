@@ -63,7 +63,7 @@ class HtmlSanitizer
     private function render(\DOMNode $node): string
     {
         if ($node instanceof \DOMText) {
-            return htmlspecialchars($node->textContent, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            return htmlspecialchars($node->textContent, ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
         }
         if (!$node instanceof \DOMElement) {
             return '';

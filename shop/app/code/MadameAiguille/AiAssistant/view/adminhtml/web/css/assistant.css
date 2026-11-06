@@ -1,0 +1,137 @@
+/*
+ * Panneau « Rédiger avec l'IA » du formulaire produit (MadameAiguille_AiAssistant, lot 10).
+ * Feuille dédiée, chargée par catalog_product_form.xml : conventions et couleurs de l'administration Magento.
+ */
+.madameaiguille-ai {
+  background: #f8f8f8;
+  border: 1px solid #e3e3e3;
+  margin: 0 0 3rem;
+  padding: 2rem;
+}
+.madameaiguille-ai__head {
+  margin-bottom: 1.5rem;
+}
+.madameaiguille-ai__title {
+  display: block;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+.madameaiguille-ai__hint,
+.madameaiguille-ai__note {
+  color: #666;
+  display: block;
+}
+.madameaiguille-ai__text {
+  margin-bottom: 1.5rem;
+}
+.madameaiguille-ai__wait {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.madameaiguille-ai__spinner {
+  animation: madameaiguille-ai-spin 1s linear infinite;
+  border: 3px solid #ccc;
+  border-radius: 50%;
+  border-top-color: #eb5202;
+  height: 2rem;
+  width: 2rem;
+}
+.madameaiguille-ai__questions {
+  margin: 0 0 1.5rem 2rem;
+}
+.madameaiguille-ai__question {
+  margin-bottom: 1.5rem;
+}
+.madameaiguille-ai__question .admin__field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+.madameaiguille-ai__question .admin__control-text,
+.madameaiguille-ai__question .admin__control-select {
+  max-width: 60rem;
+  width: 100%;
+}
+.madameaiguille-ai__notes-label {
+  display: block;
+  font-weight: 600;
+  margin: 1.5rem 0 .5rem;
+}
+.madameaiguille-ai .admin__control-textarea {
+  max-width: 60rem;
+  width: 100%;
+}
+.madameaiguille-ai__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.madameaiguille-ai__proposal,
+.madameaiguille-ai__retouch {
+  border-top: 1px solid #e3e3e3;
+  padding: 1.5rem 0;
+}
+.madameaiguille-ai__check {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.8rem;
+  min-height: 44px;
+}
+.madameaiguille-ai__check--alt {
+  align-items: flex-start;
+}
+.madameaiguille-ai__checkbox {
+  height: 1.8rem;
+  margin: 0;
+  width: 1.8rem;
+}
+.madameaiguille-ai__label {
+  font-weight: 600;
+}
+.madameaiguille-ai__count {
+  color: #666;
+  margin-left: auto;
+}
+.madameaiguille-ai__count--over {
+  color: #e22626;
+  font-weight: 600;
+}
+.madameaiguille-ai__preview {
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  margin-top: 0.5rem;
+  max-width: 80rem;
+  padding: 1rem 1.5rem;
+  white-space: pre-line;
+}
+.madameaiguille-ai__preview--html {
+  white-space: normal;
+}
+.madameaiguille-ai__preview--html h3 {
+  font-size: 1.6rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.madameaiguille-ai__preview--html ul {
+  margin: 0 0 1rem 2rem;
+}
+.madameaiguille-ai__points {
+  margin: 0.5rem 0 0 2rem;
+}
+.madameaiguille-ai__free {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  max-width: 80rem;
+}
+.madameaiguille-ai__free .admin__control-text {
+  flex: 1;
+}
+@keyframes madameaiguille-ai-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
