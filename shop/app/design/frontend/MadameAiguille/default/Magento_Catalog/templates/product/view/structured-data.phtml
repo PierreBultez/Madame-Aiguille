@@ -1,0 +1,20 @@
+<?php
+/**
+ * Madame Aiguille — données structurées Product de la fiche (JSON-LD)
+ * Tout est calculé par le ViewModel StructuredData : identique pour tous les visiteurs (Varnish).
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use MadameAiguille\Theme\ViewModel\Product\StructuredData;
+
+/** @var ViewModelRegistry $viewModels */
+
+$currentProduct = $viewModels->require(CurrentProduct::class);
+if (!$currentProduct->exists()) {
+    return;
+}
+?>
+<script type="application/ld+json"><?= /* @noEscape */ $viewModels->require(StructuredData::class)->getJson($currentProduct->get()) ?></script>

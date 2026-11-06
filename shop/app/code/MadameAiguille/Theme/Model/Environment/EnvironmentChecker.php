@@ -78,6 +78,7 @@ class EnvironmentChecker
         $this->checkRecaptcha($onServer);
         $this->checkShipping();
         $this->checkAnalytics($onServer);
+        $this->checkAiAssistant();
         $this->checkFonts();
 
         return $this->findings;
@@ -322,6 +323,31 @@ class EnvironmentChecker
                 'Mesure d\'audience',
                 sprintf('activée mais %s : rien n\'est mesuré', implode(', ', $problems))
             );
+    }
+
+    /**
+     * Assistant IA des fiches produits (lot 10, MadameAiguille_AiAssistant). Activé sans clé ou sans SDK : le bouton
+     * reste caché et rien ne fonctionne, donc erreur. La clé, chiffrée, n'est jamais déchiffrée ici : seule sa
+     * présence compte. La vitrine n'en dépend jamais.
+     */
+    private function checkAiAssistant(): void
+    {
+        if (!$this->flag('madameaiguille_ai/assistant/enabled')) {
+            $this->ok('Assistant IA', 'désactivé');
+            return;
+        }
+
+        $problems = [];
+        if (trim((string) $this->value('madameaiguille_ai/assistant/api_key')) === '') {
+            $problems[] = 'sans clé d\'API';
+        }
+        if (!class_exists(\Anthropic\Client::class)) {
+            $problems[] = 'sans le SDK anthropic-ai/sdk';
+        }
+        $limit = trim((string) $this->value('madameaiguille_ai/assistant/daily_limit'));
+        $problems === []
+            ? $this->ok('Assistant IA', sprintf('activé, clé présente, plafond %s appels par jour', $limit ?: '50'))
+            : $this->error('Assistant IA', sprintf('activé mais %s : le bouton reste caché', implode(', ', $problems)));
     }
 
     private function checkFonts(): void

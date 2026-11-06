@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="madameaiguille_ai" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Assistant IA</label>
+            <tab>general</tab>
+            <resource>MadameAiguille_AiAssistant::config</resource>
+            <group id="assistant" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Rédaction des fiches produits</label>
+                <comment>Bouton « Rédiger avec l'IA » dans la section Contenu d'un produit. Les textes sont rédigés par Claude Haiku 5.5 (Anthropic) à partir de la fiche, des photos et des réponses ; aucune donnée client n'est envoyée. Rien n'est enregistré sur la fiche sans le bouton Enregistrer.</comment>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Activer l'assistant</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Non : le bouton disparaît, les fiches se rédigent à la main comme avant.</comment>
+                </field>
+                <field id="api_key" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Clé d'API Anthropic</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>Créée dans la console Anthropic (API Keys). Enregistrée chiffrée ; elle ne quitte jamais le serveur.</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="daily_limit" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Plafond d'appels par jour</label>
+                    <comment>Analyses, générations et retouches comprises, pour toute la boutique. Au-delà, l'assistant se met en pause jusqu'au lendemain.</comment>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

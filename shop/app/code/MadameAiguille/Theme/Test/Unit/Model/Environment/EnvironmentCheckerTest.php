@@ -317,4 +317,28 @@ class EnvironmentCheckerTest extends TestCase
         );
         self::assertSame([], $this->messages($this->check($setUp, false, false), Finding::WARNING));
     }
+
+    public function testAnEnabledAssistantWithoutKeyIsAnError(): void
+    {
+        self::assertSame(
+            ['Assistant IA — activé mais sans clé d\'API : le bouton reste caché'],
+            $this->messages($this->check(['madameaiguille_ai/assistant/enabled' => '1']), Finding::ERROR)
+        );
+    }
+
+    public function testTheAssistantIsOkDisabledOrEnabledWithAKey(): void
+    {
+        self::assertContains('Assistant IA — désactivé', $this->messages($this->check(), Finding::OK));
+
+        $findings = $this->check([
+            'madameaiguille_ai/assistant/enabled' => '1',
+            'madameaiguille_ai/assistant/api_key' => '0:3:chiffré',
+            'madameaiguille_ai/assistant/daily_limit' => '50',
+        ]);
+        self::assertSame([], $this->messages($findings, Finding::ERROR));
+        self::assertContains(
+            'Assistant IA — activé, clé présente, plafond 50 appels par jour',
+            $this->messages($findings, Finding::OK)
+        );
+    }
 }
