@@ -1,0 +1,18 @@
+{
+    "name": "madameaiguille/module-ai-assistant",
+    "description": "Assistant IA des fiches produits Madame Aiguille : questions, rédaction et référencement par Claude, dans l'administration",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "require": {
+        "anthropic-ai/sdk": "^1.6"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MadameAiguille\\AiAssistant\\": ""
+        }
+    }
+}

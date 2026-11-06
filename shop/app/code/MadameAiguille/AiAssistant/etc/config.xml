@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <!-- Désactivé et sans clé par défaut : le bouton n'apparaît ni en local ni dans le build. La clé est saisie
+             par Pierre dans l'administration (chiffrée), jamais versionnée. Le modèle n'est pas réglable : il est
+             fixé dans le code (Model/Claude/SdkClient::MODEL). -->
+        <madameaiguille_ai>
+            <assistant>
+                <enabled>0</enabled>
+                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <daily_limit>50</daily_limit>
+            </assistant>
+        </madameaiguille_ai>
+    </default>
+</config>
