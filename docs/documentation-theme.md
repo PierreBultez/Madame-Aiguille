@@ -1,6 +1,6 @@
 # Documentation du thème Madame Aiguille
 
-Document interne — v3.3 (02/11/2026), **tous les lots livrés** — le lot 8, dernier lot, est clos le 02/11/2026 ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »), paiement Stripe en live (§26). La vie de la boutique après le développement — surveillance, renouvellements, sauvegardes, mises à jour, retour arrière — est dans `docs/guide-exploitation.md` ; ce qui reste ouvert, au §23.
+Document interne — v3.5 (06/11/2026), **tous les lots livrés** — le lot 8, dernier lot, est clos le 02/11/2026, puis le lot 9 (mesure d'audience, §30) et le lot 10 (assistant IA des fiches produits, §31) ; boutique entièrement en français (§28), **en ligne et ouverte aux moteurs de recherche sur `https://madame-aiguille.fr`** depuis le 02/11/2026 (§29 « Ouverture des ventes »), paiement Stripe en live (§26). La vie de la boutique après le développement — surveillance, renouvellements, sauvegardes, mises à jour, retour arrière — est dans `docs/guide-exploitation.md` ; ce qui reste ouvert, au §23.
 
 Les tableaux « où modifier quoi » distinguent ce qui se règle **dans l'admin** (Céline, sans code) de ce qui se change **dans le code** (Pierre).
 
@@ -417,6 +417,7 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 | « Vous aimerez aussi » | Admin › produit › *Produits liés* (onglet « Produits liés, ventes incitatives… », section **Produits liés**) | slider natif restylé (`product/slider/product-slider.phtml`), quatre produits maximum, cartes du listing |
 | Barre d'achat collante (mobile) | `product-info.phtml` | apparaît quand la galerie sort de l'écran ; même formulaire |
 | Fil d'Ariane | `product/view/breadcrumbs.phtml` | rendu côté client par Hyvä : la catégorie affichée dépend de la page d'où l'on vient |
+| Données structurées et partage | `product/view/structured-data.phtml` + `ViewModel/Product/StructuredData.php` (JSON-LD `Product`, lot 10) ; Open Graph natif de Hyvä (`catalog_product_opengraph.xml`) | identiques pour tous les visiteurs ; détail et test Google au §31 |
 
 Écarts assumés par rapport à la maquette : pas de sous-libellé « 18 × 12 cm » dans les boutons de taille (dimensions dans Caractéristiques) ; pas de champ « Être prévenue » ciblé sur la fiche épuisée (la newsletter activée au lot 3 est généraliste) ; WebP non généré (reporté, voir plan).
 
@@ -585,6 +586,10 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 9 — Conformité et recette (03/11/2026) | grille d'auto-évaluation CNIL `docs/conformite/matomo-cnil.md` ; recette de production (balise sur sept écrans, mesures reçues en 204, aucun cookie `_pk_*`, aucune erreur CSP à 1440 et 390 px, HTML identique pour deux visiteurs), opposition recettée, Lighthouse de 98 à 100 | `e6efdac` + commit de clôture |
 | 9 — Statistiques dans un nouvel onglet (03/11/2026) | *Rapports › Statistiques du site* ouvre Matomo dans un nouvel onglet (`target="_blank"` du `menu.xml`, demande de Pierre) | commit du lien |
 | 10 — Ouverture (06/11/2026) | cahier des charges de l'assistant IA des fiches produits (plan v3.6) et prompt `docs/prompts/prompt-lot10.md` ; aucun code | commit du prompt |
+| 10 — SDK et socle (06/11/2026) | `anthropic-ai/sdk` 1.6.0 ; module `MadameAiguille_AiAssistant` : réglages vides par défaut, clé chiffrée, ACL, client Claude (Haiku 5.5 et effort fixés dans le code), plafond quotidien, journal sans contenu ; nettoyeur HTML ; patch Page Builder et descriptions vidées ; `env:check` | `b86b340`, `e1637c9`, `34b0db2`, `bc97548`, `de60c73` |
+| 10 — Rédaction guidée (06/11/2026) | consigne et schémas JSON, exemple de référence proposé à Céline, contexte produit, photos réduites, service d'analyse et de génération, client doublé local, actions `analyser` et `generer`, modifier et panneau du formulaire produit ; corrections après recette dans l'administration | `5127996`, `ce123ce`, `10d5719`, `8135581`, `b081121`, `883f916` |
+| 10 — Référencement (06/11/2026) | JSON-LD `Product` de la fiche (`StructuredData`), Open Graph de Hyvä vérifié, test des résultats enrichis de Google | `32c2025`, `7003d71` |
+| 10 — Mise en ligne et recette (06/11/2026) | PR #20, version `f2fb67b` ; clé saisie et assistant activé par Pierre ; recette sur une copie désactivée de CT-1 et sur TC-1, consigne resserrée, panneau placé au-dessus de la description ; documentation (§31, guides, guide d'exploitation v1.2) | `b30163e`, `8e2d74a` + documentation |
 
 ## 18. Formulaire de contact
 
@@ -791,6 +796,7 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
+| **Assistant IA (lot 10)** | Livré le 06/11/2026 (§31). Restent : cocher la ressource *Assistant IA des fiches produits* dans le rôle « Atelier » et recetter avec le compte de Céline ; faire valider par Céline l'exemple de référence (`docs/assistant-ia/exemple-reference.md`), puis le copier dans `prompt/exemple-reference.html` ; supprimer la copie de test `CT-1-1` ; réécrire les descriptions de CT-1, TC-1 et TV-1 (vidées par le patch) ; photos à recharger en JPEG (CT-1 : PNG de 2,6 Mo) ; confirmer le prix et le poids de TC-1 (99 €, 500 g) | Pierre ; Céline |
 | **Colis au-delà du dernier palier** | `tablerate` n'a pas de borne haute : au-delà de 30 kg (France, Monaco) ou 25 kg (Belgique, Luxembourg), un colis prend le tarif du dernier palier alors que Mondial Relay le refuse | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
 | **Seuil de TVA intra-UE** | Aucune TVA facturée, Céline étant en franchise de base. **À revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année** (guichet OSS) ; la mention se change dans *Mentions légales* | Céline avec conseil |
@@ -844,6 +850,17 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | **Consulter les statistiques** | Ouvre Matomo (`https://stats.madame-aiguille.fr`) : visites, pages, sources, appareils, pays, recherche interne, pages introuvables. Connexion avec **son compte Matomo** (lecture seule), distinct de celui de Magento. Un rapport mensuel arrive sur `contact@madame-aiguille.fr`. Guide : `guide-back-office.md` §7 | §30 |
 | *Configuration › Général › Mesure d'audience* | Activation, adresse de Matomo, identifiant du site : **réservé à Pierre** (hors du rôle « Atelier »). « Non » coupe la mesure, la boutique fonctionne à l'identique ; vider le cache après un changement | §30 |
 | Page `confidentialite`, sous-section « Mesure d'audience » | Décrit Matomo et contient le module d'opposition (`{{block class="MadameAiguille\Analytics\Block\OptOut" …}}`) : **ne pas supprimer cette ligne** en retouchant la page | §30 |
+
+### Rédiger une fiche avec l'assistant IA — fiche produit, section *Contenu* (lot 10)
+
+| Geste | Effet | Détail |
+|---|---|---|
+| **Rédiger avec l'IA** | Panneau au-dessus de la description : *Analyser la fiche* (questions), répondre, *Rédiger les textes*, cocher, *Insérer dans la fiche*, puis **relire et Enregistrer**. Pas à pas illustré : `guide-back-office.md` §8 | §31 |
+| Points à confirmer | Encadré jaune de l'aperçu : ce que l'assistant n'a pas pu vérifier. **À régler avant d'enregistrer** (corriger le texte ou répondre et régénérer) | §31 |
+| Retoucher | *Plus court*, *Plus chaleureux*, *Régénérer*, ou une consigne libre ; chaque retouche compte comme une demande | §31 |
+| Plafond | 50 demandes par jour pour toute la boutique (analyses, rédactions et retouches) ; au-delà, l'assistant reprend le lendemain | §31 |
+| *Configuration › Général › Assistant IA* | Activation, clé, plafond : **réservé à Pierre** (hors du rôle « Atelier »). « Non » fait disparaître le bouton, la boutique fonctionne à l'identique | §31 |
+| Description | Éditeur classique (Page Builder retiré le 06/11/2026) : le texte se relit tel qu'il sera affiché | §31 |
 
 ### Livraison — *Boutiques › Configuration › Ventes › Méthodes de livraison*
 
@@ -906,7 +923,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Quoi | Où | Détail |
 |---|---|---|
 | Créer une création | *Produits › Ajouter un produit*, puis **Jeu d'attributs « Création »** en haut du formulaire. Pas à pas illustré : `docs/guide-back-office.md` | §8 |
-| Photos | Ratio **4:5** (portrait), trois vues minimum. Une photo hors ratio est rognée, pas déformée | §8 |
+| Photos | Ratio **4:5** (portrait), trois vues minimum, **en JPEG** (un PNG pèse dix fois plus et ralentit la fiche). Une photo hors ratio est rognée, pas déformée | §8, §31 |
 | Poids | **Obligatoire**, en kilogrammes — il servira au calcul des frais de port | §8 |
 | Stock | Le nombre saisi est le nombre de pièces restantes. À 0, la création passe « Épuisé » et reste visible en fin de liste | §8 |
 | Stock bas | *Rapports › Produits › Stock faible* liste les créations **sous 2 pièces** (seuil posé par `Theme/Setup/Patch/Data/SetLowStockThreshold.php`) : la dernière pièce d'une série y apparaît. Aucun email : Magento Open Source n'en envoie pas pour le stock bas. Seuil réglable par création (*Quantité de notification* de la source) | §8 |
@@ -925,6 +942,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 
 ### Ce qu'il ne faut pas faire
 
+- **Ne pas enregistrer un texte de l'assistant sans l'avoir relu** ni avec des points à confirmer en suspens : il peut se tromper sur une matière, une dimension ou un entretien.
 - **Ne pas désactiver la double authentification** ni partager l'identifiant et le mot de passe HTTP en dehors de Pierre et Céline.
 - **Ne pas changer le mode ou les clés Stripe**, ni réactiver les boutons express, sans Pierre : les boutons express contourneraient le point relais et le créneau de retrait.
 
@@ -1285,7 +1303,7 @@ bin/magento madameaiguille:env:check                      # poste local
 bin/magento madameaiguille:env:check --serveur            # serveur ouvert (avant l'ouverture : --noindex)
 ```
 
-Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation (`NOINDEX` exigé avec `--noindex`, interdit sur un serveur contrôlé sans ce drapeau depuis l'ouverture), caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
+Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation (`NOINDEX` exigé avec `--noindex`, interdit sur un serveur contrôlé sans ce drapeau depuis l'ouverture), caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, mesure d'audience (§30), assistant IA (§31), fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
 
 ### Ouverture des ventes (lot 8, 02/11/2026)
 
@@ -1461,3 +1479,151 @@ Couper la mesure sans déployer : `mage config:set madameaiguille_analytics/mato
   le menu de Matomo : vitrines d'extensions non installées. Les installer ferait sortir de l'exemption CNIL.
 - Les visites de Pierre (IP exclue) n'apparaissent pas dans *Visiteurs › En temps réel* : recetter depuis un téléphone en données
   mobiles.
+
+## 31. Assistant IA des fiches produits (lot 10)
+
+Lot ouvert et livré le 06/11/2026. Dans la fiche produit de l'administration, un panneau **« Rédiger avec l'IA »**
+lit la fiche et ses photos, pose à Céline les questions qui manquent, puis propose la description courte, la
+description longue en HTML, le titre et la description méta, la clé d'URL d'un produit neuf, les textes alternatifs
+des photos et, si ces champs sont vides, la composition, les dimensions et l'entretien. Céline coche ce qu'elle
+garde et l'insère dans le formulaire : **rien n'est enregistré sans son clic sur *Enregistrer***. La vitrine ne dépend
+jamais de l'IA : un assistant coupé, sans crédit ou injoignable ne change rien à la boutique.
+
+### Décisions (Pierre, 06/11/2026)
+
+- **Texte par Claude Haiku 5.5** (`claude-haiku-5-5`, Anthropic), par le SDK PHP officiel `anthropic-ai/sdk` 1.6.0.
+  **Modèle et effort (`medium`) fixés dans le code**, jamais en configuration : aucun réglage ne change la facture.
+- **Pas de génération d'images** (environ 0,30 $ par image) : Céline garde son abonnement OpenAI pour ses mises en
+  situation.
+- **Page Builder retiré du champ Description**, descriptions existantes **vidées** (sans migration).
+- **Céline écrit en son nom**, « je vous propose », jamais « nous » ; lecteur vouvoyé ; **ne rien inventer**.
+- **Clé chiffrée en configuration**, saisie par Pierre ; seules la fiche et les réponses de Céline sont envoyées,
+  **jamais une donnée client**.
+
+### Parcours
+
+1. **Analyser** : le navigateur envoie l'état du formulaire (y compris non enregistré) et la liste des photos de la
+   galerie. Le serveur garde une liste blanche de champs (`ProductContext`), réduit les photos à 1 100 px
+   (`GalleryImages`) et demande au modèle ce qu'il a compris et **huit questions au plus** (texte, choix, oui/non),
+   seulement celles dont la réponse n'est pas dans la fiche.
+2. **Répondre** : une question laissée vide est passée ; notes libres.
+3. **Générer** : le modèle renvoie tous les champs d'un coup. Le serveur nettoie le HTML, ne garde la clé d'URL que
+   pour un produit neuf et les caractéristiques que si le champ est vide.
+4. **Aperçu et insertion** : une case par champ et par photo. *Insérer* remplit les champs cochés (TinyMCE compris) et
+   les libellés de la galerie. Retouches : *Plus court*, *Plus chaleureux*, *Régénérer*, ou consigne libre ; chaque
+   retouche est un nouvel appel sans état, avec le résultat précédent.
+
+### Fichiers
+
+| Fichier | Rôle |
+|---|---|
+| `AiAssistant/etc/adminhtml/system.xml`, `etc/config.xml`, `Model/Config.php` | *Configuration › Général › Assistant IA* (ressource `MadameAiguille_AiAssistant::config`) : activation, clé (`Encrypted`), plafond d'appels par jour (50). **Désactivé et sans clé par défaut** : ni bouton ni appel en local ou dans le build. `config.xml` déclare aussi `Encrypted` : Magento rend la clé **déjà déchiffrée** à la lecture |
+| `etc/acl.xml` | `MadameAiguille_AiAssistant::assistant` (*Catalogue › Inventaire › Produits › Assistant IA des fiches produits*), à cocher dans le rôle « Atelier » |
+| `Model/Claude/SdkClient.php` | Seul point de contact avec l'API : constantes `MODEL` et `EFFORT`, sorties structurées (`outputConfig` → `json_schema`), consigne en tête avec `cacheControl`, délai de 120 s et une seule nouvelle tentative, client HTTP et fabriques PSR fixés sur Guzzle. Traduit `stopReason` (`refusal`, `max_tokens`) et les erreurs de l'API en `AssistantException` au message clair |
+| `Model/Claude/ClientInterface.php`, `ClientRouter.php`, `StubClient.php` | Interface doublable ; **client doublé du poste local** (réponses fixes, aucun réseau) choisi seulement en mode développeur avec la clé sentinelle `doublure-locale`. En production, impossible |
+| `prompt/consigne.md`, `Model/Prompt.php` | Consigne permanente versionnée (charte, règles HTML, deux étapes, retouches). `prompt/exemple-reference.html` y est ajouté **s'il existe** : à créer quand Céline aura validé `docs/assistant-ia/exemple-reference.md` |
+| `Model/Schema.php` | Schémas JSON imposés des deux réponses (tous champs obligatoires, chaîne vide = pas de proposition) |
+| `Model/Assistant.php` | Analyse, génération et retouche : construit le message (photos numérotées puis demande JSON), consomme le plafond, journalise, relit la réponse |
+| `Model/HtmlSanitizer.php` | Liste blanche `h3`, `p`, `ul`, `li`, `strong`, `em`, **sans attribut** ; `script`, `style`, cadres retirés avec leur contenu ; `h2` ramené à `h3`, texte nu rangé dans un `p` |
+| `Model/ProductContext.php`, `Model/GalleryImages.php` | Champs retenus (nom, référence, catégories, type, prix, poids, série limitée, textes existants, caractéristiques) ; photos lues seulement dans `pub/media/catalog/product` et `tmp/catalog/product` (suffixe `.tmp` d'une photo pas encore enregistrée), six au plus |
+| `Model/DailyQuota.php`, `Model/UsageLogger.php` | Plafond par jour (table `flag`, remis à zéro à minuit) ; journal `var/log/madameaiguille_assistant_ia.log` : date, utilisateur, action, modèle, jetons (entrée, sortie, cache lu, cache écrit), durée, issue — **jamais le contenu** |
+| `Controller/Adminhtml/Assistant/{Analyser,Generer}.php` | POST seulement, clé de formulaire (CSRF natif), ACL, assistant prêt ; réponse toujours en JSON `{ok, …}`, jamais une page d'erreur |
+| `Ui/DataProvider/Product/Form/Modifier/AiAssistant.php`, `etc/adminhtml/di.xml` | Ajoute le panneau à la section *Contenu* (`sortOrder` 5, juste au-dessus de la description), en création et en édition, si l'assistant est prêt et que le rôle a la ressource ; sinon le formulaire est celui de Magento |
+| `view/adminhtml/web/js/assistant.js`, `web/template/assistant.html`, `web/css/assistant.css`, `layout/catalog_product_form.xml` | Panneau Knockout aux conventions de l'administration ; ouvre la section *Images et vidéos* avant de lire ou d'écrire les photos |
+| `Setup/Patch/Data/RemovePageBuilderFromDescription.php` | `is_pagebuilder_enabled` = 0 sur `description` seul, valeurs supprimées sur toutes les vues, SKU dans `system.log` (serveur : CT-1, TC-1, TV-1 le 06/11/2026) |
+| `Theme/Model/Environment/EnvironmentChecker.php` | `env:check` : **erreur** si l'assistant est activé sans clé ou sans SDK |
+| `Theme/ViewModel/Product/StructuredData.php`, thème `Magento_Catalog/templates/product/view/structured-data.phtml` | JSON-LD `Product` de la fiche (sans IA) : nom, photos, description (méta, sinon accroche ; jamais le nom répété), référence, marque, prix ou fourchette, disponibilité. Rien de propre au visiteur |
+| Tests | `AiAssistant/Test/Unit` (nettoyeur, client du SDK sur transport doublé, service, contexte, plafond, réglages, patch, modifier) ; `StructuredDataTest`, `EnvironmentCheckerTest` |
+
+### Charte de rédaction
+
+Elle vit dans `prompt/consigne.md` : la modifier, c'est changer ce que l'assistant écrit pour toutes les fiches
+suivantes (commit et déploiement). Points clés : première personne, vouvoiement, vocabulaire de la couture ; 250 à
+400 mots, **accroche en tête**, deux à quatre `h3` ; description courte d'environ 120 caractères, titre méta
+d'environ 60, description méta d'environ 155 ; mot clé principal dans l'accroche, un intertitre et les champs méta,
+trois fois au plus ; **aucune phrase reprise** d'un champ ou d'une fiche à l'autre, mentions communes (cousu main,
+Saint-Épain, série limitée) reformulées, pas de conclusion passe-partout ; **ne rien inventer** : ce que la fiche,
+les réponses ou les photos ne disent pas va dans les points à confirmer, et « cousu main » ne permet aucun détail de
+fabrication. Pas de superlatif creux ni de promesse de santé ou d'écologie.
+
+### Coûts mesurés (production, 06/11/2026)
+
+Tarif de Haiku 5.5 : 0,10 $ par million de jetons en entrée, 0,50 $ en sortie (prompts de moins de 100 000 jetons) ;
+lecture du cache au dixième, écriture à 1,25 fois.
+
+| Appel | Entrée | Sortie | Cache | Durée | Coût |
+|---|---|---|---|---|---|
+| Analyse (2 photos) | 3 209 | 1 525 | 3 702 lus | 8,5 s | ≈ 0,001 $ |
+| Génération | 3 602 | 4 809 | 3 799 écrits | 24 s | ≈ 0,003 $ |
+| Retouche | 4 735 | 4 596 | 3 799 lus | 20 s | ≈ 0,003 $ |
+
+**Environ 0,007 $ par fiche, retouche comprise.** La réflexion du modèle compte dans la sortie. Chaque étape a son
+entrée de cache (le schéma diffère), valable cinq minutes.
+
+### Réglages sur le serveur (06/11/2026)
+
+Clé saisie et assistant activé par Pierre dans l'administration ; plafond par défaut (50). Vérifié : `env:check
+--serveur` à 0 erreur et 0 avertissement, « Assistant IA activé, clé présente ». Capacités lues par l'API Models
+(non facturée) : modèle actif, images et sorties structurées prises en charge, 1 M de jetons en entrée et 128 000 en
+sortie, aucune date de retrait. Couper l'assistant sans déployer :
+`mage config:set madameaiguille_ai/assistant/enabled 0 && mage cache:flush`.
+
+### Recette du 06/11/2026
+
+- **Poste local** (client doublé, aucun appel réel) : configurable avec photos en édition, création simple
+  (clé d'URL proposée) et configurable, cases et insertion, **rien enregistré** (base inchangée), plafond atteint,
+  assistant désactivé (panneau absent), section de configuration ouverte, fiche en vitrine à 1440 et 375 px.
+- **Production**, copie désactivée de CT-1 (`CT-1-1`, 404 pour les visiteurs) : analyse pertinente (rien de la
+  fiche redemandé, couleurs différentes relevées entre deux photos), génération, retouche libre appliquée, insertion
+  et **enregistrement vérifié en base** (HTML, accroche, méta, textes alternatifs ; copie toujours désactivée).
+  **TC-1** sans enregistrement : points à confirmer présents (lot, entretien, couleurs, série), un seul fragment commun
+  avec CT-1, corrigé dans la consigne (`b30163e`).
+- **Rôles** : ACL de Magento interrogée sur le serveur, « Atelier » **refusé** tant que la ressource n'est pas cochée
+  (panneau masqué, actions refusées) ; administrateurs autorisés.
+- **Erreurs** : crédit épuisé, facturation, clé refusée, modèle retiré, limite de débit, surcharge, refus, réponse
+  coupée, réponse illisible, plafond (tests du client sur transport doublé et recette du plafond dans l'écran).
+  **API injoignable et crédit réel épuisé non provoqués en production** (couper le réseau du serveur ou vider le
+  crédit n'est pas raisonnable) : couverts par les tests.
+- **Résultats enrichis** (test Google, `le-coffret-tendresse.html`) : 5 éléments valides (extraits de produits,
+  fiches de marchand, fil d'Ariane) ; seuls avertissements, les avis et la note moyenne, absents par choix.
+- **Lighthouse** de la fiche CT-1 : 76 / 90 en performance (mobile / ordinateur), 100 ailleurs ; voir les limites.
+- Contrôles : **195 tests unitaires** (53 nouveaux), PHPCS Magento2 sans erreur sur les fichiers du lot,
+  `env:check --serveur` à 0 erreur et 0 avertissement.
+
+### Limites
+
+- **Exemple de référence non validé** : la consigne part sans exemple tant que Céline n'a pas relu
+  `docs/assistant-ia/exemple-reference.md`.
+- **Rôle « Atelier »** : la ressource est à cocher par Pierre ; la recette avec le compte de Céline reste à faire.
+- **Produit déclaré deux fois** aux moteurs : notre JSON-LD et les microdonnées `itemprop` des gabarits Hyvä (corps de
+  page et prix). Les deux sont valides ; Magento ne permet pas de retirer un attribut du `body` par le layout, et les
+  retirer des gabarits de prix n'apporterait rien.
+- **Photos en PNG** : celles de CT-1 pèsent 2,6 Mo chacune (1 Mo à l'affichage) ; la plus grande image de la fiche
+  arrive à 7,3 s sur mobile. Conseil à Céline : enregistrer ses photos **en JPEG** (guide du back-office).
+- **Haiku 5.5 et la charte** : sur deux fiches, il a extrapolé des détails de fabrication et ouvert un texte par un
+  intertitre ; la consigne a été resserrée. Le relire reste indispensable : c'est le rôle des points à confirmer.
+- Le panneau se place **au-dessus de la description**, pas en tête de *Contenu* : la description courte garde la
+  première place.
+
+### Pièges rencontrés
+
+- **Clé chiffrée lue deux fois** : avec `backend_model="…Encrypted"` dans `config.xml`, `ScopeConfig` rend la valeur
+  déjà déchiffrée (`MetadataConfigTypeProcessor`). La déchiffrer de nouveau produisait un en-tête `Authorization`
+  invalide.
+- **Le SDK 1.6 envoie la clé en `Authorization: Bearer`**, pas `x-api-key`.
+- **Découverte PSR du SDK dans les tests** : l'autoloader des tests de Magento fabrique toute classe en `*Factory`
+  demandée ; `php-http/discovery` y prenait une fabrique Phalcon fictive. Le client fixe Guzzle ; les tests imposent
+  une stratégie Guzzle (`GuzzleOnlyStrategy`).
+- **Gabarits Knockout de l'administration** : un « : » dans `translate="'…'"` fait prendre la chaîne pour un objet
+  (« Failed to load the template ») ; les attributs en casse mixte (`optionsCaption`, `textInput`) arrivent en
+  minuscules et sont ignorés : utiliser `data-bind`. `foreach` en attribut n'est pas converti : `<!-- ko foreach -->`.
+- **`uiElement` n'a pas `observable()`** : passer par `ko.observable`.
+- **Position négative** (`sortOrder` -10) : comptée depuis la fin dans les collections de composants UI.
+- **Galerie produit** : widget jQuery, absent de la page tant que la section *Images et vidéos* n'est pas ouverte ;
+  le panneau l'ouvre lui-même.
+- **`_module.less` d'un module** : ne rejoint la feuille de l'administration qu'après une recompilation complète ;
+  feuille dédiée chargée par `catalog_product_form.xml`.
+- **`config:set` refuse un chemin absent de `system.xml`** : d'où la clé sentinelle du client doublé plutôt qu'un
+  réglage caché.
+- Une erreur dans un gestionnaire `done` de jQuery empêche le `always` suivant : l'attente est levée avant tout
+  traitement de la réponse.
