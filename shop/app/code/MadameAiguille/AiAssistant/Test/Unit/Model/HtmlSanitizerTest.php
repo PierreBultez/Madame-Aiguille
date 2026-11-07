@@ -22,6 +22,26 @@ class HtmlSanitizerTest extends TestCase
         self::assertSame($html, $this->sanitize($html));
     }
 
+    public function testReferenceLayoutPassesUnchanged(): void
+    {
+        $html = '<h2>Les coloris</h2><p>Deux tissus :</p><ul><li><strong>Terracotta</strong> : velours rouille.</li></ul>'
+            . '<blockquote><p>Série limitée à <strong>six pièces</strong>.</p></blockquote>'
+            . '<h2>Caractéristiques techniques</h2>'
+            . '<table><tbody><tr><th>Caractéristique</th><th>Détail</th></tr>'
+            . '<tr><td>Dimensions</td><td>55 × 45 × 10 cm</td></tr></tbody></table>'
+            . '<h2>Questions fréquentes</h2><h3>Est-il lavable ?</h3><p>Oui, à 30 °C.</p>';
+
+        self::assertSame($html, $this->sanitize($html));
+    }
+
+    public function testTableCellAttributesAreRemoved(): void
+    {
+        self::assertSame(
+            '<table><tbody><tr><td><p>Doublure</p></td></tr></tbody></table>',
+            $this->sanitize('<table><tbody><tr><td colspan="1" rowspan="1"><p data-x="1">Doublure</p></td></tr></tbody></table>')
+        );
+    }
+
     public function testAttributesAndClassesAreRemoved(): void
     {
         self::assertSame(
@@ -41,7 +61,16 @@ class HtmlSanitizerTest extends TestCase
             'iframe' => ['<p>A<iframe src="https://example.test"></iframe></p>', '<p>A</p>'],
             'lien réduit à son texte' => ['<p>Voir <a href="javascript:alert(1)">ici</a></p>', '<p>Voir ici</p>'],
             'image supprimée' => ['<p>A<img src=x onerror=alert(1)></p>', '<p>A</p>'],
-            'h2 ramené à h3' => ['<h2>Titre</h2>', '<h3>Titre</h3>'],
+            'h1 ramené à h2' => ['<h1>Titre</h1>', '<h2>Titre</h2>'],
+            'h4 ramené à h3' => ['<h4>Titre</h4>', '<h3>Titre</h3>'],
+            'colonnes et légende du tableau retirées' => [
+                '<table><caption>X</caption><colgroup><col><col></colgroup><tr><td>A</td></tr></table>',
+                '<table><tbody><tr><td>A</td></tr></tbody></table>',
+            ],
+            'en-tête de tableau rangé dans le tbody' => [
+                '<table><thead><tr><th>A</th></tr></thead><tbody><tr><td>B</td></tr></tbody></table>',
+                '<table><tbody><tr><th>A</th></tr><tr><td>B</td></tr></tbody></table>',
+            ],
             'liste numérotée en liste' => ['<ol><li>Un</li></ol>', '<ul><li>Un</li></ul>'],
             'b et i normalisés' => ['<p><b>A</b> <i>B</i></p>', '<p><strong>A</strong> <em>B</em></p>'],
             'div déballée' => ['<div><p>A</p></div>', '<p>A</p>'],

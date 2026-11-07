@@ -3,8 +3,8 @@
  * Consigne permanente de l'assistant : charte de rédaction et règles HTML, versionnées dans `prompt/consigne.md`.
  *
  * Elle est envoyée en tête de chaque requête, identique octet pour octet, pour profiter de la mise en cache du prompt
- * côté API. L'exemple de référence (`prompt/exemple-reference.html`), une fois validé par Céline, y est ajouté tel
- * quel ; tant que le fichier n'existe pas, la consigne part sans exemple.
+ * côté API. L'exemple de référence (`prompt/exemple-reference.html`, la description du cabas Adèle
+ * fournie le 07/11/2026) y est ajouté tel quel ; sans le fichier, la consigne part sans exemple.
  */
 
 declare(strict_types=1);
@@ -37,7 +37,9 @@ class Prompt
         $system = trim($this->file->fileGetContents($directory . self::CHARTER));
         if ($this->file->isExists($directory . self::EXAMPLE)) {
             $system .= "\n\n## Exemple de référence validé par Céline\n\n"
-                . "Pour le ton, la longueur et la mise en page seulement : n'en reprends aucune phrase.\n\n"
+                . "La description longue du cabas Adèle (référence ADE-FU), telle que Céline la veut : repère de ton, "
+                . "de longueur et de mise en page. Ses faits (coloris, dimensions, entretien, usages) sont propres à ce "
+                . "cabas : n'en reprends aucun pour une autre pièce, ni aucune phrase.\n\n"
                 . trim($this->file->fileGetContents($directory . self::EXAMPLE));
         }
 

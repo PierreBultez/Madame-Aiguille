@@ -137,7 +137,7 @@ class AssistantTest extends TestCase
     {
         return [
             'description_courte' => '<p>Une panière et quatre cotons.</p>',
-            'description_html' => '<p onclick="x">Je vous propose…</p><script>alert(1)</script><h2>Matières</h2>',
+            'description_html' => '<p onclick="x">Je vous propose…</p><script>alert(1)</script><h1>Matières</h1>',
             'titre_meta' => 'Coffret tendresse | Madame Aiguille',
             'description_meta' => 'Quatre cotons et leur panière.',
             'cle_url' => 'Coffret Tendresse Velours',
@@ -166,7 +166,7 @@ class AssistantTest extends TestCase
 
         self::assertSame([
             'short_description' => 'Une panière et quatre cotons.',
-            'description' => '<p>Je vous propose…</p><h3>Matières</h3>',
+            'description' => '<p>Je vous propose…</p><h2>Matières</h2>',
             'meta_title' => 'Coffret tendresse | Madame Aiguille',
             'meta_description' => 'Quatre cotons et leur panière.',
             'dimensions' => '14 × 12 × 14 cm',
