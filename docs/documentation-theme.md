@@ -593,6 +593,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 10 — Mise en ligne et recette (06/11/2026) | PR #20, version `f2fb67b` ; clé saisie et assistant activé par Pierre ; recette sur une copie désactivée de CT-1 et sur TC-1, consigne resserrée, panneau placé au-dessus de la description ; documentation (§31, guides, guide d'exploitation v1.2) | `b30163e`, `8e2d74a` + documentation |
 | Photos WebP (07/11/2026) | la galerie produit accepte le WebP, converti en JPEG à l'envoi (`ConvertWebpGalleryUpload`, copie du téléverseur limitée à la galerie), demande de Pierre | commit de la conversion |
 | 10 — Modèle ADE-FU (07/11/2026) | l'assistant suit la description du cabas Adèle : consigne réécrite (sections `h2`, encadré, tableau, foire aux questions, atelier), nettoyeur élargi, exemple de référence, aperçu stylé ; décisions de Pierre sur la voix, la conclusion et le tableau | commit du modèle |
+| 10 — Consigne après essai (07/11/2026) | essai sur TC-1 : Céline jamais nommée à la troisième personne, aucune intention ni raison de choix inventée | commit de la consigne |
 
 ## 18. Formulaire de contact
 
@@ -1598,6 +1599,11 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
   coupée, réponse illisible, plafond (tests du client sur transport doublé et recette du plafond dans l'écran).
   **API injoignable et crédit réel épuisé non provoqués en production** (couper le réseau du serveur ou vider le
   crédit n'est pas raisonnable) : couverts par les tests.
+- **Modèle ADE-FU, essai du 07/11/2026** sur TC-1, sans aucune réponse aux questions : 467 mots, sections sans
+  faits bien retirées (coloris, encadré, entretien), sept points à confirmer, aucun fait d'ADE-FU repris ; analyse
+  0,002 $ et génération 0,0036 $ (6 830 jetons de sortie). Deux écarts corrigés dans la consigne : Céline nommée à
+  la troisième personne (« cousus par Céline ») et une intention inventée dans la section sur l'atelier (« nés de mon
+  envie de… »).
 - **Résultats enrichis** (test Google, `le-coffret-tendresse.html`) : 5 éléments valides (extraits de produits,
   fiches de marchand, fil d'Ariane) ; seuls avertissements, les avis et la note moyenne, absents par choix.
 - **Lighthouse** de la fiche CT-1 : 76 / 90 en performance (mobile / ordinateur), 100 ailleurs ; voir les limites.
