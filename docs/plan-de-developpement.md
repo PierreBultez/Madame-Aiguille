@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.7 (06/11/2026), lots 2 à 10 livrés ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+Document interne — v3.8 (07/11/2026), lots 2 à 10 livrés, lot 11 ouvert ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+
+> **v3.8** — **Lot 10 clos et lot 11 ouvert** le 07/11/2026 à la demande de Pierre. Après le lot 10 : galerie produit acceptant le WebP (converti en JPEG à l'envoi) et assistant calqué sur la description du cabas Adèle (ADE-FU). **Lot 11 : corrections et contenus éditables**, d'après la liste de Pierre : récapitulatif et lien de connexion du tunnel, option cadeau unifiée (emballage et message pour 2 €), bloc « Récemment commandé », région d'une adresse, bouton cadeau du panier, ouverture de la recherche, lien Instagram ; puis décisions et réalisation pour la galerie Instagram, l'histoire, les nouvelles de l'atelier et le hero. Cahier des charges : section « Lot 11 » ci-dessous ; prompt : `prompts/prompt-lot11.md`.
 
 > **v3.7** — **Lot 10 livré le 06/11/2026.** Module `MadameAiguille_AiAssistant` (SDK `anthropic-ai/sdk` 1.6.0) : panneau « Rédiger avec l'IA » au-dessus de la description, questions puis rédaction par Claude Haiku 5.5 (modèle et effort fixés dans le code), HTML nettoyé par liste blanche, insertion champ par champ sans enregistrement, plafond de 50 appels par jour, journal sans contenu, `env:check`. Page Builder retiré de la description, descriptions vidées (CT-1, TC-1, TV-1). JSON-LD `Product` sur la fiche, résultats enrichis valides. Recette de production sur une copie désactivée de CT-1 et sur TC-1 : **environ 0,007 $ par fiche**, consigne resserrée. Restent : ressource ACL du rôle « Atelier », exemple de référence à valider par Céline, photos en JPEG. Détail : `documentation-theme.md` §31.
 
@@ -203,9 +205,10 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
 | 7 | Compte client, emails transactionnels, statuts de commande — **livré** | 3 ; recette finale après 5 et 6b | **M** | faible |
 | 8 | Back-office, exploitation, mise en production — **livré** | tous | **M** | moyen |
 | 9 | Mesure d'audience Matomo auto-hébergé — **livré** | 8 + DNS `stats.` | **M** | faible |
-| 10 | Assistant IA des fiches produits (texte et référencement) — **ouvert** | 9 + compte Anthropic | **M** | faible |
+| 10 | Assistant IA des fiches produits (texte et référencement) — **livré** | 9 + compte Anthropic | **M** | faible |
+| 11 | Corrections et contenus éditables — **ouvert** | 10 ; décisions de Pierre sur les contenus | **L** | moyen (tunnel, cadeau) |
 
-Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9** et **10** ouverts après la clôture. L'exploitation suit `guide-exploitation.md`.
+Ordre réalisé : **2 → 6a → 3 → 4 → 7 → 5 → 6b → 8a → 8**, puis **9**, **10** et **11** ouverts après la clôture. L'exploitation suit `guide-exploitation.md`.
 
 Les lots 5 et 6b ont été livrés après le brief. La recette de bout en bout — paiement confirmé, tous les statuts et emails reçus — reste à rejouer sur la préproduction HTTPS du 8a. Le lot 7 avait été avancé pendant l’attente du brief.
 
@@ -725,6 +728,79 @@ jamais.
 **au-dessus de la description** (la description courte garde la première place de *Contenu*) ; l'exemple de
 référence attend la validation de Céline, la consigne part sans lui ; le produit reste déclaré aux moteurs par notre
 JSON-LD **et** par les microdonnées de Hyvä, toutes deux valides.
+
+---
+
+## Lot 11 — Corrections et contenus éditables — **ouvert le 07/11/2026**
+
+Décidé par Pierre le 07/11/2026, après la clôture du lot 10, à partir de sa liste de bugs et de questions relevés sur
+la boutique en ligne. Prompt de lancement : `prompts/prompt-lot11.md`.
+
+**Objectif**
+
+Corriger les défauts relevés sur la vitrine, le panier, le tunnel et le compte, refaire l'option cadeau en une seule
+fonction payante, et rendre éditables simplement par Céline les contenus de l'accueil qui ne le sont pas assez.
+
+### Partie A — Corrections
+
+| # | Constat de Pierre | Piste de départ (à vérifier) |
+|---|---|---|
+| A1 | **Tunnel, récapitulatif des articles** : nom, quantité et prix collés à la miniature | thème du tunnel `app/design/frontend/MadameAiguille/checkout/` (LESS, `Magento_Checkout/web`), gabarits du récapitulatif ; mixin `expanded-items.js` (§27) |
+| A2 | **Tunnel, lien « Se connecter »** : mal stylé et ne fonctionne pas | fenêtre d'authentification du tunnel Luma (`Magento_Checkout/js/view/authentication`) dans le thème du tunnel ; vérifier en invité, panier plein, à 1440 et 390 px |
+| A3 | **Panier, bouton « Option cadeau »** plus petit que les autres boutons | gabarits Hyvä `Magento_GiftMessage` (`gift-options-*.phtml`) ; à reprendre avec la partie B |
+| A4 | **Client connecté, page catégorie** : la colonne « Récemment commandé » est mal intégrée | barre latérale de réassort de `Magento_Sales` (Hyvä `Magento_Sales/layout/default.xml`) ; décision : la restyler ou la retirer |
+| A5 | **Mon compte › Mes adresses** : région « Indre-et-Loire » avec le code postal 84350 | `tax/defaults/region` vaut 219 (Indre-et-Loire, `ConfigureSalesFoundations`) et peut présélectionner la région ; la région est facultative en France (`general/region/state_required`). Corriger les formulaires (compte et tunnel) et dire à Pierre quelles adresses existantes sont fausses, sans les modifier en base |
+| A6 | **Recherche** : la fenêtre s'affiche brutalement | `Magento_Theme/templates/html/header/search-form.phtml` de Hyvä ; transition Alpine douce, sans animation si `prefers-reduced-motion` |
+| A7 | **Accueil, « Suivez-nous sur Instagram »** : doit s'ouvrir dans un nouvel onglet | `MadameAiguille_Theme/templates/home/social.phtml` ; `target="_blank"`, `rel="noopener"` et l'indication du nouvel onglet pour les lecteurs d'écran ; vérifier les liens sociaux du pied de page |
+
+### Partie B — Option cadeau unifiée
+
+Aujourd'hui deux fonctions séparées se contredisent :
+- le **message cadeau natif** se saisit dans le panier (bouton « Option cadeau », `sales/gift_options/allow_order`)
+  sans rien payer ;
+- l'**emballage cadeau** à 2 € se coche à l'étape Livraison du tunnel (module `MadameAiguille_Checkout`, total maison,
+  `documentation-theme.md` §26) sans demander de message.
+
+**Cible** : une seule option, **« Emballage et message cadeau »**, au prix configuré (2 € aujourd'hui). La cocher
+demande **De la part de**, **Pour** et le **message**. Céline emballe la commande et écrit le message à la main.
+- Pas de message sans l'option payante, pas d'option payante sans message (message obligatoire, longueur maximale à
+  fixer).
+- Le message natif de Magento a déjà ces trois champs (expéditeur, destinataire, message) : le réutiliser plutôt que
+  d'en créer un nouveau, pour garder l'affichage dans la commande, l'email et l'administration (lot 7).
+- Un seul endroit de saisie (le tunnel, où le total est calculé, sauf meilleure proposition) : le bouton du panier
+  disparaît ou renvoie vers l'option.
+- Les commandes passées gardent leur affichage. Le libellé, le prix et le texte d'aide restent réglables dans
+  *Madame Aiguille › Emballage cadeau*.
+- Recette : invité et client connecté, relais et retrait, total, facture, avoir, email, PDF et détail de commande de
+  l'administration.
+
+### Partie C — Contenus de l'accueil éditables
+
+Ce sont des questions de Pierre : chaque point commence par une **proposition chiffrée** (options, coût, maintenance,
+ce que Céline aura à faire), et rien n'est développé avant sa décision.
+
+| # | Question de Pierre | Options à présenter |
+|---|---|---|
+| C1 | **« Instants d'atelier »** (galerie Instagram de l'accueil) : importer dynamiquement depuis son Instagram ? | API Instagram officielle de Meta (compte professionnel, application Meta, jeton à renouveler) avec synchronisation **côté serveur** par cron et images copiées localement, sans appel du navigateur vers Instagram ni cookie ; ou rester sur le bloc `home_instagram`, rendu plus simple à mettre à jour. Vérifier les conditions actuelles de l'API à la date du lot |
+| C2 | **« L'histoire de Madame Aiguille »** (page `a-propos`, bloc `home_story`) : au minimum un WYSIWYG, au mieux un LLM pour rédiger le HTML | vérifier l'éditeur actuel des pages et blocs CMS (Page Builder ou WYSIWYG) ; étendre l'assistant du lot 10 aux pages et blocs CMS (même module, même charte au « je », même nettoyeur), ou se limiter à un éditeur simple |
+| C3 | **« Les nouvelles de l'atelier »** (bloc `home_actualities`) : comment l'utiliser ? dates saisies à la main ou synchronisées avec un service en ligne ? | petite liste d'événements dans l'administration (date, lieu, titre, texte, masqués après la date) ; ou import d'un agenda en ligne (flux iCal) ; ou bloc libre documenté |
+| C4 | **Hero** : peut-il se mettre à jour depuis l'administration ? | il l'est déjà par le bloc `home_hero` (§7), mais en HTML ; proposer un formulaire dédié (image, titre, texte, bouton) qui garde les performances de l'image principale (dimensions, préchargement) |
+
+**Hors périmètre** : servir les images de la vitrine en WebP (décision de Pierre du 07/11/2026, à réfléchir plus tard) ;
+l'assistant IA des fiches produits, sauf extension décidée en C2.
+
+**Recette**
+
+- Chaque correction contrôlée à **1440 et 390 px**, en invité et en client connecté quand c'est pertinent, au
+  clavier, sans erreur de console.
+- Option cadeau : parcours complet jusqu'à la facture, l'email et l'avoir, en local puis en production avec Stripe en
+  mode test.
+- Contenus : modification par un compte au rôle « Atelier », rendu à l'accueil, cache vidé, aucune donnée propre au
+  visiteur dans le HTML.
+- Tests unitaires et PHPCS ; `env:check --serveur` à 0 erreur ; Lighthouse de l'accueil rejoué si C1 ou C4 le touche.
+
+**Effort : L.** Risque moyen : la partie B touche le tunnel et les totaux de commande. Livrer par pull requests
+séparées (A, B, puis chaque point de C) pour pouvoir déployer et revenir en arrière par morceaux.
 
 ---
 
