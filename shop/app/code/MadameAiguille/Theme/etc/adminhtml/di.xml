@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Madame Aiguille — réglages d'injection propres à l'administration.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Une photo WebP envoyée dans la galerie produit est réécrite en JPEG avant la lecture par Magento -->
+    <type name="Magento\Catalog\Controller\Adminhtml\Product\Gallery\Upload">
+        <plugin name="madameaiguille_convert_webp_gallery_upload" type="MadameAiguille\Theme\Plugin\Catalog\ConvertWebpGalleryUpload" sortOrder="100"/>
+    </type>
+</config>
