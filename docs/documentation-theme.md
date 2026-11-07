@@ -412,6 +412,7 @@ Layout `Magento_Catalog/layout/catalog_product_view.xml` ; templates dans `Magen
 | **Quantité plafonnée au stock** | automatique | `product/view/quantity.phtml` : − / +, plafond = stock restant (celui de la taille choisie sur un configurable), « Stock maximum atteint » |
 | Encart « Une question sur le tissu ou le motif ? » | textes dans `product-info.phtml` | lien vers `/contact?product=<sku>` : le module Contact valide le SKU et préremplit le produit concerné s'il est actif et visible |
 | Fiche **épuisée** | automatique | photo grisée, badge, bouton inactif « Série terminée », encart « Ce modèle vous plaît ? » vers le contact, suggestions retitrées « Disponible en ce moment » |
+| **Envoi des photos en WebP** | Admin › produit › *Images et vidéos* | Magento 2.4.9 refuse le WebP et ne sait pas le redimensionner. Un WebP envoyé dans la galerie est donc **réécrit en JPEG** (qualité 90, zones transparentes sur fond blanc) avant que Magento ne le lise : `Theme/Plugin/Catalog/ConvertWebpGalleryUpload.php` et `Theme/Model/Catalog/WebpToJpeg.php` (`etc/adminhtml/di.xml`). Côté navigateur, `Theme/view/adminhtml/web/js/media-uploader.js` est une copie du téléverseur de Magento qui ajoute `webp` pour la galerie produit seulement, le navigateur d'images CMS restant inchangé ; `MediaUploaderCopyTest` échoue si l'original change à une mise à jour. Un WebP animé n'est pas converti et reste refusé |
 | Galerie | `product/view/gallery.phtml` (copie du parent, JS intact) + `etc/view.xml` | 4:5, badge sur l'image, bouton « Agrandir » (lightbox natif), miniatures sous l'image à toutes les largeurs, pas de flèches sur la vue principale |
 | Description / Caractéristiques | `product/view/details.phtml` + `ViewModel/Product/Characteristics.php` | deux colonnes ≥ md, accordéons `<details>` en dessous ; lignes Composition, Dimensions, Poids, Série, Entretien |
 | « Vous aimerez aussi » | Admin › produit › *Produits liés* (onglet « Produits liés, ventes incitatives… », section **Produits liés**) | slider natif restylé (`product/slider/product-slider.phtml`), quatre produits maximum, cartes du listing |
@@ -590,6 +591,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 10 — Rédaction guidée (06/11/2026) | consigne et schémas JSON, exemple de référence proposé à Céline, contexte produit, photos réduites, service d'analyse et de génération, client doublé local, actions `analyser` et `generer`, modifier et panneau du formulaire produit ; corrections après recette dans l'administration | `5127996`, `ce123ce`, `10d5719`, `8135581`, `b081121`, `883f916` |
 | 10 — Référencement (06/11/2026) | JSON-LD `Product` de la fiche (`StructuredData`), Open Graph de Hyvä vérifié, test des résultats enrichis de Google | `32c2025`, `7003d71` |
 | 10 — Mise en ligne et recette (06/11/2026) | PR #20, version `f2fb67b` ; clé saisie et assistant activé par Pierre ; recette sur une copie désactivée de CT-1 et sur TC-1, consigne resserrée, panneau placé au-dessus de la description ; documentation (§31, guides, guide d'exploitation v1.2) | `b30163e`, `8e2d74a` + documentation |
+| Photos WebP (07/11/2026) | la galerie produit accepte le WebP, converti en JPEG à l'envoi (`ConvertWebpGalleryUpload`, copie du téléverseur limitée à la galerie), demande de Pierre | commit de la conversion |
 
 ## 18. Formulaire de contact
 
@@ -923,7 +925,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | Quoi | Où | Détail |
 |---|---|---|
 | Créer une création | *Produits › Ajouter un produit*, puis **Jeu d'attributs « Création »** en haut du formulaire. Pas à pas illustré : `docs/guide-back-office.md` | §8 |
-| Photos | Ratio **4:5** (portrait), trois vues minimum, **en JPEG** (un PNG pèse dix fois plus et ralentit la fiche). Une photo hors ratio est rognée, pas déformée | §8, §31 |
+| Photos | Ratio **4:5** (portrait), trois vues minimum, **en JPEG ou WebP** (un PNG pèse dix fois plus et ralentit la fiche ; un WebP est converti en JPEG à l'envoi). Une photo hors ratio est rognée, pas déformée | §8, §10, §31 |
 | Poids | **Obligatoire**, en kilogrammes — il servira au calcul des frais de port | §8 |
 | Stock | Le nombre saisi est le nombre de pièces restantes. À 0, la création passe « Épuisé » et reste visible en fin de liste | §8 |
 | Stock bas | *Rapports › Produits › Stock faible* liste les créations **sous 2 pièces** (seuil posé par `Theme/Setup/Patch/Data/SetLowStockThreshold.php`) : la dernière pièce d'une série y apparaît. Aucun email : Magento Open Source n'en envoie pas pour le stock bas. Seuil réglable par création (*Quantité de notification* de la source) | §8 |
