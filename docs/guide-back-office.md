@@ -50,8 +50,8 @@ Remplissez, de haut en bas :
 Plus bas :
 
 - **Série limitée** : cochez-la et indiquez le nombre de pièces ; la fiche affiche « Série limitée — N pièces ».
-- **Images et vidéos** : photos au format **portrait 4:5**, trois vues au moins, enregistrées **en JPEG** (un PNG
-  pèse dix fois plus et ralentit la page). Une photo d'un autre format est rognée, jamais déformée. La première est
+- **Images et vidéos** : photos au format **portrait 4:5**, trois vues au moins, enregistrées **en JPEG ou en WebP** (un PNG
+  pèse dix fois plus et ralentit la page ; un WebP est converti en JPEG à l'envoi, sans rien à faire de votre côté). Une photo d'un autre format est rognée, jamais déformée. La première est
   la vignette.
 - **Contenu** : la description courte et la description. Le bouton **« Rédiger avec l'IA »** les propose pour vous,
   avec le référencement : voir le §8. Les champs « Composition », « Dimensions » et « Conseils d’entretien »
