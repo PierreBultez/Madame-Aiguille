@@ -239,7 +239,7 @@ Dans la section **Contenu**, au-dessus de la description, cliquez sur **Analyser
 
 ### 2. Répondre
 
-L'assistant dit ce qu'il a compris, puis pose ses questions (huit au plus). Répondez simplement ; **laissez vide**
+L'assistant dit ce qu'il a compris, puis pose ses questions (dix au plus). Répondez simplement ; **laissez vide**
 une question dont vous ne connaissez pas la réponse : il n'inventera rien à la place. Le champ **Notes libres** sert
 à ajouter ce qu'il n'a pas demandé (l'histoire du tissu, une idée cadeau…). Cliquez sur **Rédiger les textes**.
 
@@ -251,6 +251,11 @@ Chaque texte proposé a sa case. En haut, l'encadré jaune **« Points à confir
 pu vérifier : **réglez-les toujours avant d'enregistrer**, soit en corrigeant le texte après l'insertion, soit en
 complétant vos réponses (*Recommencer*). Les compteurs (« 99 / 150 ») indiquent la longueur conseillée ; en rouge,
 le texte est trop long pour Google.
+
+La description suit le modèle du cabas Adèle : récit de la pièce, atouts, usage, idée cadeau, tableau des
+caractéristiques, entretien, questions fréquentes et un mot sur l'atelier. Elle est longue : vérifiez surtout les
+**chiffres du tableau** et les **réponses aux questions fréquentes**. Une section manque ? C'est que l'assistant
+n'avait pas l'information ; ajoutez-la dans vos réponses ou les notes libres, puis *Régénérer*.
 
 ![L'aperçu des textes](guide-back-office/19-assistant-apercu.jpg)
 

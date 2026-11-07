@@ -592,6 +592,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 10 — Référencement (06/11/2026) | JSON-LD `Product` de la fiche (`StructuredData`), Open Graph de Hyvä vérifié, test des résultats enrichis de Google | `32c2025`, `7003d71` |
 | 10 — Mise en ligne et recette (06/11/2026) | PR #20, version `f2fb67b` ; clé saisie et assistant activé par Pierre ; recette sur une copie désactivée de CT-1 et sur TC-1, consigne resserrée, panneau placé au-dessus de la description ; documentation (§31, guides, guide d'exploitation v1.2) | `b30163e`, `8e2d74a` + documentation |
 | Photos WebP (07/11/2026) | la galerie produit accepte le WebP, converti en JPEG à l'envoi (`ConvertWebpGalleryUpload`, copie du téléverseur limitée à la galerie), demande de Pierre | commit de la conversion |
+| 10 — Modèle ADE-FU (07/11/2026) | l'assistant suit la description du cabas Adèle : consigne réécrite (sections `h2`, encadré, tableau, foire aux questions, atelier), nettoyeur élargi, exemple de référence, aperçu stylé ; décisions de Pierre sur la voix, la conclusion et le tableau | commit du modèle |
 
 ## 18. Formulaire de contact
 
@@ -798,7 +799,7 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
-| **Assistant IA (lot 10)** | Livré le 06/11/2026 (§31). Restent : cocher la ressource *Assistant IA des fiches produits* dans le rôle « Atelier » et recetter avec le compte de Céline ; faire valider par Céline l'exemple de référence (`docs/assistant-ia/exemple-reference.md`), puis le copier dans `prompt/exemple-reference.html` ; supprimer la copie de test `CT-1-1` ; réécrire les descriptions de CT-1, TC-1 et TV-1 (vidées par le patch) ; photos à recharger en JPEG (CT-1 : PNG de 2,6 Mo) ; confirmer le prix et le poids de TC-1 (99 €, 500 g) | Pierre ; Céline |
+| **Assistant IA (lot 10)** | Livré le 06/11/2026 (§31). Restent : cocher la ressource *Assistant IA des fiches produits* dans le rôle « Atelier » et recetter avec le compte de Céline ; supprimer la copie de test `CT-1-1` ; réécrire les descriptions de CT-1, TC-1 et TV-1 (vidées par le patch) ; photos à recharger en JPEG (CT-1 : PNG de 2,6 Mo) ; confirmer le prix et le poids de TC-1 (99 €, 500 g) | Pierre ; Céline |
 | **Colis au-delà du dernier palier** | `tablerate` n'a pas de borne haute : au-delà de 30 kg (France, Monaco) ou 25 kg (Belgique, Luxembourg), un colis prend le tarif du dernier palier alors que Mondial Relay le refuse | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
 | **Seuil de TVA intra-UE** | Aucune TVA facturée, Céline étant en franchise de base. **À revoir au-delà de 10 000 € de ventes à distance intra-UE sur l'année** (guichet OSS) ; la mention se change dans *Mentions légales* | Céline avec conseil |
@@ -1506,7 +1507,7 @@ jamais de l'IA : un assistant coupé, sans crédit ou injoignable ne change rien
 
 1. **Analyser** : le navigateur envoie l'état du formulaire (y compris non enregistré) et la liste des photos de la
    galerie. Le serveur garde une liste blanche de champs (`ProductContext`), réduit les photos à 1 100 px
-   (`GalleryImages`) et demande au modèle ce qu'il a compris et **huit questions au plus** (texte, choix, oui/non),
+   (`GalleryImages`) et demande au modèle ce qu'il a compris et **dix questions au plus** (texte, choix, oui/non),
    seulement celles dont la réponse n'est pas dans la fiche.
 2. **Répondre** : une question laissée vide est passée ; notes libres.
 3. **Générer** : le modèle renvoie tous les champs d'un coup. Le serveur nettoie le HTML, ne garde la clé d'URL que
@@ -1523,10 +1524,10 @@ jamais de l'IA : un assistant coupé, sans crédit ou injoignable ne change rien
 | `etc/acl.xml` | `MadameAiguille_AiAssistant::assistant` (*Catalogue › Inventaire › Produits › Assistant IA des fiches produits*), à cocher dans le rôle « Atelier » |
 | `Model/Claude/SdkClient.php` | Seul point de contact avec l'API : constantes `MODEL` et `EFFORT`, sorties structurées (`outputConfig` → `json_schema`), consigne en tête avec `cacheControl`, délai de 120 s et une seule nouvelle tentative, client HTTP et fabriques PSR fixés sur Guzzle. Traduit `stopReason` (`refusal`, `max_tokens`) et les erreurs de l'API en `AssistantException` au message clair |
 | `Model/Claude/ClientInterface.php`, `ClientRouter.php`, `StubClient.php` | Interface doublable ; **client doublé du poste local** (réponses fixes, aucun réseau) choisi seulement en mode développeur avec la clé sentinelle `doublure-locale`. En production, impossible |
-| `prompt/consigne.md`, `Model/Prompt.php` | Consigne permanente versionnée (charte, règles HTML, deux étapes, retouches). `prompt/exemple-reference.html` y est ajouté **s'il existe** : à créer quand Céline aura validé `docs/assistant-ia/exemple-reference.md` |
+| `prompt/consigne.md`, `Model/Prompt.php` | Consigne permanente versionnée (charte, règles HTML, deux étapes, retouches). `prompt/exemple-reference.html` y est ajouté **s'il existe** : depuis le 07/11/2026, la description du cabas Adèle (ADE-FU) fournie par Pierre et Céline, passée au « je » ; la consigne interdit d'en reprendre une phrase ou un fait |
 | `Model/Schema.php` | Schémas JSON imposés des deux réponses (tous champs obligatoires, chaîne vide = pas de proposition) |
 | `Model/Assistant.php` | Analyse, génération et retouche : construit le message (photos numérotées puis demande JSON), consomme le plafond, journalise, relit la réponse |
-| `Model/HtmlSanitizer.php` | Liste blanche `h3`, `p`, `ul`, `li`, `strong`, `em`, **sans attribut** ; `script`, `style`, cadres retirés avec leur contenu ; `h2` ramené à `h3`, texte nu rangé dans un `p` |
+| `Model/HtmlSanitizer.php` | Liste blanche `h2`, `h3`, `p`, `ul`, `li`, `strong`, `em`, `blockquote` et tableau simple (`table` › `tbody` › `tr` › `th`/`td`), **sans attribut** ; `script`, `style`, cadres, `colgroup` et `caption` retirés avec leur contenu ; `h1` ramené à `h2`, `h4` à `h6` à `h3`, `thead` rangé dans le `tbody`, texte nu rangé dans un `p` |
 | `Model/ProductContext.php`, `Model/GalleryImages.php` | Champs retenus (nom, référence, catégories, type, prix, poids, série limitée, textes existants, caractéristiques) ; photos lues seulement dans `pub/media/catalog/product` et `tmp/catalog/product` (suffixe `.tmp` d'une photo pas encore enregistrée), six au plus |
 | `Model/DailyQuota.php`, `Model/UsageLogger.php` | Plafond par jour (table `flag`, remis à zéro à minuit) ; journal `var/log/madameaiguille_assistant_ia.log` : date, utilisateur, action, modèle, jetons (entrée, sortie, cache lu, cache écrit), durée, issue — **jamais le contenu** |
 | `Controller/Adminhtml/Assistant/{Analyser,Generer}.php` | POST seulement, clé de formulaire (CSRF natif), ACL, assistant prêt ; réponse toujours en JSON `{ok, …}`, jamais une page d'erreur ; une erreur inattendue n'est journalisée que par sa classe et sa ligne, **jamais par son message** |
@@ -1540,13 +1541,22 @@ jamais de l'IA : un assistant coupé, sans crédit ou injoignable ne change rien
 ### Charte de rédaction
 
 Elle vit dans `prompt/consigne.md` : la modifier, c'est changer ce que l'assistant écrit pour toutes les fiches
-suivantes (commit et déploiement). Points clés : première personne, vouvoiement, vocabulaire de la couture ; 250 à
-400 mots, **accroche en tête**, deux à quatre `h3` ; description courte d'environ 120 caractères, titre méta
-d'environ 60, description méta d'environ 155 ; mot clé principal dans l'accroche, un intertitre et les champs méta,
-trois fois au plus ; **aucune phrase reprise** d'un champ ou d'une fiche à l'autre, mentions communes (cousu main,
-Saint-Épain, série limitée) reformulées, pas de conclusion passe-partout ; **ne rien inventer** : ce que la fiche,
-les réponses ou les photos ne disent pas va dans les points à confirmer, et « cousu main » ne permet aucun détail de
-fabrication. Pas de superlatif creux ni de promesse de santé ou d'écologie.
+suivantes (commit et déploiement). Points clés : première personne, vouvoiement, vocabulaire de la couture ;
+description courte d'environ 120 caractères, titre méta d'environ 60, description méta d'environ 155 ; **aucune
+phrase reprise** d'un champ ou d'une fiche à l'autre, mentions communes reformulées ; **ne rien inventer** : ce que
+la fiche, les réponses ou les photos ne disent pas va dans les points à confirmer, une section sans faits est
+retirée, et « cousu main » ne permet aucun détail de fabrication. Pas de superlatif creux ni de promesse de santé
+ou d'écologie.
+
+**Mise en page depuis le 07/11/2026**, calquée sur la description du cabas Adèle (ADE-FU) que Pierre a retravaillée
+avec Céline : de 700 à 1 100 mots pour une pièce riche, moins pour une pièce simple. Dans l'ordre : une accroche,
+le récit de la pièce en deux ou trois `h3`, puis des sections `h2` (coloris s'il y en a plusieurs, encadré
+`blockquote` sur la série limitée, « Pourquoi vous allez l'adorer », usage au quotidien, idée cadeau, tableau
+« Caractéristiques techniques », « Entretien », « Questions fréquentes », section sur l'atelier terminée par une
+invitation en gras). Trois décisions de Pierre (07/11/2026) : Céline garde le « je » (le modèle disait « nous » et
+« Madame Aiguille confectionne ») ; la section sur l'atelier et l'appel final sont autorisés, réécrits pour chaque
+pièce ; le tableau des caractéristiques est gardé, même s'il double en partie le bloc *Caractéristiques* de la
+fiche.
 
 ### Coûts mesurés (production, 06/11/2026)
 
@@ -1596,8 +1606,10 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
 
 ### Limites
 
-- **Exemple de référence non validé** : la consigne part sans exemple tant que Céline n'a pas relu
-  `docs/assistant-ia/exemple-reference.md`.
+- **Descriptions longues** : environ quatre fois plus de texte à relire qu'avant le 07/11/2026, et un coût de
+  génération qui suit (voir la recette). Plus le texte est long, plus le risque de remplissage est grand : la consigne
+  retire les sections sans faits, mais la relecture des réponses de la foire aux questions et du tableau reste
+  indispensable.
 - **Rôle « Atelier »** : la ressource est à cocher par Pierre ; la recette avec le compte de Céline reste à faire.
 - **Produit déclaré deux fois** aux moteurs : notre JSON-LD et les microdonnées `itemprop` des gabarits Hyvä (corps de
   page et prix). Les deux sont valides ; Magento ne permet pas de retirer un attribut du `body` par le layout, et les

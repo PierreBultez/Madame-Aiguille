@@ -189,7 +189,7 @@ Correctif après livraison : hero de l’accueil centré et plafonné à 1440 px
   - **Haiku 5.5** : images et sorties structurées confirmées par l'API Models ; français juste et charte tenue sur l'essentiel, avec deux écarts corrigés dans la consigne (détails de fabrication extrapolés, intertitre en tête). Pas de comparatif avec Sonnet nécessaire à ce stade ;
   - **délai** : 8 à 30 s par appel ; PHP-FPM, nginx et Varnish laissent 600 s, aucun script serveur ;
   - **coût** : environ 0,007 $ par fiche, retouche comprise, cache de la consigne effectif.
-- **Ce qui reste** (`documentation-theme.md` §23, `guide-exploitation.md` §10) : ressource ACL du rôle « Atelier » et recette avec le compte de Céline ; validation de l'exemple de référence ; descriptions de CT-1, TC-1 et TV-1 à réécrire ; photos en JPEG.
+- **Ce qui reste** (`documentation-theme.md` §23, `guide-exploitation.md` §10) : ressource ACL du rôle « Atelier » et recette avec le compte de Céline ; descriptions de CT-1, TC-1 et TV-1 à réécrire ; photos en JPEG.
 
 ## Vue d'ensemble
 
