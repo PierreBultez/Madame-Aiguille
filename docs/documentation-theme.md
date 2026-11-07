@@ -594,6 +594,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | Photos WebP (07/11/2026) | la galerie produit accepte le WebP, converti en JPEG à l'envoi (`ConvertWebpGalleryUpload`, copie du téléverseur limitée à la galerie), demande de Pierre | commit de la conversion |
 | 10 — Modèle ADE-FU (07/11/2026) | l'assistant suit la description du cabas Adèle : consigne réécrite (sections `h2`, encadré, tableau, foire aux questions, atelier), nettoyeur élargi, exemple de référence, aperçu stylé ; décisions de Pierre sur la voix, la conclusion et le tableau | commit du modèle |
 | 10 — Consigne après essai (07/11/2026) | essai sur TC-1 : Céline jamais nommée à la troisième personne, aucune intention ni raison de choix inventée | commit de la consigne |
+| 11 — Ouverture (07/11/2026) | lot 10 clos ; liste de bugs et de questions de Pierre transformée en cahier des charges (plan v3.8, section « Lot 11 ») et prompt `docs/prompts/prompt-lot11.md` ; aucun code | commit d'ouverture |
 
 ## 18. Formulaire de contact
 
