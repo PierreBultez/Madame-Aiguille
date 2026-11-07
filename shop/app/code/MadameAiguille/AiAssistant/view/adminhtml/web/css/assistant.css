@@ -111,12 +111,31 @@
 .madameaiguille-ai__preview--html {
   white-space: normal;
 }
+.madameaiguille-ai__preview--html h2 {
+  font-size: 2rem;
+  margin: 2rem 0 0.75rem;
+}
 .madameaiguille-ai__preview--html h3 {
   font-size: 1.6rem;
   margin: 1.5rem 0 0.5rem;
 }
 .madameaiguille-ai__preview--html ul {
   margin: 0 0 1rem 2rem;
+}
+.madameaiguille-ai__preview--html blockquote {
+  border-left: 3px solid #e3e3e3;
+  margin: 1rem 0;
+  padding-left: 1rem;
+}
+.madameaiguille-ai__preview--html table {
+  border-collapse: collapse;
+  margin: 0 0 1rem;
+}
+.madameaiguille-ai__preview--html th,
+.madameaiguille-ai__preview--html td {
+  border: 1px solid #e3e3e3;
+  padding: 0.4rem 0.8rem;
+  text-align: left;
 }
 .madameaiguille-ai__points {
   margin: 0.5rem 0 0 2rem;
