@@ -4,6 +4,7 @@
         <total name="madameaiguille_gift_wrap">
             <title translate="true">Gift wrapping</title>
             <source_field>madameaiguille_gift_wrap_amount</source_field>
+            <model>MadameAiguille\Checkout\Model\Pdf\GiftWrapTotal</model>
             <font_size>7</font_size>
             <display_zero>false</display_zero>
             <sort_order>450</sort_order>
