@@ -10,5 +10,9 @@
         <job name="madameaiguille_refresh_novelty_badges" instance="MadameAiguille\Theme\Cron\RefreshNoveltyBadges" method="execute">
             <schedule>5 0 * * *</schedule>
         </job>
+        <!-- Lot 11 (C3) : rendez-vous passés retirés de l'accueil au changement de jour -->
+        <job name="madameaiguille_refresh_home_events" instance="MadameAiguille\Theme\Cron\RefreshHomeEvents" method="execute">
+            <schedule>1 0 * * *</schedule>
+        </job>
     </group>
 </config>
