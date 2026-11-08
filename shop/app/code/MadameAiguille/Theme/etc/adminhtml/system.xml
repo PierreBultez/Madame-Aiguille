@@ -55,6 +55,16 @@
                     <comment>À activer le jour où une règle de panier existe. Un champ vide proposé sans code disponible dégrade la conversion.</comment>
                 </field>
             </group>
+            <group id="home_events" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Nouvelles de l'atelier (accueil)</label>
+                <comment><![CDATA[Marchés, salons, congés… Un rendez-vous par ligne : il s'affiche sur l'accueil, sous le texte du bloc « Les nouvelles de l'atelier », du plus proche au plus lointain (quatre au plus), puis disparaît tout seul le lendemain de sa date de fin. Sans rendez-vous à venir, seul le texte du bloc s'affiche.]]></comment>
+                <field id="list" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Rendez-vous</label>
+                    <frontend_model>MadameAiguille\Theme\Block\Adminhtml\Form\Field\HomeEvents</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                    <comment>« Jusqu'au » sert aux rendez-vous de plusieurs jours. Le lieu et le texte sont facultatifs ; le texte tient en une phrase.</comment>
+                </field>
+            </group>
         </section>
         <section id="sales_email">
             <group id="madameaiguille_payment_received" translate="label" type="text" sortOrder="15"
