@@ -1,0 +1,34 @@
+<?php
+/**
+ * Madame Aiguille — rendez-vous à venir sous « Les nouvelles de l'atelier » (lot 11, C3).
+ * Rien n'est affiché sans rendez-vous à venir : le texte du bloc CMS suffit alors.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Theme\ViewModel\Home\Events;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var Events $eventsViewModel */
+$eventsViewModel = $block->getData('events_view_model');
+$events = $eventsViewModel->getEvents();
+?>
+<?php if ($events !== []): ?>
+    <ul class="home-events">
+        <?php foreach ($events as $event): ?>
+            <li class="home-event">
+                <time class="home-event__when" datetime="<?= $escaper->escapeHtmlAttr($event['datetime']) ?>"><?= $escaper->escapeHtml($event['when']) ?></time>
+                <h3 class="home-event__title"><?= $escaper->escapeHtml($event['title']) ?></h3>
+                <?php if ($event['place'] !== ''): ?>
+                    <p class="home-event__place"><?= $escaper->escapeHtml($event['place']) ?></p>
+                <?php endif ?>
+                <?php if ($event['text'] !== ''): ?>
+                    <p class="home-event__text"><?= $escaper->escapeHtml($event['text']) ?></p>
+                <?php endif ?>
+            </li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>

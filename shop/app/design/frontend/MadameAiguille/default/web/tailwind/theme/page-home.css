@@ -20,6 +20,12 @@
 .home-news { @apply max-w-3xl mx-auto mt-7 text-center; }
 .home-news h3 { @apply font-medium text-subtitle-lg mb-3; }
 .home-news a { @apply mt-3; }
+.home-events { @apply flex flex-wrap justify-center gap-4 max-w-6xl mx-auto mt-8; }
+.home-event { @apply flex-[1_1_15rem] max-w-sm rounded-md border border-brand-line bg-surface p-5 text-left; }
+.home-event__when { @apply block text-caption font-medium uppercase tracking-wide text-brand; }
+.home-event__title { @apply mt-2 text-subtitle font-medium text-brand-ink; }
+.home-event__place { @apply mt-1 text-base text-brand-dark; }
+.home-event__text { @apply mt-2 text-base text-brand-muted; }
 .home-reasons { @apply grid grid-cols-2 gap-x-5 gap-y-8 mt-8 text-center md:grid-cols-4; }
 .home-reasons span { @apply block text-title-lg text-brand mb-3; }
 .home-reasons h3 { @apply text-base font-medium mb-2; }

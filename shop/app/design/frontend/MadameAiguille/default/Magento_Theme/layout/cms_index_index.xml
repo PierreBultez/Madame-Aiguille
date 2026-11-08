@@ -54,6 +54,12 @@
                         <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
                     </arguments>
                     <block class="Magento\Cms\Block\Block" name="home.actualities.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_actualities</argument></arguments></block>
+                    <!-- Lot 11 (C3) : rendez-vous à venir, saisis dans Général › Madame Aiguille › Nouvelles de l'atelier -->
+                    <block class="MadameAiguille\Theme\Block\Home\Events" name="home.actualities.events" as="extra" template="MadameAiguille_Theme::home/events.phtml">
+                        <arguments>
+                            <argument name="events_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Events</argument>
+                        </arguments>
+                    </block>
 
                 </block>
                 <block class="Magento\Cms\Block\Block" name="home.story" after="home.actualities"><arguments><argument name="block_id" xsi:type="string">home_story</argument></arguments></block>
