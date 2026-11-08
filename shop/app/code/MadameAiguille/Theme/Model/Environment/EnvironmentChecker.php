@@ -22,8 +22,12 @@ use Magento\Store\Model\ScopeInterface;
 
 class EnvironmentChecker
 {
-    /** Formulaires protégés par reCAPTCHA (décision du 09/10/2026) ; le passage de commande ne l'est pas. */
+    /**
+     * Formulaires protégés par reCAPTCHA (décision du 09/10/2026) ; le passage de commande ne l'est pas.
+     * La connexion couvre aussi la fenêtre de connexion du tunnel (lot 11).
+     */
     public const RECAPTCHA_FORMS = [
+        'customer_login' => 'connexion',
         'customer_create' => 'création de compte',
         'contact' => 'contact',
         'newsletter' => 'newsletter',
