@@ -42,6 +42,7 @@ class EnvironmentCheckerTest extends TestCase
         'payment/stripe_payments_advanced_configuration/automatic_webhooks_configuration' => '1',
         'payment/stripe_payments_express/global_enabled' => '1',
         'payment/stripe_payments_express/enabled' => 'checkout_page_embedded',
+        'recaptcha_frontend/type_for/customer_login' => 'invisible',
         'recaptcha_frontend/type_for/customer_create' => 'invisible',
         'recaptcha_frontend/type_for/contact' => 'invisible',
         'recaptcha_frontend/type_for/newsletter' => 'invisible',
@@ -178,12 +179,14 @@ class EnvironmentCheckerTest extends TestCase
         $warnings = $this->messages(
             $this->check([
                 'recaptcha_frontend/type_for/newsletter' => null,
+                'recaptcha_frontend/type_for/customer_login' => null,
                 'recaptcha_frontend/type_for/place_order' => 'invisible',
             ]),
             Finding::WARNING
         );
 
         self::assertContains('reCAPTCHA — newsletter : non protégé', $warnings);
+        self::assertContains('reCAPTCHA — connexion : non protégé', $warnings);
         self::assertContains('reCAPTCHA — passage de commande protégé : non retenu, risque de gêner le paiement', $warnings);
     }
 
