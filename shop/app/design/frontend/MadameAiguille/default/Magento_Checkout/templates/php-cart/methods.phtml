@@ -27,5 +27,6 @@ use Magento\Framework\Escaper;
             <?php endforeach ?>
         </ul>
     </nav>
+    <?= $block->getChildHtml('cart.gift_wrap_note') ?>
     <?= $block->getChildHtml('cart.reassurance') ?>
 <?php endif ?>

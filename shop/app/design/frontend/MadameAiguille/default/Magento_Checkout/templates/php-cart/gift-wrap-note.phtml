@@ -1,0 +1,20 @@
+<?php
+/**
+ * Madame Aiguille — renvoi vers l'option « Emballage et message cadeau » de l'étape Livraison (lot 11).
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Checkout\ViewModel\Cart\GiftWrapNote;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var GiftWrapNote $giftWrapNote */
+$giftWrapNote = $block->getData('gift_wrap_note');
+$note = $giftWrapNote->getNote();
+?>
+<?php if ($note !== ''): ?>
+    <p class="cart-gift-note"><?= $escaper->escapeHtml($note) ?></p>
+<?php endif ?>
