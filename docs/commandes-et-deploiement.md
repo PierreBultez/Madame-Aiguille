@@ -26,13 +26,25 @@ reste dans `docs/documentation-theme.md` (§26 livraison, §29 serveur) et `depl
 
 Sur le serveur, Magento tourne sous l'utilisateur système **`madame-aiguille`** (PHP-FPM, cron, commandes). Lancer une
 commande sous `pierre` ou `root` créerait dans `var/` des fichiers que la boutique ne pourrait plus écrire : toujours
-passer par `sudo -u madame-aiguille`. Pour alléger :
+passer par `sudo -u madame-aiguille`. Pour alléger, l'alias `mage`, **enregistré une fois pour toutes** dans
+`~/.bash_aliases` du compte `pierre` sur le serveur (le `~/.bashrc` d'Ubuntu le charge) :
+
+```bash
+ssh <vps> "echo \"alias mage='sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento'\" >> ~/.bash_aliases"
+```
+
+Il vaut alors dans toute nouvelle session (`source ~/.bash_aliases` dans une session déjà ouverte), et suit chaque
+déploiement puisqu'il passe par `current` :
 
 ```bash
 ssh <vps>
-alias mage='sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento'
 mage cache:flush
 ```
+
+> **Piège** : un alias tapé directement dans le terminal disparaît à la fermeture de la session ; c'est ce qui était
+> arrivé jusqu'au 08/11/2026. Et un alias n'existe **que dans un shell interactif** : `ssh <vps> "mage …"` répond
+> « command not found ». Pour une commande d'une ligne depuis le poste, écrire la commande entière :
+> `ssh <vps> "sudo -u madame-aiguille php /var/www/madame-aiguille/current/bin/magento cache:flush"`.
 
 ## 2. Le déploiement par versions, expliqué
 
