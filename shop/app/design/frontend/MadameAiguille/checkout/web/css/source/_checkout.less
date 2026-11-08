@@ -8,12 +8,28 @@
             font-size: 14px;
         }
 
+        // Le panneau de connexion natif se place sous ce conteneur : il doit rester `relative`.
         .authentication-wrapper {
-            position: static;
+            position: relative;
             float: none;
             width: auto;
+            max-width: none;
             margin: 0 0 16px;
             text-align: right;
+        }
+
+        .action-auth-toggle {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 0 4px;
+            color: @ma-brand;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:hover { color: @ma-brand-dark; }
         }
 
         .opc-progress-bar {
@@ -191,14 +207,14 @@
             .items-in-cart > .title::after { color: @ma-brand; }
             .minicart-items-wrapper { margin: 0; padding: 0; max-height: 420px; }
             .product-item { padding: 16px 0; border-color: @ma-line; }
-            .product-item-details { padding-left: 72px; }
+            // Miniature native de 75 px (largeur posée en ligne par le rendu Knockout) + 16 px d'écart.
+            .product-item-details { padding-left: 91px; }
             .product-item-name { font-size: 15px; line-height: 1.5; font-weight: 500; }
             .product-item-inner { display: block; margin: 0; }
             .product-item-name-block { display: block; padding: 0; }
             .subtotal { display: block; text-align: left; margin-top: 8px; }
             .subtotal .price { font-size: 16px; font-weight: 500; color: @ma-brand; }
             .details-qty { margin: 4px 0; color: @ma-muted; font-size: 13px; }
-            .product-image-container { width: 56px; }
             .product-image-photo { border-radius: 4px; }
             .product.options .toggle { display: inline-flex; align-items: center; min-height: 44px; }
 
@@ -336,7 +352,7 @@
             gap: 0 32px;
         }
 
-        .authentication-wrapper { grid-area: auth; }
+        .authentication-wrapper { grid-area: auth; justify-self: end; width: 100%; max-width: 400px; }
         .opc-progress-bar { grid-area: progress; }
         .checkout-container > .messages { grid-area: messages; }
         .opc-wrapper { grid-area: form; float: none; width: auto; min-width: 0; }
