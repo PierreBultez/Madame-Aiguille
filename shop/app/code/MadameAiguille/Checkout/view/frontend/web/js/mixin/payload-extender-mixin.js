@@ -1,5 +1,5 @@
 /**
- * Joint le point relais ou le créneau de retrait choisi, et l'emballage cadeau, aux informations de livraison envoyées au serveur.
+ * Joint le point relais ou le créneau de retrait choisi, et l'emballage cadeau avec sa carte, aux informations de livraison envoyées au serveur.
  */
 define([
     'mage/utils/wrapper',
@@ -26,6 +26,12 @@ define([
             }
 
             attributes['madameaiguille_gift_wrap'] = !!giftWrap.requested();
+
+            if (giftWrap.requested()) {
+                attributes['madameaiguille_gift_sender'] = giftWrap.sender();
+                attributes['madameaiguille_gift_recipient'] = giftWrap.recipient();
+                attributes['madameaiguille_gift_message'] = giftWrap.message();
+            }
 
             return payload;
         });

@@ -1,6 +1,7 @@
 <?php
 /**
- * Emballage cadeau (Général › Madame Aiguille › Emballage cadeau) : option payante de la commande.
+ * Emballage et message cadeau (Général › Madame Aiguille › Emballage cadeau) : option payante de la commande,
+ * qui porte le message cadeau natif (expéditeur, destinataire, message) écrit à la main par l'atelier.
  * Magento Open Source n'a pas d'emballage cadeau natif (le Gift Wrapping est réservé à Adobe Commerce).
  */
 
@@ -21,6 +22,7 @@ class Config
     public const BASE_AMOUNT = 'base_madameaiguille_gift_wrap_amount';
 
     private const PREFIX = 'madameaiguille/gift_wrap/';
+    private const DEFAULT_MESSAGE_MAX_LENGTH = 250;
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
@@ -48,6 +50,14 @@ class Config
     public function getDescription(?int $storeId = null): string
     {
         return trim((string) $this->get('description', $storeId));
+    }
+
+    /**
+     * Longueur maximale du message écrit sur la carte, en caractères.
+     */
+    public function getMessageMaxLength(?int $storeId = null): int
+    {
+        return max(1, (int) $this->get('message_max_length', $storeId) ?: self::DEFAULT_MESSAGE_MAX_LENGTH);
     }
 
     private function get(string $field, ?int $storeId): mixed

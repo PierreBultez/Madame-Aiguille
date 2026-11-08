@@ -1,10 +1,35 @@
 <!-- ko if: config.enabled -->
 <div class="madameaiguille-gift-wrap">
     <label class="madameaiguille-gift-wrap__choice">
-        <input type="checkbox" name="madameaiguille-gift-wrap" data-bind="checked: requested"/>
+        <input type="checkbox" name="madameaiguille-gift-wrap" aria-describedby="madameaiguille-gift-wrap-description" data-bind="checked: requested"/>
         <span text="config.label"></span>
         <span class="madameaiguille-gift-wrap__price">+ <span text="config.price"></span></span>
     </label>
-    <p class="madameaiguille-gift-wrap__description" if="config.description" text="config.description"></p>
+    <p id="madameaiguille-gift-wrap-description" class="madameaiguille-gift-wrap__description" if="config.description" text="config.description"></p>
+
+    <fieldset id="madameaiguille-gift-card" class="madameaiguille-gift-card" data-bind="visible: requested">
+        <legend class="madameaiguille-gift-card__legend" translate="'Your gift card'"></legend>
+        <div class="field _required">
+            <label class="label" for="madameaiguille-gift-sender"><span translate="'Gift from'"></span></label>
+            <div class="control">
+                <input id="madameaiguille-gift-sender" class="input-text" type="text" maxlength="255" autocomplete="name" data-bind="textInput: sender, attr: {required: requested}"/>
+            </div>
+        </div>
+        <div class="field _required">
+            <label class="label" for="madameaiguille-gift-recipient"><span translate="'Gift for'"></span></label>
+            <div class="control">
+                <input id="madameaiguille-gift-recipient" class="input-text" type="text" maxlength="255" autocomplete="off" data-bind="textInput: recipient, attr: {required: requested}"/>
+            </div>
+        </div>
+        <div class="field _required">
+            <label class="label" for="madameaiguille-gift-message"><span translate="'Gift message'"></span></label>
+            <div class="control">
+                <textarea id="madameaiguille-gift-message" class="input-text" rows="4" aria-describedby="madameaiguille-gift-message-count" data-bind="textInput: message, attr: {maxlength: maxLength, required: requested}"></textarea>
+            </div>
+            <p id="madameaiguille-gift-message-count" class="madameaiguille-gift-card__count" aria-live="polite">
+                <span text="remaining"></span> <span translate="'characters left'"></span>
+            </p>
+        </div>
+    </fieldset>
 </div>
 <!-- /ko -->

@@ -26,8 +26,9 @@ L'adresse exacte vous est rappelée dans l'e-mail de confirmation.</location_add
             <gift_wrap>
                 <enabled>1</enabled>
                 <price>2.00</price>
-                <label>Emballage cadeau</label>
-                <description>Votre commande est emballée avec soin pour être offerte. Ajoutez un message cadeau : je l'écris à la main sur une petite carte.</description>
+                <label>Emballage et message cadeau</label>
+                <description>J'emballe votre commande et j'écris votre message à la main sur une carte.</description>
+                <message_max_length>250</message_max_length>
             </gift_wrap>
         </madameaiguille>
         <carriers>

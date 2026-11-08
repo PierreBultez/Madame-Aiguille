@@ -1,11 +1,12 @@
 /**
- * Case « Emballage cadeau » de l'étape Livraison. Le montant s'ajoute au total au passage à l'étape suivante,
- * quand Magento recalcule le panier.
+ * Case « Emballage et message cadeau » de l'étape Livraison et sa carte (De la part de, Pour, message).
+ * Le montant s'ajoute au total au passage à l'étape suivante, quand Magento recalcule le panier.
  */
 define([
+    'ko',
     'uiComponent',
     'MadameAiguille_Checkout/js/model/gift-wrap'
-], function (Component, giftWrap) {
+], function (ko, Component, giftWrap) {
     'use strict';
 
     return Component.extend({
@@ -18,6 +19,13 @@ define([
 
             this.config = giftWrap.config;
             this.requested = giftWrap.requested;
+            this.sender = giftWrap.sender;
+            this.recipient = giftWrap.recipient;
+            this.message = giftWrap.message;
+            this.maxLength = giftWrap.maxLength;
+            this.remaining = ko.pureComputed(function () {
+                return this.maxLength - this.message().length;
+            }, this);
 
             return this;
         }
