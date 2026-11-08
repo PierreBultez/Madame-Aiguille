@@ -14,6 +14,11 @@
         <plugin name="madameaiguille_assign_gift_wrap" type="MadameAiguille\Checkout\Plugin\Checkout\AssignGiftWrap" sortOrder="30"/>
     </type>
 
+    <!-- Connexion depuis le tunnel sans CAPTCHA : identifiant de formulaire absent toléré en PHP 8.5 -->
+    <type name="Magento\Captcha\Helper\Data">
+        <plugin name="madameaiguille_tolerate_missing_captcha_form_id" type="MadameAiguille\Checkout\Plugin\Customer\TolerateMissingCaptchaFormId"/>
+    </type>
+
     <!-- Point relais et créneau de retrait : du panier à la commande -->
     <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
         <plugin name="madameaiguille_copy_delivery_choices_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyDeliveryChoicesToOrder" sortOrder="10"/>
