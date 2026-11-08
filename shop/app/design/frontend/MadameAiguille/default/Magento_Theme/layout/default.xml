@@ -28,6 +28,9 @@
             </arguments>
         </referenceBlock>
 
+        <!-- « Récemment commandé » (Hyvä, Magento_Sales) : sans intérêt pour des pièces uniques (lot 11, A4) -->
+        <referenceBlock name="sale.reorder.sidebar" remove="true"/>
+
         <!-- Footer : quatre colonnes (marque, boutique, informations, paiement & livraison) -->
         <referenceBlock name="footer-static-links" remove="true"/>
         <referenceBlock name="footer-cms-content" remove="true"/>
