@@ -1,0 +1,28 @@
+<?php
+/**
+ * Encart « Emballage et message cadeau » d'une commande dans le compte cliente (commande, factures, avoirs,
+ * expéditions, impressions).
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Checkout\Block\Sales\GiftCard;
+use Magento\Framework\Escaper;
+
+/** @var GiftCard $block */
+/** @var Escaper $escaper */
+$card = $block->getCard();
+?>
+<?php if ($card !== null): ?>
+    <section class="order-gift-card">
+        <h2 class="order-gift-card__title"><?= $escaper->escapeHtml($card['title']) ?></h2>
+        <dl class="order-gift-card__list">
+            <dt><?= $escaper->escapeHtml(__('Gift from')) ?></dt>
+            <dd><?= $escaper->escapeHtml($card['sender']) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('Gift for')) ?></dt>
+            <dd><?= $escaper->escapeHtml($card['recipient']) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('Gift message')) ?></dt>
+            <dd class="order-gift-card__message"><?= /* @noEscape */ nl2br($escaper->escapeHtml($card['message'])) ?></dd>
+        </dl>
+    </section>
+<?php endif ?>

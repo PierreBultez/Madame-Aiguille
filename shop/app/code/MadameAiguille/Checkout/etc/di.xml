@@ -19,6 +19,28 @@
         <plugin name="madameaiguille_tolerate_missing_captcha_form_id" type="MadameAiguille\Checkout\Plugin\Customer\TolerateMissingCaptchaFormId"/>
     </type>
 
+    <!-- Emails de facture, d'avoir et d'expédition : encart « Emballage et message cadeau » sous les articles -->
+    <type name="Magento\Sales\Block\Order\Email\Invoice\Items">
+        <plugin name="madameaiguille_append_gift_card" type="MadameAiguille\Checkout\Plugin\Sales\AppendGiftCardToEmail"/>
+    </type>
+    <type name="Magento\Sales\Block\Order\Email\Creditmemo\Items">
+        <plugin name="madameaiguille_append_gift_card" type="MadameAiguille\Checkout\Plugin\Sales\AppendGiftCardToEmail"/>
+    </type>
+    <type name="Magento\Sales\Block\Order\Email\Shipment\Items">
+        <plugin name="madameaiguille_append_gift_card" type="MadameAiguille\Checkout\Plugin\Sales\AppendGiftCardToEmail"/>
+    </type>
+
+    <!-- PDF de facture, d'avoir et de bon de livraison : « Emballage et message cadeau » avant les articles -->
+    <type name="Magento\Sales\Model\Order\Pdf\Invoice">
+        <plugin name="madameaiguille_gift_card_on_pdf" type="MadameAiguille\Checkout\Plugin\Sales\GiftCardOnPdf"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Pdf\Creditmemo">
+        <plugin name="madameaiguille_gift_card_on_pdf" type="MadameAiguille\Checkout\Plugin\Sales\GiftCardOnPdf"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Pdf\Shipment">
+        <plugin name="madameaiguille_gift_card_on_pdf" type="MadameAiguille\Checkout\Plugin\Sales\GiftCardOnPdf"/>
+    </type>
+
     <!-- Point relais et créneau de retrait : du panier à la commande -->
     <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
         <plugin name="madameaiguille_copy_delivery_choices_to_order" type="MadameAiguille\Checkout\Plugin\Sales\CopyDeliveryChoicesToOrder" sortOrder="10"/>
