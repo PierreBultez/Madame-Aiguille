@@ -7,16 +7,11 @@ declare(strict_types=1);
 
 use MadameAiguille\Theme\ViewModel\Order\Progress;
 use Magento\Framework\Escaper;
-use Magento\GiftMessage\Helper\Message;
 use Magento\Sales\Block\Order\View;
-
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
 
 /** @var View $block */
 /** @var Escaper $escaper */
 /** @var Progress $progress */
-$giftMessageHelper = $this->helper(Message::class);
 $progress = $block->getData('view_model');
 $order = $block->getOrder();
 ?>
@@ -69,20 +64,7 @@ $order = $block->getOrder();
 
         <?= $block->getChildHtml('order_items') ?>
 
-        <?php if ($giftMessageHelper->isMessagesAllowed('order', $order) && $order->getGiftMessageId()): ?>
-            <?php $giftMessage = $giftMessageHelper->getGiftMessageForEntity($order); ?>
-            <section class="order-gift-message">
-                <h2><?= $escaper->escapeHtml(__('Gift Message for This Order')) ?></h2>
-                <dl>
-                    <dt><?= $escaper->escapeHtml(__('From')) ?></dt>
-                    <dd><?= $escaper->escapeHtml($giftMessage->getSender()) ?></dd>
-                    <dt><?= $escaper->escapeHtml(__('To')) ?></dt>
-                    <dd><?= $escaper->escapeHtml($giftMessage->getRecipient()) ?></dd>
-                    <dt><?= $escaper->escapeHtml(__('Message')) ?></dt>
-                    <dd><?= /* @noEscape */ $giftMessageHelper->getEscapedGiftMessage($order) ?></dd>
-                </dl>
-            </section>
-        <?php endif; ?>
+        <?= $block->getChildHtml('madameaiguille_gift_card') ?>
 
         <a class="btn btn-link btn-size-sm" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
             <?= $escaper->escapeHtml($block->getBackTitle()) ?>

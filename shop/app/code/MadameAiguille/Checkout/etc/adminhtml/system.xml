@@ -73,7 +73,7 @@
             </group>
             <group id="gift_wrap" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Emballage cadeau</label>
-                <comment>Option payante proposée dans le tunnel de commande, ajoutée au total, à la facture et aux e-mails. Le message cadeau, lui, se saisit dans le panier.</comment>
+                <comment>Option payante de l'étape Livraison du tunnel : la cocher demande « De la part de », « Pour » et le message, que j'écris à la main. Le montant et le message figurent sur la commande, la facture, l'avoir, le bon de livraison, les e-mails et les PDF. Pas de message sans emballage.</comment>
                 <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Proposer l'emballage cadeau</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -88,6 +88,11 @@
                 </field>
                 <field id="description" translate="label" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Texte sous l'option</label>
+                </field>
+                <field id="message_max_length" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Longueur maximale du message</label>
+                    <comment>En caractères. 250 tiennent sur une carte.</comment>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
                 </field>
             </group>
         </section>

@@ -1,0 +1,27 @@
+<?php
+/**
+ * Encart « Emballage et message cadeau » dans l'administration : facture, avoir, expédition.
+ * La page de la commande garde l'encart natif « Message cadeau » de Magento.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Checkout\Block\Sales\GiftCard;
+use Magento\Framework\Escaper;
+
+/** @var GiftCard $block */
+/** @var Escaper $escaper */
+$card = $block->getCard();
+?>
+<?php if ($card !== null): ?>
+    <div class="admin__page-section-item order-gift-card">
+        <div class="admin__page-section-item-title">
+            <span class="title"><?= $escaper->escapeHtml($card['title']) ?></span>
+        </div>
+        <div class="admin__page-section-item-content">
+            <p><strong><?= $escaper->escapeHtml(__('Gift from')) ?></strong> <?= $escaper->escapeHtml($card['sender']) ?></p>
+            <p><strong><?= $escaper->escapeHtml(__('Gift for')) ?></strong> <?= $escaper->escapeHtml($card['recipient']) ?></p>
+            <p><strong><?= $escaper->escapeHtml(__('Gift message')) ?></strong><br><?= /* @noEscape */ nl2br($escaper->escapeHtml($card['message'])) ?></p>
+        </div>
+    </div>
+<?php endif ?>

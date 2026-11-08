@@ -563,4 +563,35 @@
             margin-inline: --spacing(5);
         }
     }
+
+    /* Lot 11 : « Emballage et message cadeau » (commande, documents et impressions du compte). */
+    .order-gift-card {
+        margin-block: --spacing(6);
+        border: 1px solid var(--color-brand-line);
+        border-radius: var(--radius-md);
+        background: var(--color-brand-blush);
+        padding: --spacing(5);
+    }
+
+    .order-gift-card__title {
+        margin-block-end: --spacing(3);
+        color: var(--color-brand-dark);
+        font-size: var(--text-subtitle);
+        font-weight: 500;
+    }
+
+    .order-gift-card__list {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr);
+        gap: --spacing(2) --spacing(4);
+
+        dt {
+            color: var(--color-brand-muted);
+        }
+    }
+
+    .order-gift-card__message {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
 }

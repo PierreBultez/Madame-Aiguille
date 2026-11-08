@@ -104,6 +104,7 @@
 
 .cart-checkout-actions { @apply mt-4; }
 .cart-checkout-actions li + li { @apply mt-2; }
+.cart-gift-note { @apply mt-3 text-caption text-brand-muted; }
 
 /* Blocs repliables du récapitulatif : code promo, estimation de livraison. */
 .cart-summary-block { @apply border-t border-brand-line py-1; }

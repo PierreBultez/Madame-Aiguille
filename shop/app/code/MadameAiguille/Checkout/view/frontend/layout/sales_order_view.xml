@@ -4,5 +4,8 @@
         <referenceBlock name="order_totals">
             <block class="MadameAiguille\Checkout\Block\Sales\GiftWrapTotal" name="madameaiguille.gift_wrap.total"/>
         </referenceBlock>
+        <referenceBlock name="sales.order.view">
+            <block class="MadameAiguille\Checkout\Block\Sales\GiftCard" name="madameaiguille_gift_card" as="madameaiguille_gift_card" template="MadameAiguille_Checkout::sales/gift-card.phtml"/>
+        </referenceBlock>
     </body>
 </page>

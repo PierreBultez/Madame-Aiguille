@@ -24,7 +24,15 @@
             </arguments>
         </referenceBlock>
 
+        <!-- Lot 11 : l'option cadeau se choisit à l'étape Livraison du tunnel, plus dans le panier -->
+        <referenceBlock name="checkout.cart.order.actions.gift_options.container" remove="true"/>
+
         <referenceBlock name="checkout.cart.methods.bottom">
+            <block name="checkout.cart.gift_wrap_note" as="cart.gift_wrap_note" template="Magento_Checkout::php-cart/gift-wrap-note.phtml">
+                <arguments>
+                    <argument name="gift_wrap_note" xsi:type="object">MadameAiguille\Checkout\ViewModel\Cart\GiftWrapNote</argument>
+                </arguments>
+            </block>
             <block class="Magento\Cms\Block\Block" name="checkout.cart.reassurance" as="cart.reassurance">
                 <arguments>
                     <argument name="block_id" xsi:type="string">cart_reassurance</argument>

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="sales_model_service_quote_submit_before">
+        <!-- En premier : une carte incomplète refuse la commande avant toute réservation -->
+        <observer name="madameaiguille_enforce_gift_card" instance="MadameAiguille\Checkout\Observer\EnforceGiftCard"/>
         <observer name="madameaiguille_apply_relay_point" instance="MadameAiguille\Checkout\Observer\ApplyRelayPoint"/>
         <observer name="madameaiguille_reserve_pickup_slot" instance="MadameAiguille\Checkout\Observer\ReservePickupSlot"/>
         <observer name="madameaiguille_copy_gift_wrap_to_order" instance="MadameAiguille\Checkout\Observer\CopyGiftWrapToOrder"/>

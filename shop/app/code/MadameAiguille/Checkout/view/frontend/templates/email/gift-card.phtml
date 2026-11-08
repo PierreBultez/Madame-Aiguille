@@ -1,0 +1,28 @@
+<?php
+/**
+ * Encart « Emballage et message cadeau » des emails de commande, de facture, d'avoir et d'expédition.
+ * Tableau simple : les clients email ne lisent ni grille ni variable CSS.
+ */
+
+declare(strict_types=1);
+
+use MadameAiguille\Checkout\Block\Sales\GiftCard;
+use Magento\Framework\Escaper;
+
+/** @var GiftCard $block */
+/** @var Escaper $escaper */
+$card = $block->getCard();
+?>
+<?php if ($card !== null): ?>
+    <table class="message-gift madameaiguille-gift-card">
+        <tr>
+            <td>
+                <h3><?= $escaper->escapeHtml($card['title']) ?></h3>
+                <strong><?= $escaper->escapeHtml(__('Gift from')) ?></strong> <?= $escaper->escapeHtml($card['sender']) ?><br>
+                <strong><?= $escaper->escapeHtml(__('Gift for')) ?></strong> <?= $escaper->escapeHtml($card['recipient']) ?><br>
+                <strong><?= $escaper->escapeHtml(__('Gift message')) ?></strong><br>
+                <?= /* @noEscape */ nl2br($escaper->escapeHtml($card['message'])) ?>
+            </td>
+        </tr>
+    </table>
+<?php endif ?>
