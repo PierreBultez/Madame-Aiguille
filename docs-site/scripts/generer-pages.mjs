@@ -28,7 +28,7 @@ const DOCUMENTS = [
             ['Fondations', [1, 2, 3, 4, 5, 6, 16]],
             ['Contenus', [7, 13, 18, 19]],
             ['Catalogue', [8, 9, 10, 11, 12, 31]],
-            ['Panier et tunnel', [14, 20, 26, 27]],
+            ['Panier et tunnel', [14, 20, 26, 27, 32]],
             ['Compte et emails', [21, 22, 28]],
             ['Exploitation', [15, 17, 23, 24, 25, 29, 30]],
         ],

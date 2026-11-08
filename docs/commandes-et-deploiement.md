@@ -379,6 +379,20 @@ ssh <vps> 'sudo tail -n 20 /var/log/matomo/archive.log'          # archivage hor
 ssh <vps> 'sudo -u matomo php8.5 /var/www/matomo/console core:archive --url=https://stats.madame-aiguille.fr/'
 ```
 
+### Adresses à région fausse (lecture seule)
+
+Avant le lot 11, le tunnel présélectionnait l'Indre-et-Loire dans toute nouvelle adresse (`documentation-theme.md`
+§32). `docs/requetes/adresses-region.php` liste les adresses françaises (carnet et commandes) dont la région ne
+correspond pas au département du code postal. La session MariaDB est en **lecture seule** ; les identifiants sont lus
+dans `env.php` sur place, jamais affichés :
+
+```bash
+ssh <vps> 'sudo -u madame-aiguille php' < docs/requetes/adresses-region.php
+```
+
+Une adresse du carnet se corrige en l'ouvrant dans le compte ou l'administration, puis **Enregistrer** : la région
+masquée est effacée. Les adresses des commandes passées restent dans l'historique.
+
 ### Assistant IA des fiches produits
 
 Réglages dans l'administration (*Configuration › Général › Assistant IA*) ; la **clé** s'y saisit et y est chiffrée,
