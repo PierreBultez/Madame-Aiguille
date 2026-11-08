@@ -8,7 +8,7 @@ Cliente finale : **Céline**, qui gère la boutique depuis le back-office sans t
 
 1. `docs/documentation-theme.md` — ce qui existe, où, et où modifier quoi. **§25 : le rituel de fin de lot.**
 2. `docs/plan-de-developpement.md` — lots, état, décisions.
-3. `docs/guide-exploitation.md` — le développement par lots s'est clos avec le lot 8 (02/11/2026) : surveillance, renouvellements, sauvegardes, mises à jour, déploiement et retour arrière. **Exceptions : le lot 9, mesure d'audience Matomo, livré le 03/11/2026** (`docs/prompts/prompt-lot9.md`), **et le lot 10, assistant IA des fiches produits, livré le 06/11/2026** (`docs/prompts/prompt-lot10.md`, `documentation-theme.md` §31). **Lot 11 ouvert le 07/11/2026** : corrections et contenus éditables (`docs/prompts/prompt-lot11.md`, plan section « Lot 11 »). Les autres `docs/prompts/prompt-lot<N>.md` restent pour l'historique.
+3. `docs/guide-exploitation.md` — le développement par lots s'est clos avec le lot 8 (02/11/2026) : surveillance, renouvellements, sauvegardes, mises à jour, déploiement et retour arrière. **Exceptions : le lot 9, mesure d'audience Matomo, livré le 03/11/2026** (`docs/prompts/prompt-lot9.md`), **et le lot 10, assistant IA des fiches produits, livré le 06/11/2026** (`docs/prompts/prompt-lot10.md`, `documentation-theme.md` §31). **Lot 11, corrections et contenus éditables, livré le 08/11/2026 sauf la galerie Instagram (C1)** (`docs/prompts/prompt-lot11.md`, plan section « Lot 11 », `documentation-theme.md` §32). Les autres `docs/prompts/prompt-lot<N>.md` restent pour l'historique.
 4. `docs/cahier-des-charges-docs-developpement/guide-bonnes-pratiques-hyva.md` — conventions de code.
 
 ## Règles non négociables

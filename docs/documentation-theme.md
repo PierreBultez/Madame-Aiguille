@@ -299,10 +299,10 @@ L'accueil suit cet ordre : hero, Nouveautés, Incontournables, nouvelles de l'at
 | Hero | *Contenu › Blocs* › `home_hero` : titre, texte, image et lien de catégorie | `Magento_Theme/layout/cms_index_index.xml`, styles `.home-hero` : centré et plafonné à 1440 px (`--breakpoint-2xl`), image plafonnée à 240 px sur mobile |
 | Nouveautés | Dates *Définir le produit comme nouveau à partir de / jusqu'au* sur la fiche ; titre et accroche dans `home_new` | widget Magento `NewWidget`, règles de dates natives ; produits épuisés exclus par `ViewModel/Home/Products.php` |
 | Incontournables | Fiche produit, groupe *Accueil* › *Incontournable sur l'accueil* ; titre et accroche dans `home_featured` | attribut EAV `home_featured`, quatre produits disponibles au maximum, ordre de création décroissant |
-| Marchés, congés, annonces | bloc `home_actualities` | bloc CMS indépendant ; le texte initial est volontairement générique et ne contient ni date ni promesse non validée |
+| Marchés, congés, annonces | bloc `home_actualities` pour le titre et l'introduction ; **rendez-vous** dans *Configuration › Madame Aiguille › Nouvelles de l'atelier (accueil)* (lot 11) | bloc CMS indépendant, puis les rendez-vous à venir (`Theme/Model/Home/Events.php`, §32) ; le texte initial est volontairement générique et ne contient ni date ni promesse non validée |
 | Histoire | bloc `home_story` | visuel initial `web/images/home/atelier.webp` et lien vers `a-propos` |
 | Arguments | titre du bloc `home_why`, puis ses quatre éléments | grille 2 colonnes mobile / 4 desktop |
-| Instagram | bloc `home_instagram` pour les quatre visuels ; URL dans *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | images initiales `web/images/home/ig-1.webp` à `ig-4.webp` ; bouton absent si l'URL Instagram est vide |
+| Instagram | bloc `home_instagram` pour les quatre visuels ; URL dans *Stores › Configuration › Général › Madame Aiguille › Réseaux sociaux* | images initiales `web/images/home/ig-1.webp` à `ig-4.webp` ; bouton absent si l'URL Instagram est vide ; il s'ouvre dans un nouvel onglet depuis le lot 11 |
 | Newsletter | bloc `home_newsletter` pour l'accroche | formulaire natif Magento retemplété dans `Magento_Newsletter/templates/subscribe.phtml`, reCAPTCHA natif conservé, confirmation par email activée dans `etc/config.xml` |
 
 Le titre affiché des sections structurées est le **titre du bloc CMS**. Désactiver un bloc le masque. Une sélection Nouveautés ou Incontournables sans produit disponible est masquée avec son titre. Les images sont éditables dans le contenu CMS avec le sélecteur de médias ; les fichiers du thème servent de valeurs initiales.
@@ -482,7 +482,7 @@ Références en lecture seule : `vendor/magento/module-checkout/view/frontend/we
 
 ### Composants ajoutés au lot 5
 
-Sous la liste des modes de livraison (région native `shippingAdditional`) : carte Mondial Relay, rendez-vous de retrait, case « Emballage cadeau » ; dans le récapitulatif, la ligne d'emballage. Livrés fonctionnellement par `MadameAiguille_Checkout` (§26), puis habillés au 6b par les surcharges `MadameAiguille_Checkout/web/template/{relay-point,pickup-slot,gift-wrap}.html` et `summary/gift-wrap.html` du thème checkout (§27).
+Sous la liste des modes de livraison (région native `shippingAdditional`) : carte Mondial Relay, rendez-vous de retrait, case « Emballage et message cadeau » et sa carte (lot 11, §32) ; dans le récapitulatif, la ligne d'emballage. Livrés fonctionnellement par `MadameAiguille_Checkout` (§26), puis habillés au 6b par les surcharges `MadameAiguille_Checkout/web/template/{relay-point,pickup-slot,gift-wrap}.html` et `summary/gift-wrap.html` du thème checkout (§27).
 
 ### Recette technique du 10/09/2026
 
@@ -595,6 +595,11 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 10 — Modèle ADE-FU (07/11/2026) | l'assistant suit la description du cabas Adèle : consigne réécrite (sections `h2`, encadré, tableau, foire aux questions, atelier), nettoyeur élargi, exemple de référence, aperçu stylé ; décisions de Pierre sur la voix, la conclusion et le tableau | commit du modèle |
 | 10 — Consigne après essai (07/11/2026) | essai sur TC-1 : Céline jamais nommée à la troisième personne, aucune intention ni raison de choix inventée | commit de la consigne |
 | 11 — Ouverture (07/11/2026) | lot 10 clos ; liste de bugs et de questions de Pierre transformée en cahier des charges (plan v3.8, section « Lot 11 ») et prompt `docs/prompts/prompt-lot11.md` ; aucun code | commit d'ouverture |
+| 11 — A, corrections (08/11/2026) | PR #27 : récapitulatif du tunnel (A1), fenêtre et 500 de la connexion du tunnel en PHP 8.5 (A2), « Récemment commandé » retiré (A4), région plus présélectionnée (A5), recherche en fondu (A6), lien Instagram en nouvel onglet (A7) | `e08aac5`, `36e8a55`, `30591c6`, `58c08ae`, `cf3e50d`, `efa516d`, `801a95c` |
+| 11 — B, option cadeau unifiée (08/11/2026) | PR #28 et #29 : « Emballage et message cadeau » à l'étape Livraison, carte obligatoire enregistrée en message cadeau natif, garde à la commande, bouton du panier retiré (A3), encart dans le compte, les emails, l'administration et les PDF | `0f05241`, `61acfc1`, `520ab5a`, `c726c2d`, `3cbc10f` |
+| 11 — C3, rendez-vous de l'accueil (08/11/2026) | PR #30 : grille *Nouvelles de l'atelier (accueil)*, rendez-vous à venir sous `home_actualities`, purge à l'enregistrement et chaque nuit | `cacf9c1`, `198e79c`, `f152f39` |
+| 11 — Contrôles et suites (08/11/2026) | PR #31 : `env:check` contrôle le reCAPTCHA de la connexion ; PR #32 : alias `mage` enregistré dans `~/.bash_aliases` ; PR #33 : région masquée effacée à l'enregistrement d'une adresse | `8a607dd`, `191d1c5`, `bf2f8d0` |
+| 11 — Documentation (08/11/2026) | §32, sections touchées, mémo, guides, plan v3.9, guide d'exploitation v1.3 ; site de documentation publié | commit de documentation |
 
 ## 18. Formulaire de contact
 
@@ -634,6 +639,7 @@ Le panier vide relève du lot 3 (§19). Cette section traite le panier contenant
 | **Seuil de livraison offerte** | Admin › *Stores › Configuration › Général › Madame Aiguille › Panier › Seuil de livraison offerte* | Défaut **60 €** depuis le lot 5 (49 € auparavant). **0 masque la barre et supprime le franco.** C'est aussi ce seuil qui rend le point relais gratuit au checkout (§26) : barre et tarif ne peuvent plus diverger |
 | **Champ code promo** | même écran, *Afficher le champ code promo* | Masqué par défaut : un champ ouvert donne à celles qui n'ont pas de code le sentiment de payer trop cher. À activer le jour où une règle de panier existe. Un coupon déjà appliqué reste toujours affiché et retirable, même réglage désactivé |
 | **Rassurance sous le bouton de commande** | Admin › *Contenu › Blocs › `cart_reassurance`* | Deux lignes : paiement et délai d'expédition. Textes éditables, à aligner sur les prestataires réellement activés (lot 5) |
+| **Emballage et message cadeau** | Admin › *Stores › Configuration › Général › Madame Aiguille › Emballage cadeau* | Lot 11 : plus de bouton « Options cadeau » dans le panier ; une ligne sous la rassurance renvoie à l'étape Livraison, tant que l'option est proposée (`Checkout/ViewModel/Cart/GiftWrapNote.php`, `php-cart/gift-wrap-note.phtml`, §32) |
 | **Mention sous le total** | Admin › *Configuration › Madame Aiguille › Catalogue › Mention sous le prix* | Même réglage que la fiche produit. Vide = rien n'est affiché ; aucune mention fiscale n'est écrite dans le code |
 | Nombre d'articles affichés dans le tiroir | Admin › *Stores › Configuration › Sales › Checkout › Shopping Cart Sidebar* | Valeurs natives Magento conservées |
 | Textes des messages de stock et des totaux | `i18n/fr_FR.csv` du thème | Les paquets de langue Magento 2.4.9 ne contiennent plus de traductions : sans ces entrées, la boutique affiche « Shopping Cart », « SousTotal » et « The requested qty is not available » |
@@ -693,10 +699,12 @@ Les pages du compte restent en **Hyvä** — seul le checkout bascule sur le th�
 | Navigation latérale | idem | `Magento_Customer/templates/account/navigation.phtml` |
 | Tableau de bord | `Magento_Sales/layout/customer_account_index.xml` | `Magento_Sales/templates/order/recent.phtml` — le bloc des dernières commandes est remonté au-dessus des informations |
 | Mes commandes | `Magento_Sales/layout/sales_order_history.xml` | `Magento_Sales/templates/order/history.phtml` |
-| Détail d'une commande | `Magento_Sales/layout/sales_order_view.xml` | `Magento_Sales/templates/order/view.phtml` |
+| Détail d'une commande | `Magento_Sales/layout/sales_order_view.xml` | `Magento_Sales/templates/order/view.phtml` | ; l'encart « Emballage et message cadeau » est l'enfant `madameaiguille_gift_card` (lot 11, §32), aussi sur les factures, avoirs, expéditions et impressions |
 | Création de compte | — | `Magento_Customer/templates/newcustomer.phtml` |
 | Réinitialisation du mot de passe | — | `Magento_Customer/templates/form/resetforgottenpassword.phtml` |
 | Assistance distante | `Magento_LoginAsCustomerAssistance/layout/customer_account_{create,edit}.xml` | le bloc natif d'opt-in est retiré : il n'entre pas dans le parcours convenu. **Le retirer par un `.phtml` vide ne suffit pas** — son layout est chargé après celui du compte, il faut viser le nom du bloc |
+
+**Adresses (lot 11)** : en France, la région est facultative et masquée ; elle est effacée à l'enregistrement d'une adresse (`Theme/Plugin/Customer/DropHiddenOptionalRegion.php`), sinon le formulaire renvoyait l'ancien nom de région dans un champ caché (§32).
 
 Styles : `web/tailwind/theme/account-nav.css` (colonne de 280 px, accordéon sous 768 px, entrée courante en `<strong>`) et `web/tailwind/theme/page-customer.css` (cartes de commande, badges de statut, frise, états vides, formulaires).
 
@@ -763,6 +771,10 @@ Elles n'existent pas dans Magento : « paiement reçu » et « prête pour retra
 
 L'accusé de réception du formulaire de contact (`MadameAiguille_Contact/email/acknowledgement.html`) a été repris pour utiliser la même enveloppe.
 
+### Emballage et message cadeau (lot 11)
+
+L'email de commande garde l'encart natif du message cadeau. Les emails de **facture, d'avoir et d'expédition** reçoivent l'encart « Emballage et message cadeau » (De la part de, Pour, message) sous les articles : gabarit `MadameAiguille_Checkout::email/gift-card.phtml`, enfant du bloc racine `items` de `sales_email_order_*_items`, ajouté au rendu par `Plugin/Sales/AppendGiftCardToEmail` — la directive `{{layout}}` ne rend que ce bloc racine (§32). Styles : `.madameaiguille-gift-card` dans `_email-extend.less`.
+
 ### Ce qui n'est pas bouclé
 
 - ~~**Email de virement**~~ : sans objet depuis le call du 11/09/2026 (carte bancaire en ligne, paiement sur place au retrait). Aucun gabarit n'avait été créé.
@@ -801,6 +813,10 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
+| **Galerie Instagram (lot 11, C1)** | API officielle de Meta, synchronisation par cron côté serveur, images copiées sur le serveur, aucun appel du navigateur vers Instagram. Prérequis : compte Instagram de Céline en **professionnel**, application Meta avec « API setup with Instagram login », compte relié et **jeton longue durée** (60 jours, renouvelable) saisi par Pierre dans une configuration chiffrée. Développement (environ 2 jours) après ces étapes ; d'ici là, bloc `home_instagram` | Pierre et Céline (Meta), puis agent |
+| **Option cadeau en production (lot 11, B)** | Recette avec **Stripe en mode test** : relais et retrait, total, facture, avoir, email, PDF, détail de commande de l'administration ; commandes de test annulées. Faite en local le 08/11/2026 | Pierre (bascule Stripe) et agent |
+| **Libellé de l'option cadeau** | « Emballage et message cadeau » et « J'emballe votre commande et j'écris votre message à la main sur une carte. » à faire valider par Céline (modifiables dans l'administration) ; ajouter l'option à la CGV avec le reste des contenus juridiques | Céline |
+| **Adresses à région fausse (lot 11, A5)** | 2 adresses du carnet (clients 1 et 2) : les ouvrir et cliquer *Enregistrer* (§32) ; les 17 adresses de commandes restent dans l'historique | Pierre |
 | **Assistant IA (lot 10)** | Livré le 06/11/2026 (§31). Restent : cocher la ressource *Assistant IA des fiches produits* dans le rôle « Atelier » et recetter avec le compte de Céline ; supprimer la copie de test `CT-1-1` ; réécrire les descriptions de CT-1, TC-1 et TV-1 (vidées par le patch) ; photos à recharger en JPEG (CT-1 : PNG de 2,6 Mo) ; confirmer le prix et le poids de TC-1 (99 €, 500 g) | Pierre ; Céline |
 | **Colis au-delà du dernier palier** | `tablerate` n'a pas de borne haute : au-delà de 30 kg (France, Monaco) ou 25 kg (Belgique, Luxembourg), un colis prend le tarif du dernier palier alors que Mondial Relay le refuse | Limite assumée, improbable |
 | **Réseau TikTok** | Saisir l'URL dans *Madame Aiguille › Réseaux sociaux* ; tant qu'elle est vide, l'icône est masquée | Céline |
@@ -825,7 +841,7 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Identifiant du bloc / page | Ce qu'il pilote | Détail |
 |---|---|---|
 | `header_announcement` | Bandeau en haut de toutes les pages. Le vider ou le désactiver masque le bandeau | §5 |
-| `home_hero`, `home_story`, `home_actualities` | Accueil : image et accroche, histoire de l'atelier, marchés et congés | §7 |
+| `home_hero`, `home_story`, `home_actualities` | Accueil : image et accroche, histoire de l'atelier, titre et introduction des nouvelles de l'atelier (les rendez-vous se saisissent dans *Configuration › Madame Aiguille › Nouvelles de l'atelier*) | §7, §32 |
 | `product_reassurance` | Quatre arguments sous le bouton d'achat de la fiche produit | §10 |
 | `cart_reassurance` | Deux lignes sous « Passer commande » dans le panier | §20 |
 | `contact_help`, `contact_locations` | Encarts de la page Contact | §18 |
@@ -841,7 +857,8 @@ Récapitulatif de ce qui se modifie sans toucher au code, écran par écran. Cha
 | Mondial Relay › Code enseigne | Code du compte pro (Offre Start). « BDTEST » = démonstration, la carte l'affiche | §26 |
 | Mondial Relay › Poids de l'emballage | 0,2 kg, ajouté une fois par colis au poids des créations pour choisir le tarif. À ajuster si l'emballage change | §26 |
 | Retrait à l'atelier | Nom, adresse et indications du lieu ; latitude / longitude (lien « Itinéraire ») ; image de plan facultative ; **disponibilités de chaque semaine** (jour, de, à — plusieurs plages possibles) ; durée d'un créneau ; clientes par créneau ; délai minimum avant un retrait ; nombre de jours proposés ; **jours sans retrait** (une date `AAAA-MM-JJ` par ligne, ou une période `AAAA-MM-JJ/AAAA-MM-JJ`) | §26 |
-| Emballage cadeau | Proposer ou non l'option, son **prix**, son libellé et le texte affiché sous la case | §26 |
+| Emballage cadeau | Proposer ou non l'option « Emballage et message cadeau », son **prix**, son libellé, le texte affiché sous la case et la **longueur maximale du message** (250 caractères) | §26, §32 |
+| Nouvelles de l'atelier (accueil) | Une ligne par rendez-vous : date, jusqu'au (plusieurs jours), titre, lieu, texte. Affichés sur l'accueil du plus proche au plus lointain (quatre au plus), masqués le lendemain de leur fin. Visible dès l'enregistrement : le message « types de cache invalides » qui suit peut être ignoré pour ce réglage | §32 |
 | Catalogue › Seuil de rareté | À partir de combien d'exemplaires restants la mention « Plus que N exemplaires » s'affiche. `0` désactive | §8 |
 | Catalogue › Mention sous le prix | Petite ligne sous le prix en fiche produit **et** sous le total du panier. Vide = rien | §8, §20 |
 | Panier › Seuil de livraison offerte | Montant à partir duquel le point relais est offert (**60 €**), et montant de la barre du panier. `0` supprime le franco et la barre. Penser au bandeau et au bloc `product_reassurance`, qui citent « 60 € » en toutes lettres | §20, §26 |
@@ -921,7 +938,7 @@ Les **textes** des emails se modifient dans *Marketing › Communications › Mo
 | **Préparer un retrait** | Le rendez-vous figure dans *Mode de livraison et paiement › Informations de livraison* (« Retrait à l'atelier — jeudi 15 octobre 2026 à 9 h 00 »). Quand la commande est prête : statut **Prête pour retrait**, l'email part avec le rendez-vous et le lieu | §26 |
 | **Remettre un retrait** | La méthode de paiement de la commande dit si elle est déjà réglée. **Carte bancaire en ligne** : déjà payée et facturée, **Expédier** suffit. **Paiement sur place** : au rendez-vous, encaisser (TPE ou espèces), puis **Facturer** et **Expédier**. Dans les deux cas, la commande passe en « Livrée » | §26 |
 | **Rendez-vous non honoré** | Annuler la commande (*Annuler* en haut de la commande) : le stock des créations et le créneau sont libérés automatiquement. Prévenir la cliente si besoin par un commentaire visible | §26 |
-| Emballage cadeau | Ligne « Emballage cadeau » dans les totaux de la commande ; le message à écrire sur la carte est dans *Message cadeau* du détail | §26 |
+| Emballage et message cadeau | Ligne « Emballage et message cadeau » dans les totaux ; la carte à écrire (De la part de, Pour, message) est dans le *Message cadeau* de la commande, et dans l'encart « Emballage et message cadeau » de la facture, de l'expédition, de l'avoir et de leurs PDF — le **bon de livraison** l'imprime pour la préparation du colis | §26, §32 |
 
 ### Catalogue — *Catalogue › Produits* et *Catalogue › Catégories*
 
@@ -1023,6 +1040,7 @@ Posée par data patches, une seule fois : un réglage modifié ensuite dans l'ad
 | `general/country/allow` | `FR,BE,LU,MC` — la Suisse est écartée |
 | `shipping/origin/*` | 35 Grande Rue, 37800 Saint-Épain, Indre-et-Loire, FR |
 | `tax/defaults/country` | `FR` ; aucune règle de taxe, prix TTC = prix encaissés |
+| `tax/defaults/region` | `0` (« * ») depuis le lot 11 : 219 présélectionnait l'Indre-et-Loire dans toute nouvelle adresse (§32) |
 | `payment/checkmo/active` | `0` |
 | `payment/stripe_payments/*` | défauts du `config.xml` du module Checkout (lot 8) : titre « Carte bancaire », formulaire intégré, encaissement immédiat |
 | Statuts par défaut des états | `pending_payment` → `madameaiguille_pending_payment`, `processing` → `madameaiguille_payment_received` (lot 8) |
@@ -1030,7 +1048,7 @@ Posée par data patches, une seule fois : un réglage modifié ensuite dans l'ad
 | `carriers/tablerate/*` | actif, « Mondial Relay — Livraison en point relais », condition `package_weight` |
 | `carriers/flatrate/active`, `carriers/freeshipping/active` | `0` |
 | `carriers/madameaiguille_pickup/*` | actif, France seulement |
-| `sales/gift_options/allow_order` | `1` — le message cadeau natif se saisit dans le panier |
+| `sales/gift_options/allow_order` | `1` — autorise le message cadeau natif, saisi **à l'étape Livraison** avec l'emballage depuis le lot 11 (§32) ; plus de bouton dans le panier |
 | `madameaiguille/cart/free_shipping_threshold` | `60` (défaut du module) |
 
 Les clés Stripe (`payment/stripe_payments_basic/*`) sont saisies dans l'admin par Pierre ; aucune n'est dans le dépôt. Mollie, utilisé jusqu'au 23/10/2026, est retiré (compte fermé).
@@ -1072,9 +1090,9 @@ Lieu générique en place : « Atelier Madame Aiguille, Saint-Épain (37800) ».
 
 ### Emballage cadeau
 
-Option de l'étape Livraison, 2 € par défaut (*Madame Aiguille › Emballage cadeau* : activation, prix, libellé, texte). Le *Gift Wrapping* natif est réservé à Adobe Commerce : la ligne est un total maison, porté par le panier (`quote.madameaiguille_gift_wrap`, montants sur `quote_address`), la commande, **la première facture** et **l'avoir qui solde la commande** (un retour partiel ne rembourse pas l'emballage). Affichée dans le récapitulatif du tunnel, le compte, les emails, l'admin et le PDF. Stripe ne reçoit que le montant total : aucune ligne dédiée n'est nécessaire (la ligne de surcharge Mollie a été retirée au lot 8).
+Option « **Emballage et message cadeau** » de l'étape Livraison depuis le lot 11, 2 € par défaut (*Madame Aiguille › Emballage cadeau* : activation, prix, libellé, texte, longueur maximale du message) ; la cocher demande De la part de, Pour et le message (§32). Le *Gift Wrapping* natif est réservé à Adobe Commerce : la ligne est un total maison, porté par le panier (`quote.madameaiguille_gift_wrap`, montants sur `quote_address`), la commande, **la première facture** et **l'avoir qui solde la commande** (un retour partiel ne rembourse pas l'emballage). Affichée dans le récapitulatif du tunnel, le compte, les emails, l'admin et le PDF. Stripe ne reçoit que le montant total : aucune ligne dédiée n'est nécessaire (la ligne de surcharge Mollie a été retirée au lot 8).
 
-Le **message cadeau** natif (la carte écrite à la main) se saisit dans le panier et s'affiche dans le détail de commande depuis le lot 7.
+Le **message cadeau** natif (la carte écrite à la main) **est** cette carte depuis le lot 11 : plus de message gratuit dans le panier, plus d'emballage sans message. Il s'affiche dans la commande, les factures, avoirs et expéditions, les emails, les PDF, le compte et l'administration (§32).
 
 ### Paiement en ligne : Stripe (lot 8)
 
@@ -1161,7 +1179,7 @@ Un statut posé à la main par Céline n'est jamais réécrit. L'email de vireme
 
 ## 27. Habillage du tunnel et confirmations (lot 6b)
 
-Livré le 09/10/2026 sur `lot-6b-habillage-tunnel`, depuis `main` (`8ee229c`). Pierre a demandé de reprendre aussi la mise en page du récapitulatif des maquettes, confirmé téléphone et CGV obligatoires, newsletter facultative décochée. Les méthodes Mollie sont provisoires à valider avec Céline. Pas de nouveau champ « Message pour Céline » en l’absence d’arbitrage : le message cadeau natif du panier reste disponible.
+Livré le 09/10/2026 sur `lot-6b-habillage-tunnel`, depuis `main` (`8ee229c`). Pierre a demandé de reprendre aussi la mise en page du récapitulatif des maquettes, confirmé téléphone et CGV obligatoires, newsletter facultative décochée. Les méthodes Mollie sont provisoires à valider avec Céline. Pas de nouveau champ « Message pour Céline » en l’absence d’arbitrage : le message cadeau natif du panier reste disponible (**remplacé au lot 11** par la carte de l’option « Emballage et message cadeau », saisie à l’étape Livraison, §32).
 
 ### Thème, identité et en-tête / pied
 
@@ -1308,7 +1326,7 @@ bin/magento madameaiguille:env:check                      # poste local
 bin/magento madameaiguille:env:check --serveur            # serveur ouvert (avant l'ouverture : --noindex)
 ```
 
-Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation (`NOINDEX` exigé avec `--noindex`, interdit sur un serveur contrôlé sans ce drapeau depuis l'ouverture), caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des quatre formulaires, code enseigne, franco, poids, mesure d'audience (§30), assistant IA (§31), fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
+Lit la configuration **effective** (ScopeConfig, `env.php`, modules), sans afficher de secret : mode, URLs HTTPS, indexation (`NOINDEX` exigé avec `--noindex`, interdit sur un serveur contrôlé sans ce drapeau depuis l'ouverture), caches et sessions, OpenSearch, cron, double authentification, SMTP et expéditeurs, Stripe (module, mode, clés, webhooks automatiques, boutons express), reCAPTCHA des cinq formulaires (la connexion depuis le lot 11), code enseigne, franco, poids, mesure d'audience (§30), assistant IA (§31), fontes des deux thèmes. Sort en erreur si un réglage rend la boutique inutilisable. Fichiers : `Theme/Console/Command/CheckEnvironment.php`, `Theme/Model/Environment/*`, tests `Theme/Test/Unit/Model/Environment/`. Le contrôleur est injecté par proxy : toutes les commandes sont construites à chaque `bin/magento`, `setup:install` compris.
 
 ### Ouverture des ventes (lot 8, 02/11/2026)
 
@@ -1655,3 +1673,123 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
   réglage caché.
 - Une erreur dans un gestionnaire `done` de jQuery empêche le `always` suivant : l'attente est levée avant tout
   traitement de la réponse.
+
+## 32. Corrections et contenus éditables (lot 11)
+
+Lot ouvert le 07/11/2026 à partir de la liste de bugs et de questions de Pierre (plan v3.8, section « Lot 11 »,
+`prompts/prompt-lot11.md`). Livré par pull requests séparées, chacune déployée par le workflow : **A** corrections
+(#27, #31, #33), **B** option cadeau unifiée (#28, #29), **C3** rendez-vous de l'accueil (#30). **C1** (galerie
+Instagram par l'API officielle) attend le compte professionnel, l'application Meta et le jeton (§23). C2 (histoire)
+et C4 (hero) sont **abandonnés** par Pierre : contenus qui changent rarement, qu'il gère lui-même dans les blocs.
+
+### Décisions (Pierre, 07 et 08/11/2026)
+
+- **Option cadeau unifiée** : une seule option payante « Emballage et message cadeau » ; la cocher demande
+  **De la part de**, **Pour** et le **message** (250 caractères, réglable) ; saisie **à l'étape Livraison seulement** ;
+  plus de message gratuit ni d'emballage sans message ; affichée **partout** (commande, factures, avoirs, expéditions,
+  emails, PDF, compte, administration).
+- **« Récemment commandé »** retiré ; **région** plus jamais présélectionnée ; recherche en fondu ; lien Instagram de
+  l'accueil dans un nouvel onglet.
+- **Rendez-vous de l'accueil** : liste saisie dans l'administration, masquée après la date.
+- **Connexion** : le tunnel garde le même reCAPTCHA v2 invisible que la connexion de la vitrine.
+- **Galerie Instagram** : API officielle de Meta, synchronisation côté serveur (en attente, §23).
+
+### A — Corrections
+
+| # | Cause | Correction | Fichiers |
+|---|---|---|---|
+| A1 | Le rendu natif pose `width:75px` en ligne sur la miniature du récapitulatif ; la règle à 56 px du thème ne s'appliquait pas, le nom chevauchait l'image | décalage des détails à 91 px (75 + 16) | `checkout/web/css/source/_checkout.less` |
+| A2 | `.authentication-wrapper` en `position: static` : la fenêtre « Se connecter » s'ouvrait sous le pied (2 303 px) ; et `customer/ajax/login` répondait **500** : CAPTCHA image coupé, `captcha_form_id` absent, `getCaptcha(null)` déprécié en PHP 8.5 et transformé en exception par Magento | conteneur relatif, aligné à droite sur 400 px, lien de 44 px ; identifiant absent remplacé par `''` | `_checkout.less` ; `Checkout/Plugin/Customer/TolerateMissingCaptchaFormId.php` |
+| A3 | Bouton « Options cadeau » du panier (`btn` sans `btn-size-lg`) | bouton retiré avec la partie B | — |
+| A4 | Barre latérale de réassort de Hyvä (`sale.reorder.sidebar`) | bloc retiré sur tout le site | `default/Magento_Theme/layout/default.xml` |
+| A5 | `tax/defaults/region = 219` exposé en `checkoutConfig.defaultRegionId`, appliqué par le tunnel et l'estimateur à toute nouvelle adresse, champ masqué ; et le formulaire du compte renvoie l'ancien nom de région dans un champ caché, si bien qu'une adresse fausse ne se corrigeait pas | région par défaut ramenée à « * » (seulement si elle vaut 219) ; à l'enregistrement d'une adresse, région effacée quand elle est facultative **et** masquée pour le pays | `Theme/Setup/Patch/Data/StopPresettingTaxRegion.php` ; `Theme/Plugin/Customer/DropHiddenOptionalRegion.php` (`beforeSave` de `AddressRepositoryInterface`) |
+| A6 | `#search-content` en `x-show` sans transition | fondu de 200 ms (`x-transition`), coupé par `motion-reduce` ; focus de Hyvä conservé | `default/Magento_Theme/templates/html/header.phtml` |
+| A7 | Lien sans `target` ni `rel` | `_blank`, `noopener noreferrer`, « (nouvelle fenêtre) » pour les lecteurs d'écran ; pied de page déjà conforme | `default/MadameAiguille_Theme/templates/home/social.phtml` |
+
+Adresses existantes : **non modifiées en base**. Relevé de production du 08/11/2026 (`docs/requetes/adresses-region.php`, lecture seule, `commandes-et-deploiement.md` §7) :
+19 adresses en 84350 marquées Indre-et-Loire, 2 du carnet (clients 1 et 2) et 17 de commandes de test. Celles du
+carnet se corrigent en les **enregistrant** depuis le compte ou l'administration ; celles des commandes restent
+dans l'historique, sans effet sur la livraison.
+
+`env:check` contrôle désormais aussi le reCAPTCHA de la **connexion** (`customer_login`, #31).
+
+### B — Option « Emballage et message cadeau »
+
+**Saisie** (tunnel Luma) : la case de l'étape Livraison ouvre une carte de trois champs obligatoires avec compteur
+(`MadameAiguille_Checkout/web/template/gift-wrap.html`, surchargé dans le thème du tunnel ;
+`js/model/gift-wrap.js`, `js/view/gift-wrap.js`). `shipping-mixin` bloque l'étape sur une carte incomplète ;
+`payload-extender-mixin` envoie trois attributs d'extension (`madameaiguille_gift_sender`, `…_recipient`,
+`…_message`). La carte déjà saisie revient pré-remplie (`Model/GiftWrap/ConfigProvider`).
+
+**Serveur** :
+
+| Rôle | Fichier |
+|---|---|
+| Validation (trois champs, longueur en caractères, retours à la ligne gardés) | `Checkout/Model/GiftWrap/GiftCard.php` |
+| Étape Livraison : carte enregistrée comme **message cadeau natif** du panier par `GiftMessageManager` ; option décochée → ancien message gratuit supprimé | `Checkout/Plugin/Checkout/AssignGiftWrap.php` |
+| Commande : emballage sans carte complète **refusé** ; message sans emballage **retiré, sans bloquer** ; lu sur le panier (Magento_GiftMessage le recopie sur la commande dans le même événement) | `Checkout/Observer/EnforceGiftCard.php`, premier sur `sales_model_service_quote_submit_before` |
+| Longueur maximale, libellé, texte | `Checkout/Model/GiftWrap/Config.php`, `etc/config.xml`, `etc/adminhtml/system.xml` ; renommage en base seulement des valeurs d'origine : `Setup/Patch/Data/RenameGiftWrapOption.php` |
+
+`sales/gift_options/allow_order` reste à 1 : c'est lui qui autorise l'enregistrement du message natif. Le bouton du
+panier est retiré par le thème (`checkout.cart.order.actions.gift_options.container`) et remplacé par une ligne
+« Emballage et message cadeau : à choisir à l'étape Livraison. » tant que l'option est proposée
+(`Checkout/ViewModel/Cart/GiftWrapNote.php`, `default/Magento_Checkout/templates/php-cart/gift-wrap-note.phtml`).
+
+**Affichage** : `Checkout/Model/GiftWrap/OrderGiftCard.php` lit la carte d'une commande (titre = libellé de l'option ;
+« Message cadeau » pour un ancien message gratuit) ; `Checkout/Block/Sales/GiftCard.php` retrouve la commande (donnée
+`order`, bloc parent, puis registre).
+
+| Où | Comment |
+|---|---|
+| Compte : commande, factures, avoirs, expéditions, impressions (connecté et invité) | `view/frontend/templates/sales/gift-card.phtml` dans les layouts `sales_order_*` / `sales_guest_*` ; la vue commande du thème appelle l'enfant `madameaiguille_gift_card` |
+| Emails de facture, d'avoir, d'expédition | `view/frontend/templates/email/gift-card.phtml`, enfant du bloc racine `items` ; `Plugin/Sales/AppendGiftCardToEmail.php` l'ajoute au rendu (la directive `{{layout}}` ne rend que la racine). L'email de **commande** garde l'encart natif |
+| Administration : factures, avoirs, expéditions (création et consultation) | `view/adminhtml/templates/sales/gift-card.phtml`, enfant de `order_info`. La page de la commande garde l'encart natif « Message cadeau » |
+| PDF de facture, d'avoir, de bon de livraison | `Plugin/Sales/GiftCardOnPdf.php` : encart après l'en-tête de chaque document (`insertDocumentNumber`, seule méthode publique appelée par document) ; total au libellé réglé (`Model/Pdf/GiftWrapTotal.php`, `etc/pdf.xml`) |
+
+**Recette locale** (08/11/2026) : commande `000000028` (compte de test, retrait, paiement sur place, 70 € dont 2 €),
+facture, expédition et avoir créés dans l'administration avec email ; encarts, emails rendus et trois PDF contrôlés ;
+ancien message gratuit retiré sans blocage ; tunnel à 1440 et 390 px. **Recette de production avec Stripe en mode
+test : à faire** (§23).
+
+### C3 — Rendez-vous de l'atelier sur l'accueil
+
+*Configuration › Madame Aiguille › Nouvelles de l'atelier (accueil)* : grille d'une ligne par rendez-vous (date,
+jusqu'au, titre, lieu, texte). Sur l'accueil, sous le texte du bloc `home_actualities`, les rendez-vous **à venir**,
+du plus proche au plus lointain, quatre au plus ; un rendez-vous disparaît le lendemain de sa fin ; sans rendez-vous,
+la section reste celle du bloc.
+
+| Rôle | Fichier |
+|---|---|
+| Lecture, filtre au jour du magasin, tri, limite | `Theme/Model/Home/Events.php` (`madameaiguille/home_events/list`) |
+| Dates en toutes lettres (« Samedi 14 novembre », « Du 12 au 14 décembre ») | `Theme/ViewModel/Home/Events.php` |
+| Bloc porteur du tag `madameaiguille_home_events` | `Theme/Block/Home/Events.php`, enfant `extra` de `home.actualities` |
+| Gabarit et styles | `default/MadameAiguille_Theme/templates/home/events.phtml`, `web/tailwind/theme/page-home.css` |
+| Grille d'administration | `Theme/Block/Adminhtml/Form/Field/{HomeEvents,DateColumn}.php` |
+| Purge (cache applicatif, FPC, Varnish) | `Theme/Model/Home/FlushEventsCache.php`, par `Observer/RefreshHomeEvents` (enregistrement) et le cron `madameaiguille_refresh_home_events` (0 h 01) |
+
+### Pièges rencontrés
+
+- **PHP 8.5 et dépréciations** : Magento transforme toute dépréciation en exception, y compris dans son propre code
+  (`array_key_exists(null, …)` du CAPTCHA). Un 500 sans trace dans `exception.log` se lit dans `system.log`.
+- **Varnish après un saut d'horloge** : au redémarrage du poste, l'horloge a reculé d'une heure après le lancement de
+  Varnish ; ses sondes de santé se sont figées et le site local répondait 503 avec un backend sain. Remède :
+  redémarrer Varnish.
+- **CSS Luma** : `setup:static-content:deploy -f` a gardé l'ancien CSS du tunnel ; supprimer
+  `pub/static/frontend/MadameAiguille/checkout` et son `var/view_preprocessed` avant de redéployer (§27).
+- **Message cadeau et observateurs** : `Magento_GiftMessage` recopie le message du panier sur la commande dans le même
+  événement que nos observateurs ; lire le panier, pas la commande.
+- **Emails** : la directive `{{layout}}` ne rend que le bloc racine du handle ; un bloc ajouté à côté ne s'affiche pas.
+- **PDF** : seules les méthodes publiques se branchent ; `insertDocumentNumber` est appelée une fois par document.
+- **Grilles de configuration** (`AbstractFieldArray`) : un renderer ne doit pas échapper les marqueurs `<%- _id %>`
+  du gabarit ; une ligne enregistrée sans une colonne fait planter le gabarit JavaScript (« title is not defined ») et
+  bloque l'enregistrement de toute la section ; `addColumn()` ne garde que `label`, `size`, `style`, `class`,
+  `renderer` ; cinq colonnes ne tiennent pas dans la colonne « valeur » de la configuration.
+- **Formulaire d'adresse Hyvä** : la région masquée est quand même envoyée, sous forme de texte.
+
+### Recette et contrôles
+
+- Captures avant et après, à 1440 et 390 px, en local et en production pour A1, A2, A3, A5, A7 (invité).
+- Connexion depuis le tunnel avec un compte de test local ; reCAPTCHA de la fenêtre de connexion contrôlé en
+  production.
+- **251 tests unitaires**, PHPCS Magento2 sans erreur sur les fichiers des lots ; `env:check --serveur` à **0 erreur,
+  0 avertissement** le 08/11/2026 (version `e5f9e71`).

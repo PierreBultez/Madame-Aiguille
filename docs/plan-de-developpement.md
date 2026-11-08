@@ -1,6 +1,8 @@
 # Plan de développement — Madame Aiguille
 
-Document interne — v3.8 (07/11/2026), lots 2 à 10 livrés, lot 11 ouvert ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+Document interne — v3.9 (08/11/2026), lots 2 à 10 livrés, lot 11 livré sauf la galerie Instagram (C1) ; boutique en ligne, indexée et ouverte aux ventes sur `https://madame-aiguille.fr`, avec mesure d'audience Matomo sans cookie. L'exploitation suit `guide-exploitation.md`.
+
+> **v3.9** — **Lot 11 livré le 08/11/2026, sauf C1.** **A** : récapitulatif du tunnel ; fenêtre « Se connecter » replacée et réparée (500 de `customer/ajax/login` en PHP 8.5, reCAPTCHA de la connexion conservé) ; « Récemment commandé » retiré ; région plus présélectionnée et effacée à l'enregistrement quand elle est masquée ; recherche en fondu ; lien Instagram en nouvel onglet. **B** : une seule option « Emballage et message cadeau » (2 €), carte De la part de / Pour / message obligatoire à l'étape Livraison, bouton du panier retiré, carte affichée dans le compte, les emails, l'administration et les PDF. **C3** : rendez-vous de l'atelier saisis dans l'administration, affichés sur l'accueil et masqués après la date. `env:check` contrôle aussi le reCAPTCHA de la connexion. **C2 et C4 abandonnés** (Pierre). **C1** (API Instagram) attend le compte professionnel, l'application Meta et le jeton. Restent aussi la recette de B en production avec Stripe en mode test et la validation du libellé par Céline. PR #27 à #33 ; détail : `documentation-theme.md` §32.
 
 > **v3.8** — **Lot 10 clos et lot 11 ouvert** le 07/11/2026 à la demande de Pierre. Après le lot 10 : galerie produit acceptant le WebP (converti en JPEG à l'envoi) et assistant calqué sur la description du cabas Adèle (ADE-FU). **Lot 11 : corrections et contenus éditables**, d'après la liste de Pierre : récapitulatif et lien de connexion du tunnel, option cadeau unifiée (emballage et message pour 2 €), bloc « Récemment commandé », région d'une adresse, bouton cadeau du panier, ouverture de la recherche, lien Instagram ; puis décisions et réalisation pour la galerie Instagram, l'histoire, les nouvelles de l'atelier et le hero. Cahier des charges : section « Lot 11 » ci-dessous ; prompt : `prompts/prompt-lot11.md`.
 
@@ -731,7 +733,7 @@ JSON-LD **et** par les microdonnées de Hyvä, toutes deux valides.
 
 ---
 
-## Lot 11 — Corrections et contenus éditables — **ouvert le 07/11/2026**
+## Lot 11 — Corrections et contenus éditables — **A, B et C3 livrés le 08/11/2026 ; C1 en attente**
 
 Décidé par Pierre le 07/11/2026, après la clôture du lot 10, à partir de sa liste de bugs et de questions relevés sur
 la boutique en ligne. Prompt de lancement : `prompts/prompt-lot11.md`.
@@ -785,6 +787,8 @@ ce que Céline aura à faire), et rien n'est développé avant sa décision.
 | C2 | **« L'histoire de Madame Aiguille »** (page `a-propos`, bloc `home_story`) : au minimum un WYSIWYG, au mieux un LLM pour rédiger le HTML | vérifier l'éditeur actuel des pages et blocs CMS (Page Builder ou WYSIWYG) ; étendre l'assistant du lot 10 aux pages et blocs CMS (même module, même charte au « je », même nettoyeur), ou se limiter à un éditeur simple |
 | C3 | **« Les nouvelles de l'atelier »** (bloc `home_actualities`) : comment l'utiliser ? dates saisies à la main ou synchronisées avec un service en ligne ? | petite liste d'événements dans l'administration (date, lieu, titre, texte, masqués après la date) ; ou import d'un agenda en ligne (flux iCal) ; ou bloc libre documenté |
 | C4 | **Hero** : peut-il se mettre à jour depuis l'administration ? | il l'est déjà par le bloc `home_hero` (§7), mais en HTML ; proposer un formulaire dédié (image, titre, texte, bouton) qui garde les performances de l'image principale (dimensions, préchargement) |
+
+**Décisions de Pierre du 08/11/2026** : C1 → **API officielle** (étapes Meta décrites, développement après le jeton) ; C2 et C4 → **abandonnés**, contenus rarement modifiés que Pierre gère dans les blocs ; C3 → **liste d'événements dans l'administration**, livrée (PR #30).
 
 **Hors périmètre** : servir les images de la vitrine en WebP (décision de Pierre du 07/11/2026, à réfléchir plus tard) ;
 l'assistant IA des fiches produits, sauf extension décidée en C2.

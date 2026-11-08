@@ -123,10 +123,20 @@ Le rendez-vous est dans **Mode de livraison et paiement › Informations de livr
    Dans les deux cas, la commande passe « Livrée ».
 3. **Rendez-vous non honoré** : **Annuler** la commande. Le stock et le créneau sont libérés.
 
-### Emballage cadeau et message
+### Emballage et message cadeau
 
-L'emballage apparaît en ligne « Emballage cadeau » dans les totaux. Le texte à écrire sur la carte est dans **Options
-cadeau** de la commande.
+La cliente qui coche **Emballage et message cadeau** (2 €) à l'étape Livraison remplit obligatoirement une carte :
+**De la part de**, **Pour** et le **message**. Vous emballez la commande et vous écrivez ce message à la main.
+
+- Dans la commande, l'option apparaît en ligne « Emballage et message cadeau » dans les totaux, et la carte dans
+  **Message cadeau pour toute la commande**.
+- La carte est aussi en haut de la **facture**, de l'**expédition** et de l'**avoir**, et sur leurs PDF. Le plus
+  pratique pour préparer le colis : **Imprimer** le bon de livraison depuis l'expédition, la carte y figure.
+
+![La carte dans une expédition](guide-back-office/21-cadeau-expedition.jpg)
+
+Il n'y a plus de message cadeau gratuit : un message sans emballage n'est jamais enregistré, et une commande avec
+emballage a toujours sa carte complète. La cliente retrouve la carte dans son compte et dans ses emails.
 
 ### Rembourser
 
@@ -143,7 +153,7 @@ prévenir. Une commande payée sur place se rembourse « hors ligne », après l
 | Identifiant | Où il s'affiche |
 |---|---|
 | `header_announcement` | Le bandeau tout en haut du site |
-| `home_hero`, `home_story`, `home_actualities` | L'accueil : visuel principal, histoire, nouvelles de l'atelier |
+| `home_hero`, `home_story`, `home_actualities` | L'accueil : visuel principal, histoire, titre et introduction des nouvelles de l'atelier |
 | `product_reassurance` | Les arguments sous le bouton d'achat des fiches |
 | `cart_reassurance` | Les arguments du panier |
 | `contact_help`, `contact_locations` | La page contact |
@@ -159,7 +169,7 @@ confidentialité).
 ## 6. Les réglages de la boutique
 
 *Magasins › Configuration › Madame Aiguille* : réseaux sociaux, mentions légales, catalogue, panier, formulaire de
-contact, Mondial Relay, retrait à l'atelier, emballage cadeau. Ouvrez un groupe, décochez **Utiliser les valeurs
+contact, Mondial Relay, retrait à l'atelier, emballage cadeau, nouvelles de l'atelier. Ouvrez un groupe, décochez **Utiliser les valeurs
 système** pour modifier un champ, puis **Sauvegarder la configuration**.
 
 - **Réseaux sociaux** : l'adresse de chaque réseau ; laissez vide pour masquer son icône dans le pied de page.
@@ -171,7 +181,21 @@ système** pour modifier un champ, puis **Sauvegarder la configuration**.
 
   ![Réglages du retrait](guide-back-office/13-retrait-reglages.jpg)
 
-- **Emballage cadeau** : proposer ou non l'option, son prix et son texte.
+- **Emballage cadeau** : proposer ou non l'option « Emballage et message cadeau », son prix, son libellé, le texte
+  sous la case et la longueur maximale du message (250 caractères, la taille d'une carte).
+
+  ![Réglages de l'option cadeau](guide-back-office/22-cadeau-reglages.jpg)
+
+- **Nouvelles de l'atelier (accueil)** : vos marchés, salons, portes ouvertes, congés. **Ajouter un rendez-vous**,
+  puis la date, *Jusqu'au* s'il dure plusieurs jours, le titre, le lieu et une phrase de texte (lieu et texte sont
+  facultatifs). **Sauvegarder la configuration** : l'accueil est à jour tout de suite, sans vider le cache (le
+  message « Au moins un des types de cache est invalide » qui s'affiche alors peut être ignoré). Les rendez-vous
+  s'affichent du plus proche au plus lointain, quatre au plus, et disparaissent tout seuls le lendemain de leur fin :
+  inutile de supprimer les anciens. La corbeille d'une ligne la retire.
+
+  ![Saisir les rendez-vous](guide-back-office/23-rendez-vous-reglages.jpg)
+
+  ![Les rendez-vous sur l'accueil](guide-back-office/24-rendez-vous-accueil.jpg)
 - **Mondial Relay** : le code enseigne (ne pas toucher) et le poids de l'emballage (0,2 kg).
 
 *Marketing* : **Règles de prix du panier** pour un code promo, **Gabarits d'email** pour relire les textes des emails,
