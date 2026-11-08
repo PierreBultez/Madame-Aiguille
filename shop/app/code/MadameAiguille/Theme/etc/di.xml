@@ -13,6 +13,11 @@
         <plugin name="madameaiguille_flush_cache_after_source_items_save" type="MadameAiguille\Theme\Plugin\Inventory\FlushCacheAfterSourceItemsSave" sortOrder="100"/>
     </type>
 
+    <!-- Adresse enregistrée : pas de région facultative et masquée pour le pays (lot 11, A5) -->
+    <type name="Magento\Customer\Api\AddressRepositoryInterface">
+        <plugin name="madameaiguille_drop_hidden_optional_region" type="MadameAiguille\Theme\Plugin\Customer\DropHiddenOptionalRegion" sortOrder="100"/>
+    </type>
+
     <!-- Mini-panier : plafond de stock par ligne et état du franco de port (lot 4) -->
     <type name="Magento\Checkout\CustomerData\Cart">
         <plugin name="madameaiguille_add_cart_data" type="MadameAiguille\Theme\Plugin\Checkout\CustomerData\AddCartData" sortOrder="100"/>
