@@ -1,10 +1,15 @@
 <?php
 /**
- * Connexion depuis le tunnel (lot 11, A2) : le CAPTCHA natif étant coupé sur la vitrine, la fenêtre de connexion
- * n'envoie pas de `captcha_form_id`. Le plugin natif `Captcha\Model\Customer\Plugin\AjaxLogin` appelle alors
+ * Connexion depuis le tunnel (lot 11, A2) : le CAPTCHA image natif (Magento_Captcha) étant coupé sur la vitrine,
+ * la fenêtre de connexion n'envoie pas de `captcha_form_id`. Le plugin natif `Captcha\Model\Customer\Plugin\AjaxLogin` appelle alors
  * `getCaptcha(null)`, et `array_key_exists(null, …)` est déprécié en PHP 8.5 : le gestionnaire d'erreurs de Magento
  * en fait une exception et `customer/ajax/login` répond 500. Un identifiant vide garde le comportement prévu
- * (aucun formulaire, donc aucun CAPTCHA exigé).
+ * (aucun formulaire, donc aucun CAPTCHA image exigé).
+ *
+ * La protection de la connexion n'est pas touchée : comme le formulaire de connexion de la vitrine, la fenêtre du
+ * tunnel porte le reCAPTCHA v2 invisible (Magento_ReCaptchaCheckout, `recaptcha-checkout-login`), vérifié côté serveur
+ * avant ce plugin par Magento_ReCaptchaCustomer (AjaxLoginObserver) dès que la connexion est protégée dans
+ * Sécurité › Google reCAPTCHA Storefront. Si le CAPTCHA image est réactivé, l'identifiant est de nouveau envoyé.
  */
 
 declare(strict_types=1);
