@@ -1775,25 +1775,25 @@ la section reste celle du bloc.
 ### C1 — Galerie Instagram synchronisée
 
 Module **`MadameAiguille_Instagram`**. Le serveur lit les dernières publications du compte `madame.aiguille` par
-l'**API Instagram officielle** (`https://graph.instagram.com/me/media`, jeton d'un compte professionnel relié à
-l'application Meta « Mme Aiguille », connexion unifiée), copie leurs images sur le site et les affiche dans « Instants
+l'**API Instagram officielle**, copie leurs images sur le site et les affiche dans « Instants
 d'atelier ». Le navigateur des visiteuses ne contacte jamais Instagram : **aucun cookie, CSP inchangée**, seuls les liens
 mènent vers les publications (nouvel onglet).
 
 | Rôle | Fichier |
 |---|---|
 | Réglages : activation, **jeton chiffré** (section propre, ressource ACL `MadameAiguille_Instagram::config` hors du rôle « Atelier »), nombre de publications (4) | `etc/adminhtml/system.xml`, `etc/config.xml` (`backend_model` Encrypted : sans lui, la configuration rend le jeton chiffré), `Model/Config.php` |
-| Client de l'API, erreurs sans jeton ni URL | `Model/Api/GraphClient.php` ; doublure locale `StubClient` (jeton `doublure-locale`, mode développeur seulement) via `ClientRouter` |
+| Client de l'API, erreurs sans jeton ni URL. **Deux sortes de jetons** : « IG… » (connexion Instagram) → `graph.instagram.com/me/media`, 60 jours, renouvelé ; **connexion unifiée** (utilisateur système, seule offerte aux applications récentes, dont « Mme Aiguille ») → `graph.facebook.com/v26.0/{identifiant du compte}/media`, **sans expiration**, avec le réglage *Identifiant du compte Instagram* (#38) | `Model/Api/GraphClient.php` ; doublure locale `StubClient` (jeton `doublure-locale`, mode développeur seulement) via `ClientRouter` |
 | Choix des publications (plus récentes, une image par publication : première d'un carrousel, vignette d'une vidéo), texte alternatif tiré de la légende | `Model/Feed/Selection.php` |
 | Images copiées dans `pub/media/madameaiguille/instagram/`, carrées, 640 px ; WebP converti en JPEG (GD de Magento ne le lit pas) | `Model/Feed/ImageStore.php` |
 | Synchronisation, liste mémorisée dans la table `flag`, purge de l'accueil si elle change ; en cas d'échec, la galerie précédente reste | `Model/Feed/{Synchronizer,Storage,FlushGalleryCache}.php`, cron `madameaiguille_instagram_sync` (toutes les 3 h, à la 17ᵉ minute) |
-| Jeton renouvelé chaque semaine (valable 60 jours) et réécrit chiffré | `Model/Feed/TokenRenewer.php`, cron `madameaiguille_instagram_renew_token` (3 h 23) |
+| Jeton « IG… » renouvelé chaque semaine (valable 60 jours) et réécrit chiffré ; jeton unifié jamais renouvelé, noté « sans expiration » | `Model/Feed/TokenRenewer.php`, cron `madameaiguille_instagram_renew_token` (3 h 23) |
 | Synchronisation à la demande | `bin/magento madameaiguille:instagram:sync [--renouveler-jeton]` |
 | Affichage : liste liée, introduction reprise du bloc `home_instagram` (paragraphe `home-intro`) ; **sans publication ou synchronisation coupée, le bloc `home_instagram` s'affiche comme avant** | `Block/Gallery.php` (tag `madameaiguille_home_instagram`), `ViewModel/Gallery.php`, `default/MadameAiguille_Instagram/templates/home/gallery.phtml`, `cms_index_index.xml` |
 | Contrôle : activée sans jeton (erreur), jamais synchronisée ou synchronisation de plus de 24 h (avertissement), jeton non renouvelé depuis 50 jours (erreur) | `Theme/Model/Environment/EnvironmentChecker::checkInstagram` |
 
 **Mise en service** (Pierre, après déploiement) : *Configuration › Général › Galerie Instagram* → *Synchroniser la
-galerie* « Oui », coller le jeton, enregistrer ; puis `mage madameaiguille:instagram:sync` et `mage
+galerie* « Oui », coller le jeton, saisir l'**identifiant du compte** (le numéro affiché sous `madame.aiguille` dans la
+section 2 de l'application Meta), enregistrer ; puis `mage madameaiguille:instagram:sync` et `mage
 madameaiguille:env:check --serveur`. Le jeton n'est jamais saisi en ligne de commande ni dans le dépôt.
 
 **Côté Meta** (09/11/2026) : l'interface ne propose plus la « connexion Instagram » seule ; on passe par *Cas
@@ -1827,7 +1827,9 @@ du jeton relevé par `env:check`. Le premier appel réel se fera avec le jeton d
 - **Champ chiffré** : `backend_model` Encrypted dans `system.xml` chiffre à l'enregistrement, mais la configuration ne
   rend la valeur déchiffrée que si `config.xml` déclare aussi `backend_model` sur la valeur par défaut.
 - **Meta** : l'interface change plus vite que sa documentation ; la « connexion Instagram » est fondue dans la
-  « connexion unifiée ».
+  « connexion unifiée », dont le jeton est **refusé par `graph.instagram.com`** (« Invalid OAuth access token - Cannot
+  parse access token », premier essai de production du 09/11/2026) et s'emploie sur `graph.facebook.com` avec
+  l'identifiant du compte.
 
 ### Recette et contrôles
 
