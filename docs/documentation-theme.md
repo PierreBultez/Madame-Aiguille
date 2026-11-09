@@ -601,6 +601,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 11 — Contrôles et suites (08/11/2026) | PR #31 : `env:check` contrôle le reCAPTCHA de la connexion ; PR #32 : alias `mage` enregistré dans `~/.bash_aliases` ; PR #33 : région masquée effacée à l'enregistrement d'une adresse | `8a607dd`, `191d1c5`, `bf2f8d0` |
 | 11 — Documentation (08/11/2026) | §32, sections touchées, mémo, guides, plan v3.9, guide d'exploitation v1.3 ; site de documentation publié | `b29afa5` |
 | 11 — CGV (08/11/2026) | libellé de l'option cadeau validé par Céline ; option décrite dans l'article 4 de la CGV (`DescribeGiftOptionInTerms`) | `9f7ed1c` |
+| 11 — CGV, réinsertion (09/11/2026) | paragraphe de l'option absent de `/cgv` en production malgré le patch appliqué (page probablement réenregistrée depuis un formulaire ouvert avant le déploiement) : réinséré par `RestoreGiftOptionInTerms`, même règle | `b090502` |
 
 ## 18. Formulaire de contact
 
@@ -1750,7 +1751,8 @@ panier est retiré par le thème (`checkout.cart.order.actions.gift_options.cont
 
 **CGV** : l'article 4 décrit l'option (libellé validé par Céline le 08/11/2026), par
 `Theme/Setup/Patch/Data/DescribeGiftOptionInTerms.php`, inséré après la phrase d'origine sur les créations épuisées et
-jamais sur une page retouchée à cet endroit.
+jamais sur une page retouchée à cet endroit. Absent de la production le 09/11/2026 bien que le patch ait tourné : réinséré
+par `RestoreGiftOptionInTerms` (même règle). Ne pas enregistrer la CGV depuis un formulaire ouvert avant un déploiement.
 
 **Recette locale** (08/11/2026) : commande `000000028` (compte de test, retrait, paiement sur place, 70 € dont 2 €),
 facture, expédition et avoir créés dans l'administration avec email ; encarts, emails rendus et trois PDF contrôlés ;
