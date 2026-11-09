@@ -11,6 +11,7 @@ namespace MadameAiguille\Instagram\ViewModel;
 use MadameAiguille\Instagram\Model\Config;
 use MadameAiguille\Instagram\Model\Feed\Storage;
 use Magento\Cms\Api\GetBlockByIdentifierInterface;
+use Magento\Cms\Model\Template\FilterProvider;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -22,7 +23,8 @@ class Gallery implements ArgumentInterface
         private readonly Config $config,
         private readonly Storage $storage,
         private readonly StoreManagerInterface $storeManager,
-        private readonly GetBlockByIdentifierInterface $getBlock
+        private readonly GetBlockByIdentifierInterface $getBlock,
+        private readonly FilterProvider $filterProvider
     ) {
     }
 
@@ -52,18 +54,21 @@ class Gallery implements ArgumentInterface
 
     /**
      * Phrase d'introduction du bloc `home_instagram` (paragraphe `home-intro`), gardée au-dessus des publications
-     * synchronisées : elle reste modifiable dans le bloc.
+     * synchronisées : elle reste modifiable dans le bloc. Le contenu passe d'abord par le filtre des blocs CMS, comme
+     * à l'affichage : Page Builder enregistre son élément « HTML Code » encodé (`&lt;p class=&quot;…`).
      */
     public function getIntro(): string
     {
+        $storeId = (int) $this->storeManager->getStore()->getId();
         try {
-            $content = $this->getBlock->execute('home_instagram', (int) $this->storeManager->getStore()->getId())
-                ->getContent();
+            $content = $this->getBlock->execute('home_instagram', $storeId)->getContent();
         } catch (NoSuchEntityException) {
             return '';
         }
 
-        return preg_match('#<p class="home-intro">(.*?)</p>#s', (string) $content, $match)
+        $html = $this->filterProvider->getBlockFilter()->setStoreId($storeId)->filter((string) $content);
+
+        return preg_match('#<p\b[^>]*\bclass="[^"]*\bhome-intro\b[^"]*"[^>]*>(.*?)</p>#s', $html, $match)
             ? trim(html_entity_decode(strip_tags($match[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8'))
             : '';
     }
