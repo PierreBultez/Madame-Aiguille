@@ -11,6 +11,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\FlagManager;
 use Magento\Framework\Module\Manager as ModuleManager;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
@@ -65,7 +66,8 @@ class EnvironmentCheckerTest extends TestCase
         array $deployment = [],
         ?int $cronMinutes = 1,
         bool $fontsPresent = true,
-        int $productsWithoutWeight = 0
+        int $productsWithoutWeight = 0,
+        array $flags = []
     ): array {
         $values = array_merge(self::READY, $config);
         $scopeConfig = $this->createStub(ScopeConfigInterface::class);
@@ -94,6 +96,9 @@ class EnvironmentCheckerTest extends TestCase
         $weights = $this->createStub(MissingWeightFinder::class);
         $weights->method('find')->willReturn(array_fill(0, $productsWithoutWeight, ['sku' => 'X', 'name' => 'X']));
 
+        $flagManager = $this->createStub(FlagManager::class);
+        $flagManager->method('getFlagData')->willReturnCallback(fn (string $code) => $flags[$code] ?? null);
+
         return (new EnvironmentChecker(
             $scopeConfig,
             $deploymentConfig,
@@ -101,7 +106,8 @@ class EnvironmentCheckerTest extends TestCase
             $registrar,
             $file,
             $cron,
-            $weights
+            $weights,
+            $flagManager
         ))->check($onServer, $noIndex);
     }
 
@@ -342,6 +348,73 @@ class EnvironmentCheckerTest extends TestCase
         self::assertContains(
             'Assistant IA — activé, clé présente, plafond 50 appels par jour',
             $this->messages($findings, Finding::OK)
+        );
+    }
+
+    public function testAnEnabledInstagramGalleryWithoutTokenIsAnError(): void
+    {
+        $errors = $this->messages(
+            $this->check(['madameaiguille_instagram/feed/enabled' => '1']),
+            Finding::ERROR
+        );
+
+        self::assertContains('Galerie Instagram — activée sans jeton : bloc home_instagram affiché', $errors);
+    }
+
+    public function testAFreshInstagramGalleryIsOk(): void
+    {
+        $ok = $this->messages($this->instagram(2 * 3600, 3 * 86400), Finding::OK);
+
+        self::assertContains(
+            'Galerie Instagram — 4 publication(s), synchronisée il y a 2 h, jeton renouvelé il y a 3 j',
+            $ok
+        );
+    }
+
+    public function testAStaleInstagramSyncWarnsAndAnOldTokenIsAnError(): void
+    {
+        $findings = $this->instagram(30 * 3600, 55 * 86400);
+
+        self::assertContains(
+            'Galerie Instagram — dernière synchronisation il y a 30 h : voir le journal',
+            $this->messages($findings, Finding::WARNING)
+        );
+        self::assertContains(
+            'Galerie Instagram — jeton renouvelé il y a 55 jours : il expire à 60, voir le journal (renouvellement)',
+            $this->messages($findings, Finding::ERROR)
+        );
+    }
+
+    public function testAnInstagramGalleryNeverSyncedWarns(): void
+    {
+        self::assertContains(
+            'Galerie Instagram — aucune synchronisation réussie : `madameaiguille:instagram:sync`',
+            $this->messages($this->instagram(null, null), Finding::WARNING)
+        );
+    }
+
+    /**
+     * @return list<Finding>
+     */
+    private function instagram(?int $syncedAgo, ?int $refreshedAgo): array
+    {
+        $flags = [];
+        if ($syncedAgo !== null) {
+            $flags['madameaiguille_instagram_feed'] = ['synced_at' => time() - $syncedAgo, 'items' => [1, 2, 3, 4]];
+        }
+        if ($refreshedAgo !== null) {
+            $flags['madameaiguille_instagram_token'] = ['refreshed_at' => time() - $refreshedAgo];
+        }
+
+        return $this->check(
+            ['madameaiguille_instagram/feed/enabled' => '1', 'madameaiguille_instagram/feed/access_token' => 'chiffré'],
+            true,
+            true,
+            [],
+            1,
+            true,
+            0,
+            $flags
         );
     }
 }

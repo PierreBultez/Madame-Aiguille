@@ -18,6 +18,7 @@ use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Component\ComponentRegistrarInterface;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Module\Manager as ModuleManager;
+use Magento\Framework\FlagManager;
 use Magento\Store\Model\ScopeInterface;
 
 class EnvironmentChecker
@@ -57,7 +58,8 @@ class EnvironmentChecker
         private readonly ComponentRegistrarInterface $componentRegistrar,
         private readonly File $file,
         private readonly CronHeartbeat $cronHeartbeat,
-        private readonly MissingWeightFinder $missingWeightFinder
+        private readonly MissingWeightFinder $missingWeightFinder,
+        private readonly FlagManager $flagManager
     ) {
     }
 
@@ -83,6 +85,7 @@ class EnvironmentChecker
         $this->checkShipping();
         $this->checkAnalytics($onServer);
         $this->checkAiAssistant();
+        $this->checkInstagram();
         $this->checkFonts();
 
         return $this->findings;
@@ -352,6 +355,57 @@ class EnvironmentChecker
         $problems === []
             ? $this->ok('Assistant IA', sprintf('activé, clé présente, plafond %s appels par jour', $limit ?: '50'))
             : $this->error('Assistant IA', sprintf('activé mais %s : le bouton reste caché', implode(', ', $problems)));
+    }
+
+    /**
+     * Galerie Instagram de l'accueil (lot 11, MadameAiguille_Instagram). Sans synchronisation réussie, l'accueil garde
+     * le bloc home_instagram : avertissement. Jeton non renouvelé depuis 50 jours (il expire à 60) : erreur, la galerie
+     * se figera. Le jeton, chiffré, n'est jamais déchiffré ici.
+     */
+    private function checkInstagram(): void
+    {
+        if (!$this->flag('madameaiguille_instagram/feed/enabled')) {
+            $this->ok('Galerie Instagram', 'désactivée : bloc home_instagram');
+            return;
+        }
+        if (trim((string) $this->value('madameaiguille_instagram/feed/access_token')) === '') {
+            $this->error('Galerie Instagram', 'activée sans jeton : bloc home_instagram affiché');
+            return;
+        }
+
+        $now = time();
+        $feed = $this->flagManager->getFlagData('madameaiguille_instagram_feed');
+        $syncedAt = is_array($feed) && isset($feed['synced_at']) ? (int) $feed['synced_at'] : null;
+        $token = $this->flagManager->getFlagData('madameaiguille_instagram_token');
+        $refreshedAt = is_array($token) && isset($token['refreshed_at']) ? (int) $token['refreshed_at'] : null;
+
+        if ($refreshedAt !== null && $now - $refreshedAt > 50 * 86400) {
+            $this->error('Galerie Instagram', sprintf(
+                'jeton renouvelé il y a %d jours : il expire à 60, voir le journal (renouvellement)',
+                intdiv($now - $refreshedAt, 86400)
+            ));
+        }
+        if ($syncedAt === null) {
+            $this->warning('Galerie Instagram', 'aucune synchronisation réussie : `madameaiguille:instagram:sync`');
+            return;
+        }
+        if ($now - $syncedAt > 86400) {
+            $this->warning('Galerie Instagram', sprintf(
+                'dernière synchronisation il y a %d h : voir le journal',
+                intdiv($now - $syncedAt, 3600)
+            ));
+            return;
+        }
+
+        $this->ok('Galerie Instagram', sprintf(
+            '%d publication(s), synchronisée il y a %d h, jeton %s',
+            is_array($feed['items'] ?? null) ? count($feed['items']) : 0,
+            intdiv($now - $syncedAt, 3600),
+            $refreshedAt === null ? 'pas encore renouvelé par le site' : sprintf(
+                'renouvelé il y a %d j',
+                intdiv($now - $refreshedAt, 86400)
+            )
+        ));
     }
 
     private function checkFonts(): void
