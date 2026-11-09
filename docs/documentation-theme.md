@@ -601,7 +601,7 @@ Sur le serveur, toute commande Magento tourne sous l'utilisateur du pool : `sudo
 | 11 — Contrôles et suites (08/11/2026) | PR #31 : `env:check` contrôle le reCAPTCHA de la connexion ; PR #32 : alias `mage` enregistré dans `~/.bash_aliases` ; PR #33 : région masquée effacée à l'enregistrement d'une adresse | `8a607dd`, `191d1c5`, `bf2f8d0` |
 | 11 — Documentation (08/11/2026) | §32, sections touchées, mémo, guides, plan v3.9, guide d'exploitation v1.3 ; site de documentation publié | `b29afa5` |
 | 11 — CGV (08/11/2026) | libellé de l'option cadeau validé par Céline ; option décrite dans l'article 4 de la CGV (`DescribeGiftOptionInTerms`) | `9f7ed1c` |
-| 11 — CGV, réinsertion (09/11/2026) | paragraphe de l'option absent de `/cgv` en production : la page y a été enregistrée depuis Page Builder le 07/11/2026 (ancien texte dans un bloc « Code HTML », balises encodées) et l'ancre n'était plus trouvée. `withClause` reconnaît cette forme ; `RestoreGiftOptionInTerms` (sans effet) puis `InsertGiftOptionInPageBuilderTerms` | `b090502`, à venir |
+| 11 — CGV, réinsertion (09/11/2026) | paragraphe de l'option absent de `/cgv` en production : la page y a été enregistrée depuis Page Builder le 07/11/2026 (ancien texte dans un bloc « Code HTML », balises encodées) et l'ancre n'était plus trouvée. `withClause` reconnaît cette forme ; `RestoreGiftOptionInTerms` (sans effet) puis `InsertGiftOptionInPageBuilderTerms` | `b090502`, `cc8c933` |
 
 ## 18. Formulaire de contact
 
