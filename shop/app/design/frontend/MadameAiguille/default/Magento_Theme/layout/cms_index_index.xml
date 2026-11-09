@@ -76,7 +76,13 @@
                         <argument name="block_id" xsi:type="string">home_instagram</argument>
                         <argument name="content_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Content</argument>
                     </arguments>
-                    <block class="Magento\Cms\Block\Block" name="home.instagram.content" as="content"><arguments><argument name="block_id" xsi:type="string">home_instagram</argument></arguments></block>
+                    <!-- Lot 11 (C1) : publications synchronisées depuis Instagram, sinon le bloc CMS home_instagram -->
+                    <block class="MadameAiguille\Instagram\Block\Gallery" name="home.instagram.gallery" as="content" template="MadameAiguille_Instagram::home/gallery.phtml">
+                        <arguments>
+                            <argument name="gallery_view_model" xsi:type="object">MadameAiguille\Instagram\ViewModel\Gallery</argument>
+                        </arguments>
+                        <block class="Magento\Cms\Block\Block" name="home.instagram.content" as="fallback"><arguments><argument name="block_id" xsi:type="string">home_instagram</argument></arguments></block>
+                    </block>
                     <block name="home.instagram.link" as="extra" template="MadameAiguille_Theme::home/social.phtml"><arguments><argument name="social_links" xsi:type="object">MadameAiguille\Theme\ViewModel\SocialLinks</argument></arguments></block>
                 </block>
                 <block name="home.newsletter" after="home.instagram" template="MadameAiguille_Theme::home/section.phtml" ifconfig="newsletter/general/active">

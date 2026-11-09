@@ -32,6 +32,9 @@
 .home-reasons p { @apply text-base text-brand-dark; }
 .home-gallery { @apply grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6; }
 .home-gallery img { @apply w-full aspect-square object-cover rounded-sm; }
+.home-gallery--instagram { @apply list-none p-0; }
+.home-gallery--instagram a { @apply block rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand; }
+.home-gallery--instagram img { @apply transition-opacity duration-200 hover:opacity-90 motion-reduce:transition-none; }
 .home-newsletter-form { @apply mx-auto max-w-2xl text-brand-dark; }
 .home-newsletter-fields { @apply flex flex-col gap-3 sm:flex-row; }
 .home-newsletter-fields input { @apply min-w-0 flex-1; }

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="madameaiguille_instagram" translate="label" type="text" sortOrder="165" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Galerie Instagram</label>
+            <tab>general</tab>
+            <resource>MadameAiguille_Instagram::config</resource>
+            <group id="feed" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Instants d'atelier (accueil)</label>
+                <comment>Les dernières publications du compte Instagram de l'atelier, récupérées par le serveur toutes les trois heures (API officielle de Meta) et copiées sur le site : le navigateur des visiteuses ne contacte jamais Instagram, aucun cookie. Sans publication récupérée, l'accueil garde le bloc « home_instagram ».</comment>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Synchroniser la galerie</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Non : l'accueil affiche le bloc « home_instagram », comme avant.</comment>
+                </field>
+                <field id="access_token" translate="label comment" type="obscure" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Jeton d'accès Instagram</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <comment>Généré dans l'application Meta (API Instagram, « Générez des tokens d'accès »). Enregistré chiffré, jamais affiché ; le site le renouvelle seul avant ses 60 jours.</comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="count" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Nombre de publications affichées</label>
+                    <validate>required-entry validate-digits validate-digits-range digits-range-1-8</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

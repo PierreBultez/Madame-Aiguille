@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="madameaiguille_instagram_sync" instance="MadameAiguille\Instagram\Cron\SyncFeed" method="execute">
+            <schedule>17 */3 * * *</schedule>
+        </job>
+        <job name="madameaiguille_instagram_renew_token" instance="MadameAiguille\Instagram\Cron\RenewToken" method="execute">
+            <schedule>23 3 * * *</schedule>
+        </job>
+    </group>
+</config>
