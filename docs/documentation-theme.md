@@ -1788,7 +1788,7 @@ mènent vers les publications (nouvel onglet).
 | Synchronisation, liste mémorisée dans la table `flag`, purge de l'accueil si elle change ; en cas d'échec, la galerie précédente reste | `Model/Feed/{Synchronizer,Storage,FlushGalleryCache}.php`, cron `madameaiguille_instagram_sync` (toutes les 3 h, à la 17ᵉ minute) |
 | Jeton « IG… » renouvelé chaque semaine (valable 60 jours) et réécrit chiffré ; jeton unifié jamais renouvelé, noté « sans expiration » | `Model/Feed/TokenRenewer.php`, cron `madameaiguille_instagram_renew_token` (3 h 23) |
 | Synchronisation à la demande | `bin/magento madameaiguille:instagram:sync [--renouveler-jeton]` |
-| Affichage : liste liée, introduction reprise du bloc `home_instagram` (paragraphe `home-intro`) ; **sans publication ou synchronisation coupée, le bloc `home_instagram` s'affiche comme avant** | `Block/Gallery.php` (tag `madameaiguille_home_instagram`), `ViewModel/Gallery.php`, `default/MadameAiguille_Instagram/templates/home/gallery.phtml`, `cms_index_index.xml` |
+| Affichage : liste liée, introduction reprise du bloc `home_instagram` (paragraphe de classe `home-intro`, lu après le filtre des blocs CMS, qui décode l'élément « HTML Code » de Page Builder) ; **sans publication ou synchronisation coupée, le bloc `home_instagram` s'affiche comme avant** | `Block/Gallery.php` (tag `madameaiguille_home_instagram`), `ViewModel/Gallery.php`, `default/MadameAiguille_Instagram/templates/home/gallery.phtml`, `cms_index_index.xml` |
 | Contrôle : activée sans jeton (erreur), jamais synchronisée ou synchronisation de plus de 24 h (avertissement), jeton non renouvelé depuis 50 jours (erreur) | `Theme/Model/Environment/EnvironmentChecker::checkInstagram` |
 
 **Mise en service** (Pierre, après déploiement) : *Configuration › Général › Galerie Instagram* → *Synchroniser la
@@ -1832,11 +1832,16 @@ connexion unifiée, corrigé par #38), puis 4 publications synchronisées, image
   « connexion unifiée », dont le jeton est **refusé par `graph.instagram.com`** (« Invalid OAuth access token - Cannot
   parse access token », premier essai de production du 09/11/2026) et s'emploie sur `graph.facebook.com` avec
   l'identifiant du compte.
+- **Page Builder et lecture d'un bloc** : un bloc enregistré depuis le back-office range le HTML dans un élément
+  « HTML Code » **encodé** (`&lt;p class=&quot;home-intro&quot;&gt;…`), décodé seulement par le filtre d'affichage.
+  Lire `getContent()` brut ne trouve plus rien : passer par `FilterProvider::getBlockFilter()` (introduction de la
+  galerie disparue après une modification de Céline, 09/11/2026). Un constructeur modifié demande
+  `setup:di:compile` : `generated/metadata` fige les arguments et l'accueil répond 500.
 
 ### Recette et contrôles
 
 - Captures avant et après, à 1440 et 390 px, en local et en production pour A1, A2, A3, A5, A7 (invité).
 - Connexion depuis le tunnel avec un compte de test local ; reCAPTCHA de la fenêtre de connexion contrôlé en
   production.
-- **251 tests unitaires**, PHPCS Magento2 sans erreur sur les fichiers des lots ; `env:check --serveur` à **0 erreur,
+- **251 tests unitaires** (275 le 09/11/2026, après la correction de l'introduction Instagram), PHPCS Magento2 sans erreur sur les fichiers des lots ; `env:check --serveur` à **0 erreur,
   0 avertissement** le 08/11/2026 (version `e5f9e71`).
