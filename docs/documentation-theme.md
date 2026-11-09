@@ -814,7 +814,7 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
-| **Galerie Instagram (lot 11, C1)** | API officielle de Meta, synchronisation par cron côté serveur, images copiées sur le serveur, aucun appel du navigateur vers Instagram. **En attente de la validation du compte entreprise par Meta (08/11/2026).** Prérequis : compte Instagram de Céline en **professionnel**, application Meta avec « API setup with Instagram login », compte relié et **jeton longue durée** (60 jours, renouvelable) saisi par Pierre dans une configuration chiffrée. Développement (environ 2 jours) après ces étapes ; d'ici là, bloc `home_instagram` | Pierre et Céline (Meta), puis agent |
+| **Galerie Instagram (lot 11, C1)** | Livrée en code le 09/11/2026 (§32, module `MadameAiguille_Instagram`). Côté Meta, fait par Pierre : entreprise vérifiée, application « Mme Aiguille », compte `madame.aiguille` relié (API Instagram, connexion unifiée), jeton généré. **Reste, après déploiement** : saisir le jeton dans *Configuration › Général › Galerie Instagram*, activer, lancer `madameaiguille:instagram:sync`, contrôler l'accueil et `env:check` | Pierre |
 | **Option cadeau en production (lot 11, B)** | Recette complète faite en local le 08/11/2026. En production, Pierre la fait lui-même avec Stripe en **mode live** (décision du 08/11/2026) : commande réelle avec l'option, puis facture, avoir et remboursement depuis l'administration | Pierre |
 | **Libellé de l'option cadeau** | « Emballage et message cadeau » et son texte **validés par Céline le 08/11/2026**. Option décrite dans l'article 4 de la CGV par `Theme/Setup/Patch/Data/DescribeGiftOptionInTerms.php` (contenu, message recopié à la main, remboursement) ; à faire valider par le conseil avec le reste de la CGV | Soldé ; Céline avec conseil (CGV) |
 | **Adresses à région fausse (lot 11, A5)** | 2 adresses du carnet (clients 1 et 2) réenregistrées par Pierre le 08/11/2026, région effacée (§32) ; les 17 adresses de commandes restent dans l'historique | Soldé |
@@ -1680,7 +1680,7 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
 Lot ouvert le 07/11/2026 à partir de la liste de bugs et de questions de Pierre (plan v3.8, section « Lot 11 »,
 `prompts/prompt-lot11.md`). Livré par pull requests séparées, chacune déployée par le workflow : **A** corrections
 (#27, #31, #33), **B** option cadeau unifiée (#28, #29), **C3** rendez-vous de l'accueil (#30). **C1** (galerie
-Instagram par l'API officielle) attend le compte professionnel, l'application Meta et le jeton (§23). C2 (histoire)
+Instagram par l'API officielle) est livrée en code (#37) ; sa mise en service attend la saisie du jeton (§23). C2 (histoire)
 et C4 (hero) sont **abandonnés** par Pierre : contenus qui changent rarement, qu'il gère lui-même dans les blocs.
 
 ### Décisions (Pierre, 07 et 08/11/2026)
@@ -1772,6 +1772,40 @@ la section reste celle du bloc.
 | Grille d'administration | `Theme/Block/Adminhtml/Form/Field/{HomeEvents,DateColumn}.php` |
 | Purge (cache applicatif, FPC, Varnish) | `Theme/Model/Home/FlushEventsCache.php`, par `Observer/RefreshHomeEvents` (enregistrement) et le cron `madameaiguille_refresh_home_events` (0 h 01) |
 
+### C1 — Galerie Instagram synchronisée
+
+Module **`MadameAiguille_Instagram`**. Le serveur lit les dernières publications du compte `madame.aiguille` par
+l'**API Instagram officielle** (`https://graph.instagram.com/me/media`, jeton d'un compte professionnel relié à
+l'application Meta « Mme Aiguille », connexion unifiée), copie leurs images sur le site et les affiche dans « Instants
+d'atelier ». Le navigateur des visiteuses ne contacte jamais Instagram : **aucun cookie, CSP inchangée**, seuls les liens
+mènent vers les publications (nouvel onglet).
+
+| Rôle | Fichier |
+|---|---|
+| Réglages : activation, **jeton chiffré** (section propre, ressource ACL `MadameAiguille_Instagram::config` hors du rôle « Atelier »), nombre de publications (4) | `etc/adminhtml/system.xml`, `etc/config.xml` (`backend_model` Encrypted : sans lui, la configuration rend le jeton chiffré), `Model/Config.php` |
+| Client de l'API, erreurs sans jeton ni URL | `Model/Api/GraphClient.php` ; doublure locale `StubClient` (jeton `doublure-locale`, mode développeur seulement) via `ClientRouter` |
+| Choix des publications (plus récentes, une image par publication : première d'un carrousel, vignette d'une vidéo), texte alternatif tiré de la légende | `Model/Feed/Selection.php` |
+| Images copiées dans `pub/media/madameaiguille/instagram/`, carrées, 640 px ; WebP converti en JPEG (GD de Magento ne le lit pas) | `Model/Feed/ImageStore.php` |
+| Synchronisation, liste mémorisée dans la table `flag`, purge de l'accueil si elle change ; en cas d'échec, la galerie précédente reste | `Model/Feed/{Synchronizer,Storage,FlushGalleryCache}.php`, cron `madameaiguille_instagram_sync` (toutes les 3 h, à la 17ᵉ minute) |
+| Jeton renouvelé chaque semaine (valable 60 jours) et réécrit chiffré | `Model/Feed/TokenRenewer.php`, cron `madameaiguille_instagram_renew_token` (3 h 23) |
+| Synchronisation à la demande | `bin/magento madameaiguille:instagram:sync [--renouveler-jeton]` |
+| Affichage : liste liée, introduction reprise du bloc `home_instagram` (paragraphe `home-intro`) ; **sans publication ou synchronisation coupée, le bloc `home_instagram` s'affiche comme avant** | `Block/Gallery.php` (tag `madameaiguille_home_instagram`), `ViewModel/Gallery.php`, `default/MadameAiguille_Instagram/templates/home/gallery.phtml`, `cms_index_index.xml` |
+| Contrôle : activée sans jeton (erreur), jamais synchronisée ou synchronisation de plus de 24 h (avertissement), jeton non renouvelé depuis 50 jours (erreur) | `Theme/Model/Environment/EnvironmentChecker::checkInstagram` |
+
+**Mise en service** (Pierre, après déploiement) : *Configuration › Général › Galerie Instagram* → *Synchroniser la
+galerie* « Oui », coller le jeton, enregistrer ; puis `mage madameaiguille:instagram:sync` et `mage
+madameaiguille:env:check --serveur`. Le jeton n'est jamais saisi en ligne de commande ni dans le dépôt.
+
+**Côté Meta** (09/11/2026) : l'interface ne propose plus la « connexion Instagram » seule ; on passe par *Cas
+d'utilisation › Gérer les messages et les contenus sur Instagram › Personnaliser › API setup with Unified login*,
+section **2. Générez des tokens d'accès** (compte ajouté comme testeur Instagram, connexion par Céline). La section 1
+(configuration, URL de redirection), les webhooks, le contrôle app et la publication de l'application ne servent pas :
+l'application reste « Non publiée ».
+
+**Recette locale** (09/11/2026, doublure) : 4 images de 640 px copiées, accueil à 1440 px identique à l'ancienne
+galerie, 390 px en deux colonnes sans débordement, repli sur le bloc quand la synchronisation est coupée, renouvellement
+du jeton relevé par `env:check`. Le premier appel réel se fera avec le jeton de production.
+
 ### Pièges rencontrés
 
 - **PHP 8.5 et dépréciations** : Magento transforme toute dépréciation en exception, y compris dans son propre code
@@ -1790,6 +1824,10 @@ la section reste celle du bloc.
   bloque l'enregistrement de toute la section ; `addColumn()` ne garde que `label`, `size`, `style`, `class`,
   `renderer` ; cinq colonnes ne tiennent pas dans la colonne « valeur » de la configuration.
 - **Formulaire d'adresse Hyvä** : la région masquée est quand même envoyée, sous forme de texte.
+- **Champ chiffré** : `backend_model` Encrypted dans `system.xml` chiffre à l'enregistrement, mais la configuration ne
+  rend la valeur déchiffrée que si `config.xml` déclare aussi `backend_model` sur la valeur par défaut.
+- **Meta** : l'interface change plus vite que sa documentation ; la « connexion Instagram » est fondue dans la
+  « connexion unifiée ».
 
 ### Recette et contrôles
 

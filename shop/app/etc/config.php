@@ -372,6 +372,7 @@ return [
         'MadameAiguille_Analytics' => 1,
         'StripeIntegration_Payments' => 1,
         'MadameAiguille_Contact' => 1,
+        'MadameAiguille_Instagram' => 1,
         'MadameAiguille_AiAssistant' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,

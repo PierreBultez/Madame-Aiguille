@@ -393,6 +393,19 @@ ssh <vps> 'sudo -u madame-aiguille php' < docs/requetes/adresses-region.php
 Une adresse du carnet se corrige en l'ouvrant dans le compte ou l'administration, puis **Enregistrer** : la région
 masquée est effacée. Les adresses des commandes passées restent dans l'historique.
 
+### Galerie Instagram
+
+Mise en service et contrôle (`documentation-theme.md` §32). Le jeton se saisit **dans l'administration**
+(*Configuration › Général › Galerie Instagram*), jamais en ligne de commande. Puis, dans une session `ssh <vps>` :
+
+```bash
+mage madameaiguille:instagram:sync                     # synchronise tout de suite, affiche l'erreur d'Instagram s'il y en a
+mage madameaiguille:instagram:sync --renouveler-jeton  # renouvelle aussi le jeton (il doit avoir au moins 24 h)
+```
+
+En local, le jeton sentinelle `doublure-locale` (mode développeur seulement) remplace Instagram par les visuels du
+thème.
+
 ### Assistant IA des fiches produits
 
 Réglages dans l'administration (*Configuration › Général › Assistant IA*) ; la **clé** s'y saisit et y est chiffrée,

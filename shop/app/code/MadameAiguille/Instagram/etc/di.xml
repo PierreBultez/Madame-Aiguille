@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Vrai client, ou doublure locale en mode développeur avec le jeton « doublure-locale » -->
+    <preference for="MadameAiguille\Instagram\Model\Api\ClientInterface" type="MadameAiguille\Instagram\Model\Api\ClientRouter"/>
+
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="madameaiguille_instagram_sync" xsi:type="object">MadameAiguille\Instagram\Console\Command\SyncCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Le jeton est chiffré en base et ne s'exporte pas dans config.php -->
+    <type name="Magento\Config\Model\Config\TypePool">
+        <arguments>
+            <argument name="sensitive" xsi:type="array">
+                <item name="madameaiguille_instagram/feed/access_token" xsi:type="string">1</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
