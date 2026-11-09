@@ -814,7 +814,7 @@ Le lot 8a (infrastructure) est livré depuis le 10/10/2026 ; le **lot 8**, derni
 | **Dépendances distantes du widget** | Leaflet est chargé par RequireJS à la même URL non versionnée que celle du widget ; une évolution distante peut nécessiter une nouvelle recette | Pierre, à chaque mise à jour / lot 8 |
 | **Widget Mondial Relay** | Les onglets Horaires / Photo de l'infobulle de la carte restent bloqués par la CSP (identifiants variables) ; la liste et la sélection fonctionnent | Limite assumée |
 | **Mesure d'audience (lot 9)** | Livrée le 03/11/2026 (§30). Restent : la **base `matomo`** à inclure dans les sauvegardes à mettre en place (`guide-exploitation.md` §5) ; l'**IP de l'atelier** à exclure dans Matomo ; le texte « Mesure d'audience » de la page Confidentialité à faire valider avec le reste de la page ; relire `conformite/matomo-cnil.md` avant toute nouvelle fonction de Matomo | Pierre ; Céline avec conseil |
-| **Galerie Instagram (lot 11, C1)** | Livrée en code le 09/11/2026 (§32, module `MadameAiguille_Instagram`). Côté Meta, fait par Pierre : entreprise vérifiée, application « Mme Aiguille », compte `madame.aiguille` relié (API Instagram, connexion unifiée), jeton généré. **Reste, après déploiement** : saisir le jeton dans *Configuration › Général › Galerie Instagram*, activer, lancer `madameaiguille:instagram:sync`, contrôler l'accueil et `env:check` | Pierre |
+| **Galerie Instagram (lot 11, C1)** | **En service depuis le 09/11/2026** (§32) : jeton de la connexion unifiée et identifiant du compte saisis par Pierre, 4 publications synchronisées, `env:check --serveur` à 0 erreur (« jeton sans expiration »), accueil contrôlé à 1440 px | Soldé |
 | **Option cadeau en production (lot 11, B)** | Recette complète faite en local le 08/11/2026. En production, Pierre la fait lui-même avec Stripe en **mode live** (décision du 08/11/2026) : commande réelle avec l'option, puis facture, avoir et remboursement depuis l'administration | Pierre |
 | **Libellé de l'option cadeau** | « Emballage et message cadeau » et son texte **validés par Céline le 08/11/2026**. Option décrite dans l'article 4 de la CGV par `Theme/Setup/Patch/Data/DescribeGiftOptionInTerms.php` (contenu, message recopié à la main, remboursement) ; à faire valider par le conseil avec le reste de la CGV | Soldé ; Céline avec conseil (CGV) |
 | **Adresses à région fausse (lot 11, A5)** | 2 adresses du carnet (clients 1 et 2) réenregistrées par Pierre le 08/11/2026, région effacée (§32) ; les 17 adresses de commandes restent dans l'historique | Soldé |
@@ -1680,7 +1680,7 @@ sortie, aucune date de retrait. Couper l'assistant sans déployer :
 Lot ouvert le 07/11/2026 à partir de la liste de bugs et de questions de Pierre (plan v3.8, section « Lot 11 »,
 `prompts/prompt-lot11.md`). Livré par pull requests séparées, chacune déployée par le workflow : **A** corrections
 (#27, #31, #33), **B** option cadeau unifiée (#28, #29), **C3** rendez-vous de l'accueil (#30). **C1** (galerie
-Instagram par l'API officielle) est livrée en code (#37) ; sa mise en service attend la saisie du jeton (§23). C2 (histoire)
+Instagram par l'API officielle) est **en service depuis le 09/11/2026** (#37, #38). C2 (histoire)
 et C4 (hero) sont **abandonnés** par Pierre : contenus qui changent rarement, qu'il gère lui-même dans les blocs.
 
 ### Décisions (Pierre, 07 et 08/11/2026)
@@ -1804,7 +1804,9 @@ l'application reste « Non publiée ».
 
 **Recette locale** (09/11/2026, doublure) : 4 images de 640 px copiées, accueil à 1440 px identique à l'ancienne
 galerie, 390 px en deux colonnes sans débordement, repli sur le bloc quand la synchronisation est coupée, renouvellement
-du jeton relevé par `env:check`. Le premier appel réel se fera avec le jeton de production.
+du jeton relevé par `env:check`. **Production** (09/11/2026) : premier essai refusé par `graph.instagram.com` (jeton de la
+connexion unifiée, corrigé par #38), puis 4 publications synchronisées, images servies par le site, `env:check --serveur` à
+0 erreur, 0 avertissement.
 
 ### Pièges rencontrés
 
