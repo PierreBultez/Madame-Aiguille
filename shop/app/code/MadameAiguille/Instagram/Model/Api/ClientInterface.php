@@ -11,7 +11,13 @@ interface ClientInterface
      * @return list<array<string, string>>
      * @throws InstagramException
      */
-    public function fetchMedia(string $token, int $limit): array;
+    public function fetchMedia(string $token, int $limit, ?string $accountId = null): array;
+
+    /**
+     * Le jeton se renouvelle-t-il ? Un jeton « IG… » vaut 60 jours ; celui de la connexion unifiée (utilisateur
+     * système) n'expire pas.
+     */
+    public function isRenewable(string $token): bool;
 
     /**
      * Jeton renouvelé pour 60 jours.

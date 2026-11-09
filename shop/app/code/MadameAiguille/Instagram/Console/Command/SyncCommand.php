@@ -57,8 +57,9 @@ class SyncCommand extends Command
 
         try {
             if ($input->getOption(self::RENEW)) {
-                $this->tokenRenewer->execute(true);
-                $output->writeln('Jeton renouvelé.');
+                $output->writeln($this->tokenRenewer->execute(true)
+                    ? 'Jeton renouvelé.'
+                    : 'Jeton de la connexion unifiée : il n\'expire pas, rien à renouveler.');
             }
             $count = $this->synchronizer->execute();
         } catch (InstagramException $exception) {

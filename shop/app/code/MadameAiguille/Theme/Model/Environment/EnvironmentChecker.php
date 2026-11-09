@@ -378,6 +378,7 @@ class EnvironmentChecker
         $syncedAt = is_array($feed) && isset($feed['synced_at']) ? (int) $feed['synced_at'] : null;
         $token = $this->flagManager->getFlagData('madameaiguille_instagram_token');
         $refreshedAt = is_array($token) && isset($token['refreshed_at']) ? (int) $token['refreshed_at'] : null;
+        $nonExpiring = is_array($token) && !empty($token['non_expiring']);
 
         if ($refreshedAt !== null && $now - $refreshedAt > 50 * 86400) {
             $this->error('Galerie Instagram', sprintf(
@@ -397,14 +398,16 @@ class EnvironmentChecker
             return;
         }
 
+        $tokenState = match (true) {
+            $nonExpiring => 'sans expiration (connexion unifiée)',
+            $refreshedAt === null => 'pas encore renouvelé par le site',
+            default => sprintf('renouvelé il y a %d j', intdiv($now - $refreshedAt, 86400)),
+        };
         $this->ok('Galerie Instagram', sprintf(
             '%d publication(s), synchronisée il y a %d h, jeton %s',
             is_array($feed['items'] ?? null) ? count($feed['items']) : 0,
             intdiv($now - $syncedAt, 3600),
-            $refreshedAt === null ? 'pas encore renouvelé par le site' : sprintf(
-                'renouvelé il y a %d j',
-                intdiv($now - $refreshedAt, 86400)
-            )
+            $tokenState
         ));
     }
 

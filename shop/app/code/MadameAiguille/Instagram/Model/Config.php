@@ -19,6 +19,7 @@ class Config
     public const XML_PATH_ENABLED = 'madameaiguille_instagram/feed/enabled';
     public const XML_PATH_TOKEN = 'madameaiguille_instagram/feed/access_token';
     public const XML_PATH_COUNT = 'madameaiguille_instagram/feed/count';
+    public const XML_PATH_ACCOUNT_ID = 'madameaiguille_instagram/feed/account_id';
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig,
@@ -39,6 +40,13 @@ class Config
         $token = trim((string) $this->scopeConfig->getValue(self::XML_PATH_TOKEN));
 
         return $token === '' ? null : $token;
+    }
+
+    public function getAccountId(): ?string
+    {
+        $id = preg_replace('/\D/', '', (string) $this->scopeConfig->getValue(self::XML_PATH_ACCOUNT_ID));
+
+        return $id === '' ? null : $id;
     }
 
     public function getCount(): int

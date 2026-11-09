@@ -385,6 +385,28 @@ class EnvironmentCheckerTest extends TestCase
         );
     }
 
+    public function testANonExpiringInstagramTokenIsNeverFlaggedAsOld(): void
+    {
+        $findings = $this->check(
+            ['madameaiguille_instagram/feed/enabled' => '1', 'madameaiguille_instagram/feed/access_token' => 'chiffré'],
+            true,
+            true,
+            [],
+            1,
+            true,
+            0,
+            [
+                'madameaiguille_instagram_feed' => ['synced_at' => time() - 3600, 'items' => [1, 2, 3, 4]],
+                'madameaiguille_instagram_token' => ['non_expiring' => true],
+            ]
+        );
+
+        self::assertContains(
+            'Galerie Instagram — 4 publication(s), synchronisée il y a 1 h, jeton sans expiration (connexion unifiée)',
+            $this->messages($findings, Finding::OK)
+        );
+    }
+
     public function testAnInstagramGalleryNeverSyncedWarns(): void
     {
         self::assertContains(

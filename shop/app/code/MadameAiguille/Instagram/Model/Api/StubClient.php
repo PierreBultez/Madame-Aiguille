@@ -20,7 +20,7 @@ class StubClient implements ClientInterface
     ) {
     }
 
-    public function fetchMedia(string $token, int $limit): array
+    public function fetchMedia(string $token, int $limit, ?string $accountId = null): array
     {
         $captions = ['Trousse et panier de linge', 'Pochette à livre bleue', 'Pochettes nomades et café', 'Petit sac fleuri'];
         $media = [];
@@ -39,6 +39,11 @@ class StubClient implements ClientInterface
         }
 
         return array_slice($media, 0, $limit);
+    }
+
+    public function isRenewable(string $token): bool
+    {
+        return true;
     }
 
     public function refreshToken(string $token): array

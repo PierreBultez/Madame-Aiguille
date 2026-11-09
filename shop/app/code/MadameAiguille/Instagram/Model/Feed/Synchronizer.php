@@ -40,7 +40,8 @@ class Synchronizer
         }
 
         $items = [];
-        foreach (Selection::pick($this->client->fetchMedia($token, self::FETCH), $this->config->getCount()) as $post) {
+        $media = $this->client->fetchMedia($token, self::FETCH, $this->config->getAccountId());
+        foreach (Selection::pick($media, $this->config->getCount()) as $post) {
             $file = $this->imageStore->store($post['id'], $post['image_url']);
             $items[] = [
                 'id' => $post['id'],
