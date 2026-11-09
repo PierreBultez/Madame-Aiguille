@@ -56,16 +56,41 @@ class DescribeGiftOptionInTerms implements DataPatchInterface
 
     /**
      * Le contenu de la CGV avec le paragraphe de l'option, ou inchangé si l'ancre manque ou si l'option y figure déjà.
+     *
+     * Une page enregistrée depuis Page Builder range l'ancien texte dans un bloc « Code HTML », balises encodées
+     * (`&lt;p&gt;`), décodées à l'affichage : l'ancre y est cherchée sous cette forme, le paragraphe inséré de même.
+     *
+     * @param string $content
+     * @return string
      */
     public static function withClause(string $content): string
     {
-        $position = strpos($content, self::ANCHOR);
-        if ($position === false || str_contains($content, 'Emballage et message cadeau')) {
+        if (str_contains($content, 'Emballage et message cadeau')) {
             return $content;
         }
-        $end = $position + strlen(self::ANCHOR);
+        $forms = [[self::ANCHOR, self::CLAUSE], [self::encoded(self::ANCHOR), self::encoded(self::CLAUSE)]];
+        foreach ($forms as [$anchor, $clause]) {
+            $position = strpos($content, $anchor);
+            if ($position !== false) {
+                $end = $position + strlen($anchor);
 
-        return substr($content, 0, $end) . "\n" . self::CLAUSE . substr($content, $end);
+                return substr($content, 0, $end) . "\n" . $clause . substr($content, $end);
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * Forme d'un fragment dans le bloc « Code HTML » de Page Builder.
+     *
+     * @param string $html
+     * @return string
+     */
+    public static function encoded(string $html): string
+    {
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction
+        return htmlspecialchars($html, ENT_NOQUOTES | ENT_HTML5, 'UTF-8');
     }
 
     public static function getDependencies(): array
