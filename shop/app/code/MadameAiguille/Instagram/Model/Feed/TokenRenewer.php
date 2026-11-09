@@ -36,6 +36,13 @@ class TokenRenewer
             return false;
         }
 
+        if (!$this->client->isRenewable($token)) {
+            if (!$this->storage->isTokenNonExpiring()) {
+                $this->storage->saveTokenNonExpiring();
+            }
+            return false;
+        }
+
         $now = $this->dateTime->gmtTimestamp();
         if (!$force && !self::isDue($this->storage->getTokenRefreshedAt(), $now)) {
             return false;

@@ -19,9 +19,14 @@ class ClientRouter implements ClientInterface
     ) {
     }
 
-    public function fetchMedia(string $token, int $limit): array
+    public function fetchMedia(string $token, int $limit, ?string $accountId = null): array
     {
-        return $this->client($token)->fetchMedia($token, $limit);
+        return $this->client($token)->fetchMedia($token, $limit, $accountId);
+    }
+
+    public function isRenewable(string $token): bool
+    {
+        return $this->client($token)->isRenewable($token);
     }
 
     public function refreshToken(string $token): array

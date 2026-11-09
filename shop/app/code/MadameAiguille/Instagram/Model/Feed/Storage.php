@@ -52,6 +52,21 @@ class Storage
         return is_array($token) && isset($token['refreshed_at']) ? (int) $token['refreshed_at'] : null;
     }
 
+    /**
+     * Jeton de la connexion unifiée : il n'expire pas, env:check ne surveille pas son âge.
+     */
+    public function isTokenNonExpiring(): bool
+    {
+        $token = $this->flagManager->getFlagData(self::TOKEN_FLAG);
+
+        return is_array($token) && !empty($token['non_expiring']);
+    }
+
+    public function saveTokenNonExpiring(): void
+    {
+        $this->flagManager->saveFlag(self::TOKEN_FLAG, ['non_expiring' => true]);
+    }
+
     public function saveTokenRefresh(int $refreshedAt, int $expiresIn): void
     {
         $this->flagManager->saveFlag(

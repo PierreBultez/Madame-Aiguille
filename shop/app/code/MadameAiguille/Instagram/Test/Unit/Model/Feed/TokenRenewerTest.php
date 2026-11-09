@@ -29,6 +29,7 @@ class TokenRenewerTest extends TestCase
         $config->expects(self::once())->method('saveAccessToken')->with('IGAA-neuf');
 
         $client = $this->createMock(ClientInterface::class);
+        $client->method('isRenewable')->willReturn(true);
         $client->expects(self::once())->method('refreshToken')->with('IGAA-ancien')
             ->willReturn(['access_token' => 'IGAA-neuf', 'expires_in' => 5184000]);
 
@@ -55,6 +56,21 @@ class TokenRenewerTest extends TestCase
         $recent = $this->createStub(Storage::class);
         $recent->method('getTokenRefreshedAt')->willReturn(self::NOW - 86400);
         self::assertFalse((new TokenRenewer($enabled, $client, $recent, $this->clock()))->execute());
+    }
+
+    public function testANonExpiringTokenIsNeverRefreshedButRemembered(): void
+    {
+        $config = $this->createStub(Config::class);
+        $config->method('isEnabled')->willReturn(true);
+        $config->method('getAccessToken')->willReturn('EAA-systeme');
+        $client = $this->createMock(ClientInterface::class);
+        $client->method('isRenewable')->willReturn(false);
+        $client->expects(self::never())->method('refreshToken');
+        $storage = $this->createMock(Storage::class);
+        $storage->method('isTokenNonExpiring')->willReturn(false);
+        $storage->expects(self::once())->method('saveTokenNonExpiring');
+
+        self::assertFalse((new TokenRenewer($config, $client, $storage, $this->clock()))->execute(true));
     }
 
     private function clock(): DateTime

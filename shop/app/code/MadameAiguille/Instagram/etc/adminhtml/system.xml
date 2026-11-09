@@ -21,6 +21,14 @@
                         <field id="enabled">1</field>
                     </depends>
                 </field>
+                <field id="account_id" translate="label comment" type="text" sortOrder="25" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Identifiant du compte Instagram</label>
+                    <comment>Le numéro affiché sous le nom du compte dans l'application Meta (API Instagram, « Générez des tokens d'accès »). Obligatoire avec un jeton de la connexion unifiée ; inutile avec un jeton « IG… ».</comment>
+                    <validate>validate-digits</validate>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
                 <field id="count" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Nombre de publications affichées</label>
                     <validate>required-entry validate-digits validate-digits-range digits-range-1-8</validate>
