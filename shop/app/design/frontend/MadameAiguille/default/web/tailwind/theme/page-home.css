@@ -12,6 +12,8 @@
 .home-hero h1 { @apply mt-3 mb-4 font-display text-display-xl text-brand; }
 .home-hero-copy > p:not(.home-kicker) { @apply mb-5 max-w-prose text-brand-dark; }
 .home-products { @apply grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4 md:gap-x-6; }
+/* Nouveautés : trois lignes, soit 6 cartes sur 2 colonnes en mobile et 12 sur 4 colonnes au-delà */
+.home_new .home-products > :nth-child(n+7) { @apply max-md:hidden; }
 .home-story { @apply grid gap-7 px-5 py-10 bg-brand-ivory text-brand-dark; }
 .home-story > img { @apply w-full rounded-sm; height: 300px; object-fit: cover; }
 .home-story h2 { @apply font-display text-display text-brand mt-3 mb-5; }

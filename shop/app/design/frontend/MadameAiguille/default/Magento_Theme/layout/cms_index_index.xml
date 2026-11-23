@@ -24,7 +24,8 @@
                             <argument name="products_view_model" xsi:type="object">MadameAiguille\Theme\ViewModel\Home\Products</argument>
                             <argument name="item_renderer" xsi:type="object">Hyva\Theme\ViewModel\ProductListItem</argument>
                             <argument name="display_type" xsi:type="string">new_products</argument>
-                            <argument name="products_count" xsi:type="number">4</argument>
+                            <!-- 3 lignes : 12 en ordinateur (4 colonnes), 6 en mobile (2 colonnes, cf. page-home.css) -->
+                            <argument name="products_count" xsi:type="number">12</argument>
                             <argument name="conditions" xsi:type="array"/>
                             <argument name="show_pager" xsi:type="boolean">false</argument>
                         </arguments>
