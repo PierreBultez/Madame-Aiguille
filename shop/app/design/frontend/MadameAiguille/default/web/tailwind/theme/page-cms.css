@@ -102,6 +102,17 @@
         object-fit: cover;
     }
 
+    /* « À propos » (classe du body) : le portrait de Céline, figure centrée et plus étroite, photo entière plutôt
+       qu'un bandeau qui coupe le visage */
+    .cms-a-propos .cms-media {
+        @apply mx-auto max-w-xl;
+    }
+
+    .cms-a-propos .cms-media img {
+        height: auto;
+        aspect-ratio: 1206 / 860;
+    }
+
     .cms-actions {
         @apply mt-10 flex flex-col justify-center gap-3 sm:flex-row;
     }
