@@ -41,7 +41,7 @@ Remplissez, de haut en bas :
 | Poids | **Obligatoire**, en kilogrammes (`0.16` pour 160 g). Le poids de l'emballage (0,2 kg) est ajouté automatiquement pour calculer le port |
 | Catégories | Une ou plusieurs rubriques de la boutique |
 | Visibilité | « Catalogue, Recherche » pour une création vendue seule |
-| Définir comme Nouveau | Dates de début et de fin du badge « Nouveauté » et de la section Nouveautés de l'accueil |
+| Définir comme Nouveau | Dates de début et de fin du badge « Nouveauté » et de la section Nouveautés de l'accueil. Sur un nouveau produit, elles sont déjà remplies : d'aujourd'hui à dans un mois. Vous pouvez les changer, ou les effacer si le produit ne doit pas apparaître dans les nouveautés. |
 
 ![Haut de la fiche produit](guide-back-office/03-fiche-produit.jpg)
 

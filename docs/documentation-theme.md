@@ -346,7 +346,7 @@ Tout est créé par data patch du module (`Setup/Patch/Data/`) : rejouer `setup:
 | Série limitée | Taille (`taille`) | liste Petit / Grand, swatch texte | Seul axe de variante ; ne sert qu'aux modèles déclinés en deux tailles (produit configurable) |
 | Caractéristiques | Composition, Dimensions, Conseils d'entretien | textes libres | Tableau « Caractéristiques » de la fiche. Une ligne vide n'est pas affichée |
 | Product Details | Poids (`weight`) | **obligatoire**, en **kilogrammes** | Frais de port au poids (lot 5) ; affiché en grammes dans Caractéristiques (« 140 g ») |
-| Product Details | Définir le produit comme nouveau à partir de / jusqu'au (`news_from_date` / `news_to_date`) | dates | Badge « Nouveauté » pendant la période ; le bloc Nouveautés de l'accueil (lot 3) s'en servira aussi |
+| Product Details | Définir le produit comme nouveau à partir de / jusqu'au (`news_from_date` / `news_to_date`) | dates | Badge « Nouveauté » pendant la période ; le bloc Nouveautés de l'accueil (lot 3) s'en servira aussi. À la **création** d'un produit, les deux dates sont préremplies : aujourd'hui → un mois plus tard (fuseau du magasin), modifiables ou à vider avant d'enregistrer ; un produit existant n'est jamais modifié (`Theme/Ui/DataProvider/Product/Form/Modifier/DefaultNoveltyDates.php`, sortOrder 5 avant `eav`, 23/11/2026) |
 
 Règles d'usage pour Céline :
 
