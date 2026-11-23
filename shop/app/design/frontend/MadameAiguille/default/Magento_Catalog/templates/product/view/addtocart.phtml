@@ -1,42 +1,93 @@
 <?php
 /**
  * Madame Aiguille — bouton « Ajouter au panier » (56 px, principal)
- * Sur un configurable, inactif tant qu'aucune taille n'est choisie
- * (événement natif configurable-selection-changed).
+ *
+ * Sur un configurable, inactif tant que la sélection n'est pas complète
+ * (événement natif configurable-selection-changed). L'aide sous le bouton
+ * nomme les options qui restent à choisir (« couleur et taille »), d'après
+ * les libellés vitrine du ViewModel ConfigurableOptions.
+ *
+ * Alignement avec le sélecteur de quantité : un libellé invisible de même
+ * gabarit que « Quantité » occupe la ligne du libellé, et l'aide se place
+ * sous le bouton, comme l'aide de quantité sous le champ. Un message sur
+ * deux lignes ne déplace donc ni le bouton ni le champ.
  */
 
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\CurrentProduct;
-use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use MadameAiguille\Theme\ViewModel\Product\ConfigurableOptions;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
 /** @var ViewModelRegistry $viewModels */
 
 $product = $viewModels->require(CurrentProduct::class)->get();
-$isConfigurable = $product->getTypeId() === Configurable::TYPE_CODE;
+$attributeLabels = $viewModels->require(ConfigurableOptions::class)->getAttributeLabels($product);
+$isConfigurable = $attributeLabels !== [];
 $buttonLabel = $block->getData('is_cart_configure') ? __('Mettre à jour') : __('Ajouter au panier');
 ?>
+<?php if ($isConfigurable): ?>
+    <script>
+        function initAddToCartButton() {
+            const root = this.$root.dataset;
+            const labels = JSON.parse(root.labels);
+            const messages = JSON.parse(root.messages);
+            const list = new Intl.ListFormat('fr', { type: 'conjunction' });
+            return {
+                ready: false,
+                missing: Object.values(labels),
+                onSelectionChanged(detail) {
+                    const selected = Object.keys(detail.selectedValues || {});
+                    this.ready = !!detail.productIndex;
+                    this.missing = Object.keys(labels)
+                        .filter(id => !selected.includes(id))
+                        .map(id => labels[id]);
+                },
+                get message() {
+                    if (this.ready) return '';
+                    if (this.missing.length === 0) return messages.unavailable;
+                    return messages.missing.replace('%1', list.format(this.missing));
+                }
+            };
+        }
+        window.addEventListener('alpine:init', () => Alpine.data('initAddToCartButton', initAddToCartButton), { once: true });
+    </script>
+    <?php $hyvaCsp->registerInlineScript() ?>
+<?php endif; ?>
+
 <div
-    x-data="{ ready: <?= $isConfigurable ? 'false' : 'true' ?> }"
-    @configurable-selection-changed.window="ready = !!$event.detail.productIndex"
->
     <?php if ($isConfigurable): ?>
-        <p class="mb-1.5 min-h-5 text-caption text-brand-muted" x-show="!ready" aria-live="polite"><?= $escaper->escapeHtml(__('Choisissez une taille pour ajouter au panier.')) ?></p>
-        <p class="mb-1.5 min-h-5" x-show="ready" x-cloak aria-hidden="true"></p>
+    x-data="initAddToCartButton"
+    @configurable-selection-changed.window="onSelectionChanged($event.detail)"
+    data-labels="<?= $escaper->escapeHtmlAttr(json_encode($attributeLabels)) ?>"
+    data-messages="<?= $escaper->escapeHtmlAttr(json_encode([
+        'missing' => (string) __('À choisir avant l’ajout au panier : %1.'),
+        'unavailable' => (string) __('Cette combinaison n’est pas disponible.'),
+    ])) ?>"
     <?php endif; ?>
+>
+    <span class="mb-1.5 block font-medium text-label invisible" aria-hidden="true"><?= $escaper->escapeHtml(__('Quantité')) ?></span>
     <button
         type="submit"
         form="product_addtocart_form"
         class="btn btn-primary btn-size-lg w-full"
         id="product-addtocart-button"
         data-addto="cart"
+        <?php if ($isConfigurable): ?>
+        disabled
         :disabled="!ready"
+        aria-describedby="addtocart-hint"
+        <?php endif; ?>
     ><?= $escaper->escapeHtml($buttonLabel) ?></button>
+    <?php if ($isConfigurable): ?>
+        <p id="addtocart-hint" class="mt-1.5 min-h-5 text-caption text-brand-muted" x-text="message" aria-live="polite"></p>
+    <?php endif; ?>
 </div>
 
 <?= $block->getChildHtml('', true) ?>

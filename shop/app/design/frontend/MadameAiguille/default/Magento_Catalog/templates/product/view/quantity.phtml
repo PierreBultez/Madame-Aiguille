@@ -2,7 +2,8 @@
 /**
  * Madame Aiguille — sélecteur de quantité plafonné au stock (Design System §6.5)
  *
- * Boutons − / + de 44 × 48 px (56 px en fiche), champ numérique, aide sous le
+ * Boutons − / + de 44 px (48 px en ordinateur), boîte de 56 px de haut bordures
+ * comprises, comme le bouton « Ajouter au panier » ; champ numérique, aide sous le
  * champ. Le plafond vient du ViewModel : stock restant du simple, ou stock de
  * la taille choisie pour un configurable (événement natif
  * configurable-selection-changed → productIndex = identifiant de l'enfant).
@@ -119,7 +120,7 @@ $isLimited = $limitedSeries->isLimitedSeries($product);
             min="<?= $minQty ?>"
             :max="max ?? ''"
             @input="onInput($event)"
-            class="h-12 w-13 border-0 bg-transparent p-0 text-center font-medium text-base text-brand-ink tabular-nums focus:ring-0 md:h-14 md:w-14 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            class="h-13.5 w-13 border-0 bg-transparent p-0 text-center font-medium text-base text-brand-ink tabular-nums focus:ring-0 md:w-14 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             aria-describedby="qty-hint-<?= $productId ?>"
         >
         <button type="button" @click="increment" :disabled="atMax"
