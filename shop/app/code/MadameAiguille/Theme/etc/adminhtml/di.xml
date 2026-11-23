@@ -9,4 +9,16 @@
     <type name="Magento\Catalog\Controller\Adminhtml\Product\Gallery\Upload">
         <plugin name="madameaiguille_convert_webp_gallery_upload" type="MadameAiguille\Theme\Plugin\Catalog\ConvertWebpGalleryUpload" sortOrder="100"/>
     </type>
+    <!-- Dates de nouveauté préremplies (aujourd'hui + un mois) sur un produit en création ; avant « eav » (10),
+         qui restaure la saisie après une erreur d'enregistrement -->
+    <virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="madameaiguille_default_novelty_dates" xsi:type="array">
+                    <item name="class" xsi:type="string">MadameAiguille\Theme\Ui\DataProvider\Product\Form\Modifier\DefaultNoveltyDates</item>
+                    <item name="sortOrder" xsi:type="number">5</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>
